@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店赢OS - AI智能门店操作系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="assets/logo.svg" alt="店赢OS">
+                    <span class="logo-text">店赢OS</span>
+                </div>
+                <div class="store-selector">
+                    <select id="storeSelect">
+                        <option value="hotpot">🔥 老码头火锅（旗舰店）</option>
+                        <option value="tea">🧋 茶悦时光（万象城店）</option>
+                        <option value="gym">💪 力健健身房（科技园店）</option>
+                    </select>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-time" id="currentTime">2026-04-28 19:30:00</div>
+                <div class="header-status">
+                    <span class="status-dot online"></span>
+                    <span>系统正常</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-icon" title="设置">⚙️</button>
+                    <button class="btn btn-icon" title="帮助">❓</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel: Store List -->
+            <aside class="panel panel-left">
+                <div class="panel-header">
+                    <h3>🏪 门店概览</h3>
+                    <button class="btn btn-sm" id="addStoreBtn">+ 添加</button>
+                </div>
+                <div class="store-list" id="storeList">
+                    <!-- Store cards will be rendered here -->
+                </div>
+                <div class="panel-footer">
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">今日营收</span>
+                            <span class="stat-value" id="todayRevenue">¥12,580</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">待处理</span>
+                            <span class="stat-value warning" id="pendingTasks">3</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: AI Chat -->
+            <section class="panel panel-center">
+                <div class="panel-header">
+                    <div class="ai-manager-info">
+                        <div class="ai-avatar">🤖</div>
+                        <div class="ai-info">
+                            <h3>AI虚拟店长</h3>
+                            <span class="ai-status">7×24 在线</span>
+                        </div>
+                    </div>
+                    <div class="ai-actions">
+                        <button class="btn btn-sm" id="demoAlertBtn">🎯 演示差评预警</button>
+                        <button class="btn btn-sm" id="demoPricingBtn">💰 演示动态定价</button>
+                    </div>
+                </div>
+                <div class="chat-container" id="chatContainer">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Chat messages will be rendered here -->
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <div class="trust-indicator" id="trustIndicator">
+                        <span class="trust-label">信任等级:</span>
+                        <span class="trust-badge A">A级</span>
+                        <span class="trust-desc">自动执行，无需确认</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="chatInput" placeholder="输入指令或选择快捷操作..." autocomplete="off">
+                        <button class="btn btn-primary" id="sendBtn">发送</button>
+                    </div>
+                    <div class="quick-actions" id="quickActions">
+                        <button class="quick-action" data-action="review">📝 查看评价</button>
+                        <button class="quick-action" data-action="pricing">💰 调整定价</button>
+                        <button class="quick-action" data-action="schedule">📅 查看排班</button>
+                        <button class="quick-action" data-action="report">📊 生成报告</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Data Dashboard -->
+            <aside class="panel panel-right">
+                <div class="panel-header">
+                    <h3>📈 实时数据</h3>
+                    <button class="btn btn-sm" id="refreshBtn">🔄 刷新</button>
+                </div>
+                <div class="dashboard-content">
+                    <!-- Key Metrics -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">⭐</div>
+                            <div class="metric-info">
+                                <span class="metric-value" id="ratingValue">4.6</span>
+                                <span class="metric-label">综合评分</span>
+                            </div>
+                            <div class="metric-trend up">↑ 0.2</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">📝</div>
+                            <div class="metric-info">
+                                <span class="metric-value" id="reviewCount">286</span>
+                                <span class="metric-label">本月评价</span>
+                            </div>
+                            <div class="metric-trend up">↑ 12%</div>
+                        </div>
+                        <div class="metric-card warning">
+                            <div class="metric-icon">⚠️</div>
+                            <div class="metric-info">
+                                <span class="metric-value" id="badReviewRate">3.2%</span>
+                                <span class="metric-label">差评率</span>
+                            </div>
+                            <div class="metric-trend down">↓ 0.5%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">💬</div>
+                            <div class="metric-info">
+                                <span class="metric-value" id="replyRate">98%</span>
+                                <span class="metric-label">回复率</span>
+                            </div>
+                            <div class="metric-trend">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Chart -->
+                    <div class="chart-section">
+                        <h4>📊 营收趋势（近7天）</h4>
+                        <div class="mini-chart" id="revenueChart">
+                            <div class="chart-bars">
+                                <div class="bar" data-value="65"><span>Mon</span></div>
+                                <div class="bar" data-value="80"><span>Tue</span></div>
+                                <div class="bar" data-value="75"><span>Wed</span></div>
+                                <div class="bar" data-value="90"><span>Thu</span></div>
+                                <div class="bar" data-value="95"><span>Fri</span></div>
+                                <div class="bar" data-value="100"><span>Sat</span></div>
+                                <div class="bar" data-value="85"><span>Sun</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div class="alerts-section">
+                        <h4>🔔 预警信息</h4>
+                        <div class="alert-list" id="alertList">
+                            <div class="alert-item info">
+                                <span class="alert-icon">ℹ️</span>
+                                <span class="alert-text">周末客流预计增长20%</span>
+                            </div>
+                            <div class="alert-item warning">
+                                <span class="alert-icon">⚠️</span>
+                                <span class="alert-text">库存预警：牛肉卷库存不足</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Reviews -->
+                    <div class="reviews-section">
+                        <h4>📝 最新评价</h4>
+                        <div class="review-list" id="reviewList">
+                            <!-- Reviews will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎯 差评预警</h3>
+                <button class="btn btn-close" id="closeAlertModal">×</button>
+            </div>
+            <div class="modal-body" id="alertModalBody">
+                <!-- Alert content will be rendered here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelAlertBtn">稍后处理</button>
+                <button class="btn btn-primary" id="confirmAlertBtn">AI自动处理</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Modal -->
+    <div class="modal" id="pricingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💰 动态定价演示</h3>
+                <button class="btn btn-close" id="closePricingModal">×</button>
+            </div>
+            <div class="modal-body" id="pricingModalBody">
+                <!-- Pricing content will be rendered here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelPricingBtn">取消</button>
+                <button class="btn btn-primary" id="confirmPricingBtn">确认调价</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils/data-store.js"></script>
+    <script src="js/utils/trust-level.js"></script>
+    <script src="js/modules/review-handler.js"></script>
+    <script src="js/modules/pricing-engine.js"></script>
+    <script src="js/modules/knowledge-transfer.js"></script>
+    <script src="js/modules/store-clone.js"></script>
+    <script src="js/modules/lifecycle-drive.js"></script>
+    <script src="js/modules/digital-twin.js"></script>
+    <script src="js/agents/virtual-manager.js"></script>
+    <script src="js/agents/insight-agent.js"></script>
+    <script src="js/agents/plan-agent.js"></script>
+    <script src="js/agents/deliver-agent.js"></script>
+    <script src="js/agents/operate-agent.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
