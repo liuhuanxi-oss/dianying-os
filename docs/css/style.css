@@ -3866,3 +3866,438 @@ body.dark-mode .about-btn-nav {
   border-color: rgba(255, 255, 255, 0.2);
   color: #E2E8F0;
 }
+
+/* ============================================
+   Daily Report Tabs - Enhanced
+   ============================================ */
+
+/* Tab Navigation */
+.daily-report-tabs {
+  display: flex;
+  position: relative;
+  padding: 0 16px;
+  border-bottom: 1px solid #E2E8F0;
+  background: #FAFAFA;
+}
+
+.daily-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.daily-tab-btn:hover {
+  color: var(--primary-start);
+}
+
+.daily-tab-btn.active {
+  color: var(--primary-start);
+}
+
+.daily-tab-btn.active i,
+.daily-tab-btn.active span {
+  color: var(--primary-start);
+}
+
+/* Tab Indicator (animated underline) */
+.daily-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Tab Content */
+.daily-tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.daily-tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stats Change Indicators */
+.daily-stat-change {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.daily-stat-change.positive {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.daily-stat-change.negative {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* News Section */
+.news-source-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--bg-gray);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-item {
+  background: var(--bg-gray);
+  border-radius: 12px;
+  padding: 14px;
+  transition: all 0.2s ease;
+}
+
+.news-item:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.news-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.news-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.news-tag.dongtai { background: rgba(6, 182, 212, 0.15); color: #0891B2; }
+.news-tag.zhengce { background: rgba(139, 92, 246, 0.15); color: #7C3AED; }
+.news-tag.qushi { background: rgba(16, 185, 129, 0.15); color: #059669; }
+
+.news-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.news-meta {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.news-summary {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.news-expand {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--primary-start);
+  background: none;
+  border: none;
+  padding: 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.news-expand:hover {
+  color: var(--primary-end);
+}
+
+.news-deep-analysis {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-start);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.news-deep-analysis.show {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Insight Cards */
+.insight-card {
+  background: var(--bg-gray);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.insight-card.highlight {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.insight-card.warning {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.insight-card.opportunity {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.insight-icon {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.insight-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.insight-text {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.insight-summary {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--bg-gray);
+  border-radius: 12px;
+}
+
+.insight-summary h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.insight-summary h4 i {
+  color: var(--primary-start);
+}
+
+.insight-summary p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.insight-summary strong {
+  color: var(--primary-start);
+  font-weight: 700;
+}
+
+/* PDF Button */
+.daily-report-btn.pdf {
+  background: white;
+  border: 1px solid #E2E8F0;
+  color: var(--text-primary);
+  flex: 0.6;
+}
+
+.daily-report-btn.pdf:hover {
+  background: var(--bg-gray);
+}
+
+.daily-report-btn.pdf::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.daily-report-btn.pdf.generated::after {
+  opacity: 1;
+}
+
+/* Toast Notification */
+.daily-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1E293B;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.daily-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.daily-toast i {
+  color: #10B981;
+}
+
+/* Dark Mode for Tabs */
+body.dark-mode .daily-report-tabs {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .daily-tab-btn {
+  color: #94A3B8;
+}
+
+body.dark-mode .daily-tab-btn.active {
+  color: #818CF8;
+}
+
+body.dark-mode .daily-stat-change.positive {
+  color: #34D399;
+}
+
+body.dark-mode .news-item {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .news-item:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+body.dark-mode .news-source-note {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .news-deep-analysis {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+body.dark-mode .insight-card.highlight {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+body.dark-mode .insight-card.warning {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+body.dark-mode .insight-card.opportunity {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+body.dark-mode .insight-summary {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .insight-text {
+  color: #E2E8F0;
+}
+
+body.dark-mode .daily-report-btn.pdf {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #E2E8F0;
+}
+
+body.dark-mode .daily-report-btn.pdf:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .daily-report-content {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  
+  .daily-report-modal {
+    padding: 0;
+  }
+  
+  .daily-tab-btn span {
+    display: none;
+  }
+  
+  .daily-tab-btn {
+    padding: 14px;
+  }
+  
+  .daily-report-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .daily-stat {
+    padding: 12px;
+  }
+  
+  .daily-stat-value {
+    font-size: 1.3rem;
+  }
+  
+  .insight-card {
+    padding: 14px;
+  }
+}

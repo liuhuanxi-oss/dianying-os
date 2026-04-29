@@ -1184,13 +1184,97 @@ if (decisionLogHeader) {
 }
 
 // ----------------------------------------
-// 9. 日报功能
+// 9. 日报功能 - 增强版三Tab
 // ----------------------------------------
 const dailyReportBtnNav = document.getElementById('dailyReportBtnNav');
+const landingDailyReportBtn = document.getElementById('landingDailyReportBtn');
 const dailyReportModal = document.getElementById('dailyReportModal');
 const dailyReportClose = document.getElementById('dailyReportClose');
 const dailyReportCloseBtn = document.getElementById('dailyReportCloseBtn');
 const copyReportBtn = document.getElementById('copyReportBtn');
+const pdfReportBtn = document.getElementById('pdfReportBtn');
+
+// Tab 相关元素
+const dailyTabBtns = document.querySelectorAll('.daily-tab-btn');
+const dailyTabContents = document.querySelectorAll('.daily-tab-content');
+const tabIndicator = document.querySelector('.daily-tab-indicator');
+
+// 行业资讯数据
+const industryNews = [
+  {
+    tag: 'dongtai',
+    tagName: '餐饮动态',
+    title: '美团发布2026餐饮白皮书：连锁化率突破28%',
+    source: '36氪',
+    time: '2小时前',
+    summary: '报告指出，连锁餐饮品牌门店增速是独立门店的3.2倍，数字化运营能力成为核心分水岭。',
+    analysis: '建议密切关注本品牌的连锁化进程，加速数字化升级以应对行业竞争加剧的趋势。'
+  },
+  {
+    tag: 'dongtai',
+    tagName: '餐饮动态',
+    title: '抖音本地生活新增"AI智能套餐"功能',
+    source: '界面新闻',
+    time: '4小时前',
+    summary: '商家可通过AI自动匹配菜品组合和定价策略，内测商家转化率提升15%。',
+    analysis: '抖音平台的AI功能内测窗口已开启，建议尽快申请抢占流量红利。'
+  },
+  {
+    tag: 'zhengce',
+    tagName: '平台政策',
+    title: '大众点评评价规则更新：商家回复时效纳入评分',
+    source: '餐饮老板内参',
+    time: '6小时前',
+    summary: '2小时内回复差评的商家，评分权重加成0.1分，回复超24小时将扣分。',
+    analysis: '新规今日生效，建议立即优化差评响应机制，AI自动回复间隔建议缩短至2分钟内。'
+  },
+  {
+    tag: 'dongtai',
+    tagName: '行业趋势',
+    title: '小红书"探店笔记"算法调整，真实体验权重提升',
+    source: '新榜',
+    time: '3小时前',
+    summary: '平台加大对模板化推广内容的降权力度，鼓励真实到店体验分享。',
+    analysis: '品牌应加强真实用户口碑运营，避免过度营销化的推广内容。'
+  },
+  {
+    tag: 'qushi',
+    tagName: '行业趋势',
+    title: '餐饮SaaS市场规模突破500亿，AI成最大增长点',
+    source: '艾瑞咨询',
+    time: '1天前',
+    summary: '2026年Q1餐饮SaaS同比增长42%，AI功能模块成为商家选择系统的首要考量因素。',
+    analysis: '选择具备AI能力的门店操作系统将成为行业主流，建议持续关注AI功能迭代。'
+  },
+  {
+    tag: 'zhengce',
+    tagName: '平台政策',
+    title: '饿了么推出"雨天保底"计划，帮商家对冲天气风险',
+    source: '饿了么商家端',
+    time: '5小时前',
+    summary: '参与商家雨天订单损失部分由平台补贴，首批覆盖18个城市。',
+    analysis: '建议参与保底计划，降低天气因素对营收的影响。'
+  }
+];
+
+// AI洞察数据
+const aiInsights = {
+  focus: [
+    '大众点评回复时效新规今日生效，建议将AI差评自动回复间隔从3分钟缩短至2分钟，抢占评分加成。',
+    '本周五将迎来"520"情侣消费高峰，建议提前备货并推出双人套餐，预计客流提升40%。',
+    '竞品"老街火锅"本周开业，主打低价策略，建议强化本店特色优势，避免价格战。'
+  ],
+  warning: [
+    '本周三有大雨预警（概率78%），历史数据显示堂食客流可能下降20-30%，需提前准备外卖策略。',
+    '近7天差评率上升0.3%，主要集中在出餐速度，建议优化后厨流程。',
+    '会员流失预警：张女士、李先生连续2个月未到店，建议发送专属召回券。'
+  ],
+  opportunity: [
+    '抖音"AI智能套餐"内测资格开放中，建议立即申请，同类商家转化率提升15%。',
+    '饿了么"雨天保底"计划正在招募，建议尽快报名，可降低天气风险。',
+    '美团推出新商家流量扶持计划，开通首月可获得首页推荐位，建议把握窗口期。'
+  ]
+};
 
 const dailySuggestions = [
   '建议优化午市套餐定价，当前翻台率有提升空间。',
@@ -1206,42 +1290,227 @@ const dailyAlerts = [
   '下午茶时段客流量较低，可考虑推出下午茶套餐。'
 ];
 
-if (dailyReportBtnNav) {
-  dailyReportBtnNav.addEventListener('click', function() {
-    const data = storeScenarios[currentStore][currentScenario || 'review'];
-    document.getElementById('dailyReportDate').textContent = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) + ' 运营报告';
-    document.getElementById('dailyRevenue').textContent = '¥' + Math.round(data.revenue / 30 * 100) / 100 + '万';
-    document.getElementById('dailyReviews').textContent = Math.floor(Math.random() * 5 + 1) + '条';
-    document.getElementById('dailyDecisions').textContent = Math.floor(Math.random() * 10 + 8) + '次';
-    document.getElementById('dailyTrust').textContent = getTrustLevel(data.trustLevel);
-    document.getElementById('dailySuggestion').textContent = dailySuggestions[Math.floor(Math.random() * dailySuggestions.length)];
-    document.getElementById('dailyAlert').textContent = dailyAlerts[Math.floor(Math.random() * dailyAlerts.length)];
-    dailyReportModal.classList.add('active');
+// 生成行业资讯HTML
+function generateNewsHTML() {
+  return industryNews.map((news, index) => `
+    <div class="news-item">
+      <div class="news-header">
+        <span class="news-tag ${news.tag}">${news.tagName}</span>
+        <div>
+          <div class="news-title">📌 ${news.title}</div>
+          <div class="news-meta">${news.source} · ${news.time}</div>
+        </div>
+      </div>
+      <div class="news-summary">"${news.summary}"</div>
+      <button class="news-expand" onclick="toggleNewsAnalysis(this)">
+        <i data-lucide="chevron-down" class="w-3 h-3"></i>
+        深度解读
+      </button>
+      <div class="news-deep-analysis">
+        💡 <strong>AI分析：</strong>${news.analysis}
+      </div>
+    </div>
+  `).join('');
+}
+
+// 切换资讯深度解读
+window.toggleNewsAnalysis = function(btn) {
+  const analysis = btn.nextElementSibling;
+  const icon = btn.querySelector('i');
+  analysis.classList.toggle('show');
+  icon.style.transform = analysis.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+  btn.innerHTML = analysis.classList.contains('show') 
+    ? '<i data-lucide="chevron-up" class="w-3 h-3"></i>收起解读'
+    : '<i data-lucide="chevron-down" class="w-3 h-3"></i>深度解读';
+  lucide.createIcons();
+};
+
+// Tab切换功能
+function initTabSwitch() {
+  if (!dailyTabBtns.length) return;
+  
+  // 初始化指示器位置
+  updateTabIndicator(0);
+  
+  dailyTabBtns.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.dataset.tab;
+      
+      // 更新按钮状态
+      dailyTabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 更新内容显示
+      dailyTabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === 'tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)) {
+          content.classList.add('active');
+        }
+      });
+      
+      // 更新指示器
+      updateTabIndicator(index);
+    });
   });
+}
+
+function updateTabIndicator(index) {
+  if (!tabIndicator || !dailyTabBtns[index]) return;
+  const btn = dailyTabBtns[index];
+  tabIndicator.style.left = btn.offsetLeft + 'px';
+  tabIndicator.style.width = btn.offsetWidth + 'px';
+}
+
+// 显示日报弹窗
+function showDailyReport() {
+  const data = storeScenarios[currentStore][currentScenario || 'review'];
+  
+  // Tab 1: 运营概览
+  document.getElementById('dailyReportDate').textContent = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) + ' 运营报告';
+  document.getElementById('dailyRevenue').textContent = '¥' + Math.round(data.revenue / 30 * 100) / 100 + '万';
+  document.getElementById('dailyReviews').textContent = Math.floor(Math.random() * 5 + 1) + '条';
+  document.getElementById('dailyDecisions').textContent = Math.floor(Math.random() * 10 + 8) + '次';
+  document.getElementById('dailyTrust').textContent = getTrustLevel(data.trustLevel);
+  document.getElementById('dailySuggestion').textContent = dailySuggestions[Math.floor(Math.random() * dailySuggestions.length)];
+  document.getElementById('dailyAlert').textContent = dailyAlerts[Math.floor(Math.random() * dailyAlerts.length)];
+  
+  // Tab 2: 行业资讯
+  document.getElementById('newsList').innerHTML = generateNewsHTML();
+  lucide.createIcons();
+  
+  // Tab 3: AI洞察 - 随机选择
+  document.querySelector('#insightFocus .insight-text').textContent = aiInsights.focus[Math.floor(Math.random() * aiInsights.focus.length)];
+  document.querySelector('#insightWarning .insight-text').textContent = aiInsights.warning[Math.floor(Math.random() * aiInsights.warning.length)];
+  document.querySelector('#insightOpportunity .insight-text').textContent = aiInsights.opportunity[Math.floor(Math.random() * aiInsights.opportunity.length)];
+  
+  // 重置Tab到第一个
+  dailyTabBtns.forEach(b => b.classList.remove('active'));
+  dailyTabBtns[0].classList.add('active');
+  dailyTabContents.forEach(c => c.classList.remove('active'));
+  dailyTabContents[0].classList.add('active');
+  updateTabIndicator(0);
+  
+  dailyReportModal.classList.add('active');
+}
+
+// Toast提示
+function showToast(message) {
+  let toast = document.querySelector('.daily-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'daily-toast';
+    toast.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i><span></span>';
+    document.body.appendChild(toast);
+    lucide.createIcons();
+  }
+  toast.querySelector('span').textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// 绑定事件
+if (dailyReportBtnNav) {
+  dailyReportBtnNav.addEventListener('click', showDailyReport);
+}
+
+if (landingDailyReportBtn) {
+  landingDailyReportBtn.addEventListener('click', showDailyReport);
 }
 
 if (dailyReportClose) dailyReportClose.addEventListener('click', () => dailyReportModal.classList.remove('active'));
 if (dailyReportCloseBtn) dailyReportCloseBtn.addEventListener('click', () => dailyReportModal.classList.remove('active'));
 
+// 复制全文功能
 if (copyReportBtn) {
   copyReportBtn.addEventListener('click', function() {
-    const text = document.getElementById('dailyReportDate').textContent + '\n' +
-      '今日营收：' + document.getElementById('dailyRevenue').textContent + '\n' +
-      '处理差评：' + document.getElementById('dailyReviews').textContent + '\n' +
-      'AI决策：' + document.getElementById('dailyDecisions').textContent + '\n' +
-      '信任等级：' + document.getElementById('dailyTrust').textContent + '\n\n' +
-      '关键建议：' + document.getElementById('dailySuggestion').textContent + '\n' +
-      '关注事项：' + document.getElementById('dailyAlert').textContent;
-    navigator.clipboard.writeText(text).then(() => {
+    const reportDate = document.getElementById('dailyReportDate').textContent;
+    const revenue = document.getElementById('dailyRevenue').textContent;
+    const reviews = document.getElementById('dailyReviews').textContent;
+    const decisions = document.getElementById('dailyDecisions').textContent;
+    const trust = document.getElementById('dailyTrust').textContent;
+    const suggestion = document.getElementById('dailySuggestion').textContent;
+    const alert = document.getElementById('dailyAlert').textContent;
+    const insightFocus = document.querySelector('#insightFocus .insight-text').textContent;
+    const insightWarning = document.querySelector('#insightWarning .insight-text').textContent;
+    const insightOpportunity = document.querySelector('#insightOpportunity .insight-text').textContent;
+    
+    let newsText = industryNews.map(news => 
+      `• [${news.tagName}] ${news.title}\n  来源：${news.source} · ${news.time}\n  "${news.summary}"`
+    ).join('\n\n');
+    
+    const fullReport = `# ${reportDate}
+
+## 📊 运营概览
+
+| 指标 | 数值 |
+|------|------|
+| 今日营收 | ${revenue} |
+| 处理差评 | ${reviews} |
+| AI决策 | ${decisions} |
+| 信任等级 | ${trust} |
+
+### 💡 关键建议
+${suggestion}
+
+### ⚠️ 关注事项
+${alert}
+
+## 📰 行业资讯
+
+${newsText}
+
+> 以上资讯由AI自动聚合自28+行业信源
+
+## 💡 AI洞察
+
+### 🎯 今日重点
+${insightFocus}
+
+### ⚠️ 风险提示
+${insightWarning}
+
+### 🚀 机会窗口
+${insightOpportunity}
+
+---
+*由店赢OS智能生成*
+`;
+    
+    navigator.clipboard.writeText(fullReport).then(() => {
       copyReportBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已复制';
       lucide.createIcons();
+      showToast('日报已复制到剪贴板');
       setTimeout(() => {
-        copyReportBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> 复制日报';
+        copyReportBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> 复制全文';
         lucide.createIcons();
       }, 2000);
     });
   });
 }
+
+// PDF生成功能
+if (pdfReportBtn) {
+  pdfReportBtn.addEventListener('click', function() {
+    pdfReportBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> 生成中...';
+    lucide.createIcons();
+    
+    setTimeout(() => {
+      pdfReportBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已生成';
+      pdfReportBtn.classList.add('generated');
+      lucide.createIcons();
+      showToast('PDF已生成（模拟功能）');
+      
+      setTimeout(() => {
+        pdfReportBtn.innerHTML = '<i data-lucide="file-down" class="w-4 h-4"></i> PDF';
+        pdfReportBtn.classList.remove('generated');
+        lucide.createIcons();
+      }, 2000);
+    }, 1500);
+  });
+}
+
+// 初始化Tab
+initTabSwitch();
 
 // ----------------------------------------
 // 10. 关于弹窗

@@ -136,9 +136,9 @@
               <i data-lucide="play" class="w-5 h-5"></i>
               立即体验
             </button>
-            <button class="btn-outline flex items-center gap-2 text-lg px-8 py-4">
-              <i data-lucide="play-circle" class="w-5 h-5"></i>
-              观看演示
+            <button class="btn-outline flex items-center gap-2 text-lg px-8 py-4" id="landingDailyReportBtn">
+              <i data-lucide="newspaper" class="w-5 h-5"></i>
+              查看示例日报
             </button>
           </div>
         </div>
@@ -1310,7 +1310,7 @@
     <nav class="demo-nav">
       <a href="#" class="demo-nav-home flex items-center gap-2" id="demoHomeBtn">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        <span>返回首页</span>
+        <span class="nav-btn-text" data-i18n="back_home">返回首页</span>
       </a>
       
       <!-- Store Selector -->
@@ -1492,20 +1492,20 @@
         <!-- Revenue Chart -->
         <div class="chart-card">
           <div class="chart-card-header">
-            <h4>营收趋势</h4>
+            <h4 data-i18n="revenue_trend">营收趋势</h4>
             <button class="download-btn" id="downloadReportBtn">
               <i data-lucide="download" class="w-4 h-4"></i>
-              下载报表
+              <span class="btn-text" data-i18n="download_report">下载报表</span>
             </button>
           </div>
-          <div style="height: 250px;">
+          <div class="chart-container">
             <canvas id="revenueChart"></canvas>
           </div>
         </div>
         
         <!-- Trust Indicator -->
         <div class="trust-indicator">
-          <div class="trust-label">门店信任等级</div>
+          <div class="trust-label" data-i18n="trust_level">门店信任等级</div>
           <div class="trust-bar-container">
             <div class="trust-bar">
               <div class="trust-bar-fill" id="trustBarFill" style="width: 92%"></div>
@@ -1518,7 +1518,7 @@
         <div class="platform-section">
           <div class="platform-header">
             <i data-lucide="link" class="w-5 h-5"></i>
-            <span>平台管理</span>
+            <span data-i18n="platform_management">平台管理</span>
           </div>
           <div class="platform-grid">
             <div class="platform-card connected">
@@ -1672,39 +1672,104 @@
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
+        
+        <!-- Tab Navigation -->
+        <div class="daily-report-tabs">
+          <button class="daily-tab-btn active" data-tab="overview">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <span>运营概览</span>
+          </button>
+          <button class="daily-tab-btn" data-tab="news">
+            <i data-lucide="newspaper" class="w-4 h-4"></i>
+            <span>行业资讯</span>
+          </button>
+          <button class="daily-tab-btn" data-tab="insight">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>AI洞察</span>
+          </button>
+          <div class="daily-tab-indicator"></div>
+        </div>
+        
+        <!-- Tab Contents -->
         <div class="daily-report-body">
-          <div class="daily-report-date" id="dailyReportDate"></div>
-          <div class="daily-report-stats">
-            <div class="daily-stat">
-              <div class="daily-stat-value" id="dailyRevenue">¥12.8万</div>
-              <div class="daily-stat-label">今日营收</div>
+          <!-- Tab 1: 运营概览 -->
+          <div class="daily-tab-content active" id="tabOverview">
+            <div class="daily-report-date" id="dailyReportDate"></div>
+            <div class="daily-report-stats">
+              <div class="daily-stat">
+                <div class="daily-stat-value" id="dailyRevenue">¥12.8万</div>
+                <div class="daily-stat-label">今日营收</div>
+                <div class="daily-stat-change positive" id="revenueChange">+12.3%</div>
+              </div>
+              <div class="daily-stat">
+                <div class="daily-stat-value" id="dailyReviews">3条</div>
+                <div class="daily-stat-label">处理差评</div>
+                <div class="daily-stat-change negative">-1条</div>
+              </div>
+              <div class="daily-stat">
+                <div class="daily-stat-value" id="dailyDecisions">12次</div>
+                <div class="daily-stat-label">AI决策</div>
+                <div class="daily-stat-change positive">+3次</div>
+              </div>
+              <div class="daily-stat">
+                <div class="daily-stat-value" id="dailyTrust">A级</div>
+                <div class="daily-stat-label">信任等级</div>
+                <div class="daily-stat-change positive">稳定</div>
+              </div>
             </div>
-            <div class="daily-stat">
-              <div class="daily-stat-value" id="dailyReviews">3条</div>
-              <div class="daily-stat-label">处理差评</div>
+            <div class="daily-report-section">
+              <h4><i data-lucide="lightbulb" class="w-4 h-4"></i> 关键建议</h4>
+              <p id="dailySuggestion">建议优化午市套餐定价，当前翻台率有提升空间。</p>
             </div>
-            <div class="daily-stat">
-              <div class="daily-stat-value" id="dailyDecisions">12次</div>
-              <div class="daily-stat-label">AI决策</div>
-            </div>
-            <div class="daily-stat">
-              <div class="daily-stat-value" id="dailyTrust">A级</div>
-              <div class="daily-stat-label">信任等级</div>
+            <div class="daily-report-section">
+              <h4><i data-lucide="alert-circle" class="w-4 h-4"></i> 关注事项</h4>
+              <p id="dailyAlert">王女士等3位VIP会员流失风险较高，建议发送专属优惠召回。</p>
             </div>
           </div>
-          <div class="daily-report-section">
-            <h4><i data-lucide="lightbulb" class="w-4 h-4"></i> 关键建议</h4>
-            <p id="dailySuggestion">建议优化午市套餐定价，当前翻台率有提升空间。</p>
+          
+          <!-- Tab 2: 行业资讯 -->
+          <div class="daily-tab-content" id="tabNews">
+            <div class="news-source-note">
+              <i data-lucide="rss" class="w-3 h-3"></i>
+              以上资讯由AI自动聚合自28+行业信源
+            </div>
+            <div class="news-list" id="newsList">
+              <!-- News items will be populated by JS -->
+            </div>
           </div>
-          <div class="daily-report-section">
-            <h4><i data-lucide="alert-circle" class="w-4 h-4"></i> 关注事项</h4>
-            <p id="dailyAlert">王女士等3位VIP会员流失风险较高，建议发送专属优惠召回。</p>
+          
+          <!-- Tab 3: AI洞察 -->
+          <div class="daily-tab-content" id="tabInsight">
+            <div class="insight-card highlight" id="insightFocus">
+              <div class="insight-icon">🎯</div>
+              <div class="insight-label">今日重点</div>
+              <div class="insight-text">大众点评回复时效新规今日生效，建议将AI差评自动回复间隔从3分钟缩短至2分钟，抢占评分加成。</div>
+            </div>
+            <div class="insight-card warning" id="insightWarning">
+              <div class="insight-icon">⚠️</div>
+              <div class="insight-label">风险提示</div>
+              <div class="insight-text">本周三有大雨预警（概率78%），历史数据显示堂食客流可能下降20-30%，需提前准备外卖策略。</div>
+            </div>
+            <div class="insight-card opportunity" id="insightOpportunity">
+              <div class="insight-icon">🚀</div>
+              <div class="insight-label">机会窗口</div>
+              <div class="insight-text">抖音"AI智能套餐"内测资格开放中，建议立即申请，同类商家转化率提升15%。</div>
+            </div>
+            <div class="insight-summary">
+              <h4><i data-lucide="cpu" class="w-4 h-4"></i> 综合诊断</h4>
+              <p>基于今日运营数据与行业资讯分析，您的门店整体运营健康度评分 <strong>87分</strong>，优于行业平均水平。建议重点关注差评响应时效和天气变化带来的外卖机会。</p>
+            </div>
           </div>
         </div>
+        
         <div class="daily-report-footer">
           <button class="daily-report-btn copy" id="copyReportBtn">
             <i data-lucide="copy" class="w-4 h-4"></i>
-            复制日报
+            复制全文
+          </button>
+          <button class="daily-report-btn pdf" id="pdfReportBtn">
+            <i data-lucide="file-down" class="w-4 h-4"></i>
+            PDF
           </button>
           <button class="daily-report-btn close-btn" id="dailyReportCloseBtn">关闭</button>
         </div>
