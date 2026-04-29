@@ -816,9 +816,23 @@ function initHeatmapTooltip() {
       const revenue = marker.dataset.revenue;
       const rating = marker.dataset.rating;
       const orders = marker.dataset.orders;
+      const storeType = marker.dataset.type || '门店';
       
       if (tooltip && storeName) {
         tooltip.querySelector('.tooltip-store-name').textContent = storeName;
+        
+        // 设置门店类型标签
+        const typeEl = tooltip.querySelector('.tooltip-type');
+        if (typeEl) {
+          typeEl.textContent = storeType;
+          typeEl.className = 'tooltip-type';
+          if (storeType === '直营') {
+            typeEl.classList.add('direct');
+          } else if (storeType === '加盟') {
+            typeEl.classList.add('franchise');
+          }
+        }
+        
         tooltip.querySelector('.tooltip-rating').textContent = '★ ' + rating;
         tooltip.querySelector('.tooltip-revenue').textContent = revenue;
         tooltip.querySelector('.tooltip-orders').textContent = orders + ' 单';
@@ -833,7 +847,7 @@ function initHeatmapTooltip() {
         let left = x - 50;
         let top = y;
         if (left < 0) left = 0;
-        if (left > containerRect.width - 150) left = containerRect.width - 150;
+        if (left > containerRect.width - 170) left = containerRect.width - 170;
         if (top < 0) top = y + 80;
         
         tooltip.style.left = left + 'px';
