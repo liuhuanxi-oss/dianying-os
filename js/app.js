@@ -1,66 +1,210 @@
 /**
- * 店赢OS 主应用
- * AI-Powered One-Person Company Operating System
+ * 店赢OS - 专业SaaS应用
+ * 2026
  */
 
-const App = {
-    // 当前状态
-    currentStore: 'hotpot',
-    chatHistory: [],
-    isProcessing: false,
+// ============================================
+// MOCK DATA
+// ============================================
 
+const Stores = {
+    data: {
+        hotpot: {
+            id: 'hotpot',
+            name: '老码头火锅',
+            location: '朝阳区旗舰店',
+            rating: 4.8,
+            reviews: 2847,
+            badReviewRate: 1.2,
+            replyRate: 98,
+            todayRevenue: 12580,
+            revenueTrend: [9800, 10200, 11500, 10800, 12100, 11900, 12580]
+        },
+        tea: {
+            id: 'tea',
+            name: '茶悦时光',
+            location: '万象城店',
+            rating: 4.6,
+            reviews: 1523,
+            badReviewRate: 2.1,
+            replyRate: 95,
+            todayRevenue: 4832,
+            revenueTrend: [4200, 4500, 4100, 4700, 4600, 4900, 4832]
+        }
+    },
+    current: 'hotpot',
+    
+    get() {
+        return this.data[this.current];
+    },
+    
+    switch(id) {
+        if (this.data[id]) {
+            this.current = id;
+            return this.data[id];
+        }
+        return null;
+    }
+};
+
+const Alerts = {
+    data: [
+        {
+            id: 1,
+            type: 'warning',
+            text: '老码头火锅：等位超40分钟，建议增加值班人员',
+            time: '10分钟前'
+        },
+        {
+            id: 2,
+            type: 'success',
+            text: '茶悦时光：今日复购率提升至32%',
+            time: '1小时前'
+        },
+        {
+            id: 3,
+            type: 'danger',
+            text: '差评预警：老码头火锅收到1条新差评',
+            time: '15分钟前'
+        }
+    ]
+};
+
+// 营收趋势数据（过去7天）
+const RevenueData = {
+    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '今天'],
+    datasets: [{
+        label: '营收(元)',
+        data: [9800, 10200, 11500, 10800, 12100, 11900, 12580],
+        borderColor: '#4F46E5',
+        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#4F46E5',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+    }]
+};
+
+// ============================================
+// SCENARIOS - 预设对话场景
+// ============================================
+
+const Scenarios = {
+    // 场景1：差评预警
+    alertReview: {
+        trigger: ['差评', '预警', '投诉', '负面'],
+        response: '刚收到1条差评，老码头火锅，顾客说等位超40分钟。我查了一下，今天周六高峰期排班少了2人。要不要我现在回复这条差评？',
+        data: {
+            type: 'warning',
+            icon: 'AlertTriangle',
+            title: '差评预警',
+            content: '顾客反馈：等位时间过长，超过40分钟，体验很差'
+        }
+    },
+    
+    // 场景2：动态定价
+    dynamicPricing: {
+        trigger: ['定价', '价格', '调价', '建议'],
+        response: '明天降温8度，火锅品类预计客流涨25%。建议午市套餐保持原价，晚市双人套餐调到168元（原价148），加一份赠饮。预计增收1200元左右。',
+        data: {
+            type: 'success',
+            icon: 'TrendingUp',
+            title: '定价建议已生成',
+            content: '晚市双人套餐：¥148 → ¥168\n预计客流+25%\n预计日增收：¥1,200'
+        }
+    },
+    
+    // 场景3：运营日报
+    dailyReport: {
+        trigger: ['日报', '报告', '今日', '总结'],
+        response: '今日营收12,580元，比昨天涨8%。好消息是复购率到32%了，坏消息是下午茶时段空桌率60%。我建议上14:00-17:00的下午茶套餐试试。',
+        data: {
+            type: 'success',
+            icon: 'FileText',
+            title: '今日运营日报',
+            content: '营收¥12,580 ↑8%\n复购率32%\n空桌率60%（下午茶时段）'
+        }
+    },
+    
+    // 场景4：排班查询
+    schedule: {
+        trigger: ['排班', '人手', '员工', '值班'],
+        response: '今天周六，门店安排了6人值班。但客流比预期多了30%，建议临时加派2人。明天周日预计客流平稳，维持现有排班即可。',
+        data: null
+    },
+    
+    // 场景5：门店评分
+    rating: {
+        trigger: ['评分', '星级', '好评', '口碑'],
+        response: '门店当前评分4.8分，近30天好评率97.3%，差评率仅1.2%。差评主要集中在等位时间和上菜速度，运营优化后有明显改善。',
+        data: null
+    },
+    
+    // 场景6：客流分析
+    customer: {
+        trigger: ['客流', '人数', '人流量', '顾客'],
+        response: '今天客流1,247人次，高峰期集中在11:30-13:30和17:30-20:00。与上周六相比，午餐时段客流持平，晚餐时段上涨18%。',
+        data: null
+    },
+    
+    // 默认回复
+    default: {
+        response: '我理解你的问题。店赢OS可以帮你分析门店运营数据、预测客流趋势、处理差评回复等。试试点击上方的快捷按钮体验具体功能？',
+        data: null
+    }
+};
+
+// ============================================
+// APP CONTROLLER
+// ============================================
+
+const App = {
+    chart: null,
+    chatHistory: [],
+    
     // 初始化
     init() {
-        console.log('🚀 店赢OS 初始化中...');
-        
         this.bindEvents();
+        this.initChart();
         this.updateTime();
-        this.loadStoreList();
-        this.loadDashboardData();
+        this.updateStoreInfo();
+        this.updateStats();
+        this.updateAlerts();
         this.addWelcomeMessage();
         
         // 定时更新
         setInterval(() => this.updateTime(), 1000);
-        
-        console.log('✅ 店赢OS 初始化完成');
     },
-
+    
     // 绑定事件
     bindEvents() {
         // 门店切换
         document.getElementById('storeSelect').addEventListener('change', (e) => {
             this.switchStore(e.target.value);
         });
-
+        
         // 发送消息
         document.getElementById('sendBtn').addEventListener('click', () => this.sendMessage());
         document.getElementById('chatInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.sendMessage();
         });
-
+        
         // 快捷操作
         document.querySelectorAll('.quick-action').forEach(btn => {
             btn.addEventListener('click', () => this.handleQuickAction(btn.dataset.action));
         });
-
+        
         // 演示按钮
-        document.getElementById('demoAlertBtn').addEventListener('click', () => this.showAlertDemo());
-        document.getElementById('demoPricingBtn').addEventListener('click', () => this.showPricingDemo());
-
-        // 模态框
-        document.getElementById('closeAlertModal').addEventListener('click', () => this.closeModal('alertModal'));
-        document.getElementById('cancelAlertBtn').addEventListener('click', () => this.closeModal('alertModal'));
-        document.getElementById('confirmAlertBtn').addEventListener('click', () => this.handleAlertConfirm());
-
-        document.getElementById('closePricingModal').addEventListener('click', () => this.closeModal('pricingModal'));
-        document.getElementById('cancelPricingBtn').addEventListener('click', () => this.closeModal('pricingModal'));
-        document.getElementById('confirmPricingBtn').addEventListener('click', () => this.handlePricingConfirm());
-
-        // 刷新按钮
-        document.getElementById('refreshBtn').addEventListener('click', () => this.refreshData());
+        document.getElementById('demoAlertBtn').addEventListener('click', () => this.triggerScenario('alertReview'));
+        document.getElementById('demoPricingBtn').addEventListener('click', () => this.triggerScenario('dynamicPricing'));
+        document.getElementById('demoReportBtn').addEventListener('click', () => this.triggerScenario('dailyReport'));
     },
-
-    // 更新时间
+    
+    // 更新时钟
     updateTime() {
         const now = new Date();
         const timeStr = now.toLocaleString('zh-CN', {
@@ -71,499 +215,274 @@ const App = {
             minute: '2-digit',
             second: '2-digit'
         });
-        document.getElementById('currentTime').textContent = timeStr;
+        const el = document.getElementById('currentTime');
+        if (el) el.textContent = timeStr;
     },
-
-    // 加载门店列表
-    loadStoreList() {
-        const storeList = document.getElementById('storeList');
-        const stores = DataStore.getStoreList();
-
-        storeList.innerHTML = stores.map(store => `
-            <div class="store-card ${store.id === this.currentStore ? 'active' : ''}" 
-                 data-store-id="${store.id}"
-                 onclick="App.switchStore('${store.id}')">
-                <div class="store-card-header">
-                    <span class="store-card-name">${store.name}</span>
-                    <span class="store-card-badge">${store.industry}</span>
-                </div>
-                <div class="store-card-stats">
-                    <div class="store-stat">
-                        评分: <span class="store-stat-value">${store.rating}⭐</span>
-                    </div>
-                    <div class="store-stat">
-                        差评率: <span class="store-stat-value">${store.badReviewRate}%</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+    
+    // 切换门店
+    switchStore(storeId) {
+        const store = Stores.switch(storeId);
+        if (store) {
+            this.updateStoreInfo();
+            this.updateStats();
+            this.updateChart();
+            
+            // 添加切换提示
+            this.addMessage('ai', `已切换到 ${store.name}（${store.location}）`);
+        }
     },
-
-    // 加载仪表盘数据
-    loadDashboardData() {
-        const store = DataStore.getStore(this.currentStore);
+    
+    // 更新门店信息
+    updateStoreInfo() {
+        const store = Stores.get();
+        if (!store) return;
         
-        // 更新关键指标
+        // 更新select显示
+        const select = document.getElementById('storeSelect');
+        if (select) select.value = store.id;
+    },
+    
+    // 更新统计数据
+    updateStats() {
+        const store = Stores.get();
+        if (!store) return;
+        
         document.getElementById('ratingValue').textContent = store.rating;
-        document.getElementById('reviewCount').textContent = store.reviews;
+        document.getElementById('reviewCount').textContent = store.reviews.toLocaleString();
         document.getElementById('badReviewRate').textContent = store.badReviewRate + '%';
         document.getElementById('replyRate').textContent = store.replyRate + '%';
         document.getElementById('todayRevenue').textContent = '¥' + store.todayRevenue.toLocaleString();
-
-        // 更新营收图表
-        this.updateRevenueChart();
-
-        // 更新预警列表
-        this.updateAlertList();
-
-        // 更新评价列表
-        this.updateReviewList();
     },
-
-    // 更新营收图表
-    updateRevenueChart() {
-        const bars = document.querySelectorAll('.bar');
-        const revenueData = DataStore.getRevenueData(this.currentStore);
-        const maxValue = Math.max(...revenueData);
-
-        bars.forEach((bar, index) => {
-            const percentage = (revenueData[index] / maxValue) * 100;
-            bar.style.height = percentage + '%';
-            bar.setAttribute('data-value', percentage.toFixed(0));
-        });
-    },
-
+    
     // 更新预警列表
-    updateAlertList() {
-        const alertList = document.getElementById('alertList');
-        const alerts = DataStore.getAlerts(this.currentStore);
-
-        alertList.innerHTML = alerts.map(alert => `
+    updateAlerts() {
+        const alertsList = document.getElementById('alertsList');
+        if (!alertsList) return;
+        
+        alertsList.innerHTML = Alerts.data.map(alert => `
             <div class="alert-item ${alert.type}">
-                <span class="alert-icon">${alert.icon}</span>
-                <span class="alert-text">${alert.text}</span>
-            </div>
-        `).join('');
-    },
-
-    // 更新评价列表
-    updateReviewList() {
-        const reviewList = document.getElementById('reviewList');
-        const reviews = DataStore.getReviews(this.currentStore);
-
-        reviewList.innerHTML = reviews.slice(0, 3).map(review => `
-            <div class="review-item">
-                <div class="review-header">
-                    <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
-                    <span class="review-platform">${review.platform}</span>
+                <i data-lucide="${alert.type === 'danger' ? 'AlertCircle' : alert.type === 'success' ? 'CheckCircle' : 'AlertTriangle'}"></i>
+                <div>
+                    <div>${alert.text}</div>
+                    <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">${alert.time}</div>
                 </div>
-                <div class="review-content">${review.content}</div>
-                <div class="review-time">${review.time}</div>
             </div>
         `).join('');
+        
+        // 重新初始化lucide图标
+        if (window.lucide) lucide.createIcons();
     },
-
-    // 切换门店
-    switchStore(storeId) {
-        this.currentStore = storeId;
+    
+    // 初始化图表
+    initChart() {
+        const ctx = document.getElementById('revenueChart');
+        if (!ctx) return;
         
-        // 更新门店选择器
-        document.getElementById('storeSelect').value = storeId;
-        
-        // 更新门店卡片状态
-        document.querySelectorAll('.store-card').forEach(card => {
-            card.classList.toggle('active', card.dataset.storeId === storeId);
+        this.chart = new Chart(ctx, {
+            type: 'line',
+            data: RevenueData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#111827',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '营收: ¥' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9CA3AF',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#F3F4F6'
+                        },
+                        ticks: {
+                            color: '#9CA3AF',
+                            font: {
+                                size: 11
+                            },
+                            callback: function(value) {
+                                return '¥' + (value / 1000) + 'k';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
         });
-
-        // 加载新门店数据
-        this.loadDashboardData();
-
-        // 添加切换消息
-        const store = DataStore.getStore(storeId);
-        this.addAIMessage(`已切换到「${store.name}」，正在加载最新数据...`);
-
-        // 模拟加载
-        setTimeout(() => {
-            this.addAIMessage(`✅ 数据加载完成！
-
-📊 ${store.name} 当前状态：
-• 综合评分：${store.rating}⭐
-• 本月评价：${store.reviews}条
-• 差评率：${store.badReviewRate}%
-• 今日营收：¥${store.todayRevenue.toLocaleString()}
-
-有什么可以帮您的吗？`);
-        }, 500);
     },
-
+    
+    // 更新图表
+    updateChart() {
+        if (!this.chart) return;
+        const store = Stores.get();
+        if (!store) return;
+        
+        this.chart.data.datasets[0].data = store.revenueTrend;
+        this.chart.update('none');
+    },
+    
     // 添加欢迎消息
     addWelcomeMessage() {
-        const store = DataStore.getStore(this.currentStore);
-        this.addAIMessage(`👋 欢迎使用店赢OS！
-
-我是您的AI虚拟店长，为您提供7×24小时的智能门店管理服务。
-
-📊 当前门店：${store.name}
-• 综合评分：${store.rating}⭐
-• 本月评价：${store.reviews}条
-• 差评率：${store.badReviewRate}%
-• 回复率：${store.replyRate}%
-
-🎯 我可以帮您：
-• 分析客户评价，自动生成回复
-• 预警差评风险，提前处理
-• 优化定价策略，提升营收
-• 生成运营报告，洞察趋势
-
-请告诉我您想做什么，或者点击右侧的演示按钮体验核心功能！`);
+        setTimeout(() => {
+            this.addMessage('ai', `你好！我是店赢OS的AI店长。我可以帮你分析门店运营数据、处理差评、给出定价建议。试试点击「模拟差评预警」或「模拟定价建议」体验一下？`);
+        }, 500);
     },
-
-    // 添加AI消息
-    addAIMessage(text) {
-        this.addMessage('ai', text);
-    },
-
-    // 添加用户消息
-    addUserMessage(text) {
-        this.addMessage('user', text);
-    },
-
+    
     // 添加消息
-    addMessage(type, text) {
-        const chatMessages = document.getElementById('chatMessages');
+    addMessage(type, content) {
+        const container = document.getElementById('chatMessages');
+        if (!container) return;
+        
         const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
         
         const message = document.createElement('div');
-        message.className = `chat-message ${type}`;
+        message.className = `message ${type}`;
         message.innerHTML = `
-            <div class="chat-message-avatar">${type === 'ai' ? '🤖' : '👤'}</div>
-            <div class="chat-message-content">
-                <div class="chat-message-text">${text.replace(/\n/g, '<br>')}</div>
-                <div class="chat-message-time">${time}</div>
+            <div class="message-avatar">
+                <i data-lucide="${type === 'ai' ? 'Bot' : 'User'}"></i>
+            </div>
+            <div>
+                <div class="message-content">${content}</div>
+                <div class="message-time">${time}</div>
             </div>
         `;
-
-        chatMessages.appendChild(message);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        this.chatHistory.push({ type, text, time });
+        
+        container.appendChild(message);
+        container.scrollTop = container.scrollHeight;
+        
+        // 初始化新添加的图标
+        if (window.lucide) lucide.createIcons();
     },
-
+    
     // 发送消息
-    async sendMessage() {
+    sendMessage() {
         const input = document.getElementById('chatInput');
         const text = input.value.trim();
         
-        if (!text || this.isProcessing) return;
-
-        this.addUserMessage(text);
-        input.value = '';
-        this.isProcessing = true;
-
-        // 显示思考状态
-        const loadingMsg = this.addLoadingMessage();
-
-        try {
-            // 调用AI虚拟店长处理
-            const response = await VirtualManager.processInput(text, {
-                storeId: this.currentStore,
-                storeType: DataStore.getStore(this.currentStore)?.type
-            });
-
-            // 移除加载消息
-            this.removeLoadingMessage(loadingMsg);
-
-            // 添加AI回复
-            this.addAIMessage(response.response.text);
-
-            // 更新信任指示器
-            this.updateTrustIndicator(response.intent);
-
-        } catch (error) {
-            console.error('处理失败:', error);
-            this.removeLoadingMessage(loadingMsg);
-            this.addAIMessage('抱歉，处理您的请求时遇到问题，请稍后重试。');
-        }
-
-        this.isProcessing = false;
-    },
-
-    // 添加加载消息
-    addLoadingMessage() {
-        const chatMessages = document.getElementById('chatMessages');
-        const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+        if (!text) return;
         
-        const message = document.createElement('div');
-        message.className = 'chat-message ai loading';
-        message.innerHTML = `
-            <div class="chat-message-avatar">🤖</div>
-            <div class="chat-message-content">
-                <div class="chat-message-text">思考中<span class="dots">...</span></div>
-                <div class="chat-message-time">${time}</div>
-            </div>
-        `;
-
-        chatMessages.appendChild(message);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // 动画效果
-        const dots = message.querySelector('.dots');
-        let count = 0;
-        const dotAnimation = setInterval(() => {
-            count = (count + 1) % 4;
-            dots.textContent = '.'.repeat(count || 3);
-        }, 300);
-
-        return { element: message, animation: dotAnimation };
+        this.addMessage('user', text);
+        input.value = '';
+        
+        // 分析意图并回复
+        setTimeout(() => {
+            const response = this.analyzeIntent(text);
+            this.addMessage('ai', response.text);
+        }, 800);
     },
-
-    // 移除加载消息
-    removeLoadingMessage(loadingMsg) {
-        if (loadingMsg && loadingMsg.element) {
-            clearInterval(loadingMsg.animation);
-            loadingMsg.element.remove();
+    
+    // 快捷操作
+    handleQuickAction(action) {
+        const actions = {
+            review: () => this.triggerScenario('alertReview'),
+            pricing: () => this.triggerScenario('dynamicPricing'),
+            report: () => this.triggerScenario('dailyReport'),
+            schedule: () => this.triggerScenario('schedule')
+        };
+        
+        if (actions[action]) {
+            actions[action]();
         }
     },
-
-    // 处理快捷操作
-    async handleQuickAction(action) {
-        const actionTexts = {
-            review: '查看最近的客户评价分析',
-            pricing: '分析当前的动态定价策略',
-            schedule: '给出本周的排班优化建议',
-            report: '生成今日的运营报告'
-        };
-
-        this.isProcessing = true;
-        const loadingMsg = this.addLoadingMessage();
-
-        try {
-            const response = await VirtualManager.processInput(actionTexts[action], {
-                storeId: this.currentStore,
-                storeType: DataStore.getStore(this.currentStore)?.type
-            });
-
-            this.removeLoadingMessage(loadingMsg);
-            this.addAIMessage(response.response.text);
-
-        } catch (error) {
-            console.error('处理失败:', error);
-            this.removeLoadingMessage(loadingMsg);
-            this.addAIMessage('抱歉，处理您的请求时遇到问题。');
+    
+    // 触发预设场景
+    triggerScenario(scenarioKey) {
+        const scenario = Scenarios[scenarioKey];
+        if (!scenario) return;
+        
+        // 添加AI回复
+        this.addMessage('ai', scenario.response);
+        
+        // 如果有数据更新，更新UI
+        if (scenario.data) {
+            setTimeout(() => this.showDataCard(scenario.data), 1000);
         }
-
-        this.isProcessing = false;
     },
-
-    // 更新信任指示器
-    updateTrustIndicator(intent) {
-        const indicator = document.getElementById('trustIndicator');
-        const levels = {
-            review_management: { level: 'A', desc: '自动执行，无需确认' },
-            pricing: { level: 'B', desc: 'AI执行+通知' },
-            alert: { level: 'A', desc: '自动执行，无需确认' },
-            general: { level: 'C', desc: 'AI生成+人工确认' }
-        };
-
-        const config = levels[intent] || levels.general;
-        indicator.innerHTML = `
-            <span class="trust-label">信任等级:</span>
-            <span class="trust-badge ${config.level}">${config.level}级</span>
-            <span class="trust-desc">${config.desc}</span>
-        `;
+    
+    // 分析用户意图
+    analyzeIntent(text) {
+        const lowerText = text.toLowerCase();
+        
+        for (const [key, scenario] of Object.entries(Scenarios)) {
+            if (key === 'default') continue;
+            
+            for (const trigger of scenario.trigger) {
+                if (lowerText.includes(trigger)) {
+                    return { text: scenario.response, data: scenario.data };
+                }
+            }
+        }
+        
+        return Scenarios.default;
     },
-
-    // 显示差评预警演示
-    showAlertDemo() {
-        const modal = document.getElementById('alertModal');
-        const body = document.getElementById('alertModalBody');
-        const reviews = DataStore.getReviews(this.currentStore);
-        const badReview = reviews.find(r => r.rating <= 2) || reviews[0];
-        const store = DataStore.getStore(this.currentStore);
-
-        // 分析评价
-        const analysis = ReviewHandler.analyzeReview(badReview, store.type);
-        const trustResult = TrustLevel.calculateTrustLevel(badReview.rating, badReview.sentiment);
-        const aiResponse = ReviewHandler.generateResponse(badReview, analysis, store.type);
-
-        body.innerHTML = `
-            <div class="alert-analysis">
-                <div class="alert-analysis-section">
-                    <h4>📋 差评信息</h4>
-                    <ul>
-                        <li><strong>平台：</strong>${badReview.platform}</li>
-                        <li><strong>评分：</strong>${'⭐'.repeat(badReview.rating)}</li>
-                        <li><strong>内容：</strong>${badReview.content}</li>
-                        <li><strong>发布时间：</strong>${badReview.time}</li>
-                    </ul>
-                </div>
-
-                <div class="alert-analysis-section">
-                    <h4>🔍 根因分析</h4>
-                    <ul>
-                        ${analysis.issues.map(issue => `
-                            <li><span class="issue-tag ${issue.severity}">${issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟠' : '🟡'}</span>
-                            ${issue.name} - 关键词：${issue.keyword}</li>
-                        `).join('') || '<li>暂无明确问题分类</li>'}
-                    </ul>
-                </div>
-
-                <div class="trust-check">
-                    <div class="trust-check-header">
-                        <span>🤖 信任等级检测</span>
-                        <span class="trust-score ${trustResult.level}">${trustResult.score}分</span>
-                    </div>
-                    <div class="trust-badge-row">
-                        <span class="trust-badge ${trustResult.level}">${trustResult.level}级</span>
-                        <span>${trustResult.desc}</span>
-                    </div>
-                </div>
-
-                <div class="ai-response-preview">
-                    <h5>💬 AI回复预览</h5>
-                    <p>${aiResponse}</p>
-                </div>
-            </div>
-        `;
-
-        modal.classList.add('active');
-    },
-
-    // 显示动态定价演示
-    showPricingDemo() {
-        const modal = document.getElementById('pricingModal');
-        const body = document.getElementById('pricingModalBody');
-        const store = DataStore.getStore(this.currentStore);
-
-        const context = {
-            weather: 'rainy',
-            timeOfDay: 'dinner',
-            demand: 'normal',
-            competitor: 'promotion',
-            isWeekend: true
-        };
-
-        const pricingPlan = PricingEngine.generatePricingPlan(store.type, context);
-        const firstItem = pricingPlan.items[0];
-
-        body.innerHTML = `
-            <div class="pricing-factors">
-                <h4>📊 当前定价因子</h4>
-                ${pricingPlan.items[0].adjustments.map(adj => `
-                    <div class="factor-item">
-                        <span class="factor-name">${adj.factor}: ${adj.detail}</span>
-                        <span class="factor-impact ${adj.impact.startsWith('+') ? 'positive' : adj.impact.startsWith('-') && adj.impact !== '-0%' ? 'negative' : ''}">${adj.impact}</span>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="pricing-comparison">
-                <div class="pricing-card current">
-                    <div class="pricing-label">原价</div>
-                    <div class="pricing-value">¥${firstItem.basePrice}</div>
-                </div>
-                <div class="pricing-card suggested">
-                    <div class="pricing-label">建议价</div>
-                    <div class="pricing-value">¥${firstItem.finalPrice}</div>
-                    <div class="pricing-change ${firstItem.change >= 0 ? 'up' : 'down'}">
-                        ${firstItem.change >= 0 ? '+' : ''}${firstItem.changePercent}%
-                    </div>
-                </div>
-            </div>
-
-            <div class="pricing-summary">
-                <h4>📈 定价方案摘要</h4>
-                <ul>
-                    <li>调价商品：${pricingPlan.summary.totalItems}种</li>
-                    <li>建议上调：${pricingPlan.summary.priceUp}种</li>
-                    <li>建议下调：${pricingPlan.summary.priceDown}种</li>
-                    <li>预计营收变化：${pricingPlan.expectedRevenueChange}</li>
-                </ul>
-            </div>
-
-            <div class="pricing-advice">
-                <h4>💡 AI建议</h4>
-                <p>${firstItem.recommendation.message}</p>
-            </div>
-        `;
-
-        modal.classList.add('active');
-    },
-
-    // 关闭模态框
-    closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
-    },
-
-    // 处理预警确认
-    handleAlertConfirm() {
-        this.closeModal('alertModal');
-        this.addAIMessage(`✅ 已启动AI自动处理流程！
-
-📋 处理进度：
-1. ✅ 差评内容分析完成
-2. ✅ 根因定位完成
-3. 🔄 AI回复生成中...
-4. ⏳ 待发送
-
-📱 您将收到短信通知，处理完成后会自动归档。
-预计处理时间：2-3分钟`);
-
-        // 模拟处理完成
-        setTimeout(() => {
-            this.showToast('success', 'AI回复已发送，客户满意度预测提升');
-        }, 2000);
-    },
-
-    // 处理定价确认
-    handlePricingConfirm() {
-        this.closeModal('pricingModal');
-        this.addAIMessage(`✅ 动态定价方案已确认！
-
-📋 执行摘要：
-• 调价商品：${DataStore.getStore(this.currentStore)?.type === 'hotpot' ? '5' : '4'}种
-• 执行时间：立即生效
-• 预期效果：营收提升8-12%
-
-📊 系统将持续监控调价效果，如有问题会自动回滚。
-您可以随时在「定价历史」中查看调整记录。`);
-
-        this.showToast('success', '定价方案已生效');
-    },
-
-    // 刷新数据
-    refreshData() {
-        this.showToast('info', '数据已刷新');
-        this.loadDashboardData();
-    },
-
-    // 显示提示消息
-    showToast(type, message) {
-        const container = document.getElementById('toastContainer');
-        const icons = {
-            success: '✅',
-            warning: '⚠️',
-            error: '❌',
-            info: 'ℹ️'
-        };
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `
-            <span class="toast-icon">${icons[type]}</span>
-            <span class="toast-message">${message}</span>
-        `;
-
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = 'slideIn 0.3s ease reverse';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+    
+    // 显示数据卡片
+    showDataCard(data) {
+        // 可以扩展为模态框或其他UI展示
+        console.log('Data card:', data);
     }
 };
 
-// 页面加载完成后初始化
+// ============================================
+// LANDING PAGE
+// ============================================
+
+const Landing = {
+    init() {
+        // 绑定Landing页事件
+        const startBtn = document.getElementById('startDemoBtn');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => this.showDemo());
+        }
+    },
+    
+    showDemo() {
+        document.querySelector('.landing').classList.add('hidden');
+        document.querySelector('.demo').classList.remove('hidden');
+        App.init();
+    }
+};
+
+// ============================================
+// INITIALIZE
+// ============================================
+
 document.addEventListener('DOMContentLoaded', () => {
-    App.init();
+    // 初始化Lucide图标
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+    
+    // 检查当前页面
+    if (document.querySelector('.landing')) {
+        Landing.init();
+    } else if (document.querySelector('.demo')) {
+        App.init();
+    }
 });
