@@ -2160,37 +2160,70 @@
           <div class="platform-header">
             <i data-lucide="link" class="w-5 h-5"></i>
             <span data-i18n="platform_management">平台管理</span>
+            <span class="platform-count">已连接 2/8</span>
           </div>
           <div class="platform-grid">
+            <!-- 美团 - 已连接 -->
             <div class="platform-card connected">
-              <div class="platform-icon meituan"><svg viewBox="0 0 24 24" width="24" height="24" fill="none"><rect x="2" y="2" width="20" height="20" rx="4" fill="#1677FF"/><path d="M7 12c0-2.76 2.24-5 5-5s5 2.24 5 5-2.24 5-5 5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="16" r="3" fill="#FF6A00"/><text x="17" y="17.5" text-anchor="middle" font-size="4" fill="white" font-weight="bold">口</text></svg>
+              <div class="platform-icon meituan">
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#FFD100"/>
+                  <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#333" font-family="Microsoft YaHei, sans-serif">美</text>
+                </svg>
               </div>
               <div class="platform-info">
                 <span class="platform-name">美团</span>
                 <span class="platform-status connected">
                   <span class="status-dot"></span>
-                  已连接 · ID: 8847
+                  已连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">评分 4.8</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">月售 2,847单</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">差评 3条</span>
+                </div>
               </div>
+              <div class="platform-badge live">实时同步</div>
             </div>
+            
+            <!-- 大众点评 - 已连接 -->
             <div class="platform-card connected">
               <div class="platform-icon dianping">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <circle cx="20" cy="20" r="18" fill="#FF6633"/>
+                  <path d="M14 16c0-2.2 1.8-4 4-4s4 1.8 4 4" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M12 24c0 3.3 2.7 6 6 6s6-2.7 6-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                  <circle cx="15" cy="17" r="1.5" fill="white"/>
+                  <circle cx="21" cy="17" r="1.5" fill="white"/>
                 </svg>
               </div>
               <div class="platform-info">
                 <span class="platform-name">大众点评</span>
                 <span class="platform-status connected">
                   <span class="status-dot"></span>
-                  已连接 · ID: 6621
+                  已连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">评分 4.8</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">评价 1,263条</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">排名 Top 5%</span>
+                </div>
               </div>
+              <div class="platform-badge live">实时同步</div>
             </div>
+            
+            <!-- 饿了么 - 可连接 -->
             <div class="platform-card" id="elePlatform">
               <div class="platform-icon ele">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#0097FF"/>
+                  <path d="M12 14h16M12 19h12M12 24h8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="28" cy="24" r="3" fill="#FFD100"/>
+                  <text x="28" y="25.5" text-anchor="middle" font-size="4" fill="#333" font-weight="bold">e</text>
                 </svg>
               </div>
               <div class="platform-info">
@@ -2199,13 +2232,23 @@
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">外卖平台</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">覆盖全城配送</span>
+                </div>
               </div>
               <button class="connect-btn" id="eleConnectBtn">点击连接</button>
             </div>
+            
+            <!-- 抖音 - 可连接 -->
             <div class="platform-card" id="douyinPlatform">
               <div class="platform-icon douyin">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#010101"/>
+                  <path d="M24.6 10.82C23.56 9.94 22.83 8.71 22.58 7.32H20.1v12.09c0 1.24-1.01 2.24-2.25 2.24S15.6 20.65 15.6 19.41s1.01-2.24 2.25-2.24c.24 0 .47.04.69.1V14.65c-.23-.03-.46-.05-.69-.05-2.79 0-5.06 2.27-5.06 5.06s2.27 5.06 5.06 5.06 5.06-2.27 5.06-5.06V13.49c1.11.79 2.47 1.26 3.94 1.26V12.28c-1.05 0-2.01-.41-2.73-1.08l-.42-.38z" fill="white" transform="scale(0.9) translate(2.2,2)"/>
+                  <path d="M24.6 10.82C23.56 9.94 22.83 8.71 22.58 7.32H20.1v12.09c0 1.24-1.01 2.24-2.25 2.24S15.6 20.65 15.6 19.41s1.01-2.24 2.25-2.24c.24 0 .47.04.69.1V14.65c-.23-.03-.46-.05-.69-.05-2.79 0-5.06 2.27-5.06 5.06s2.27 5.06 5.06 5.06 5.06-2.27 5.06-5.06V13.49c1.11.79 2.47 1.26 3.94 1.26V12.28c-1.05 0-2.01-.41-2.73-1.08l-.42-.38z" fill="none" stroke="#25F4EE" stroke-width="0.4" transform="scale(0.9) translate(2.5,1.7)"/>
+                  <path d="M24.6 10.82C23.56 9.94 22.83 8.71 22.58 7.32H20.1v12.09c0 1.24-1.01 2.24-2.25 2.24S15.6 20.65 15.6 19.41s1.01-2.24 2.25-2.24c.24 0 .47.04.69.1V14.65c-.23-.03-.46-.05-.69-.05-2.79 0-5.06 2.27-5.06 5.06s2.27 5.06 5.06 5.06 5.06-2.27 5.06-5.06V13.49c1.11.79 2.47 1.26 3.94 1.26V12.28c-1.05 0-2.01-.41-2.73-1.08l-.42-.38z" fill="none" stroke="#FE2C55" stroke-width="0.4" transform="scale(0.9) translate(1.9,2.3)"/>
                 </svg>
               </div>
               <div class="platform-info">
@@ -2214,43 +2257,69 @@
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">短视频+本地生活</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">团购引流</span>
+                </div>
               </div>
               <button class="connect-btn" id="douyinConnectBtn">点击连接</button>
             </div>
-            <div class="platform-card" id="xiaohongshuPlatform">
+            
+            <!-- 小红书 - 可连接 -->
+            <div class="platform-card" id="xhsPlatform">
               <div class="platform-icon xiaohongshu">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.38 0 2.5 1.12 2.5 2.5S13.38 10 12 10s-2.5-1.12-2.5-2.5S10.62 5 12 5zm0 14c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#FF2442"/>
+                  <text x="20" y="24" text-anchor="middle" font-size="10" font-weight="bold" fill="white" font-family="Microsoft YaHei, sans-serif">小红书</text>
                 </svg>
               </div>
               <div class="platform-info">
                 <span class="platform-name">小红书</span>
-                <span class="platform-status disconnected" id="xiaohongshuStatus">
+                <span class="platform-status disconnected" id="xhsStatus">
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">种草笔记</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">探店引流</span>
+                </div>
               </div>
-              <button class="connect-btn" id="xiaohongshuConnectBtn">点击连接</button>
+              <button class="connect-btn" id="xhsConnectBtn">点击连接</button>
             </div>
-            <div class="platform-card" id="weishiPlatform">
-              <div class="platform-icon weishi">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-9.5c0-.83-.67-1.5-1.5-1.5S7 9.67 7 10.5 7.67 12 8.5 12s1.5-.67 1.5-1.5zm7 0c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5 1.5-.67 1.5-1.5zm-3.5 5c-2.33 0-4.32-1.45-5.12-3.5h1.67c.69 1.19 1.97 2 3.45 2s2.76-.81 3.45-2h1.67c-.8 2.05-2.79 3.5-5.12 3.5z"/>
+            
+            <!-- 微信视频号 - 可连接 -->
+            <div class="platform-card" id="wechatVideoPlatform">
+              <div class="platform-icon wechat-video">
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#FA9D3B"/>
+                  <path d="M14 20c0-3.3 2.7-6 6-6M20 14c1.66 0 3 1.34 3 3M23 17c0 1.66-1.34 3-3 3M20 20c-1.66 0-3-1.34-3-3" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                  <path d="M13 27c2.2 2.2 4.8 3.5 7 3.5s4.8-1.3 7-3.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
                 </svg>
               </div>
               <div class="platform-info">
                 <span class="platform-name">微信视频号</span>
-                <span class="platform-status disconnected" id="weishiStatus">
+                <span class="platform-status disconnected" id="wechatVideoStatus">
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">短视频+直播</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">私域转化</span>
+                </div>
               </div>
-              <button class="connect-btn" id="weishiConnectBtn">点击连接</button>
+              <button class="connect-btn" id="wechatVideoConnectBtn">点击连接</button>
             </div>
+            
+            <!-- 高德 - 可连接 -->
             <div class="platform-card" id="amapPlatform">
               <div class="platform-icon amap">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#0091FF"/>
+                  <path d="M20 8C15.58 8 12 11.58 12 16c0 6 8 14 8 14s8-8 8-14c0-4.42-3.58-8-8-8z" fill="white"/>
+                  <circle cx="20" cy="16" r="3.5" fill="#0091FF"/>
                 </svg>
               </div>
               <div class="platform-info">
@@ -2259,13 +2328,22 @@
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">地图导航</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">到店引流</span>
+                </div>
               </div>
               <button class="connect-btn" id="amapConnectBtn">点击连接</button>
             </div>
+            
+            <!-- 口碑(支付宝) - 可连接 -->
             <div class="platform-card" id="koubeiPlatform">
               <div class="platform-icon koubei">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="#1677FF"/>
+                  <path d="M13 20c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M20 13v7l4.5 2.5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
               <div class="platform-info">
@@ -2274,6 +2352,11 @@
                   <span class="status-dot"></span>
                   未连接
                 </span>
+                <div class="platform-stats">
+                  <span class="platform-stat">扫码点餐</span>
+                  <span class="platform-stat-divider">·</span>
+                  <span class="platform-stat">会员储值</span>
+                </div>
               </div>
               <button class="connect-btn" id="koubeiConnectBtn">点击连接</button>
             </div>
