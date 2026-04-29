@@ -614,6 +614,28 @@
             <i data-lucide="file-text" class="w-5 h-5"></i>
             <span class="sidebar-nav-text">日志</span>
           </div>
+          <div class="sidebar-nav-divider"></div>
+          <div class="sidebar-nav-item" data-page="marketing" data-step="8" data-title="营销工具">
+            <i data-lucide="ticket" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">营销</span>
+            <span class="sidebar-nav-badge hot">HOT</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="security" data-step="9" data-title="权限管理">
+            <i data-lucide="shield" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">权限</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="ticket" data-step="10" data-title="工单系统">
+            <i data-lucide="headphones" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">工单</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="inventory" data-step="11" data-title="库存预警">
+            <i data-lucide="package" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">库存</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="competitor" data-step="12" data-title="竞品监控">
+            <i data-lucide="radar" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">竞品</span>
+          </div>
         </nav>
         <div class="sidebar-footer">
           <div class="sidebar-nav-item" id="demoHomeBtn">
@@ -1619,6 +1641,792 @@
                     <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
                     <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
                     <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 营销工具箱 Section -->
+          <section class="demo-section" id="sectionMarketing">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="ticket" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">营销工具箱</h2>
+                <p class="section-header-new-desc">优惠券、积分、会员活动一站式管理</p>
+              </div>
+            </div>
+            <div class="marketing-tabs">
+              <button class="marketing-tab active" data-mkt-tab="coupon">优惠券</button>
+              <button class="marketing-tab" data-mkt-tab="points">积分规则</button>
+              <button class="marketing-tab" data-mkt-tab="member">会员权益</button>
+              <button class="marketing-tab" data-mkt-tab="activity">营销活动</button>
+            </div>
+            <!-- 优惠券管理 -->
+            <div class="marketing-panel active" id="mktCoupon">
+              <div class="marketing-toolbar">
+                <div class="mkt-stats">
+                  <div class="mkt-stat-item">
+                    <span class="mkt-stat-value text-purple-500">12,580</span>
+                    <span class="mkt-stat-label">已发放</span>
+                  </div>
+                  <div class="mkt-stat-item">
+                    <span class="mkt-stat-value text-green-500">8,320</span>
+                    <span class="mkt-stat-label">已使用</span>
+                  </div>
+                  <div class="mkt-stat-item">
+                    <span class="mkt-stat-value text-orange-500">66%</span>
+                    <span class="mkt-stat-label">使用率</span>
+                  </div>
+                </div>
+                <button class="btn-primary" id="createCouponBtn"><i data-lucide="plus" class="w-4 h-4"></i> 创建优惠券</button>
+              </div>
+              <div class="coupon-list">
+                <div class="coupon-card">
+                  <div class="coupon-info">
+                    <div class="coupon-name">新人专享券</div>
+                    <div class="coupon-desc">满100减20，首单可用</div>
+                    <div class="coupon-meta">
+                      <span class="coupon-tag">新人</span>
+                      <span class="coupon-date">有效期至 05-31</span>
+                    </div>
+                  </div>
+                  <div class="coupon-stats">
+                    <div class="coupon-stat"><span class="value">5,000</span><span class="label">已发</span></div>
+                    <div class="coupon-stat"><span class="value">3,200</span><span class="label">已用</span></div>
+                    <div class="coupon-stat"><span class="value text-green-500">64%</span><span class="label">使用率</span></div>
+                  </div>
+                  <div class="coupon-actions">
+                    <button class="coupon-btn edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn pause"><i data-lucide="pause" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+                <div class="coupon-card">
+                  <div class="coupon-info">
+                    <div class="coupon-name">雨天特惠券</div>
+                    <div class="coupon-desc">满80减15，外卖专用</div>
+                    <div class="coupon-meta">
+                      <span class="coupon-tag weather">天气触发</span>
+                      <span class="coupon-date">长期有效</span>
+                    </div>
+                  </div>
+                  <div class="coupon-stats">
+                    <div class="coupon-stat"><span class="value">2,800</span><span class="label">已发</span></div>
+                    <div class="coupon-stat"><span class="value">1,920</span><span class="label">已用</span></div>
+                    <div class="coupon-stat"><span class="value text-green-500">69%</span><span class="label">使用率</span></div>
+                  </div>
+                  <div class="coupon-actions">
+                    <button class="coupon-btn edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn active"><i data-lucide="play" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+                <div class="coupon-card">
+                  <div class="coupon-info">
+                    <div class="coupon-name">会员日专享</div>
+                    <div class="coupon-desc">满200减50，每月15号</div>
+                    <div class="coupon-meta">
+                      <span class="coupon-tag member">会员专享</span>
+                      <span class="coupon-date">每月15日</span>
+                    </div>
+                  </div>
+                  <div class="coupon-stats">
+                    <div class="coupon-stat"><span class="value">4,780</span><span class="label">已发</span></div>
+                    <div class="coupon-stat"><span class="value">3,200</span><span class="label">已用</span></div>
+                    <div class="coupon-stat"><span class="value text-green-500">67%</span><span class="label">使用率</span></div>
+                  </div>
+                  <div class="coupon-actions">
+                    <button class="coupon-btn edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn pause"><i data-lucide="pause" class="w-4 h-4"></i></button>
+                    <button class="coupon-btn delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 积分规则 -->
+            <div class="marketing-panel" id="mktPoints">
+              <div class="points-rules">
+                <div class="points-rule-card">
+                  <div class="points-rule-header">
+                    <span class="points-rule-title">消费积分</span>
+                    <span class="points-rule-status active">已启用</span>
+                  </div>
+                  <div class="points-rule-content">
+                    <div class="points-exchange">每消费 <input type="number" value="1" class="points-input"> 元 = <input type="number" value="1" class="points-input"> 积分</div>
+                  </div>
+                </div>
+                <div class="points-rule-card">
+                  <div class="points-rule-header">
+                    <span class="points-rule-title">评价奖励</span>
+                    <span class="points-rule-status active">已启用</span>
+                  </div>
+                  <div class="points-rule-content">
+                    <div class="points-exchange">完成评价 = <input type="number" value="10" class="points-input"> 积分</div>
+                  </div>
+                </div>
+                <div class="points-rule-card">
+                  <div class="points-rule-header">
+                    <span class="points-rule-title">积分兑换</span>
+                    <span class="points-rule-status active">已启用</span>
+                  </div>
+                  <div class="points-rule-content">
+                    <div class="points-exchange"><input type="number" value="100" class="points-input"> 积分 = ¥<input type="number" value="1" class="points-input"> 代金券</div>
+                  </div>
+                </div>
+                <div class="points-rule-card">
+                  <div class="points-rule-header">
+                    <span class="points-rule-title">生日多倍积分</span>
+                    <span class="points-rule-status active">已启用</span>
+                  </div>
+                  <div class="points-rule-content">
+                    <div class="points-exchange">生日当月 = <input type="number" value="2" class="points-input"> 倍积分</div>
+                  </div>
+                </div>
+              </div>
+              <div class="points-summary">
+                <div class="points-summary-item">
+                  <span class="points-summary-label">本月新增积分</span>
+                  <span class="points-summary-value">58,320</span>
+                </div>
+                <div class="points-summary-item">
+                  <span class="points-summary-label">本月消耗积分</span>
+                  <span class="points-summary-value">42,180</span>
+                </div>
+                <div class="points-summary-item">
+                  <span class="points-summary-label">积分库存</span>
+                  <span class="points-summary-value text-purple-500">128,640</span>
+                </div>
+              </div>
+            </div>
+            <!-- 会员权益 -->
+            <div class="marketing-panel" id="mktMember">
+              <div class="member-levels">
+                <div class="member-level-card bronze">
+                  <div class="member-level-badge">普通会员</div>
+                  <div class="member-level-stats">
+                    <div class="member-stat"><span class="value">8,520</span><span class="label">人数</span></div>
+                    <div class="member-stat"><span class="value">1%</span><span class="label">复购率</span></div>
+                  </div>
+                  <div class="member-privileges">
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 基础积分</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 新人优惠券</div>
+                  </div>
+                </div>
+                <div class="member-level-card silver">
+                  <div class="member-level-badge">银卡会员</div>
+                  <div class="member-level-stats">
+                    <div class="member-stat"><span class="value">2,340</span><span class="label">人数</span></div>
+                    <div class="member-stat"><span class="value">3.2%</span><span class="label">复购率</span></div>
+                  </div>
+                  <div class="member-privileges">
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 1.2倍积分</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 生日礼包</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 专属客服</div>
+                  </div>
+                </div>
+                <div class="member-level-card gold">
+                  <div class="member-level-badge">金卡会员</div>
+                  <div class="member-level-stats">
+                    <div class="member-stat"><span class="value">680</span><span class="label">人数</span></div>
+                    <div class="member-stat"><span class="value">8.5%</span><span class="label">复购率</span></div>
+                  </div>
+                  <div class="member-privileges">
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 1.5倍积分</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 优先排队</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 免费小菜</div>
+                  </div>
+                </div>
+                <div class="member-level-card vip">
+                  <div class="member-level-badge">黑金VIP</div>
+                  <div class="member-level-stats">
+                    <div class="member-stat"><span class="value">42</span><span class="label">人数</span></div>
+                    <div class="member-stat"><span class="value">15.8%</span><span class="label">复购率</span></div>
+                  </div>
+                  <div class="member-privileges">
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 2倍积分</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 免费停车</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 专属包厢</div>
+                    <div class="privilege-item"><i data-lucide="check" class="w-4 h-4"></i> 私人定制</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 营销活动 -->
+            <div class="marketing-panel" id="mktActivity">
+              <div class="activity-list">
+                <div class="activity-card running">
+                  <div class="activity-header">
+                    <span class="activity-status running">进行中</span>
+                    <span class="activity-time">剩余 5 天</span>
+                  </div>
+                  <div class="activity-name">周末秒杀</div>
+                  <div class="activity-desc">每周六日 10:00 限量秒杀</div>
+                  <div class="activity-stats">
+                    <div class="activity-stat"><span class="value">1,280</span><span class="label">参与</span></div>
+                    <div class="activity-stat"><span class="value">¥4,800</span><span class="label">带来营收</span></div>
+                  </div>
+                </div>
+                <div class="activity-card pending">
+                  <div class="activity-header">
+                    <span class="activity-status pending">待开始</span>
+                    <span class="activity-time">开始于 3 天后</span>
+                  </div>
+                  <div class="activity-name">端午促销</div>
+                  <div class="activity-desc">粽子礼盒限时优惠</div>
+                  <div class="activity-stats">
+                    <div class="activity-stat"><span class="value">0</span><span class="label">参与</span></div>
+                    <div class="activity-stat"><span class="value">预计 ¥12,000</span><span class="label">预计营收</span></div>
+                  </div>
+                </div>
+                <div class="activity-card end">
+                  <div class="activity-header">
+                    <span class="activity-status end">已结束</span>
+                    <span class="activity-time">5月1日-5日</span>
+                  </div>
+                  <div class="activity-name">劳动节活动</div>
+                  <div class="activity-desc">消费满200送礼品</div>
+                  <div class="activity-stats">
+                    <div class="activity-stat"><span class="value">3,420</span><span class="label">参与</span></div>
+                    <div class="activity-stat"><span class="value">¥28,600</span><span class="label">带来营收</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 权限管理 Section -->
+          <section class="demo-section" id="sectionSecurity">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="shield" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">权限管理</h2>
+                <p class="section-header-new-desc">角色分级、数据隔离、操作审计</p>
+              </div>
+            </div>
+            <div class="security-layout">
+              <div class="role-list">
+                <div class="role-card admin active">
+                  <div class="role-icon"><i data-lucide="crown" class="w-6 h-6"></i></div>
+                  <div class="role-info">
+                    <div class="role-name">管理员</div>
+                    <div class="role-desc">拥有全部权限</div>
+                  </div>
+                  <span class="role-count">2人</span>
+                </div>
+                <div class="role-card manager">
+                  <div class="role-icon"><i data-lucide="briefcase" class="w-6 h-6"></i></div>
+                  <div class="role-info">
+                    <div class="role-name">运营主管</div>
+                    <div class="role-desc">数据+营销+客服</div>
+                  </div>
+                  <span class="role-count">3人</span>
+                </div>
+                <div class="role-card operator">
+                  <div class="role-icon"><i data-lucide="settings" class="w-6 h-6"></i></div>
+                  <div class="role-info">
+                    <div class="role-name">运营专员</div>
+                    <div class="role-desc">日常运营操作</div>
+                  </div>
+                  <span class="role-count">5人</span>
+                </div>
+                <div class="role-card staff">
+                  <div class="role-icon"><i data-lucide="user" class="w-6 h-6"></i></div>
+                  <div class="role-info">
+                    <div class="role-name">客服</div>
+                    <div class="role-desc">仅查看和回复</div>
+                  </div>
+                  <span class="role-count">4人</span>
+                </div>
+              </div>
+              <div class="permission-panel">
+                <div class="permission-header">
+                  <h3 class="permission-title">管理员权限配置</h3>
+                  <button class="btn-secondary"><i data-lucide="plus" class="w-4 h-4"></i> 添加成员</button>
+                </div>
+                <div class="permission-list">
+                  <div class="permission-group">
+                    <div class="permission-group-title"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> 数据权限</div>
+                    <div class="permission-items">
+                      <label class="permission-item"><input type="checkbox" checked disabled><span>查看全部数据</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>导出数据报表</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>门店体检报告</span></label>
+                    </div>
+                  </div>
+                  <div class="permission-group">
+                    <div class="permission-group-title"><i data-lucide="ticket" class="w-4 h-4"></i> 营销权限</div>
+                    <div class="permission-items">
+                      <label class="permission-item"><input type="checkbox" checked><span>创建优惠券</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>修改积分规则</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>发起营销活动</span></label>
+                    </div>
+                  </div>
+                  <div class="permission-group">
+                    <div class="permission-group-title"><i data-lucide="message-circle" class="w-4 h-4"></i> 客服权限</div>
+                    <div class="permission-items">
+                      <label class="permission-item"><input type="checkbox" checked><span>回复差评</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>处理工单</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>查看全部评价</span></label>
+                    </div>
+                  </div>
+                  <div class="permission-group">
+                    <div class="permission-group-title"><i data-lucide="settings" class="w-4 h-4"></i> 系统权限</div>
+                    <div class="permission-items">
+                      <label class="permission-item"><input type="checkbox" checked><span>权限配置</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>API密钥管理</span></label>
+                      <label class="permission-item"><input type="checkbox" checked><span>审计日志查看</span></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="audit-section">
+              <div class="audit-header">
+                <h3 class="audit-title"><i data-lucide="file-text" class="w-4 h-4"></i> 操作审计日志</h3>
+                <button class="btn-secondary"><i data-lucide="download" class="w-4 h-4"></i> 导出日志</button>
+              </div>
+              <div class="audit-list">
+                <div class="audit-item">
+                  <span class="audit-time">05-20 14:32</span>
+                  <span class="audit-user">张经理</span>
+                  <span class="audit-action">修改了积分规则</span>
+                  <span class="audit-ip">192.168.1.105</span>
+                </div>
+                <div class="audit-item">
+                  <span class="audit-time">05-20 11:15</span>
+                  <span class="audit-user">李管理员</span>
+                  <span class="audit-action">添加了运营专员 王五</span>
+                  <span class="audit-ip">192.168.1.102</span>
+                </div>
+                <div class="audit-item">
+                  <span class="audit-time">05-19 16:48</span>
+                  <span class="audit-user">赵客服</span>
+                  <span class="audit-action">导出了本月数据报表</span>
+                  <span class="audit-ip">192.168.1.108</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 工单系统 Section -->
+          <section class="demo-section" id="sectionTicket">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="headphones" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">客服工单系统</h2>
+                <p class="section-header-new-desc">投诉处理、满意度追踪、服务闭环</p>
+              </div>
+              <div class="ticket-stats-mini">
+                <span class="ticket-stat-mini pending">待处理 3</span>
+                <span class="ticket-stat-mini processing">处理中 5</span>
+                <span class="ticket-stat-mini completed">已完成 28</span>
+              </div>
+            </div>
+            <div class="ticket-toolbar">
+              <div class="ticket-filters">
+                <button class="ticket-filter active" data-ticket-status="all">全部</button>
+                <button class="ticket-filter" data-ticket-status="pending">待处理</button>
+                <button class="ticket-filter" data-ticket-status="processing">处理中</button>
+                <button class="ticket-filter" data-ticket-status="completed">已完成</button>
+              </div>
+              <button class="btn-primary"><i data-lucide="plus" class="w-4 h-4"></i> 创建工单</button>
+            </div>
+            <div class="ticket-list">
+              <div class="ticket-card">
+                <div class="ticket-header">
+                  <span class="ticket-id">WD-2026052001</span>
+                  <span class="ticket-status pending">待处理</span>
+                  <span class="ticket-priority high">高优</span>
+                </div>
+                <div class="ticket-content">
+                  <div class="ticket-title">顾客投诉菜品质量问题</div>
+                  <div class="ticket-desc">顾客反馈在菜品中发现异物，要求全额退款并道歉</div>
+                </div>
+                <div class="ticket-meta">
+                  <span class="ticket-source"><i data-lucide="message-circle" class="w-3 h-3"></i> 大众点评</span>
+                  <span class="ticket-time">05-20 12:30</span>
+                  <span class="ticket-assignee">待分配</span>
+                </div>
+                <div class="ticket-actions">
+                  <button class="ticket-btn assign">分配</button>
+                  <button class="ticket-btn reply">回复</button>
+                  <button class="ticket-btn close">关闭</button>
+                </div>
+              </div>
+              <div class="ticket-card">
+                <div class="ticket-header">
+                  <span class="ticket-id">WD-2026052002</span>
+                  <span class="ticket-status processing">处理中</span>
+                  <span class="ticket-priority medium">中优</span>
+                </div>
+                <div class="ticket-content">
+                  <div class="ticket-title">会员申请积分补偿</div>
+                  <div class="ticket-desc">VIP会员王女士因系统故障丢失500积分，申请补发</div>
+                </div>
+                <div class="ticket-meta">
+                  <span class="ticket-source"><i data-lucide="user" class="w-3 h-3"></i> 会员中心</span>
+                  <span class="ticket-time">05-20 10:15</span>
+                  <span class="ticket-assignee">分配给：张客服</span>
+                </div>
+                <div class="ticket-progress">
+                  <div class="ticket-progress-bar" style="width: 60%"></div>
+                </div>
+                <div class="ticket-actions">
+                  <button class="ticket-btn complete">完成</button>
+                  <button class="ticket-btn history">历史</button>
+                </div>
+              </div>
+              <div class="ticket-card">
+                <div class="ticket-header">
+                  <span class="ticket-id">WD-2026051903</span>
+                  <span class="ticket-status completed">已完成</span>
+                  <span class="ticket-priority low">低优</span>
+                </div>
+                <div class="ticket-content">
+                  <div class="ticket-title">发票开具申请</div>
+                  <div class="ticket-desc">企业客户申请开具增值税专用发票</div>
+                </div>
+                <div class="ticket-meta">
+                  <span class="ticket-source"><i data-lucide="receipt" class="w-3 h-3"></i> 订单中心</span>
+                  <span class="ticket-time">05-19 15:40</span>
+                  <span class="ticket-assignee">处理人：李客服</span>
+                </div>
+                <div class="ticket-satisfaction">
+                  <span class="satisfaction-label">满意度：</span>
+                  <span class="satisfaction-stars">★★★★★</span>
+                  <span class="satisfaction-rate">5.0</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 库存预警 Section -->
+          <section class="demo-section" id="sectionInventory">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="package" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">库存预警系统</h2>
+                <p class="section-header-new-desc">智能采购建议、损耗分析、成本管控</p>
+              </div>
+            </div>
+            <div class="inventory-alerts">
+              <div class="alert-card danger">
+                <div class="alert-icon"><i data-lucide="alert-triangle" class="w-6 h-6"></i></div>
+                <div class="alert-info">
+                  <div class="alert-title">库存不足预警</div>
+                  <div class="alert-count">5 种食材</div>
+                </div>
+              </div>
+              <div class="alert-card warning">
+                <div class="alert-icon"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                <div class="alert-info">
+                  <div class="alert-title">涨价预警</div>
+                  <div class="alert-count">3 种食材</div>
+                </div>
+              </div>
+              <div class="alert-card info">
+                <div class="alert-icon"><i data-lucide="calendar" class="w-6 h-6"></i></div>
+                <div class="alert-info">
+                  <div class="alert-title">批次过期预警</div>
+                  <div class="alert-count">2 种食材</div>
+                </div>
+              </div>
+            </div>
+            <div class="inventory-grid">
+              <div class="inventory-card">
+                <div class="inventory-card-header">
+                  <span class="inventory-card-title">库存预警明细</span>
+                  <button class="btn-secondary"><i data-lucide="refresh" class="w-4 h-4"></i> 刷新</button>
+                </div>
+                <div class="inventory-table-wrapper">
+                  <table class="inventory-table">
+                    <thead>
+                      <tr>
+                        <th>食材</th>
+                        <th>当前库存</th>
+                        <th>安全库存</th>
+                        <th>预警等级</th>
+                        <th>建议采购</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="danger">
+                        <td>鲜毛肚</td>
+                        <td>12 斤</td>
+                        <td>50 斤</td>
+                        <td><span class="level-tag danger">紧急</span></td>
+                        <td>100 斤</td>
+                      </tr>
+                      <tr class="danger">
+                        <td>肥牛卷</td>
+                        <td>20 盒</td>
+                        <td>80 盒</td>
+                        <td><span class="level-tag danger">紧急</span></td>
+                        <td>150 盒</td>
+                      </tr>
+                      <tr class="warning">
+                        <td>虾滑</td>
+                        <td>30 份</td>
+                        <td>50 份</td>
+                        <td><span class="level-tag warning">预警</span></td>
+                        <td>80 份</td>
+                      </tr>
+                      <tr class="warning">
+                        <td>鸭血</td>
+                        <td>25 份</td>
+                        <td>40 份</td>
+                        <td><span class="level-tag warning">预警</span></td>
+                        <td>60 份</td>
+                      </tr>
+                      <tr class="normal">
+                        <td>金针菇</td>
+                        <td>45 斤</td>
+                        <td>30 斤</td>
+                        <td><span class="level-tag success">正常</span></td>
+                        <td>无需</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="inventory-card">
+                <div class="inventory-card-header">
+                  <span class="inventory-card-title">智能采购建议</span>
+                  <span class="ai-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> AI生成</span>
+                </div>
+                <div class="purchase-suggestions">
+                  <div class="purchase-item">
+                    <div class="purchase-item-header">
+                      <span class="purchase-name">火锅底料</span>
+                      <span class="purchase-priority">优先</span>
+                    </div>
+                    <div class="purchase-item-body">
+                      <div class="purchase-reason">供应商涨价预警，建议提前备货</div>
+                      <div class="purchase-action">
+                        <button class="purchase-btn">查看供应商</button>
+                        <button class="purchase-btn primary">立即采购</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="purchase-item">
+                    <div class="purchase-item-header">
+                      <span class="purchase-name">鲜牛肉</span>
+                      <span class="purchase-priority">重要</span>
+                    </div>
+                    <div class="purchase-item-body">
+                      <div class="purchase-reason">周末客流预计增加30%，建议增加库存</div>
+                      <div class="purchase-action">
+                        <button class="purchase-btn">查看历史</button>
+                        <button class="purchase-btn primary">加入采购单</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="purchase-item">
+                    <div class="purchase-item-header">
+                      <span class="purchase-name">蔬菜拼盘</span>
+                      <span class="purchase-priority">常规</span>
+                    </div>
+                    <div class="purchase-item-body">
+                      <div class="purchase-reason">本周损耗率偏高(8%)，建议减少20%采购量</div>
+                      <div class="purchase-action">
+                        <button class="purchase-btn">查看损耗</button>
+                        <button class="purchase-btn primary">调整采购</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="inventory-stats-grid">
+              <div class="inv-stat-card">
+                <div class="inv-stat-header">
+                  <i data-lucide="trending-up" class="w-5 h-5 text-purple-500"></i>
+                  <span class="inv-stat-title">成本分析</span>
+                </div>
+                <div class="inv-stat-value">¥4.28万</div>
+                <div class="inv-stat-trend up">+5.2%</div>
+                <div class="inv-stat-chart"><canvas id="costChart" height="60"></canvas></div>
+              </div>
+              <div class="inv-stat-card">
+                <div class="inv-stat-header">
+                  <i data-lucide="pie-chart" class="w-5 h-5 text-orange-500"></i>
+                  <span class="inv-stat-title">损耗分析</span>
+                </div>
+                <div class="inv-stat-value">2.3%</div>
+                <div class="inv-stat-trend down">-0.8%</div>
+                <div class="inv-stat-chart"><canvas id="lossChart" height="60"></canvas></div>
+              </div>
+              <div class="inv-stat-card">
+                <div class="inv-stat-header">
+                  <i data-lucide="box" class="w-5 h-5 text-green-500"></i>
+                  <span class="inv-stat-title">周转天数</span>
+                </div>
+                <div class="inv-stat-value">4.5 天</div>
+                <div class="inv-stat-trend down">-1.2天</div>
+                <div class="inv-stat-chart"><canvas id="turnoverChart" height="60"></canvas></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 竞品监控 Section -->
+          <section class="demo-section" id="sectionCompetitor">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="radar" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">竞品监控系统</h2>
+                <p class="section-header-new-desc">价格监控、口碑对比、活动追踪</p>
+              </div>
+            </div>
+            <div class="competitor-overview">
+              <div class="competitor-score-card">
+                <div class="competitor-score-header">
+                  <span class="competitor-score-title">综合竞争力评分</span>
+                  <span class="competitor-badge">领先</span>
+                </div>
+                <div class="competitor-score-value">78 <span class="competitor-score-max">/100</span></div>
+                <div class="competitor-score-detail">
+                  <div class="score-item"><span>价格力</span><span class="score-bar"><span style="width: 85%"></span></span><span>85</span></div>
+                  <div class="score-item"><span>服务力</span><span class="score-bar"><span style="width: 78%"></span></span><span>78</span></div>
+                  <div class="score-item"><span>口碑力</span><span class="score-bar"><span style="width: 72%"></span></span><span>72</span></div>
+                </div>
+              </div>
+              <div class="competitor-list">
+                <div class="competitor-item">
+                  <div class="competitor-rank">#1</div>
+                  <div class="competitor-info">
+                    <div class="competitor-name">海底捞</div>
+                    <div class="competitor-tag">火锅龙头</div>
+                  </div>
+                  <div class="competitor-score">82</div>
+                  <div class="competitor-gap">+4</div>
+                </div>
+                <div class="competitor-item">
+                  <div class="competitor-rank">#2</div>
+                  <div class="competitor-info">
+                    <div class="competitor-name">小龙坎</div>
+                    <div class="competitor-tag">川味火锅</div>
+                  </div>
+                  <div class="competitor-score">75</div>
+                  <div class="competitor-gap advantage">-3</div>
+                </div>
+                <div class="competitor-item">
+                  <div class="competitor-rank">#3</div>
+                  <div class="competitor-info">
+                    <div class="competitor-name">巴奴毛肚</div>
+                    <div class="competitor-tag">毛肚专家</div>
+                  </div>
+                  <div class="competitor-score">71</div>
+                  <div class="competitor-gap advantage">-7</div>
+                </div>
+              </div>
+            </div>
+            <div class="competitor-tabs">
+              <button class="competitor-tab active" data-comp-tab="price">价格监控</button>
+              <button class="competitor-tab" data-comp-tab="review">口碑对比</button>
+              <button class="competitor-tab" data-comp-tab="activity">活动追踪</button>
+            </div>
+            <div class="competitor-panel active" id="compPrice">
+              <div class="price-compare-grid">
+                <div class="price-compare-card">
+                  <div class="price-compare-header">
+                    <span class="price-item-name">招牌毛肚 200g</span>
+                    <span class="price-store">本店</span>
+                  </div>
+                  <div class="price-compare-value">¥58</div>
+                  <div class="price-compare-bar">
+                    <div class="price-bar-fill" style="width: 72%"></div>
+                  </div>
+                  <div class="price-compare-footer">
+                    <span class="price-status cheaper">低于竞品均价</span>
+                    <span class="price-diff text-green-500">-¥8</span>
+                  </div>
+                </div>
+                <div class="price-compare-card">
+                  <div class="price-compare-header">
+                    <span class="price-item-name">肥牛卷 150g</span>
+                    <span class="price-store">本店</span>
+                  </div>
+                  <div class="price-compare-value">¥42</div>
+                  <div class="price-compare-bar">
+                    <div class="price-bar-fill" style="width: 60%"></div>
+                  </div>
+                  <div class="price-compare-footer">
+                    <span class="price-status">与均价持平</span>
+                    <span class="price-diff">¥0</span>
+                  </div>
+                </div>
+                <div class="price-compare-card">
+                  <div class="price-compare-header">
+                    <span class="price-item-name">双人套餐</span>
+                    <span class="price-store">本店</span>
+                  </div>
+                  <div class="price-compare-value">¥168</div>
+                  <div class="price-compare-bar">
+                    <div class="price-bar-fill" style="width: 85%"></div>
+                  </div>
+                  <div class="price-compare-footer">
+                    <span class="price-status expensive">高于均价</span>
+                    <span class="price-diff text-red-500">+¥18</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="competitor-panel" id="compReview">
+              <div class="review-compare-grid">
+                <div class="review-compare-card">
+                  <div class="review-compare-header">
+                    <span class="review-store">老码头火锅</span>
+                    <span class="review-score text-purple-500">4.8</span>
+                  </div>
+                  <div class="review-distribution">
+                    <div class="review-bar"><span class="review-label">5星</span><div class="review-bar-fill" style="width: 85%"></div><span class="review-percent">85%</span></div>
+                    <div class="review-bar"><span class="review-label">4星</span><div class="review-bar-fill" style="width: 10%"></div><span class="review-percent">10%</span></div>
+                    <div class="review-bar"><span class="review-label">3星</span><div class="review-bar-fill" style="width: 3%"></div><span class="review-percent">3%</span></div>
+                    <div class="review-bar"><span class="review-label">2星</span><div class="review-bar-fill" style="width: 1%"></div><span class="review-percent">1%</span></div>
+                    <div class="review-bar"><span class="review-label">1星</span><div class="review-bar-fill" style="width: 1%"></div><span class="review-percent">1%</span></div>
+                  </div>
+                </div>
+                <div class="review-compare-card">
+                  <div class="review-compare-header">
+                    <span class="review-store">海底捞</span>
+                    <span class="review-score">4.7</span>
+                  </div>
+                  <div class="review-distribution">
+                    <div class="review-bar"><span class="review-label">5星</span><div class="review-bar-fill" style="width: 78%"></div><span class="review-percent">78%</span></div>
+                    <div class="review-bar"><span class="review-label">4星</span><div class="review-bar-fill" style="width: 15%"></div><span class="review-percent">15%</span></div>
+                    <div class="review-bar"><span class="review-label">3星</span><div class="review-bar-fill" style="width: 4%"></div><span class="review-percent">4%</span></div>
+                    <div class="review-bar"><span class="review-label">2星</span><div class="review-bar-fill" style="width: 2%"></div><span class="review-percent">2%</span></div>
+                    <div class="review-bar"><span class="review-label">1星</span><div class="review-bar-fill" style="width: 1%"></div><span class="review-percent">1%</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="competitor-panel" id="compActivity">
+              <div class="activity-tracker">
+                <div class="tracker-item">
+                  <div class="tracker-header">
+                    <span class="tracker-comp">海底捞</span>
+                    <span class="tracker-status new">新上线</span>
+                  </div>
+                  <div class="tracker-activity">学生专享6.9折</div>
+                  <div class="tracker-time">05-18 ~ 06-30</div>
+                  <div class="tracker-impact">
+                    <span class="impact-label">影响评估：</span>
+                    <span class="impact-level medium">中等</span>
+                    <span class="impact-desc">预计影响客流5-8%</span>
+                  </div>
+                </div>
+                <div class="tracker-item">
+                  <div class="tracker-header">
+                    <span class="tracker-comp">巴奴</span>
+                    <span class="tracker-status">进行中</span>
+                  </div>
+                  <div class="tracker-activity">会员日半价锅底</div>
+                  <div class="tracker-time">每月15日</div>
+                  <div class="tracker-impact">
+                    <span class="impact-label">影响评估：</span>
+                    <span class="impact-level high">较高</span>
+                    <span class="impact-desc">长期活动，持续分流</span>
                   </div>
                 </div>
               </div>
