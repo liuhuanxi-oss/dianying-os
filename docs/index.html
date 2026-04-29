@@ -6,6 +6,20 @@
   <title>店赢OS - AI透视门店运营</title>
   <meta name="description" content="店赢OS，AI驱动的智能门店运营系统，让您的门店实现流量、评分、营收的全面增长">
   
+  <!-- Open Graph -->
+  <meta property="og:title" content="店赢OS - AI透视门店运营，驱动流量·星级·营收全面增长">
+  <meta property="og:description" content="实体门店一人公司操作系统。多Agent协同实现一个人运营无限门店：AI虚拟店长自主决策、差评自动处理、动态定价、跨店知识迁移。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://liuhuanxi-oss.github.io/dianying-os/">
+  <meta property="og:image" content="https://liuhuanxi-oss.github.io/dianying-os/assets/logo.svg">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="店赢OS - AI透视门店运营">
+  <meta name="twitter:description" content="实体门店一人公司操作系统，多Agent协同驱动增长">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -36,7 +50,7 @@
     }
   </script>
 </head>
-<body>
+<body class="light-mode">
   <!-- ==========================================
        Landing Page
        ========================================== -->
@@ -59,10 +73,18 @@
             <a href="#faqs" class="text-gray-600 hover:text-primary-start transition-colors font-medium">文档</a>
           </div>
           
-          <!-- CTA Button -->
-          <button class="btn-gradient hidden md:block" data-demo-trigger>
-            免费体验
-          </button>
+          <!-- CTA Button & Theme Toggle -->
+          <div class="flex items-center gap-4">
+            <!-- Dark Mode Toggle -->
+            <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+              <i data-lucide="moon" class="w-5 h-5 moon-icon"></i>
+              <i data-lucide="sun" class="w-5 h-5 sun-icon hidden"></i>
+            </button>
+            
+            <button class="btn-gradient hidden md:block" data-demo-trigger>
+              免费体验
+            </button>
+          </div>
           
           <!-- Mobile Menu Button -->
           <button class="mobile-menu-btn md:hidden p-2 text-gray-600" aria-label="打开菜单">
@@ -425,10 +447,13 @@
             </div>
           </div>
           
-          <!-- Connection Line -->
+          <!-- Connection Line with Flow -->
           <div class="tech-connection">
             <div class="connection-line"></div>
-            <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+            <div class="flow-arrow">
+              <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+              <span class="flow-label">调度</span>
+            </div>
           </div>
           
           <!-- Core AI Layer -->
@@ -445,10 +470,13 @@
             </div>
           </div>
           
-          <!-- Connection Line -->
+          <!-- Connection Line with Flow -->
           <div class="tech-connection">
             <div class="connection-line"></div>
-            <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+            <div class="flow-arrow">
+              <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+              <span class="flow-label">反馈</span>
+            </div>
           </div>
           
           <!-- Agents Layer -->
@@ -483,6 +511,15 @@
                   <span class="agent-desc">持续优化迭代</span>
                 </div>
               </div>
+            </div>
+          </div>
+          
+          <!-- Connection Line with Flow -->
+          <div class="tech-connection">
+            <div class="connection-line"></div>
+            <div class="flow-arrow">
+              <i data-lucide="chevrons-down" class="w-5 h-5"></i>
+              <span class="flow-label">沉淀</span>
             </div>
           </div>
           
@@ -631,7 +668,7 @@
       </div>
     </section>
     
-    <!-- 8. Testimonials Section (Enhanced) -->
+    <!-- 8. Testimonials Section (Enhanced with Progress Bars) -->
     <section id="testimonials" class="testimonials-section">
       <div class="max-w-7xl mx-auto px-6">
         <div class="section-heading reveal">
@@ -674,6 +711,13 @@
             <p class="testimonial-text">
               以前每天手动回复差评，头都大了。现在AI自动处理，差评率从5%降到1.2%，我还省了一个运营的人力。
             </p>
+            <!-- Progress Bar -->
+            <div class="testimonial-progress">
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: 76%"></div>
+              </div>
+              <span class="progress-label">差评率下降76%</span>
+            </div>
             <div class="testimonial-author">
               <div class="author-info">
                 <h4>李老板 · 火锅店</h4>
@@ -712,6 +756,13 @@
             <p class="testimonial-text">
               动态定价太香了！上周下雨，AI自动调高外卖优惠力度，一周下来多赚了2800块。这钱以前都让平台赚了。
             </p>
+            <!-- Progress Bar -->
+            <div class="testimonial-progress">
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: 18%"></div>
+              </div>
+              <span class="progress-label">月增收18%</span>
+            </div>
             <div class="testimonial-author">
               <div class="author-info">
                 <h4>张店长 · 奶茶店</h4>
@@ -750,6 +801,13 @@
             <p class="testimonial-text">
               会员续费率一直上不去，用了AI分析才发现问题在哪。现在会员续费率从45%提到62%，一个月多赚小一万。
             </p>
+            <!-- Progress Bar -->
+            <div class="testimonial-progress">
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: 38%"></div>
+              </div>
+              <span class="progress-label">续费率提升38%</span>
+            </div>
             <div class="testimonial-author">
               <div class="author-info">
                 <h4>王经理 · 健身房</h4>
@@ -761,7 +819,7 @@
       </div>
     </section>
     
-    <!-- 9. Team Section -->
+    <!-- 9. Team Section (Completely Rewritten) -->
     <section id="team" class="team-section">
       <div class="max-w-7xl mx-auto px-6">
         <div class="section-heading reveal">
@@ -774,39 +832,39 @@
         </div>
         
         <div class="team-grid">
-          <!-- Team Member 1 -->
+          <!-- Team Member 1 - 刘天龙 Taylor -->
           <div class="team-card reveal">
-            <div class="team-avatar">
-              <i data-lucide="user" class="w-10 h-10"></i>
+            <div class="team-avatar indigo">
+              <span class="avatar-letter">刘</span>
             </div>
             <div class="team-info">
-              <h3 class="team-name">刘欢希</h3>
-              <p class="team-role">产品架构师</p>
-              <p class="team-bio">10年企业服务经验，从拉卡拉到店赢OS，始终在帮商家解决最痛的问题</p>
+              <h3 class="team-name">刘天龙 Taylor</h3>
+              <p class="team-role">创始人 & 产品负责人</p>
+              <p class="team-bio">6年深耕商户服务，和18万+门店打过交道，最清楚老板们在焦虑什么。做过63个行业的解决方案，见过最差的店怎么翻身，也见过最火的店怎么翻车。店赢OS不是拍脑袋想出来的，是几千次跟老板聊完之后的答案。</p>
             </div>
           </div>
           
-          <!-- Team Member 2 -->
+          <!-- Team Member 2 - Hermes Liu -->
           <div class="team-card reveal reveal-delay-1">
-            <div class="team-avatar purple">
-              <i data-lucide="user" class="w-10 h-10"></i>
+            <div class="team-avatar violet">
+              <span class="avatar-letter">H</span>
             </div>
             <div class="team-info">
-              <h3 class="team-name">Hermes</h3>
-              <p class="team-role">AI工程师</p>
-              <p class="team-bio">用Agent重新定义门店运营，让每个老板都拥有自己的AI店长</p>
+              <h3 class="team-name">Hermes Liu</h3>
+              <p class="team-role">AI架构师</p>
+              <p class="team-bio">专注Multi-Agent系统设计，店赢OS的五级信任机制和多Agent调度架构出自他手。相信AI不该只是回答问题的工具，而是能替老板做决策的搭档。</p>
             </div>
           </div>
           
-          <!-- Team Member 3 -->
+          <!-- Team Member 3 - Hermes Tan -->
           <div class="team-card reveal reveal-delay-2">
             <div class="team-avatar cyan">
-              <i data-lucide="user" class="w-10 h-10"></i>
+              <span class="avatar-letter">T</span>
             </div>
             <div class="team-info">
-              <h3 class="team-name">陈工</h3>
+              <h3 class="team-name">Hermes Tan</h3>
               <p class="team-role">数据工程师</p>
-              <p class="team-bio">把数据变成决策，让直觉经营变成科学运营</p>
+              <p class="team-bio">把门店运营经验变成可复用的知识图谱。店赢OS的10个行业知识库和跨店迁移能力，都靠他让数据从"死"变"活"。</p>
             </div>
           </div>
         </div>
@@ -830,7 +888,7 @@
           <div class="pricing-card reveal">
             <div class="pricing-name">基础版</div>
             <div class="pricing-price">
-              限时免费体验
+              免费体验
             </div>
             <p class="pricing-desc">适合个人小店，先试试看</p>
             <ul class="pricing-features">
@@ -945,7 +1003,79 @@
       </div>
     </section>
     
-    <!-- 12. FAQs Section (With Competitive Info) -->
+    <!-- 12. Roadmap Section (New) -->
+    <section id="roadmap" class="roadmap-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            产品路线图<span class="gradient-text">持续进化</span>
+          </h2>
+          <p class="section-subtitle">
+            每一个功能都经过深思熟虑，每一步都在兑现承诺
+          </p>
+        </div>
+        
+        <div class="roadmap-timeline reveal">
+          <!-- Q2 2026 - Current -->
+          <div class="roadmap-item current">
+            <div class="roadmap-marker">
+              <div class="marker-dot pulse"></div>
+              <div class="marker-line"></div>
+            </div>
+            <div class="roadmap-content">
+              <div class="roadmap-date">
+                <span class="date-badge">当前</span>
+                2026 Q2
+              </div>
+              <h3 class="roadmap-title">核心能力上线</h3>
+              <ul class="roadmap-features">
+                <li><i data-lucide="check-circle" class="w-4 h-4"></i> 多Agent协同系统</li>
+                <li><i data-lucide="check-circle" class="w-4 h-4"></i> 10个行业知识库</li>
+                <li><i data-lucide="check-circle" class="w-4 h-4"></i> 5级信任等级体系</li>
+                <li><i data-lucide="check-circle" class="w-4 h-4"></i> 基础差评自动处理</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Q3 2026 -->
+          <div class="roadmap-item">
+            <div class="roadmap-marker">
+              <div class="marker-dot"></div>
+              <div class="marker-line"></div>
+            </div>
+            <div class="roadmap-content">
+              <div class="roadmap-date">2026 Q3</div>
+              <h3 class="roadmap-title">智能化升级</h3>
+              <ul class="roadmap-features">
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 门店数字孪生系统</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 跨店知识迁移引擎</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 动态定价引擎2.0</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 智能库存预警</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Q4 2026 -->
+          <div class="roadmap-item">
+            <div class="roadmap-marker">
+              <div class="marker-dot"></div>
+            </div>
+            <div class="roadmap-content">
+              <div class="roadmap-date">2026 Q4</div>
+              <h3 class="roadmap-title">生态化扩展</h3>
+              <ul class="roadmap-features">
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 门店克隆技术</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 全行业覆盖</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 开放API平台</li>
+                <li><i data-lucide="circle" class="w-4 h-4"></i> 第三方系统集成</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 13. FAQs Section (With Competitive Info) -->
     <section id="faqs" class="faqs-section">
       <div class="max-w-3xl mx-auto px-6">
         <div class="section-heading reveal">
@@ -971,7 +1101,7 @@
               <i data-lucide="plus" class="faq-icon"></i>
             </button>
             <div class="faq-answer">
-              <p>店赢OS适合所有需要线上运营的实体门店，特别是餐饮类（火锅、烧烤、奶茶、小吃）、休闲娱乐（健身房、美容院、棋牌室）、生活服务（洗衣、洗车、美甲）等行业。系统会自动适配不同行业的特点。</p>
+              <p>店赢OS适合所有需要线上运营的实体门店，特别是餐饮类（火锅、烧烤、奶茶、小吃）、休闲娱乐（健身房、美容院、棋牌室）、生活服务（洗衣，洗车、美甲）等行业。系统会自动适配不同行业的特点。</p>
             </div>
           </div>
           
@@ -1011,14 +1141,14 @@
               <i data-lucide="plus" class="faq-icon"></i>
             </button>
             <div class="faq-answer">
-              <p>可以。基础版永久免费，包含核心数据看板和每日报告，让你先感受一下系统能提供什么价值。专业版和旗舰版有7天全功能试用期，不满意随时退款。</p>
+              <p>可以。基础版目前免费体验，包含核心数据看板和每日报告，让你先感受一下系统能提供什么价值。专业版和旗舰版有7天全功能试用期，不满意随时退款。</p>
             </div>
           </div>
         </div>
       </div>
     </section>
     
-    <!-- 13. Footer (Complete) -->
+    <!-- 14. Footer (Complete) -->
     <footer class="footer">
       <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -1088,16 +1218,16 @@
   <div class="demo-page">
     <!-- Demo Nav -->
     <nav class="demo-nav">
-      <a href="#" class="flex items-center gap-3">
-        <img src="assets/logo.svg" alt="店赢OS" class="h-7">
-        <span class="text-gray-500 text-sm">体验Demo</span>
+      <a href="#" class="demo-nav-home flex items-center gap-2" id="demoHomeBtn">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>返回首页</span>
       </a>
       <div class="demo-nav-actions">
         <button class="share-btn" id="shareBtn">
           <i data-lucide="share-2" class="w-4 h-4"></i>
           分享
         </button>
-        <button class="btn-gradient text-sm px-4 py-2">
+        <button class="btn-gradient text-sm px-4 py-2" id="openPricingBtn">
           开通正式版
         </button>
       </div>
@@ -1132,8 +1262,18 @@
           </button>
         </div>
         
-        <div class="chat-messages">
+        <div class="chat-messages" id="chatMessages">
           <!-- Messages will be injected by JS -->
+        </div>
+        
+        <!-- Typing Indicator -->
+        <div class="typing-indicator hidden" id="typingIndicator">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="typing-text">AI正在思考...</span>
         </div>
         
         <!-- Chat Input -->
@@ -1208,7 +1348,7 @@
     </div>
     
     <!-- Back Button -->
-    <button class="back-btn" aria-label="返回首页">
+    <button class="back-btn" id="backBtn" aria-label="返回首页">
       <i data-lucide="arrow-left" class="w-5 h-5"></i>
     </button>
     

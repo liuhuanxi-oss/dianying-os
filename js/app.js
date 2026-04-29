@@ -1,6 +1,6 @@
 /**
- * 店赢OS - 交互逻辑 v4
- * 包含：滚动动画、FAQ折叠、Demo体验、多Agent协同、数字跳动动画
+ * 店赢OS - 交互逻辑 v5
+ * 包含：滚动动画、FAQ折叠、Demo体验、多Agent协同、数字跳动动画、暗色模式、打字效果
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,14 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const question = item.querySelector('.faq-question');
     
     question.addEventListener('click', () => {
-      // 关闭其他已打开的FAQ
       faqItems.forEach(otherItem => {
         if (otherItem !== item && otherItem.classList.contains('active')) {
           otherItem.classList.remove('active');
         }
       });
       
-      // 切换当前项
       item.classList.toggle('active');
     });
   });
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
       mobileMenu.classList.toggle('show');
     });
     
-    // 点击菜单链接后关闭
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenu.classList.add('hidden');
@@ -65,12 +62,57 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // ============================================
+  // 暗色模式切换
+  // ============================================
+  const themeToggle = document.getElementById('themeToggle');
+  
+  // 从localStorage读取用户偏好
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    updateThemeIcon(true);
+  }
+  
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeIcon(isDark);
+    });
+  }
+  
+  function updateThemeIcon(isDark) {
+    const moonIcon = document.querySelector('.moon-icon');
+    const sunIcon = document.querySelector('.sun-icon');
+    if (moonIcon && sunIcon) {
+      moonIcon.classList.toggle('hidden', isDark);
+      sunIcon.classList.toggle('hidden', !isDark);
+    }
+  }
+  
+  // ============================================
+  // 导航栏滚动阴影
+  // ============================================
+  const navbar = document.querySelector('.navbar');
+  
+  if (navbar) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('shadow');
+      } else {
+        navbar.classList.remove('shadow');
+      }
+    });
+  }
+  
+  // ============================================
   // Demo 体验功能
   // ============================================
   const demoTriggers = document.querySelectorAll('[data-demo-trigger]');
   const landingPage = document.querySelector('.landing-page');
   const demoPage = document.querySelector('.demo-page');
-  const backBtns = document.querySelectorAll('.back-btn');
+  const backBtns = document.querySelectorAll('.back-btn, #demoHomeBtn, #backBtn');
+  const openPricingBtn = document.getElementById('openPricingBtn');
   
   // 进入Demo
   demoTriggers.forEach(btn => {
@@ -82,10 +124,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 返回首页
   backBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
       showLanding();
     });
   });
+  
+  // 开通正式版 - 跳转到定价区域
+  if (openPricingBtn) {
+    openPricingBtn.addEventListener('click', () => {
+      showLanding();
+      setTimeout(() => {
+        document.querySelector('#pricing')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    });
+  }
   
   function showDemo() {
     landingPage.classList.add('hidden');
@@ -108,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (shareBtn && shareToast) {
     shareBtn.addEventListener('click', () => {
-      // 模拟复制链接
       const dummy = document.createElement('input');
       dummy.value = window.location.href;
       document.body.appendChild(dummy);
@@ -116,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.execCommand('copy');
       document.body.removeChild(dummy);
       
-      // 显示Toast
       shareToast.classList.add('show');
       setTimeout(() => {
         shareToast.classList.remove('show');
@@ -128,9 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Demo 场景对话 (多Agent协同)
   // ============================================
   const scenarioBtns = document.querySelectorAll('.scenario-btn');
-  const chatMessages = document.querySelector('.chat-messages');
+  const chatMessages = document.getElementById('chatMessages');
   const chatInput = document.getElementById('chatInput');
   const chatSendBtn = document.getElementById('chatSendBtn');
+  const typingIndicator = document.getElementById('typingIndicator');
   let currentScenario = null;
   
   // Mock对话数据 - 多Agent协同
@@ -181,18 +233,30 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', () => {
       const scenario = btn.dataset.scenario;
       
-      // 更新按钮状态
       scenarioBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // 清空并加载新对话
       chatMessages.innerHTML = '';
       currentScenario = scenario;
       
-      // 模拟AI逐条发送消息
       loadScenarioChat(scenario);
     });
   });
+  
+  // 显示打字效果
+  function showTyping() {
+    if (typingIndicator) {
+      typingIndicator.classList.remove('hidden');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+  
+  // 隐藏打字效果
+  function hideTyping() {
+    if (typingIndicator) {
+      typingIndicator.classList.add('hidden');
+    }
+  }
   
   function loadScenarioChat(scenario) {
     const data = scenarios[scenario];
@@ -200,14 +264,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     data.messages.forEach((msg, index) => {
       setTimeout(() => {
-        addMessage(msg.type, msg.text, msg.agent);
-        
-        // 最后一条消息时，更新数据面板
-        if (index === data.messages.length - 1) {
-          updateDemoData(scenario, true);
+        // 用户消息立即显示
+        if (msg.type === 'user') {
+          addMessage(msg.type, msg.text, msg.agent);
+        } else {
+          // AI消息显示打字效果
+          showTyping();
+          setTimeout(() => {
+            hideTyping();
+            addMessage(msg.type, msg.text, msg.agent);
+            
+            if (index === data.messages.length - 1) {
+              updateDemoData(scenario, true);
+            }
+          }, 1000 + Math.random() * 500);
         }
       }, delay);
-      delay += msg.type === 'user' ? 800 : 1800;
+      delay += msg.type === 'user' ? 800 : 2500;
     });
   }
   
@@ -228,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
       agentTag = `<div class="agent-tag ${agent}">${agentNames[agent] || agent}</div>`;
     }
     
-    // 处理换行
     const formattedText = text.replace(/\n/g, '<br>');
     
     messageDiv.innerHTML = `
@@ -247,15 +319,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const text = chatInput.value.trim();
     if (!text) return;
     
-    // 添加用户消息
     addMessage('user', text);
     chatInput.value = '';
     
-    // 模拟AI接收
+    showTyping();
+    
     setTimeout(() => {
+      hideTyping();
       addMessage('ai', 'virtual', 'virtual', '我已收到您的需求，正在为您分析...');
       
-      // 关键词匹配场景
       setTimeout(() => {
         let matchedScenario = 'review';
         const lowerText = text.toLowerCase();
@@ -268,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
           matchedScenario = 'operation';
         }
         
-        // 更新按钮状态
         scenarioBtns.forEach(b => {
           b.classList.toggle('active', b.dataset.scenario === matchedScenario);
         });
@@ -279,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 800);
   }
   
+  // 修复：重新定义addMessage（解决重复定义问题）
   function addMessage(type, text, agent = null) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
@@ -296,7 +368,6 @@ document.addEventListener('DOMContentLoaded', function() {
       agentTag = `<div class="agent-tag ${agent}">${agentNames[agent] || agent}</div>`;
     }
     
-    // 处理换行
     const formattedText = text.replace(/\n/g, '<br>');
     
     messageDiv.innerHTML = `
@@ -325,47 +396,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================
   function updateDemoData(scenario, animate = false) {
     const demoData = {
-      review: {
-        rating: 4.8,
-        ratingChange: '+0.3',
-        negativeRate: 1.2,
-        negativeChange: '-3.8%',
-        revenue: 128000,
-        revenueChange: '+12%',
-        trustLevel: 92
-      },
-      pricing: {
-        rating: 4.7,
-        ratingChange: '+0.1',
-        negativeRate: 2.1,
-        negativeChange: '-1.2%',
-        revenue: 135000,
-        revenueChange: '+18%',
-        trustLevel: 88
-      },
-      vip: {
-        rating: 4.9,
-        ratingChange: '+0.4',
-        negativeRate: 0.8,
-        negativeChange: '-4.2%',
-        revenue: 142000,
-        revenueChange: '+15%',
-        trustLevel: 95
-      },
-      operation: {
-        rating: 4.6,
-        ratingChange: '+0.2',
-        negativeRate: 2.8,
-        negativeChange: '-0.6%',
-        revenue: 118000,
-        revenueChange: '+8%',
-        trustLevel: 85
-      }
+      review: { rating: 4.8, ratingChange: '+0.3', negativeRate: 1.2, negativeChange: '-3.8%', revenue: 128000, revenueChange: '+12%', trustLevel: 92 },
+      pricing: { rating: 4.7, ratingChange: '+0.1', negativeRate: 2.1, negativeChange: '-1.2%', revenue: 135000, revenueChange: '+18%', trustLevel: 88 },
+      vip: { rating: 4.9, ratingChange: '+0.4', negativeRate: 0.8, negativeChange: '-4.2%', revenue: 142000, revenueChange: '+15%', trustLevel: 95 },
+      operation: { rating: 4.6, ratingChange: '+0.2', negativeRate: 2.8, negativeChange: '-0.6%', revenue: 118000, revenueChange: '+8%', trustLevel: 85 }
     };
     
     const data = demoData[scenario];
     
-    // 更新评分
     const ratingValue = document.getElementById('ratingValue');
     if (ratingValue) {
       if (animate) {
@@ -375,11 +413,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    // 更新变化值
     const ratingChange = document.querySelector('[data-stat="rating"] .data-stat-change span');
     if (ratingChange) ratingChange.textContent = data.ratingChange;
     
-    // 更新差评率
     const negativeValue = document.getElementById('negativeValue');
     if (negativeValue) {
       if (animate) {
@@ -395,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (changeSpan) changeSpan.textContent = data.negativeChange;
     }
     
-    // 更新营收
     const revenueValue = document.getElementById('revenueValue');
     const oldRevenue = revenueValue ? parseFloat(revenueValue.textContent.replace('¥', '').replace('万', '')) : 0;
     if (revenueValue) {
@@ -409,29 +444,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const revenueChange = document.querySelector('[data-stat="revenue"] .data-stat-change span');
     if (revenueChange) revenueChange.textContent = data.revenueChange;
     
-    // 更新信任等级
     const trustBarFill = document.getElementById('trustBarFill');
     const trustValue = document.getElementById('trustValue');
-    if (trustBarFill) {
-      trustBarFill.style.width = data.trustLevel + '%';
-    }
-    if (trustValue) {
-      trustValue.textContent = getTrustLevel(data.trustLevel);
-    }
+    if (trustBarFill) { trustBarFill.style.width = data.trustLevel + '%'; }
+    if (trustValue) { trustValue.textContent = getTrustLevel(data.trustLevel); }
     
-    // 更新图表
     updateChart(scenario);
   }
   
-  // 数字动画函数
   function animateNumber(element, start, end, duration, suffix = '') {
     const startTime = performance.now();
     
     function update(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * easeOut;
       
@@ -445,14 +471,12 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(update);
   }
   
-  // 营收动画函数
   function animateRevenue(element, start, end, duration) {
     const startTime = performance.now();
     
     function update(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * easeOut;
       
@@ -466,7 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(update);
   }
   
-  // 获取信任等级
   function getTrustLevel(score) {
     if (score >= 90) return 'A级';
     if (score >= 80) return 'B级';
@@ -484,28 +507,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('revenueChart');
     if (!ctx) return;
     
-    // 销毁已存在的图表
-    if (revenueChart) {
-      revenueChart.destroy();
-    }
+    if (revenueChart) { revenueChart.destroy(); }
     
     const chartData = {
-      review: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-        data: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8]
-      },
-      pricing: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-        data: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5]
-      },
-      vip: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-        data: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2]
-      },
-      operation: {
-        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-        data: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8]
-      }
+      review: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8] },
+      pricing: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5] },
+      vip: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2] },
+      operation: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8] }
     };
     
     const currentData = chartData[currentScenario] || chartData.review;
@@ -532,38 +540,12 @@ document.addEventListener('DOMContentLoaded', function() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            backgroundColor: '#1E293B',
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            padding: 12,
-            cornerRadius: 8,
-            displayColors: false
-          }
+          legend: { display: false },
+          tooltip: { backgroundColor: '#1E293B', titleColor: '#fff', bodyColor: '#fff', padding: 12, cornerRadius: 8, displayColors: false }
         },
         scales: {
-          x: {
-            grid: {
-              display: false
-            },
-            ticks: {
-              color: '#64748B'
-            }
-          },
-          y: {
-            grid: {
-              color: '#E2E8F0'
-            },
-            ticks: {
-              color: '#64748B',
-              callback: function(value) {
-                return value + '万';
-              }
-            }
-          }
+          x: { grid: { display: false }, ticks: { color: '#64748B' } },
+          y: { grid: { color: '#E2E8F0' }, ticks: { color: '#64748B', callback: function(value) { return value + '万'; } } }
         }
       }
     });
@@ -587,12 +569,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // 初始化 Demo
   // ============================================
   function initDemo() {
-    // 初始化图表
     if (typeof Chart !== 'undefined') {
       initChart();
     }
     
-    // 默认加载第一个场景
     const firstScenario = document.querySelector('.scenario-btn');
     if (firstScenario) {
       firstScenario.click();
@@ -607,27 +587,10 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth'
-        });
+        target.scrollIntoView({ behavior: 'smooth' });
       }
     });
   });
-  
-  // ============================================
-  // 导航栏滚动效果
-  // ============================================
-  const navbar = document.querySelector('.navbar');
-  
-  if (navbar) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 100) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-    });
-  }
   
   // ============================================
   // 定价卡片交互
@@ -644,5 +607,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  console.log('店赢OS v4 - 初始化完成');
+  console.log('店赢OS v5 - 初始化完成');
 });
