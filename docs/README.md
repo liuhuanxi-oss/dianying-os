@@ -223,3 +223,197 @@ open http://localhost:8080
 © 2026 店赢OS · MIT License
 
 </div>
+
+---
+
+<a id="contributing"></a>
+
+## 🤝 Contributing
+
+我们欢迎每一位开发者参与贡献！无论是提交 Bug report、改进文档，还是提交 Pull Request，都是对店赢OS 的支持。
+
+### 📋 如何参与贡献
+
+1. **Fork 本仓库**
+   ```bash
+   git clone https://github.com/liuhuanxi-oss/dianying-os.git
+   cd dianying-os
+   ```
+
+2. **创建特性分支**
+   ```bash
+   git checkout -b feature/your-feature-name
+   # 或修复 Bug
+   git checkout -b fix/your-bug-fix
+   ```
+
+3. **进行开发**
+   - 实现你的功能或修复
+   - 确保代码符合项目规范
+   - 添加必要的测试
+
+4. **提交更改**
+   ```bash
+   git add .
+   git commit -m "feat: 添加新功能描述"
+   # 提交信息格式见下方规范
+   ```
+
+5. **推送到远程**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+6. **创建 Pull Request**
+   - 在 GitHub 上发起 PR
+   - 填写 PR 模板中的所有项
+   - 等待代码审查
+
+### 📐 代码规范
+
+#### JavaScript / HTML
+- 使用语义化的变量和函数命名
+- 遵循 ES6+ 语法标准
+- 添加必要的注释说明复杂逻辑
+- 示例：
+  ```javascript
+  // ❌ 不推荐
+  function a(b, c) { return b + c; }
+  
+  // ✅ 推荐
+  /**
+   * 计算店铺综合评分
+   * @param {number} baseRating - 基础评分
+   * @param {number} reviewWeight - 评价权重
+   * @returns {number} 综合评分
+   */
+  function calculateCompositeRating(baseRating, reviewWeight) {
+    return baseRating * reviewWeight;
+  }
+  ```
+
+#### 提交信息格式
+我们采用 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+**类型 (type)**：
+- `feat` - 新功能
+- `fix` - Bug 修复
+- `docs` - 文档更新
+- `style` - 代码格式（不影响功能）
+- `refactor` - 重构
+- `perf` - 性能优化
+- `test` - 测试相关
+- `chore` - 构建/工具相关
+
+**示例**：
+```bash
+feat(agent): 添加线索Agent的异常检测功能
+
+- 实现评分下降检测
+- 实现差评率异常告警
+- 添加优先级排序逻辑
+
+Closes #123
+```
+
+### 🔧 开发环境搭建
+
+#### 环境要求
+- Node.js 18+
+- 现代浏览器（Chrome/Firefox/Safari/Edge）
+- Git
+
+#### 本地运行
+```bash
+# 克隆并进入目录
+git clone https://github.com/liuhuanxi-oss/dianying-os.git
+cd dianying-os
+
+# 使用任意静态服务器启动
+python -m http.server 8080
+# 或
+npx serve .
+
+# 打开浏览器访问
+open http://localhost:8080
+```
+
+#### 项目结构
+```
+dianying-os/
+├── index.html          # 主入口
+├── js/
+│   ├── app.js         # 应用主逻辑
+│   ├── agents/        # Agent 模块
+│   │   ├── store-manager.js   # 虚拟店长
+│   │   ├── lead-agent.js      # 线索Agent
+│   │   ├── plan-agent.js      # 方案Agent
+│   │   ├── delivery-agent.js  # 交付Agent
+│   │   └── operation-agent.js # 运营Agent
+│   ├── rag/           # RAG 知识库
+│   └── utils/         # 工具函数
+├── css/
+│   └── styles.css     # 样式文件
+├── assets/            # 静态资源
+└── docs/              # 文档
+```
+
+### 🐛 Issue 模板说明
+
+提交 Issue 时，请选择合适的模板：
+
+#### 🐛 Bug Report
+- **描述**：清晰描述问题
+- **复现步骤**：详细列出如何重现
+- **预期行为**：描述应该怎样
+- **实际行为**：描述实际发生了什么
+- **环境信息**：浏览器、系统版本
+
+#### 💡 Feature Request
+- **功能描述**：清晰描述需求
+- **使用场景**：说明在什么情况下需要
+- **解决方案**：如有建议，描述实现思路
+- **替代方案**：如有，描述其他解决方式
+
+#### ❓ Question
+- 描述你的问题
+- 说明你已经查阅了哪些文档
+- 提供相关的上下文信息
+
+### 🧪 测试规范
+
+提交代码前，请确保：
+
+1. **功能测试**：新功能在各种场景下正常工作
+2. **边界测试**：处理异常输入和边界条件
+3. **兼容性测试**：在不同浏览器上验证
+4. **性能检查**：确保没有明显的性能问题
+
+### 📜 许可证
+
+参与本项目即表示你同意你的代码将遵循 [MIT License](LICENSE)。
+
+---
+
+### 📞 联系方式
+
+- **GitHub Issues**: [提交 Bug 或 Feature](https://github.com/liuhuanxi-oss/dianying-os/issues)
+- **Discussions**: [讨论区](https://github.com/liuhuanxi-oss/dianying-os/discussions)
+
+---
+
+<div align="center">
+
+**感谢每一位贡献者！** 🎉
+
+你的每一次提交，都在让店赢OS 变得更好。
+
+</div>
