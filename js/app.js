@@ -1025,3 +1025,545 @@ function initDataScreenV2() {
   
   console.log('数据大屏 v2 - 初始化完成');
 }
+
+// ============================================
+// v9 新增功能模块
+// ============================================
+
+// ============================================
+// 1. 试用期倒计时
+// ============================================
+function initCountdown() {
+  // 设置7天后的时间作为试用截止
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 7);
+  
+  function updateCountdown() {
+    const now = new Date();
+    const diff = trialEnd - now;
+    
+    if (diff <= 0) {
+      document.querySelectorAll('.countdown-badge').forEach(el => {
+        el.textContent = '已到期';
+        el.style.background = '#EF4444';
+      });
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    const countdownText = days > 0 ? days + '天' + hours + '时' : hours + '时' + minutes + '分';
+    
+    document.querySelectorAll('.countdown-badge, #heroCountdown').forEach(el => {
+      if (el) el.textContent = '限时体验：剩余 ' + countdownText;
+    });
+  }
+  
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+}
+
+// ============================================
+// 2. 行业Tab切换
+// ============================================
+function initIndustryTabs() {
+  const tabs = document.querySelectorAll('.industry-tab');
+  const industryContents = document.querySelectorAll('.industry-content');
+  
+  if (!tabs.length) return;
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const industry = tab.dataset.industry;
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      industryContents.forEach(content => {
+        content.classList.toggle('hidden', content.dataset.industry !== industry);
+      });
+      
+      console.log('切换行业:', industry);
+    });
+  });
+}
+
+// ============================================
+// 3. Logo墙滚动
+// ============================================
+function initLogoWall() {
+  const track = document.getElementById('logoTrack');
+  if (!track) return;
+  
+  const originalHTML = track.innerHTML;
+  track.innerHTML = originalHTML + originalHTML;
+}
+
+// ============================================
+// 4. 门店TOP10排行榜滚动
+// ============================================
+function initRankingScroll() {
+  const scrollContainer = document.getElementById('rankingScroll');
+  if (!scrollContainer) return;
+  
+  let scrollInterval;
+  let isPaused = false;
+  
+  function startScroll() {
+    scrollInterval = setInterval(() => {
+      if (isPaused) return;
+      
+      const firstItem = scrollContainer.querySelector('.ranking-item');
+      if (firstItem) {
+        const itemHeight = firstItem.offsetHeight;
+        scrollContainer.style.transition = 'transform 0.5s ease';
+        scrollContainer.style.transform = 'translateY(-' + itemHeight + 'px)';
+        
+        setTimeout(() => {
+          scrollContainer.appendChild(firstItem);
+          scrollContainer.style.transition = 'none';
+          scrollContainer.style.transform = 'translateY(0)';
+        }, 500);
+      }
+    }, 3000);
+  }
+  
+  scrollContainer.addEventListener('mouseenter', () => { isPaused = true; });
+  scrollContainer.addEventListener('mouseleave', () => { isPaused = false; });
+  
+  startScroll();
+}
+
+// ============================================
+// 5. 通知中心
+// ============================================
+function initNotificationCenter() {
+  const bellBtn = document.getElementById('notificationBell');
+  const dropdown = document.getElementById('notificationDropdown');
+  const markReadBtn = document.querySelector('.notification-mark-read');
+  
+  if (!bellBtn || !dropdown) return;
+  
+  const notifications = [
+    { type: 'warning', title: '差评预警', content: '望京店收到1条1星差评，请及时处理', time: '5分钟前', read: false },
+    { type: 'info', title: '流量异常', content: '三里屯店今日午高峰流量下降23%，建议检查', time: '15分钟前', read: false },
+    { type: 'success', title: '评分提升', content: '恭喜！您的好评率环比提升5.2%', time: '1小时前', read: true },
+    { type: 'warning', title: '订单异常', content: '西单店出现3笔疑似刷单，已标记审查', time: '2小时前', read: true },
+    { type: 'info', title: 'AI建议', content: '系统检测到工作日午高峰人手不足，建议调整排班', time: '3小时前', read: true }
+  ];
+  
+  function renderNotifications() {
+    const list = dropdown.querySelector('.notification-list');
+    if (!list) return;
+    
+    list.innerHTML = notifications.map(n => 
+      '<div class="notification-item ' + (n.read ? '' : 'unread') + '" data-type="' + n.type + '">' +
+        '<div class="notification-icon notification-icon-' + n.type + '">' +
+          '<i data-lucide="' + (n.type === 'warning' ? 'alert-triangle' : n.type === 'success' ? 'check-circle' : 'info') + '" class="w-4 h-4"></i>' +
+        '</div>' +
+        '<div class="notification-content">' +
+          '<div class="notification-title">' + n.title + '</div>' +
+          '<div class="notification-text">' + n.content + '</div>' +
+          '<div class="notification-time">' + n.time + '</div>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+    
+    const unreadCount = notifications.filter(n => !n.read).length;
+    const badge = bellBtn.querySelector('.notification-badge');
+    if (badge) {
+      badge.textContent = unreadCount;
+      badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+    }
+    
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  
+  bellBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('hidden');
+    if (!dropdown.classList.contains('initialized')) {
+      renderNotifications();
+      dropdown.classList.add('initialized');
+    }
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!bellBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+  
+  markReadBtn?.addEventListener('click', () => {
+    notifications.forEach(n => n.read = true);
+    renderNotifications();
+  });
+}
+
+// ============================================
+// 6. 批量操作Modal
+// ============================================
+function initBatchOperations() {
+  const batchBtn = document.getElementById('batchActionBtn');
+  const modal = document.getElementById('batchModal');
+  const closeBtn = modal?.querySelector('.modal-close');
+  const operationBtns = document.querySelectorAll('.batch-operation-btn');
+  const executeBtn = document.getElementById('batchExecuteBtn');
+  
+  if (!batchBtn || !modal) return;
+  
+  batchBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+  
+  closeBtn?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+  });
+  
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+  
+  let selectedOperation = '';
+  operationBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      operationBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedOperation = btn.dataset.operation;
+    });
+  });
+  
+  executeBtn?.addEventListener('click', () => {
+    if (!selectedOperation) {
+      alert('请先选择操作类型');
+      return;
+    }
+    
+    const selectedItems = document.querySelectorAll('.store-checkbox:checked');
+    if (selectedItems.length === 0) {
+      alert('请至少选择一项');
+      return;
+    }
+    
+    executeBtn.disabled = true;
+    executeBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 执行中...';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    
+    setTimeout(() => {
+      executeBtn.disabled = false;
+      executeBtn.innerHTML = '确认执行';
+      modal.classList.add('hidden');
+      showToast('已成功对 ' + selectedItems.length + ' 项执行「' + getOperationName(selectedOperation) + '」');
+    }, 1500);
+  });
+}
+
+function getOperationName(op) {
+  const names = { reply: '批量回复差评', price: '批量调价', sync: '同步菜品', export: '导出数据' };
+  return names[op] || op;
+}
+
+function showToast(message) {
+  let toast = document.querySelector('.toast-notification');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.style.cssText = 'position:fixed;top:20px;right:20px;background:#10B981;color:white;padding:12px 24px;border-radius:8px;font-size:14px;z-index:10000;animation:slideIn 0.3s ease;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
+
+// ============================================
+// 7. 快捷键支持
+// ============================================
+function initKeyboardShortcuts() {
+  const shortcutBtn = document.getElementById('shortcutBtn');
+  const modal = document.getElementById('shortcutModal');
+  const closeBtn = modal?.querySelector('.modal-close');
+  
+  if (!shortcutBtn || !modal) return;
+  
+  shortcutBtn.addEventListener('click', () => { modal.classList.remove('hidden'); });
+  closeBtn?.addEventListener('click', () => { modal.classList.add('hidden'); });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    
+    const key = e.key.toLowerCase();
+    
+    switch(key) {
+      case '1': switchPage('overview'); break;
+      case '2': switchPage('chat'); break;
+      case '3': switchPage('data'); break;
+      case '4': switchPage('platform'); break;
+      case '5': switchPage('logs'); break;
+      case 'd': if (!e.ctrlKey && !e.metaKey) toggleTheme(); break;
+      case 'f': if (!e.ctrlKey && !e.metaKey) toggleFullscreen(); break;
+      case 'r': if (!e.ctrlKey && !e.metaKey) window.location.reload(); break;
+      case '?': modal.classList.remove('hidden'); break;
+      case 'escape': modal.classList.add('hidden'); break;
+    }
+  });
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ============================================
+// 8. 新手引导Tour (Driver.js)
+// ============================================
+function initTourGuide() {
+  const tourBtn = document.getElementById('tourBtn');
+  if (!tourBtn || typeof driver === 'undefined') return;
+  
+  if (localStorage.getItem('tourCompleted')) {
+    tourBtn.innerHTML = '<i data-lucide="compass" class="w-4 h-4"></i> 重新引导';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  
+  const driverObj = new driver({
+    animate: true,
+    opacity: 0.75,
+    padding: 5,
+    allowClose: true,
+    overlayClickNext: false,
+    doneBtnText: '完成',
+    closeBtnText: '关闭',
+    nextBtnText: '下一步',
+    prevBtnText: '上一步',
+    steps: [
+      { element: '.topbar', popover: { title: '欢迎使用店赢OS', description: '这是顶部导航栏，包含主题切换、全屏、帮助等功能', position: 'bottom' } },
+      { element: '.sidebar', popover: { title: '功能导航', description: '在此切换不同的功能模块：运营概览、AI对话、数据报表、平台管理、决策日志', position: 'right' } },
+      { element: '#sectionOverview .demo-card:first-child', popover: { title: '实时数据概览', description: '查看今日营收、订单、评分等核心指标，点击可查看详细趋势', position: 'top' } },
+      { element: '#sectionChat .chat-container', popover: { title: 'AI智能助手', description: '与店小赢对话，获取运营建议、数据分析、问题解答', position: 'left' } },
+      { element: '.demo-footer-actions', popover: { title: '快捷操作', description: '导出报告、查看帮助文档、进入大屏驾驶舱', position: 'top' } }
+    ]
+  });
+  
+  tourBtn.addEventListener('click', () => {
+    driverObj.drive();
+    localStorage.setItem('tourCompleted', 'true');
+  });
+}
+
+// ============================================
+// 9. 导出运营报告PDF
+// ============================================
+function initExportReport() {
+  const exportBtn = document.getElementById('exportReportBtn');
+  if (!exportBtn) return;
+  
+  exportBtn.addEventListener('click', () => {
+    const printContent = document.createElement('div');
+    printContent.id = 'print-report-content';
+    printContent.style.cssText = 'position:absolute;left:-9999px;top:0;width:800px;';
+    
+    const now = new Date();
+    const reportDate = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
+    
+    printContent.innerHTML = '<div style="font-family:Arial,sans-serif;padding:40px;">' +
+      '<h1 style="text-align:center;color:#7C3AED;font-size:28px;margin-bottom:10px;">店赢OS 运营周报</h1>' +
+      '<p style="text-align:center;color:#666;margin-bottom:30px;">报告日期：' + reportDate + '</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:30px;">' +
+        '<div style="text-align:center;padding:20px;background:#F3E8FF;border-radius:8px;"><div style="font-size:24px;font-weight:bold;color:#7C3AED;">¥128,500</div><div style="color:#666;font-size:14px;">本周营收</div><div style="color:#10B981;font-size:12px;">↑ 12.5%</div></div>' +
+        '<div style="text-align:center;padding:20px;background:#E0F2FE;border-radius:8px;"><div style="font-size:24px;font-weight:bold;color:#06B6D4;">3,256</div><div style="color:#666;font-size:14px;">本周订单</div><div style="color:#10B981;font-size:12px;">↑ 8.3%</div></div>' +
+        '<div style="text-align:center;padding:20px;background:#D1FAE5;border-radius:8px;"><div style="font-size:24px;font-weight:bold;color:#10B981;">4.87</div><div style="color:#666;font-size:14px;">平均评分</div><div style="color:#10B981;font-size:12px;">↑ 0.12</div></div>' +
+        '<div style="text-align:center;padding:20px;background:#FEF3C7;border-radius:8px;"><div style="font-size:24px;font-weight:bold;color:#F59E0B;">68.5%</div><div style="color:#666;font-size:14px;">复购率</div><div style="color:#10B981;font-size:12px;">↑ 3.2%</div></div>' +
+      '</div>' +
+      '<h2 style="color:#333;border-bottom:2px solid #7C3AED;padding-bottom:10px;">AI决策建议</h2>' +
+      '<div style="margin:20px 0;">' +
+        '<div style="background:#F9FAFB;padding:15px;border-radius:8px;margin-bottom:10px;"><strong style="color:#7C3AED;">💡 优化建议</strong><p style="margin:10px 0 0 0;color:#374151;">建议在工作日午高峰(11:30-13:00)增加2名服务员，预计可提升15%接单量</p></div>' +
+        '<div style="background:#F9FAFB;padding:15px;border-radius:8px;"><strong style="color:#10B981;">✅ 已执行</strong><p style="margin:10px 0 0 0;color:#374151;">已自动将「招牌小龙虾」移出午市套餐，降低出餐压力</p></div>' +
+      '</div>' +
+      '<h2 style="color:#333;border-bottom:2px solid #7C3AED;padding-bottom:10px;">门店排名 TOP5</h2>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:20px;">' +
+        '<tr style="background:#7C3AED;color:white;"><th style="padding:12px;text-align:left;">排名</th><th style="padding:12px;text-align:left;">门店</th><th style="padding:12px;text-align:right;">营收</th><th style="padding:12px;text-align:right;">订单</th><th style="padding:12px;text-align:right;">评分</th></tr>' +
+        '<tr style="background:#F9FAFB;"><td style="padding:12px;">🥇</td><td style="padding:12px;">望京SOHO店</td><td style="padding:12px;text-align:right;">¥35,200</td><td style="padding:12px;text-align:right;">892</td><td style="padding:12px;text-align:right;">4.92</td></tr>' +
+        '<tr style="background:white;"><td style="padding:12px;">🥈</td><td style="padding:12px;">三里屯店</td><td style="padding:12px;text-align:right;">¥28,500</td><td style="padding:12px;text-align:right;">756</td><td style="padding:12px;text-align:right;">4.88</td></tr>' +
+        '<tr style="background:#F9FAFB;"><td style="padding:12px;">🥉</td><td style="padding:12px;">国贸CBD店</td><td style="padding:12px;text-align:right;">¥25,800</td><td style="padding:12px;text-align:right;">698</td><td style="padding:12px;text-align:right;">4.85</td></tr>' +
+        '<tr style="background:white;"><td style="padding:12px;">4</td><td style="padding:12px;">中关村店</td><td style="padding:12px;text-align:right;">¥21,300</td><td style="padding:12px;text-align:right;">542</td><td style="padding:12px;text-align:right;">4.83</td></tr>' +
+        '<tr style="background:#F9FAFB;"><td style="padding:12px;">5</td><td style="padding:12px;">西单大悦城店</td><td style="padding:12px;text-align:right;">¥17,700</td><td style="padding:12px;text-align:right;">368</td><td style="padding:12px;text-align:right;">4.79</td></tr>' +
+      '</table>' +
+      '<div style="margin-top:40px;padding-top:20px;border-top:1px solid #E5E7EB;text-align:center;color:#666;font-size:12px;"><p>由 店赢OS v2.0 生成 | 更多信息请访问 dianyingos.com</p></div>' +
+    '</div>';
+    
+    document.body.appendChild(printContent);
+    window.print();
+    setTimeout(() => { document.body.removeChild(printContent); }, 100);
+  });
+}
+
+// ============================================
+// 10. 竞品雷达图
+// ============================================
+let competitorRadarChart = null;
+
+function initCompetitorRadarChart() {
+  const ctx = document.getElementById('competitorRadarChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  
+  if (competitorRadarChart) competitorRadarChart.destroy();
+  
+  const isDark = document.body.classList.contains('dark-mode');
+  
+  competitorRadarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['服务态度', '出餐速度', '菜品质量', '环境氛围', '性价比', '配送时效'],
+      datasets: [
+        { label: '本店', data: [92, 88, 95, 85, 78, 90], borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.2)', borderWidth: 2, pointBackgroundColor: '#7C3AED' },
+        { label: '行业均值', data: [75, 72, 78, 70, 80, 68], borderColor: '#06B6D4', backgroundColor: 'rgba(6,182,212,0.1)', borderWidth: 2, pointBackgroundColor: '#06B6D4' },
+        { label: '竞品A', data: [85, 90, 80, 88, 72, 82], borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.1)', borderWidth: 2, pointBackgroundColor: '#F59E0B' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { color: isDark ? '#E2E8F0' : '#374151', usePointStyle: true, padding: 15 } } },
+      scales: {
+        r: {
+          angleLines: { color: isDark ? 'rgba(255,255,255,0.1)' : '#E5E7EB' },
+          grid: { color: isDark ? 'rgba(255,255,255,0.1)' : '#E5E7EB' },
+          pointLabels: { color: isDark ? '#E2E8F0' : '#374151', font: { size: 11 } },
+          ticks: { color: isDark ? '#94A3B8' : '#9CA3AF', backdropColor: 'transparent' }
+        }
+      }
+    }
+  });
+}
+
+// ============================================
+// 11. AI预测图表
+// ============================================
+let forecastChart = null;
+
+function initForecastChart() {
+  const ctx = document.getElementById('forecastChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  
+  if (forecastChart) forecastChart.destroy();
+  
+  const isDark = document.body.classList.contains('dark-mode');
+  
+  forecastChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['本周', '下周', '下下周', '下月'],
+      datasets: [
+        { label: '预测营收', data: [32000, 35000, 38500, 42000], borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.1)', fill: true, tension: 0.4, borderDash: [5, 5], pointBackgroundColor: '#7C3AED' },
+        { label: '置信区间', data: [28000, 30000, 33000, 36000], borderColor: 'rgba(124,58,237,0.3)', backgroundColor: 'rgba(124,58,237,0.05)', fill: '+1', tension: 0.4, pointRadius: 0 },
+        { label: '置信上限', data: [36000, 40000, 44000, 48000], borderColor: 'rgba(124,58,237,0.3)', backgroundColor: 'transparent', fill: false, tension: 0.4, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: isDark ? '#94A3B8' : '#6B7280' } },
+        y: { grid: { color: isDark ? 'rgba(255,255,255,0.1)' : '#E5E7EB' }, ticks: { color: isDark ? '#94A3B8' : '#6B7280', callback: v => '¥' + (v/1000) + 'k' } }
+      }
+    }
+  });
+}
+
+// ============================================
+// 12. 数据对比切换
+// ============================================
+function initDataComparison() {
+  const compareBtns = document.querySelectorAll('.compare-btn');
+  
+  compareBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      compareBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      console.log('切换对比周期:', btn.dataset.compare);
+      
+      const metrics = document.querySelectorAll('.comparison-metric');
+      metrics.forEach(m => {
+        m.style.opacity = '0.5';
+        setTimeout(() => { m.style.opacity = '1'; }, 300);
+      });
+    });
+  });
+}
+
+// ============================================
+// 13. 操作日志筛选
+// ============================================
+function initLogFilters() {
+  const filterBtns = document.querySelectorAll('.log-filter-btn');
+  const logItems = document.querySelectorAll('.log-item');
+  const searchInput = document.querySelector('.log-search-input');
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const type = btn.dataset.filter;
+      logItems.forEach(item => {
+        item.style.display = (type === 'all' || item.dataset.type === type) ? 'flex' : 'none';
+      });
+    });
+  });
+  
+  searchInput?.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    logItems.forEach(item => {
+      item.style.display = item.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+    });
+  });
+}
+
+// ============================================
+// 14. 告警中心
+// ============================================
+function initAlertCenter() {
+  const alertItems = document.querySelectorAll('.ds-alert-item');
+  
+  alertItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const type = item.dataset.type;
+      const title = item.querySelector('.alert-title')?.textContent;
+      console.log('处理告警:', type, title);
+      showToast('正在处理：' + title);
+    });
+  });
+}
+
+// ============================================
+// 初始化所有新功能
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    initCountdown();
+    initIndustryTabs();
+    initLogoWall();
+    initRankingScroll();
+    initNotificationCenter();
+    initBatchOperations();
+    initKeyboardShortcuts();
+    initTourGuide();
+    initExportReport();
+    initCompetitorRadarChart();
+    initForecastChart();
+    initDataComparison();
+    initLogFilters();
+    initAlertCenter();
+    
+    console.log('店赢OS v9 新功能初始化完成');
+  }, 500);
+});
