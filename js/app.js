@@ -2230,3 +2230,648 @@ if (typeof loadScenarioChat === 'function') {
 }
 
 console.log('店赢OS v7 - 手机适配+5项新功能已加载');
+
+// ============================================
+// 15项新功能全家桶 JavaScript逻辑
+// WAIC OPC 企服OS比赛 - 2026
+// ============================================
+
+// -----------------------------------------
+// 1. ROI计算器
+// -----------------------------------------
+function calculateROI() {
+  const revenue = parseFloat(document.getElementById('roiRevenue')?.value) || 0;
+  const reviews = parseFloat(document.getElementById('roiReviews')?.value) || 0;
+  const stores = parseFloat(document.getElementById('roiStores')?.value) || 0;
+  const staff = parseFloat(document.getElementById('roiStaff')?.value) || 0;
+  
+  const reviewSaving = reviews * 100; // 每条差评节省100元
+  const timeSaving = staff * 8 * 50; // 每人每天节省8小时，每小时50元
+  const revenueGrowth = revenue * 0.15; // 营收增长15%
+  const costSaving = stores * 2000; // 每店每月节省运营成本
+  
+  const total = reviewSaving + timeSaving + revenueGrowth + costSaving;
+  const cost = 299; // 月费
+  const roi = Math.round((total / cost) * 100);
+  
+  if (document.getElementById('roiReviewSaving')) {
+    document.getElementById('roiReviewSaving').textContent = '¥' + reviewSaving.toLocaleString() + '/月';
+  }
+  if (document.getElementById('roiTotal')) {
+    document.getElementById('roiTotal').textContent = '¥' + Math.round(total).toLocaleString();
+  }
+  if (document.getElementById('roiPercent')) {
+    document.getElementById('roiPercent').textContent = roi + '%';
+  }
+  
+  // 显示详细结果
+  const resultsDiv = document.getElementById('roiResults');
+  if (resultsDiv) {
+    resultsDiv.style.animation = 'scaleIn 0.5s ease-out';
+  }
+}
+
+const calcRoiBtn = document.getElementById('calcRoiBtn');
+if (calcRoiBtn) {
+  calcRoiBtn.addEventListener('click', calculateROI);
+}
+
+// -----------------------------------------
+// 2. Multi-Agent通信可视化
+// -----------------------------------------
+const agentCommModal = document.getElementById('agentCommModal');
+const agentCommClose = document.querySelector('.agent-comm-close');
+
+function openAgentComm() {
+  if (agentCommModal) {
+    agentCommModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    initAgentAnimation();
+  }
+}
+
+function closeAgentComm() {
+  if (agentCommModal) {
+    agentCommModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+if (agentCommClose) {
+  agentCommClose.addEventListener('click', closeAgentComm);
+}
+
+if (agentCommModal) {
+  agentCommModal.addEventListener('click', function(e) {
+    if (e.target === agentCommModal) closeAgentComm();
+  });
+}
+
+function initAgentAnimation() {
+  const agentLog = document.getElementById('agentLog');
+  if (!agentLog) return;
+  
+  const logs = [
+    { agent: '线索Agent', text: '检测到客户进店，识别需求中...', time: '刚刚', color: '#06B6D4' },
+    { agent: '方案Agent', text: '生成个性化推荐方案', time: '1秒前', color: '#7C3AED' },
+    { agent: '交付Agent', text: 'VIP包间已预留，服务员就位', time: '2秒前', color: '#10B981' },
+    { agent: '运营Agent', text: '更新客户画像，标记高价值客户', time: '3秒前', color: '#F97316' }
+  ];
+  
+  logs.forEach((log, i) => {
+    setTimeout(() => {
+      const item = document.createElement('div');
+      item.className = 'agent-log-item';
+      item.style.animation = 'slideIn 0.3s ease-out';
+      item.innerHTML = `
+        <span class="agent-log-badge" style="background:${log.color}">${log.agent}</span>
+        <span class="agent-log-text">${log.text}</span>
+        <span class="agent-log-time">${log.time}</span>
+      `;
+      agentLog.appendChild(item);
+      agentLog.scrollTop = agentLog.scrollHeight;
+    }, i * 800);
+  });
+}
+
+// -----------------------------------------
+// 3. 错误恢复演示
+// -----------------------------------------
+const errorRecoverySteps = [
+  { icon: '❌', status: 'error', title: '网络中断', desc: '检测到网络连接异常' },
+  { icon: '🔄', status: 'processing', title: '自动重连', desc: '尝试恢复连接...' },
+  { icon: '🔄', status: 'processing', title: '重试第1次', desc: '重新发送请求' },
+  { icon: '🔄', status: 'processing', title: '重试第2次', desc: '切换备用服务器' },
+  { icon: '✅', status: 'success', title: '恢复成功', desc: '数据已同步，业务正常运行' }
+];
+
+function simulateErrorRecovery() {
+  const container = document.getElementById('errorRecoverySteps');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  const progressFill = document.querySelector('.error-progress-fill');
+  
+  errorRecoverySteps.forEach((step, i) => {
+    setTimeout(() => {
+      const stepEl = document.createElement('div');
+      stepEl.className = 'error-step';
+      stepEl.style.animation = 'slideIn 0.3s ease-out';
+      stepEl.innerHTML = `
+        <div class="error-step-icon ${step.status}">${step.icon}</div>
+        <div class="error-step-content">
+          <h4>${step.title}</h4>
+          <p>${step.desc}</p>
+        </div>
+      `;
+      container.appendChild(stepEl);
+      
+      if (progressFill) {
+        progressFill.style.width = ((i + 1) / errorRecoverySteps.length * 100) + '%';
+      }
+      
+      container.scrollTop = container.scrollHeight;
+    }, i * 1500);
+  });
+}
+
+// -----------------------------------------
+// 4. 客户旅程地图（滚动动画）
+// -----------------------------------------
+function initJourneyAnimation() {
+  const journeySteps = document.querySelectorAll('.journey-step');
+  if (!journeySteps.length) return;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.animation = 'slideIn 0.6s ease-out forwards';
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, i * 200);
+      }
+    });
+  }, { threshold: 0.3 });
+  
+  journeySteps.forEach(step => {
+    step.style.opacity = '0';
+    step.style.transform = 'translateY(30px)';
+    observer.observe(step);
+  });
+}
+
+// -----------------------------------------
+// 5. 智能排班建议
+// -----------------------------------------
+function initScheduleCard() {
+  const scheduleData = {
+    monday: 3, tuesday: 4, wednesday: 4, thursday: 5, 
+    friday: 6, saturday: 7, sunday: 5
+  };
+  
+  const scheduleGrid = document.querySelector('.schedule-grid');
+  if (scheduleGrid) {
+    const days = ['一', '二', '三', '四', '五', '六', '日'];
+    const keys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    
+    scheduleGrid.innerHTML = keys.map((key, i) => `
+      <div class="schedule-day">
+        <div class="day-name">周${days[i]}</div>
+        <div class="day-count">${scheduleData[key]}人</div>
+      </div>
+    `).join('');
+  }
+}
+
+// -----------------------------------------
+// 6. 社交媒体自动发文
+// -----------------------------------------
+function initSocialCard() {
+  const platforms = document.querySelectorAll('.social-icon');
+  platforms.forEach(p => {
+    p.addEventListener('click', function() {
+      platforms.forEach(pl => pl.style.opacity = '0.5');
+      this.style.opacity = '1';
+      showToast('已选择' + this.className.split(' ')[1] + '平台');
+    });
+  });
+}
+
+// -----------------------------------------
+// 7. 商圈竞品监控
+// -----------------------------------------
+function initCompetitorCard() {
+  const competitors = [
+    { name: '老街火锅', score: 92, trend: 'up' },
+    { name: '川味坊', score: 88, trend: 'up' },
+    { name: '辣皇朝', score: 85, trend: 'down' },
+    { name: '麻辣空间', score: 82, trend: 'up' }
+  ];
+  
+  const listContainer = document.querySelector('.competitor-list');
+  if (listContainer) {
+    listContainer.innerHTML = competitors.map((c, i) => `
+      <div class="competitor-item" style="animation: slideIn 0.3s ease-out ${i * 0.1}s both">
+        <span class="competitor-rank">${i + 1}</span>
+        <span class="competitor-name">${c.name}</span>
+        <span class="competitor-score">${c.score}分</span>
+        <span class="competitor-trend ${c.trend}">${c.trend === 'up' ? '↑ 2%' : '↓ 1%'}</span>
+      </div>
+    `).join('');
+  }
+}
+
+// -----------------------------------------
+// 8. 门店体检报告PDF
+// -----------------------------------------
+function generatePDFReport() {
+  showToast('正在生成体检报告...');
+  
+  setTimeout(() => {
+    // 创建打印内容
+    const reportContent = `
+      店赢OS - 门店体检报告
+      生成时间: ${new Date().toLocaleString('zh-CN')}
+      
+      综合评分: 92分 (优秀)
+      
+      各维度评分:
+      - 口碑评分: 90分
+      - 风险管控: 85分
+      - 营收能力: 95分
+      - 运营效率: 98分
+      
+      改进建议:
+      1. 加强晚高峰时段人手配置
+      2. 优化差评回复话术
+      3. 定期更新菜单定价策略
+    `;
+    
+    // 使用window.print
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write('<pre>' + reportContent + '</pre>');
+    printWindow.document.close();
+    printWindow.print();
+    
+    showToast('报告已生成，请打印或保存');
+  }, 1500);
+}
+
+const healthReportBtn = document.querySelector('.health-report-btn');
+if (healthReportBtn) {
+  healthReportBtn.addEventListener('click', generatePDFReport);
+}
+
+// -----------------------------------------
+// 9. A/B策略对比面板
+// -----------------------------------------
+function initABPanel() {
+  const abTabs = document.querySelectorAll('.ab-tab');
+  const abComparison = document.querySelector('.ab-comparison');
+  
+  abTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      abTabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      
+      const variant = this.dataset.variant;
+      if (variant === 'a') {
+        showToast('显示A方案详情');
+      } else {
+        showToast('显示B方案详情');
+      }
+    });
+  });
+}
+
+// -----------------------------------------
+// 10. RAG知识库可视化
+// -----------------------------------------
+function initRAGCard() {
+  const chunks = document.querySelectorAll('.rag-chunk');
+  chunks.forEach(chunk => {
+    chunk.addEventListener('click', function() {
+      chunks.forEach(c => c.classList.remove('highlight'));
+      this.classList.add('highlight');
+      showToast('选中知识片段: ' + this.dataset.score);
+    });
+  });
+}
+
+// -----------------------------------------
+// 11. 门店数字孪生3D视图
+// -----------------------------------------
+let twinRotation = { x: 45, z: -10 };
+
+function initTwinCard() {
+  const twinFloor = document.querySelector('.twin-floor');
+  const twinBtns = document.querySelectorAll('.twin-control-btn');
+  
+  twinBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const action = this.dataset.action;
+      if (action === 'rotate-left') twinRotation.z -= 15;
+      if (action === 'rotate-right') twinRotation.z += 15;
+      if (action === 'rotate-up') twinRotation.x -= 10;
+      if (action === 'rotate-down') twinRotation.x += 10;
+      if (action === 'reset') twinRotation = { x: 45, z: -10 };
+      
+      if (twinFloor) {
+        twinFloor.style.transform = `rotateX(${twinRotation.x}deg) rotateZ(${twinRotation.z}deg)`;
+      }
+    });
+  });
+  
+  // 实时数据更新
+  setInterval(() => {
+    const stats = document.querySelectorAll('.twin-stat-value');
+    if (stats[0]) stats[0].textContent = Math.floor(Math.random() * 10 + 20) + '人';
+    if (stats[1]) stats[1].textContent = Math.floor(Math.random() * 10 + 70) + '%';
+    if (stats[2]) stats[2].textContent = '¥' + (Math.random() * 5000 + 5000).toFixed(0);
+  }, 3000);
+}
+
+// -----------------------------------------
+// 12. 渐进式功能解锁引导
+// -----------------------------------------
+const guideSteps = [
+  { target: '#healthScore', title: '健康评分', desc: '实时监控门店运营健康度' },
+  { target: '.scenario-grid', title: '场景选择', desc: '体验AI虚拟店长的各项能力' },
+  { target: '.ai-actions', title: '快捷操作', desc: '一键生成日报、获取建议' },
+  { target: '#notificationPanel', title: '通知中心', desc: '查看AI智能提醒和通知' }
+];
+
+let currentGuideStep = 0;
+let guideActive = false;
+
+function startProgressiveGuide() {
+  if (guideActive) return;
+  guideActive = true;
+  currentGuideStep = 0;
+  
+  const guide = document.getElementById('progressiveGuide');
+  if (!guide) {
+    createProgressiveGuide();
+    return;
+  }
+  guide.classList.add('active');
+  showGuideStep(0);
+}
+
+function createProgressiveGuide() {
+  const guideHTML = `
+    <div class="progressive-guide" id="progressiveGuide">
+      <div class="progressive-overlay"></div>
+      <div class="progressive-highlight" id="guideHighlight"></div>
+      <div class="progressive-tooltip" id="guideTooltip">
+        <div class="progressive-step-indicator" id="guideIndicator"></div>
+        <div class="progressive-title" id="guideTitle"></div>
+        <div class="progressive-desc" id="guideDesc"></div>
+        <div class="progressive-actions">
+          <button class="progressive-skip" onclick="skipGuide()">跳过</button>
+          <button class="progressive-next" onclick="nextGuideStep()">下一步</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', guideHTML);
+  document.getElementById('progressiveGuide').classList.add('active');
+  showGuideStep(0);
+}
+
+function showGuideStep(index) {
+  if (index >= guideSteps.length) {
+    skipGuide();
+    return;
+  }
+  
+  const step = guideSteps[index];
+  const target = document.querySelector(step.target);
+  const highlight = document.getElementById('guideHighlight');
+  const tooltip = document.getElementById('guideTooltip');
+  const title = document.getElementById('guideTitle');
+  const desc = document.getElementById('guideDesc');
+  const indicator = document.getElementById('guideIndicator');
+  
+  if (!target || !highlight || !tooltip) return;
+  
+  const rect = target.getBoundingClientRect();
+  highlight.style.cssText = `
+    left: ${rect.left - 10}px;
+    top: ${rect.top - 10}px;
+    width: ${rect.width + 20}px;
+    height: ${rect.height + 20}px;
+  `;
+  
+  tooltip.style.cssText = `
+    left: ${rect.left + rect.width / 2 - 160}px;
+    top: ${rect.bottom + 20}px;
+  `;
+  
+  title.textContent = step.title;
+  desc.textContent = step.desc;
+  
+  // 更新指示器
+  if (indicator) {
+    indicator.innerHTML = guideSteps.map((_, i) => 
+      `<div class="progressive-step-dot ${i === index ? 'active' : ''} ${i < index ? 'completed' : ''}"></div>`
+    ).join('');
+  }
+  
+  // 更新按钮文字
+  const nextBtn = tooltip.querySelector('.progressive-next');
+  if (nextBtn) nextBtn.textContent = index === guideSteps.length - 1 ? '完成' : '下一步';
+  
+  currentGuideStep = index;
+}
+
+function nextGuideStep() {
+  showGuideStep(currentGuideStep + 1);
+}
+
+function skipGuide() {
+  const guide = document.getElementById('progressiveGuide');
+  if (guide) guide.classList.remove('active');
+  guideActive = false;
+  localStorage.setItem('guideCompleted', 'true');
+}
+
+// -----------------------------------------
+// 13. 限时优惠倒计时
+// -----------------------------------------
+let countdownInterval = null;
+const COUNTDOWN_KEY = 'countdownDismissed';
+const COUNTDOWN_END = new Date('2026-08-15T23:59:59').getTime();
+
+function initCountdown() {
+  // 检查是否已关闭
+  if (localStorage.getItem(COUNTDOWN_KEY)) return;
+  
+  const countdownBar = document.getElementById('countdownBar');
+  const countdownClose = document.querySelector('.countdown-close');
+  
+  if (countdownClose) {
+    countdownClose.addEventListener('click', dismissCountdown);
+  }
+  
+  // 3秒后显示
+  setTimeout(() => {
+    if (countdownBar) countdownBar.classList.add('active');
+    startCountdownTimer();
+  }, 3000);
+}
+
+function dismissCountdown() {
+  const countdownBar = document.getElementById('countdownBar');
+  if (countdownBar) {
+    countdownBar.classList.add('closing');
+    setTimeout(() => countdownBar.classList.remove('active', 'closing'), 400);
+  }
+  localStorage.setItem(COUNTDOWN_KEY, 'true');
+  if (countdownInterval) clearInterval(countdownInterval);
+}
+
+function startCountdownTimer() {
+  if (countdownInterval) clearInterval(countdownInterval);
+  
+  countdownInterval = setInterval(() => {
+    const now = new Date().getTime();
+    const distance = COUNTDOWN_END - now;
+    
+    if (distance < 0) {
+      clearInterval(countdownInterval);
+      return;
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    document.querySelectorAll('.countdown-value')[0]?.setAttribute('data-value', days);
+    document.querySelectorAll('.countdown-value')[1]?.setAttribute('data-value', hours);
+    document.querySelectorAll('.countdown-value')[2]?.setAttribute('data-value', minutes);
+    document.querySelectorAll('.countdown-value')[3]?.setAttribute('data-value', seconds);
+    
+    const dayEl = document.querySelector('.countdown-unit:nth-child(1) .countdown-value');
+    const hourEl = document.querySelector('.countdown-unit:nth-child(2) .countdown-value');
+    const minEl = document.querySelector('.countdown-unit:nth-child(3) .countdown-value');
+    const secEl = document.querySelector('.countdown-unit:nth-child(4) .countdown-value');
+    
+    if (dayEl) dayEl.textContent = days;
+    if (hourEl) hourEl.textContent = hours.toString().padStart(2, '0');
+    if (minEl) minEl.textContent = minutes.toString().padStart(2, '0');
+    if (secEl) secEl.textContent = seconds.toString().padStart(2, '0');
+  }, 1000);
+}
+
+// -----------------------------------------
+// 14. 推荐返利机制
+// -----------------------------------------
+function initReferralSection() {
+  const copyBtn = document.querySelector('.referral-copy-btn');
+  const linkField = document.querySelector('.referral-link-field');
+  
+  if (copyBtn && linkField) {
+    copyBtn.addEventListener('click', function() {
+      const link = linkField.value;
+      navigator.clipboard.writeText(link).then(() => {
+        this.textContent = '已复制 ✓';
+        this.classList.add('copied');
+        showToast('推荐链接已复制到剪贴板');
+        
+        setTimeout(() => {
+          this.textContent = '复制链接';
+          this.classList.remove('copied');
+        }, 2000);
+      });
+    });
+  }
+  
+  // 模拟统计数据
+  const referralStats = document.querySelectorAll('.referral-stat-value');
+  if (referralStats[0]) referralStats[0].textContent = '23';
+  if (referralStats[1]) referralStats[1].textContent = '¥5,980';
+  if (referralStats[2]) referralStats[2].textContent = '¥2,990';
+}
+
+// -----------------------------------------
+// 15. 客户成功案例视频区
+// -----------------------------------------
+const videoModal = document.getElementById('videoModal');
+const videoModalClose = document.querySelector('.video-modal-close');
+
+function openVideoModal(caseId) {
+  if (videoModal) {
+    videoModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // 根据caseId设置视频信息
+    const videoInfo = videoModal.querySelector('.video-info');
+    if (videoInfo) {
+      const titles = {
+        1: '湘菜馆张老板：差评转化率提升85%',
+        2: '火锅店李总：节省运营成本60%',
+        3: '粤菜馆王女士：营收同比增长120%'
+      };
+      const descs = {
+        1: '通过店赢OS的差评自动处理功能，3个月内将差评转化率从35%提升到85%',
+        2: 'AI智能排班和动态定价让人力成本降低40%，整体运营效率提升60%',
+        3: '精准的客户画像和营销自动化让淡季营收增长120%'
+      };
+      if (videoInfo.querySelector('h4')) videoInfo.querySelector('h4').textContent = titles[caseId] || titles[1];
+      if (videoInfo.querySelector('p')) videoInfo.querySelector('p').textContent = descs[caseId] || descs[1];
+    }
+  }
+}
+
+function closeVideoModal() {
+  if (videoModal) {
+    videoModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+if (videoModalClose) {
+  videoModalClose.addEventListener('click', closeVideoModal);
+}
+
+if (videoModal) {
+  videoModal.addEventListener('click', function(e) {
+    if (e.target === videoModal) closeVideoModal();
+  });
+}
+
+// 绑定视频卡片点击
+document.querySelectorAll('.case-card').forEach((card, i) => {
+  card.addEventListener('click', () => openVideoModal(i + 1));
+});
+
+// -----------------------------------------
+// Demo新增场景按钮
+// -----------------------------------------
+function initScenarioNewBtns() {
+  const newBtns = document.querySelectorAll('.scenario-new-btn');
+  newBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      newBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      const scenario = this.dataset.scenario;
+      if (scenario === 'agent') {
+        openAgentComm();
+      } else if (scenario === 'error') {
+        simulateErrorRecovery();
+      } else if (scenario === 'marketing') {
+        showToast('社交媒体自动发文功能演示');
+      }
+    });
+  });
+}
+
+// -----------------------------------------
+// 初始化所有新功能
+// -----------------------------------------
+document.addEventListener('DOMContentLoaded', function() {
+  initJourneyAnimation();
+  initScheduleCard();
+  initSocialCard();
+  initCompetitorCard();
+  initABPanel();
+  initRAGCard();
+  initTwinCard();
+  initReferralSection();
+  initScenarioNewBtns();
+  
+  // 延迟初始化倒计时和引导
+  setTimeout(() => {
+    initCountdown();
+    if (!localStorage.getItem('guideCompleted')) {
+      // 可选：启动引导
+      // startProgressiveGuide();
+    }
+  }, 2000);
+  
+  console.log('店赢OS v15 - 15项新功能全家桶已加载 ✓');
+});
