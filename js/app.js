@@ -1984,48 +1984,7 @@ document.addEventListener('click', function() {
 setLanguage(currentLang);
 
 // ----------------------------------------
-// 2. 语音播报功能
-// ----------------------------------------
-let isSpeaking = false;
-function checkSpeechSupport() {
-  const voiceBtn = document.getElementById('voiceBtn');
-  if (!voiceBtn) return;
-  if (!('speechSynthesis' in window)) { voiceBtn.style.display = 'none'; return; }
-  setTimeout(() => { if (speechSynthesis.getVoices().length === 0) voiceBtn.style.display = 'none'; }, 100);
-}
-checkSpeechSupport();
-window.addEventListener('voiceschanged', checkSpeechSupport);
-
-function speakReport() {
-  const voiceBtn = document.getElementById('voiceBtn');
-  if (!voiceBtn) return;
-  if (isSpeaking) {
-    speechSynthesis.cancel();
-    voiceBtn.classList.remove('speaking');
-    isSpeaking = false;
-    return;
-  }
-  const revenue = document.getElementById('revenueValue')?.textContent || '¥12.8万';
-  const revenueChange = document.querySelector('[data-stat="revenue"] .data-stat-change span')?.textContent || '+12%';
-  const negativeRate = document.getElementById('negativeValue')?.textContent || '1.2%';
-  const trustLevel = document.getElementById('trustValue')?.textContent || 'A级';
-  const reportText = `今日营收${revenue}，较昨日增长${revenueChange.replace('+', '')}。差评率${negativeRate}，已自动处理5条差评。AI店长运行正常，信任等级${trustLevel}。`;
-  const voices = speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang.includes('zh')) || voices[0];
-  const utterance = new SpeechSynthesisUtterance(reportText);
-  utterance.voice = zhVoice;
-  utterance.lang = zhVoice?.lang || 'zh-CN';
-  utterance.rate = 1;
-  utterance.onstart = () => { voiceBtn.classList.add('speaking'); isSpeaking = true; };
-  utterance.onend = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
-  utterance.onerror = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
-  speechSynthesis.speak(utterance);
-}
-const voiceBtn = document.getElementById('voiceBtn');
-if (voiceBtn) voiceBtn.addEventListener('click', speakReport);
-
-// ----------------------------------------
-// 3. 移动端Tab切换
+// 2. 移动端Tab切换
 // ----------------------------------------
 const demoTabs = document.querySelectorAll('.demo-tab');
 const demoContainer = document.getElementById('demoContainer');
