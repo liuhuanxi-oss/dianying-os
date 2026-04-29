@@ -1684,3 +1684,513 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   color: #94A3B8;
   margin-top: 4px;
 }
+
+/* ============================================
+   DATA SCREEN v2 (数据大屏驾驶舱)
+   ============================================ */
+
+/* 基础设置 */
+.data-screen {
+  min-height: 100vh;
+  background: #0A0E1A;
+  color: white;
+  padding: 16px;
+  overflow-x: hidden;
+}
+
+/* 顶部导航栏 */
+.ds-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.ds-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ds-logo {
+  height: 32px;
+  width: auto;
+}
+.ds-topbar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #7C3AED, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.ds-topbar-center {
+  text-align: center;
+}
+.ds-date {
+  font-size: 0.875rem;
+  color: #94A3B8;
+}
+.ds-clock {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, monospace;
+  color: #06B6D4;
+  text-shadow: 0 0 20px rgba(6,182,212,0.5);
+}
+.ds-topbar-right {
+  display: flex;
+  align-items: center;
+}
+.ds-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: #10B981;
+}
+.ds-live-dot {
+  width: 8px;
+  height: 8px;
+  background: #10B981;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* 主网格区域 */
+.ds-main-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* 面板通用样式 */
+.ds-panel {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+.ds-panel:hover {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+}
+.ds-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-bottom: 16px;
+}
+.ds-panel-header i {
+  color: #7C3AED;
+}
+
+/* 核心指标区 */
+.ds-metrics-panel { grid-row: span 1; }
+.ds-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.ds-metric-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.ds-metric-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.ds-metric-icon.purple { background: linear-gradient(135deg, #7C3AED, #9333EA); }
+.ds-metric-icon.cyan { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+.ds-metric-icon.green { background: linear-gradient(135deg, #10B981, #059669); }
+.ds-metric-icon.orange { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.ds-metric-icon.blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.ds-metric-content { flex: 1; min-width: 0; }
+.ds-metric-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+.ds-metric-label { font-size: 0.75rem; color: #64748B; }
+.ds-metric-trend {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.ds-metric-trend.up { background: rgba(16,185,129,0.1); color: #10B981; }
+.ds-metric-trend.down { background: rgba(239,68,68,0.1); color: #EF4444; }
+.ds-metric-trend.neutral { background: rgba(100,116,139,0.1); color: #64748B; }
+.ds-sparkline { width: 60px; height: 24px; }
+
+/* Tab切换 */
+.ds-tab-group { display: flex; gap: 4px; margin-left: auto; }
+.ds-tab {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: #64748B;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ds-tab:hover { color: #94A3B8; border-color: rgba(255,255,255,0.2); }
+.ds-tab.active { color: white; background: rgba(124,58,237,0.3); border-color: rgba(124,58,237,0.5); }
+
+/* 图表容器 */
+.ds-chart-container { height: 180px; position: relative; }
+.ds-revenue-panel { grid-column: span 1; }
+
+/* 差评分析 */
+.ds-badreview-content { display: flex; flex-direction: column; gap: 12px; }
+.ds-badreview-pie { height: 120px; display: flex; justify-content: center; }
+.ds-badreview-stats { display: flex; gap: 12px; }
+.ds-badreview-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+.ds-badreview-stat-label { font-size: 0.75rem; color: #64748B; }
+.ds-badreview-stat-value { font-size: 1rem; font-weight: 700; }
+.ds-badreview-stat-value.danger { color: #EF4444; }
+.ds-badreview-stat-value.success { color: #10B981; }
+.ds-badreview-trend { height: 80px; }
+.ds-badreview-list { display: flex; flex-direction: column; gap: 8px; }
+.ds-badreview-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+.ds-badreview-type {
+  padding: 2px 6px;
+  background: rgba(239,68,68,0.2);
+  color: #EF4444;
+  border-radius: 4px;
+  font-size: 0.625rem;
+}
+.ds-badreview-content-text {
+  flex: 1;
+  color: #94A3B8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ds-badreview-result {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.625rem;
+}
+.ds-badreview-result.success { background: rgba(16,185,129,0.2); color: #10B981; }
+
+/* 门店热力地图 */
+.ds-heatmap-container { position: relative; height: 240px; }
+.ds-heatmap-svg { width: 100%; height: 100%; border-radius: 8px; }
+.ds-store-marker { cursor: pointer; transition: transform 0.2s; }
+.ds-store-marker:hover { transform: scale(1.2); }
+.ds-heatmap-legend {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: #94A3B8;
+}
+.ds-legend-item { display: flex; align-items: center; gap: 4px; }
+.ds-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.ds-legend-dot.purple { background: #7C3AED; }
+.ds-legend-dot.cyan { background: #06B6D4; }
+.ds-legend-dot.green { background: #10B981; }
+.ds-store-tooltip {
+  position: absolute;
+  padding: 8px 12px;
+  background: rgba(15,23,42,0.95);
+  border: 1px solid rgba(124,58,237,0.5);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: white;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+.ds-store-tooltip.show { opacity: 1; }
+
+/* Agent状态面板 */
+.ds-agent-panel { display: flex; flex-direction: column; }
+.ds-agent-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+.ds-agent-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+.ds-agent-card.running { border-color: rgba(16,185,129,0.3); box-shadow: 0 0 20px rgba(16,185,129,0.1); }
+.ds-agent-card.standby { opacity: 0.6; }
+.ds-agent-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.ds-agent-avatar.purple { background: linear-gradient(135deg, #7C3AED, #9333EA); }
+.ds-agent-avatar.cyan { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+.ds-agent-avatar.green { background: linear-gradient(135deg, #10B981, #059669); }
+.ds-agent-avatar.orange { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.ds-agent-avatar.blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.ds-agent-info { text-align: center; }
+.ds-agent-name { font-size: 0.75rem; font-weight: 600; color: white; margin-bottom: 4px; }
+.ds-agent-status { display: flex; align-items: center; gap: 4px; font-size: 0.625rem; color: #94A3B8; }
+.ds-status-dot { width: 6px; height: 6px; border-radius: 50%; }
+.ds-status-dot.running { background: #10B981; animation: pulse 2s infinite; }
+.ds-status-dot.standby { background: #F59E0B; }
+.ds-status-dot.offline { background: #64748B; }
+.ds-agent-stats { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.ds-agent-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ds-agent-stat-value { font-size: 0.875rem; font-weight: 700; color: white; }
+.ds-agent-stat-label { font-size: 0.5rem; color: #64748B; }
+.ds-agent-flow { width: 100%; height: 30px; margin-top: 8px; }
+
+/* 平台数据矩阵 */
+.ds-platform-panel { grid-column: span 1; }
+.ds-platform-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ds-platform-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.2s;
+}
+.ds-platform-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+.ds-platform-logo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  color: white;
+}
+.ds-platform-logo.meituan { background: linear-gradient(135deg, #FF6B35, #F7931E); }
+.ds-platform-logo.dianping { background: linear-gradient(135deg, #FF6633, #FF3333); }
+.ds-platform-logo.elm { background: linear-gradient(135deg, #00BFFF, #1E90FF); }
+.ds-platform-logo.douyin { background: linear-gradient(135deg, #FF0050, #00F2EA); }
+.ds-platform-logo.xhs { background: linear-gradient(135deg, #FF2442, #FF6B6B); }
+.ds-platform-logo.wx { background: linear-gradient(135deg, #07C160, #06AD56); }
+.ds-platform-logo.gaode { background: linear-gradient(135deg, #1E8E3E, #0D7A29); }
+.ds-platform-logo.koubei { background: linear-gradient(135deg, #FF9500, #FF6B00); }
+.ds-platform-data { display: flex; flex-direction: column; gap: 3px; }
+.ds-platform-row { display: flex; justify-content: space-between; font-size: 0.625rem; color: #64748B; }
+.ds-platform-value { color: white; font-weight: 500; }
+.ds-platform-value .up { color: #10B981; font-size: 0.5625rem; }
+.ds-platform-value .down { color: #EF4444; font-size: 0.5625rem; }
+
+/* 会员画像 */
+.ds-member-panel { grid-column: span 1; }
+.ds-member-content { display: flex; flex-direction: column; gap: 12px; }
+.ds-member-chart { display: flex; align-items: center; gap: 16px; }
+.ds-member-pie { position: relative; width: 100px; height: 100px; }
+.ds-member-pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.ds-member-pie-value { font-size: 1rem; font-weight: 700; color: white; }
+.ds-member-pie-label { font-size: 0.625rem; color: #64748B; }
+.ds-member-legend { display: flex; flex-direction: column; gap: 8px; }
+.ds-member-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #94A3B8; }
+.ds-legend-color { width: 10px; height: 10px; border-radius: 3px; }
+.ds-member-age-title, .ds-member-rfm-title { font-size: 0.75rem; color: #64748B; margin-bottom: 8px; }
+.ds-member-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ds-member-bar-label { width: 50px; font-size: 0.625rem; color: #64748B; }
+.ds-member-bar-fill { height: 8px; background: linear-gradient(90deg, #7C3AED, #06B6D4); border-radius: 4px; flex: 1; }
+.ds-member-bar-value { font-size: 0.625rem; color: white; font-weight: 500; }
+.ds-member-rfm { margin-top: 4px; }
+
+/* AI决策时间线 */
+.ds-timeline-panel { grid-column: span 1; }
+.ds-timeline-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(124,58,237,0.2);
+  color: #A78BFA;
+  border-radius: 100px;
+  font-size: 0.625rem;
+}
+.ds-timeline { display: flex; flex-direction: column; gap: 0; max-height: 300px; overflow-y: auto; }
+.ds-timeline-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-left: 2px solid rgba(255,255,255,0.1);
+  margin-left: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+.ds-timeline-item:first-child { border-left-color: #7C3AED; }
+.ds-timeline-time { font-size: 0.625rem; color: #64748B; width: 40px; flex-shrink: 0; }
+.ds-timeline-dot {
+  position: absolute;
+  left: -6px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #0A0E1A;
+}
+.ds-timeline-dot.completed { background: #10B981; }
+.ds-timeline-dot.running { background: #7C3AED; animation: pulse 2s infinite; }
+.ds-timeline-dot.pending { background: #F59E0B; }
+.ds-timeline-content { flex: 1; }
+.ds-timeline-agent { font-size: 0.75rem; font-weight: 600; color: #A78BFA; margin-bottom: 2px; }
+.ds-timeline-text { font-size: 0.75rem; color: #94A3B8; line-height: 1.4; }
+.ds-timeline-status { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.5625rem; margin-top: 4px; }
+.ds-timeline-status.success { background: rgba(16,185,129,0.2); color: #10B981; }
+.ds-timeline-status.primary { background: rgba(124,58,237,0.2); color: #A78BFA; }
+.ds-timeline-status.warning { background: rgba(245,158,11,0.2); color: #F59E0B; }
+
+/* AI处理统计 */
+.ds-ai-stats-panel { grid-column: span 1; }
+.ds-ai-stats-content { display: flex; gap: 16px; }
+.ds-ai-donut { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+.ds-ai-donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.ds-ai-donut-value { font-size: 1.5rem; font-weight: 700; color: white; }
+.ds-ai-donut-label { font-size: 0.625rem; color: #64748B; }
+.ds-ai-stats-list { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.ds-ai-stat-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+.ds-ai-stat-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; }
+.ds-ai-stat-icon.purple { background: rgba(124,58,237,0.3); color: #A78BFA; }
+.ds-ai-stat-icon.cyan { background: rgba(6,182,212,0.3); color: #22D3EE; }
+.ds-ai-stat-icon.green { background: rgba(16,185,129,0.3); color: #34D399; }
+.ds-ai-stat-icon.orange { background: rgba(245,158,11,0.3); color: #FBBF24; }
+.ds-ai-stat-info { flex: 1; }
+.ds-ai-stat-label { font-size: 0.75rem; color: #94A3B8; }
+.ds-ai-stat-value { font-size: 0.625rem; color: #64748B; }
+.ds-ai-stat-rate { font-size: 0.75rem; font-weight: 600; }
+.ds-ai-stat-rate.success { color: #10B981; }
+
+/* 底部滚动通知条 */
+.ds-news-ticker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.ds-news-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(124,58,237,0.2);
+  color: #A78BFA;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.ds-news-label i { animation: pulse 2s infinite; }
+.ds-news-track { flex: 1; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); }
+.ds-news-content { display: flex; gap: 40px; animation: scrollNews 30s linear infinite; white-space: nowrap; }
+@keyframes scrollNews { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.ds-news-item { font-size: 0.75rem; color: #94A3B8; display: inline-flex; align-items: center; gap: 8px; }
+.ds-news-item::before { content: ''; width: 4px; height: 4px; background: rgba(124,58,237,0.5); border-radius: 50%; }
+
+/* 返回按钮 */
+.ds-close-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 100;
+}
+.ds-close-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+
+/* 响应式布局 */
+@media (max-width: 1400px) {
+  .ds-main-grid { grid-template-columns: repeat(2, 1fr); }
+  .ds-agent-grid { grid-template-columns: repeat(3, 1fr); }
+  .ds-platform-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 1024px) {
+  .ds-main-grid { grid-template-columns: 1fr; }
+  .ds-metrics-grid { grid-template-columns: repeat(4, 1fr); }
+  .ds-agent-grid { grid-template-columns: repeat(5, 1fr); }
+  .ds-platform-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 768px) {
+  .data-screen { padding: 12px; }
+  .ds-topbar { flex-direction: column; gap: 12px; text-align: center; }
+  .ds-topbar-left { flex-direction: column; }
+  .ds-topbar-center { order: -1; }
+  .ds-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .ds-agent-grid { grid-template-columns: repeat(2, 1fr); }
+  .ds-platform-grid { grid-template-columns: repeat(2, 1fr); }
+  .ds-ai-stats-content { flex-direction: column; }
+  .ds-ai-donut { margin: 0 auto; }
+  .ds-news-ticker { padding: 10px 12px; }
+  .ds-news-label { display: none; }
+  .ds-close-btn { bottom: 70px; right: 12px; padding: 8px 12px; }
+}

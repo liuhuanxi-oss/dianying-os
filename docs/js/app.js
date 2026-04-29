@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     landingPage.classList.add('hidden');
     dataScreen?.classList.remove('hidden');
     window.scrollTo(0, 0);
-    initScreenChart();
+    initDataScreenV2();
     lucide.createIcons();
   }
 
@@ -405,3 +405,499 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log('店赢OS v8 - 初始化完成');
 });
+
+// ============================================
+// DATA SCREEN v2 - 数据大屏驾驶舱
+// ============================================
+
+// 全局图表实例
+let screenRevenueChart = null;
+let badReviewPieChart = null;
+let badReviewTrendChart = null;
+let memberGenderChart = null;
+let memberRFMChart = null;
+let aiDonutChart = null;
+
+// Sparkline数据
+const sparklineData = {
+  sparkRevenue: [8, 9, 7.5, 10, 11, 12, 12.8],
+  sparkOrders: [120, 135, 128, 145, 156, 168, 180],
+  sparkRating: [4.5, 4.6, 4.5, 4.7, 4.7, 4.8, 4.8],
+  sparkAI: [35, 38, 40, 42, 45, 47, 47],
+  sparkRepurchase: [25, 27, 28, 29, 30, 31, 32],
+  sparkAOV: [155, 158, 160, 162, 165, 167, 168],
+  sparkBadReview: [3, 2, 3, 2, 2, 1, 1],
+  sparkPlatforms: [8, 8, 8, 8, 8, 8, 8]
+};
+
+// 绘制Sparkline
+function drawSparkline(canvasId, data, color = '#7C3AED') {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const stepX = width / (data.length - 1);
+  
+  ctx.clearRect(0, 0, width, height);
+  
+  // 绘制渐变填充
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, color + '40');
+  gradient.addColorStop(1, color + '00');
+  
+  ctx.beginPath();
+  ctx.moveTo(0, height);
+  data.forEach((val, i) => {
+    const x = i * stepX;
+    const y = height - ((val - min) / range) * (height - 4) - 2;
+    ctx.lineTo(x, y);
+  });
+  ctx.lineTo(width, height);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  
+  // 绘制线条
+  ctx.beginPath();
+  data.forEach((val, i) => {
+    const x = i * stepX;
+    const y = height - ((val - min) / range) * (height - 4) - 2;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  
+  // 绘制端点
+  const lastX = (data.length - 1) * stepX;
+  const lastY = height - ((data[data.length - 1] - min) / range) * (height - 4) - 2;
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 2, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+// 初始化营收趋势图
+function initScreenRevenueChart() {
+  const ctx = document.getElementById('screenRevenueChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  if (screenRevenueChart) screenRevenueChart.destroy();
+
+  const labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月'];
+  const currentData = [82000, 88000, 91000, 96000, 105000, 118000, 128000];
+  const lastMonthData = [75000, 78000, 82000, 85000, 92000, 98000, null];
+
+  screenRevenueChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '本月',
+          data: currentData,
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.15)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointBackgroundColor: '#7C3AED',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        },
+        {
+          label: '上月同期',
+          data: lastMonthData,
+          borderColor: '#06B6D4',
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 0,
+          spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'end',
+          labels: {
+            color: '#94A3B8',
+            font: { size: 10 },
+            boxWidth: 12,
+            padding: 10
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleColor: '#fff',
+          bodyColor: '#94A3B8',
+          borderColor: 'rgba(124, 58, 237, 0.5)',
+          borderWidth: 1,
+          padding: 10,
+          callbacks: {
+            label: function(context) {
+              const value = context.raw;
+              if (value === null) return '';
+              return context.dataset.label + ': ¥' + (value / 10000).toFixed(1) + '万';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+          ticks: { color: '#64748B', font: { size: 10 } }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+          ticks: { 
+            color: '#64748B', 
+            font: { size: 10 },
+            callback: v => '¥' + (v / 10000) + '万'
+          }
+        }
+      }
+    }
+  });
+}
+
+// Tab切换功能
+function initDSTabs() {
+  const tabs = document.querySelectorAll('.ds-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const tabType = tab.dataset.tab;
+      updateRevenueChart(tabType);
+    });
+  });
+}
+
+// 更新营收图表数据
+function updateRevenueChart(type) {
+  if (!screenRevenueChart) return;
+  
+  let data, label, color;
+  switch(type) {
+    case 'revenue':
+      data = [82000, 88000, 91000, 96000, 105000, 118000, 128000];
+      label = '营收';
+      color = '#7C3AED';
+      break;
+    case 'orders':
+      data = [980, 1050, 1100, 1150, 1200, 1240, 1247];
+      label = '订单';
+      color = '#06B6D4';
+      break;
+    case 'traffic':
+      data = [2800, 3200, 3500, 3800, 4200, 4800, 5200];
+      label = '流量';
+      color = '#10B981';
+      break;
+  }
+  
+  screenRevenueChart.data.datasets[0].data = data;
+  screenRevenueChart.data.datasets[0].borderColor = color;
+  screenRevenueChart.data.datasets[0].pointBackgroundColor = color;
+  screenRevenueChart.options.scales.y.ticks.callback = type === 'revenue' 
+    ? v => '¥' + (v / 10000) + '万'
+    : v => v;
+  screenRevenueChart.update();
+}
+
+// 初始化差评分析图
+function initBadReviewCharts() {
+  // 差评原因饼图
+  const pieCtx = document.getElementById('badReviewPieChart');
+  if (pieCtx && typeof Chart !== 'undefined') {
+    if (badReviewPieChart) badReviewPieChart.destroy();
+    badReviewPieChart = new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['口味', '服务', '环境', '价格', '等待'],
+        datasets: [{
+          data: [35, 28, 18, 12, 7],
+          backgroundColor: [
+            '#EF4444',
+            '#F59E0B',
+            '#8B5CF6',
+            '#06B6D4',
+            '#64748B'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            labels: {
+              color: '#94A3B8',
+              font: { size: 9 },
+              padding: 6,
+              boxWidth: 10
+            }
+          }
+        }
+      }
+    });
+  }
+  
+  // 差评趋势图
+  const trendCtx = document.getElementById('badReviewTrendChart');
+  if (trendCtx && typeof Chart !== 'undefined') {
+    if (badReviewTrendChart) badReviewTrendChart.destroy();
+    badReviewTrendChart = new Chart(trendCtx, {
+      type: 'line',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [{
+          data: [3, 2, 1, 2, 1, 2, 1],
+          borderColor: '#EF4444',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#EF4444'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#64748B', font: { size: 8 } } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748B', font: { size: 8 }, stepSize: 1 } }
+        }
+      }
+    });
+  }
+}
+
+// 初始化会员画像图
+function initMemberCharts() {
+  // 性别分布
+  const genderCtx = document.getElementById('memberGenderChart');
+  if (genderCtx && typeof Chart !== 'undefined') {
+    if (memberGenderChart) memberGenderChart.destroy();
+    memberGenderChart = new Chart(genderCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['女性', '男性'],
+        datasets: [{
+          data: [58, 42],
+          backgroundColor: ['#7C3AED', '#06B6D4'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+  
+  // RFM分层饼图
+  const rfmCtx = document.getElementById('memberRFMChart');
+  if (rfmCtx && typeof Chart !== 'undefined') {
+    if (memberRFMChart) memberRFMChart.destroy();
+    memberRFMChart = new Chart(rfmCtx, {
+      type: 'bar',
+      data: {
+        labels: ['高价值', '潜力', '新客', '流失'],
+        datasets: [{
+          data: [35, 28, 22, 15],
+          backgroundColor: ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#64748B', font: { size: 8 } } },
+          y: { grid: { display: false }, ticks: { color: '#94A3B8', font: { size: 9 } } }
+        }
+      }
+    });
+  }
+}
+
+// 初始化AI处理统计图
+function initAIStatsChart() {
+  const ctx = document.getElementById('aiDonutChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  if (aiDonutChart) aiDonutChart.destroy();
+  
+  aiDonutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['成功', '失败'],
+      datasets: [{
+        data: [94, 6],
+        backgroundColor: ['#10B981', 'rgba(255,255,255,0.1)'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '75%',
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+// 实时时钟
+function initClock() {
+  const clockEl = document.getElementById('dsClock');
+  const dateEl = document.getElementById('dsDate');
+  
+  function updateClock() {
+    const now = new Date();
+    const year = 2026; // 强制2026年
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    if (dateEl) dateEl.textContent = `${year}年${month}月${day}日`;
+    if (clockEl) clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+  }
+  
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+// 新闻滚动复制（确保无缝滚动）
+function initNewsTicker() {
+  const content = document.getElementById('newsContent');
+  if (!content) return;
+  
+  // 复制内容以确保无缝滚动
+  const originalHTML = content.innerHTML;
+  content.innerHTML = originalHTML + originalHTML;
+}
+
+// 门店热力图Tooltip
+function initHeatmapTooltip() {
+  const markers = document.querySelectorAll('.ds-store-marker');
+  const tooltip = document.getElementById('storeTooltip');
+  
+  markers.forEach(marker => {
+    marker.addEventListener('mouseenter', (e) => {
+      const storeName = marker.dataset.store;
+      if (tooltip && storeName) {
+        tooltip.textContent = storeName;
+        tooltip.classList.add('show');
+        
+        const rect = marker.getBoundingClientRect();
+        const containerRect = marker.closest('.ds-heatmap-container').getBoundingClientRect();
+        tooltip.style.left = (rect.left - containerRect.left) + 'px';
+        tooltip.style.top = (rect.top - containerRect.top - 35) + 'px';
+      }
+    });
+    
+    marker.addEventListener('mouseleave', () => {
+      if (tooltip) tooltip.classList.remove('show');
+    });
+  });
+}
+
+// 数字滚动动画
+function animateNumbers() {
+  const statElements = document.querySelectorAll('.ds-metric-value, .ds-agent-stat-value');
+  statElements.forEach(el => {
+    const text = el.textContent;
+    const match = text.match(/[\d.]+/);
+    if (match) {
+      const target = parseFloat(match[0]);
+      const prefix = text.substring(0, text.indexOf(match[0]));
+      const suffix = text.substring(text.indexOf(match[0]) + match[0].length);
+      let current = 0;
+      const duration = 1500;
+      const step = target / (duration / 16);
+      
+      const animate = () => {
+        current += step;
+        if (current < target) {
+          el.textContent = prefix + (Number.isInteger(target) ? Math.floor(current) : current.toFixed(1)) + suffix;
+          requestAnimationFrame(animate);
+        } else {
+          el.textContent = text;
+        }
+      };
+      
+      // 延迟启动动画
+      setTimeout(animate, Math.random() * 500);
+    }
+  });
+}
+
+// 增强版大屏初始化
+function initDataScreenV2() {
+  // 初始化时钟
+  initClock();
+  
+  // 初始化Sparklines
+  Object.keys(sparklineData).forEach(id => {
+    const colors = {
+      sparkRevenue: '#7C3AED',
+      sparkOrders: '#06B6D4',
+      sparkRating: '#10B981',
+      sparkAI: '#F59E0B',
+      sparkRepurchase: '#7C3AED',
+      sparkAOV: '#7C3AED',
+      sparkBadReview: '#10B981',
+      sparkPlatforms: '#06B6D4'
+    };
+    drawSparkline(id, sparklineData[id], colors[id] || '#7C3AED');
+  });
+  
+  // 初始化图表
+  setTimeout(() => {
+    initScreenRevenueChart();
+    initBadReviewCharts();
+    initMemberCharts();
+    initAIStatsChart();
+  }, 100);
+  
+  // 初始化Tab
+  initDSTabs();
+  
+  // 初始化新闻滚动
+  initNewsTicker();
+  
+  // 初始化热力图Tooltip
+  initHeatmapTooltip();
+  
+  // 数字动画
+  setTimeout(animateNumbers, 500);
+  
+  console.log('数据大屏 v2 - 初始化完成');
+}
