@@ -1,6 +1,6 @@
 /**
- * 店赢OS - 交互逻辑 v5
- * 包含：滚动动画、FAQ折叠、Demo体验、多Agent协同、数字跳动动画、暗色模式、打字效果
+ * 店赢OS - 交互逻辑 v7
+ * 包含：滚动动画、FAQ折叠、Demo体验、多Agent协同、数字跳动动画、暗色模式、打字效果、雷达图、数字滚动
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -24,6 +24,133 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   revealElements.forEach(el => revealObserver.observe(el));
+  
+  // ============================================
+  // 雷达图初始化
+  // ============================================
+  function initRadarChart() {
+    const ctx = document.getElementById('radarChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['差评处理速度', '定价精准度', '会员留存率', '运营效率', '跨店复制能力'],
+        datasets: [
+          {
+            label: '行业平均',
+            data: [60, 50, 55, 45, 40],
+            backgroundColor: 'rgba(203, 213, 225, 0.2)',
+            borderColor: 'rgba(203, 213, 225, 1)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(203, 213, 225, 1)',
+            pointRadius: 4
+          },
+          {
+            label: '店赢OS',
+            data: [95, 88, 82, 92, 85],
+            backgroundColor: 'rgba(124, 58, 237, 0.3)',
+            borderColor: 'rgba(124, 58, 237, 1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#7C3AED',
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              stepSize: 20,
+              display: false
+            },
+            grid: {
+              color: 'rgba(203, 213, 225, 0.3)'
+            },
+            angleLines: {
+              color: 'rgba(203, 213, 225, 0.3)'
+            },
+            pointLabels: {
+              font: {
+                size: 12,
+                weight: '500'
+              },
+              color: '#64748B'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1E293B',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            padding: 12,
+            cornerRadius: 8
+          }
+        }
+      }
+    });
+  }
+  
+  // 等待页面加载后初始化雷达图
+  setTimeout(initRadarChart, 100);
+  
+  // ============================================
+  // 数字滚动动画 (IntersectionObserver)
+  // ============================================
+  function animateCounter(element) {
+    const target = parseFloat(element.dataset.target);
+    const prefix = element.dataset.prefix || '';
+    const suffix = element.dataset.suffix || '';
+    const duration = 2000;
+    const startTime = performance.now();
+    const isDecimal = target % 1 !== 0;
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = target * easeOut;
+      
+      let displayValue;
+      if (target >= 10000) {
+        displayValue = Math.floor(current).toLocaleString();
+      } else if (isDecimal) {
+        displayValue = current.toFixed(1);
+      } else {
+        displayValue = Math.floor(current);
+      }
+      
+      element.textContent = prefix + displayValue + suffix;
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+  
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+    counterObserver.observe(el);
+  });
   
   // ============================================
   // FAQ 折叠功能
@@ -1555,8 +1682,8 @@ function generatePoster() {
   
   // 背景
   const gradient = ctx.createLinearGradient(0, 0, 320, 400);
-  gradient.addColorStop(0, '#6366F1');
-  gradient.addColorStop(1, '#8B5CF6');
+  gradient.addColorStop(0, '#7C3AED');
+  gradient.addColorStop(1, '#A78BFA');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 320, 400);
   
@@ -1984,48 +2111,7 @@ document.addEventListener('click', function() {
 setLanguage(currentLang);
 
 // ----------------------------------------
-// 2. 语音播报功能
-// ----------------------------------------
-let isSpeaking = false;
-function checkSpeechSupport() {
-  const voiceBtn = document.getElementById('voiceBtn');
-  if (!voiceBtn) return;
-  if (!('speechSynthesis' in window)) { voiceBtn.style.display = 'none'; return; }
-  setTimeout(() => { if (speechSynthesis.getVoices().length === 0) voiceBtn.style.display = 'none'; }, 100);
-}
-checkSpeechSupport();
-window.addEventListener('voiceschanged', checkSpeechSupport);
-
-function speakReport() {
-  const voiceBtn = document.getElementById('voiceBtn');
-  if (!voiceBtn) return;
-  if (isSpeaking) {
-    speechSynthesis.cancel();
-    voiceBtn.classList.remove('speaking');
-    isSpeaking = false;
-    return;
-  }
-  const revenue = document.getElementById('revenueValue')?.textContent || '¥12.8万';
-  const revenueChange = document.querySelector('[data-stat="revenue"] .data-stat-change span')?.textContent || '+12%';
-  const negativeRate = document.getElementById('negativeValue')?.textContent || '1.2%';
-  const trustLevel = document.getElementById('trustValue')?.textContent || 'A级';
-  const reportText = `今日营收${revenue}，较昨日增长${revenueChange.replace('+', '')}。差评率${negativeRate}，已自动处理5条差评。AI店长运行正常，信任等级${trustLevel}。`;
-  const voices = speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang.includes('zh')) || voices[0];
-  const utterance = new SpeechSynthesisUtterance(reportText);
-  utterance.voice = zhVoice;
-  utterance.lang = zhVoice?.lang || 'zh-CN';
-  utterance.rate = 1;
-  utterance.onstart = () => { voiceBtn.classList.add('speaking'); isSpeaking = true; };
-  utterance.onend = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
-  utterance.onerror = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
-  speechSynthesis.speak(utterance);
-}
-const voiceBtn = document.getElementById('voiceBtn');
-if (voiceBtn) voiceBtn.addEventListener('click', speakReport);
-
-// ----------------------------------------
-// 3. 移动端Tab切换
+// 2. 移动端Tab切换
 // ----------------------------------------
 const demoTabs = document.querySelectorAll('.demo-tab');
 const demoContainer = document.getElementById('demoContainer');
