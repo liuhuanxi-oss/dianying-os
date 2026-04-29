@@ -961,11 +961,11 @@ function initNewsTicker() {
   content.innerHTML = originalHTML + originalHTML;
 }
 
-// 门店热力图Tooltip
+// 门店分布图Tooltip
 function initHeatmapTooltip() {
   const markers = document.querySelectorAll('.ds-store-marker');
   const tooltip = document.getElementById('storeTooltip');
-  const mapContainer = document.querySelector('.ds-heatmap-container');
+  const mapContainer = document.querySelector('.ds-map-container');
   
   markers.forEach(marker => {
     marker.addEventListener('mouseenter', (e) => {
@@ -1167,7 +1167,7 @@ function initDataScreenV2() {
   // 初始化新闻滚动
   initNewsTicker();
   
-  // 初始化热力图Tooltip
+  // 初始化门店分布图Tooltip
   initHeatmapTooltip();
   
   // 初始化新功能
