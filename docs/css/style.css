@@ -2086,6 +2086,10 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
 
 /* 地图样式 */
 .map-land { transition: fill 0.3s; }
+.map-land-glow { pointer-events: none; }
+.map-land-highlight { pointer-events: none; }
+.map-south-sea { transition: opacity 0.3s; }
+.map-south-sea:hover { opacity: 0.9; }
 .map-river { stroke-linecap: round; }
 .ds-store-marker .pulse-ring { animation: pulse 2s infinite; }
 
