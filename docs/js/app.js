@@ -637,5 +637,114 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
+  // ============================================
+  // Item 15: 下载报表功能
+  // ============================================
+  function generateReportCSV() {
+    const headers = ['日期', '场景', '线索数', '转化率', '月营收(万)', '信任等级', 'AI响应(ms)'];
+    const rows = [
+      ['2026-01-01', '好评提升', '45', '23.5%', '8.2', 'A', '120'],
+      ['2026-01-02', '好评提升', '52', '24.1%', '8.8', 'A', '118'],
+      ['2026-01-03', '好评提升', '48', '22.8%', '9.1', 'A', '125'],
+      ['2026-01-04', '好评提升', '61', '25.3%', '9.6', 'A', '115'],
+      ['2026-01-05', '好评提升', '58', '24.5%', '10.5', 'A', '122'],
+      ['2026-01-06', '好评提升', '67', '26.2%', '11.2', 'A', '110'],
+      ['2026-01-07', '好评提升', '72', '27.8%', '12.8', 'A', '108']
+    ];
+    
+    let csvContent = 'data:text/csv;charset=utf-8,\uFEFF';
+    csvContent += headers.join(',') + '\n';
+    rows.forEach(row => {
+      csvContent += row.join(',') + '\n';
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', '店赢OS_运营报表_2026-01-01_2026-01-07.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  const downloadReportBtn = document.getElementById('downloadReportBtn');
+  if (downloadReportBtn) {
+    downloadReportBtn.addEventListener('click', generateReportCSV);
+  }
+  
+  // ============================================
+  // Item 16: 平台连接功能
+  // ============================================
+  const eleConnectBtn = document.getElementById('eleConnectBtn');
+  const douyinConnectBtn = document.getElementById('douyinConnectBtn');
+  const connectionModal = document.getElementById('connectionModal');
+  const modalContent = connectionModal ? connectionModal.querySelector('.modal-content') : null;
+  const modalTitle = connectionModal ? connectionModal.querySelector('.modal-title') : null;
+  const modalBody = connectionModal ? connectionModal.querySelector('.modal-body-content') : null;
+  const modalConfirmBtn = connectionModal ? connectionModal.querySelector('.modal-confirm-btn') : null;
+  
+  function showConnectionModal(platform, status) {
+    if (!connectionModal) return;
+    
+    if (status === 'connecting') {
+      if (modalTitle) modalTitle.textContent = '连接中...';
+      if (modalBody) modalBody.innerHTML = '<div class="flex flex-col items-center py-4"><div class="spinner mb-4"></div><p class="text-gray-600">正在连接' + platform + '...</p></div>';
+      if (modalConfirmBtn) { modalConfirmBtn.classList.add('hidden'); }
+    } else if (status === 'success') {
+      if (modalTitle) modalTitle.textContent = '连接成功';
+      if (modalBody) modalBody.innerHTML = '<div class="flex flex-col items-center py-4"><div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"><svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div><p class="text-lg font-medium text-gray-800">已成功连接' + platform + '</p><p class="text-gray-500 mt-2">数据同步已自动开启</p></div>';
+      if (modalConfirmBtn) { modalConfirmBtn.textContent = '完成'; modalConfirmBtn.classList.remove('hidden'); }
+    }
+    
+    connectionModal.classList.remove('hidden');
+  }
+  
+  function hideConnectionModal() {
+    if (connectionModal) connectionModal.classList.add('hidden');
+  }
+  
+  if (eleConnectBtn) {
+    eleConnectBtn.addEventListener('click', function() {
+      showConnectionModal('饿了么开放平台', 'connecting');
+      eleConnectBtn.disabled = true;
+      eleConnectBtn.innerHTML = '<svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 连接中...';
+      
+      setTimeout(function() {
+        eleConnectBtn.disabled = false;
+        eleConnectBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        eleConnectBtn.classList.add('bg-green-500', 'connected');
+        eleConnectBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 已连接';
+        showConnectionModal('饿了么开放平台', 'success');
+      }, 2000);
+    });
+  }
+  
+  if (douyinConnectBtn) {
+    douyinConnectBtn.addEventListener('click', function() {
+      showConnectionModal('抖音开放平台', 'connecting');
+      douyinConnectBtn.disabled = true;
+      douyinConnectBtn.innerHTML = '<svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 连接中...';
+      
+      setTimeout(function() {
+        douyinConnectBtn.disabled = false;
+        douyinConnectBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        douyinConnectBtn.classList.add('bg-green-500', 'connected');
+        douyinConnectBtn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 已连接';
+        showConnectionModal('抖音开放平台', 'success');
+      }, 2000);
+    });
+  }
+  
+  if (modalConfirmBtn) {
+    modalConfirmBtn.addEventListener('click', hideConnectionModal);
+  }
+  
+  // 点击模态框背景关闭
+  if (connectionModal) {
+    connectionModal.addEventListener('click', function(e) {
+      if (e.target === connectionModal) hideConnectionModal();
+    });
+  }
+
   console.log('店赢OS v5 - 初始化完成');
 });

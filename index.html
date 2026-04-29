@@ -1334,7 +1334,13 @@
         
         <!-- Revenue Chart -->
         <div class="chart-card">
-          <h4>营收趋势</h4>
+          <div class="chart-card-header">
+            <h4>营收趋势</h4>
+            <button class="download-btn" id="downloadReportBtn">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              下载报表
+            </button>
+          </div>
           <div style="height: 250px;">
             <canvas id="revenueChart"></canvas>
           </div>
@@ -1350,6 +1356,92 @@
             <div class="trust-value" id="trustValue">A级</div>
           </div>
         </div>
+        
+        <!-- Platform Connection -->
+        <div class="platform-section">
+          <div class="platform-header">
+            <i data-lucide="link" class="w-5 h-5"></i>
+            <span>平台管理</span>
+          </div>
+          <div class="platform-grid">
+            <div class="platform-card connected">
+              <div class="platform-icon meituan">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">美团</span>
+                <span class="platform-status connected">
+                  <span class="status-dot"></span>
+                  已连接 · ID: 8847
+                </span>
+              </div>
+            </div>
+            <div class="platform-card connected">
+              <div class="platform-icon dianping">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">大众点评</span>
+                <span class="platform-status connected">
+                  <span class="status-dot"></span>
+                  已连接 · ID: 6621
+                </span>
+              </div>
+            </div>
+            <div class="platform-card" id="elePlatform">
+              <div class="platform-icon ele">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">饿了么</span>
+                <span class="platform-status disconnected" id="eleStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="eleConnectBtn">点击连接</button>
+            </div>
+            <div class="platform-card" id="douyinPlatform">
+              <div class="platform-icon douyin">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">抖音</span>
+                <span class="platform-status disconnected" id="douyinStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="douyinConnectBtn">点击连接</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Connection Modal -->
+    <div class="connection-modal" id="connectionModal">
+      <div class="modal-content">
+        <div class="modal-icon" id="modalIcon">
+          <div class="modal-logo" id="modalLogo"></div>
+        </div>
+        <h3 class="modal-title" id="modalTitle">授权登录中</h3>
+        <div class="modal-loader" id="modalLoader">
+          <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <p class="modal-desc" id="modalDesc">正在跳转授权页面，请稍候...</p>
       </div>
     </div>
     
