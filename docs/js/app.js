@@ -108,6 +108,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chat: 'AI对话',
     data: '数据报表',
     platform: '平台管理',
+    aipay: 'AI付',
+    knowledge: '知识库',
     logs: '决策日志'
   };
 
@@ -1563,7 +1565,184 @@ document.addEventListener('DOMContentLoaded', function() {
     initDataComparison();
     initLogFilters();
     initAlertCenter();
+    initAIPayDemo();
+    initKnowledgeLibrary();
+    initPublishFeature();
+    initHealthReport();
     
     console.log('店赢OS v9 新功能初始化完成');
   }, 500);
 });
+
+// ============================================
+// 15. AI付模拟收款
+// ============================================
+function initAIPayDemo() {
+  const simulateBtn = document.getElementById('simulateAipayBtn');
+  const animation = document.getElementById('paymentAnimation');
+  
+  if (!simulateBtn || !animation) return;
+  
+  simulateBtn.addEventListener('click', () => {
+    animation.classList.remove('hidden');
+    animation.style.display = 'block';
+    
+    const steps = ['step1', 'step2', 'step3', 'step4'];
+    
+    steps.forEach((stepId, index) => {
+      setTimeout(() => {
+        steps.forEach(s => {
+          document.getElementById(s)?.classList.add('hidden');
+        });
+        document.getElementById(stepId)?.classList.remove('hidden');
+      }, index * 1200);
+    });
+    
+    setTimeout(() => {
+      simulateBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> 收款成功';
+      simulateBtn.classList.add('success');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 4800);
+  });
+}
+
+// ============================================
+// 16. 知识库管理
+// ============================================
+function initKnowledgeLibrary() {
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const knowledgeItems = document.querySelectorAll('.knowledge-item');
+  
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const category = btn.dataset.category;
+      knowledgeItems.forEach(item => {
+        if (category === 'all') {
+          item.style.display = 'block';
+        } else {
+          const tag = item.querySelector('.knowledge-tag');
+          item.style.display = tag?.classList.contains(category) ? 'block' : 'none';
+        }
+      });
+    });
+  });
+}
+
+// ============================================
+// 17. 一键发文功能
+// ============================================
+function initPublishFeature() {
+  const publishBtn = document.getElementById('publishBtn');
+  
+  if (!publishBtn) return;
+  
+  publishBtn.addEventListener('click', () => {
+    showToast('正在生成AI文案并同步至抖音/小红书/视频号...');
+    
+    setTimeout(() => {
+      showToast('已发布至3个平台：抖音、小红书、视频号');
+    }, 2000);
+  });
+}
+
+// ============================================
+// 18. 门店体检报告
+// ============================================
+function initHealthReport() {
+  const healthBtn = document.getElementById('healthReportBtn');
+  
+  if (!healthBtn) return;
+  
+  healthBtn.addEventListener('click', () => {
+    const healthScore = Math.floor(Math.random() * 20) + 80;
+    const scores = {
+      traffic: Math.floor(Math.random() * 20) + 80,
+      rating: Math.floor(Math.random() * 20) + 80,
+      revenue: Math.floor(Math.random() * 20) + 80,
+      operation: Math.floor(Math.random() * 20) + 80
+    };
+    
+    const reportHTML = `
+      <div style="padding: 40px; font-family: Arial, sans-serif;">
+        <h1 style="text-align: center; color: #7C3AED; margin-bottom: 30px;">门店健康度体检报告</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">生成时间：2026年5月20日</p>
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+          <div style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(#7C3AED ${healthScore * 3.6}deg, #E5E7EB 0deg); margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+              <span style="font-size: 36px; font-weight: bold; color: #7C3AED;">${healthScore}</span>
+              <span style="font-size: 12px; color: #666;">健康分</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
+          <div style="padding: 20px; background: #F3E8FF; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #7C3AED;">${scores.traffic}</div>
+            <div style="font-size: 14px; color: #666;">流量健康</div>
+          </div>
+          <div style="padding: 20px; background: #D1FAE5; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #10B981;">${scores.rating}</div>
+            <div style="font-size: 14px; color: #666;">口碑健康</div>
+          </div>
+          <div style="padding: 20px; background: #E0F2FE; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #06B6D4;">${scores.revenue}</div>
+            <div style="font-size: 14px; color: #666;">营收健康</div>
+          </div>
+          <div style="padding: 20px; background: #FEF3C7; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: bold; color: #F59E0B;">${scores.operation}</div>
+            <div style="font-size: 14px; color: #666;">运营健康</div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+          <h2 style="color: #333; border-bottom: 2px solid #7C3AED; padding-bottom: 10px;">优化建议</h2>
+          <ul style="color: #666; line-height: 2;">
+            <li>午市客流有提升空间，建议优化11:30-13:00时段的推广策略</li>
+            <li>复购率略低于行业均值，建议增加会员积分体系</li>
+            <li>差评主要集中在服务态度，建议加强员工培训</li>
+          </ul>
+        </div>
+      </div>
+    `;
+    
+    const printContent = document.createElement('div');
+    printContent.innerHTML = reportHTML;
+    printContent.style.cssText = 'position: absolute; left: -9999px; top: 0; width: 800px; background: white;';
+    document.body.appendChild(printContent);
+    window.print();
+    setTimeout(() => { document.body.removeChild(printContent); }, 100);
+    
+    showToast('体检报告已生成');
+  });
+}
+
+// ============================================
+// 19. 日期范围选择器
+// ============================================
+function initDateRangePicker() {
+  const dateStart = document.getElementById('dateStart');
+  const dateEnd = document.getElementById('dateEnd');
+  
+  if (!dateStart || !dateEnd) return;
+  
+  // 设置默认日期范围
+  const today = new Date();
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  
+  dateEnd.value = today.toISOString().split('T')[0];
+  dateStart.value = weekAgo.toISOString().split('T')[0];
+  
+  dateStart.addEventListener('change', () => {
+    console.log('日期范围更新:', dateStart.value, '至', dateEnd.value);
+    showToast('已更新数据范围');
+  });
+  
+  dateEnd.addEventListener('change', () => {
+    console.log('日期范围更新:', dateStart.value, '至', dateEnd.value);
+    showToast('已更新数据范围');
+  });
+}
