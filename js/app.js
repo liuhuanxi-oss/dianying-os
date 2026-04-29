@@ -110,7 +110,12 @@ document.addEventListener('DOMContentLoaded', function() {
     platform: '平台管理',
     aipay: 'AI付',
     knowledge: '知识库',
-    logs: '决策日志'
+    logs: '决策日志',
+    marketing: '营销工具',
+    security: '权限管理',
+    ticket: '工单系统',
+    inventory: '库存预警',
+    competitor: '竞品监控'
   };
 
   function switchPage(page) {
@@ -396,16 +401,166 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================
-  // Smooth Scroll
+  // NEW FEATURES - v9.1
   // ============================================
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+
+  // Marketing Tab Switching
+  const marketingTabs = document.querySelectorAll('.marketing-tab');
+  const marketingPanels = document.querySelectorAll('.marketing-panel');
+
+  marketingTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTab = tab.dataset.mktTab;
+      marketingTabs.forEach(t => t.classList.toggle('active', t.dataset.mktTab === targetTab));
+      marketingPanels.forEach(p => p.classList.toggle('active', p.id === 'mkt' + targetTab.charAt(0).toUpperCase() + targetTab.slice(1)));
+      lucide.createIcons();
     });
   });
 
-  console.log('店赢OS v8 - 初始化完成');
+  // Competitor Tab Switching
+  const competitorTabs = document.querySelectorAll('.competitor-tab');
+  const competitorPanels = document.querySelectorAll('.competitor-panel');
+
+  competitorTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTab = tab.dataset.compTab;
+      competitorTabs.forEach(t => t.classList.toggle('active', t.dataset.compTab === targetTab));
+      competitorPanels.forEach(p => p.classList.toggle('active', p.id === 'comp' + targetTab.charAt(0).toUpperCase() + targetTab.slice(1)));
+      lucide.createIcons();
+    });
+  });
+
+  // Ticket Filter Switching
+  const ticketFilters = document.querySelectorAll('.ticket-filter');
+  ticketFilters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      ticketFilters.forEach(f => f.classList.toggle('active', f === filter));
+    });
+  });
+
+  // Role Card Selection
+  const roleCards = document.querySelectorAll('.role-card');
+  roleCards.forEach(card => {
+    card.addEventListener('click', () => {
+      roleCards.forEach(c => c.classList.toggle('active', c === card));
+    });
+  });
+
+  // Initialize Inventory Charts
+  function initInventoryCharts() {
+    const costCtx = document.getElementById('costChart');
+    const lossCtx = document.getElementById('lossChart');
+    const turnoverCtx = document.getElementById('turnoverChart');
+    
+    if (costCtx && typeof Chart !== 'undefined') {
+      new Chart(costCtx, {
+        type: 'line',
+        data: {
+          labels: ['1月', '2月', '3月', '4月', '5月'],
+          datasets: [{
+            data: [38000, 39500, 40200, 41500, 42800],
+            borderColor: '#7C3AED',
+            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          }
+        }
+      });
+    }
+    
+    if (lossCtx && typeof Chart !== 'undefined') {
+      new Chart(lossCtx, {
+        type: 'line',
+        data: {
+          labels: ['1月', '2月', '3月', '4月', '5月'],
+          datasets: [{
+            data: [3.1, 2.9, 2.8, 2.5, 2.3],
+            borderColor: '#F59E0B',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          }
+        }
+      });
+    }
+    
+    if (turnoverCtx && typeof Chart !== 'undefined') {
+      new Chart(turnoverCtx, {
+        type: 'line',
+        data: {
+          labels: ['1月', '2月', '3月', '4月', '5月'],
+          datasets: [{
+            data: [5.7, 5.4, 5.1, 4.8, 4.5],
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { display: false },
+            y: { display: false }
+          }
+        }
+      });
+    }
+  }
+
+  // Page name mapping for new pages
+  // Note: pageNames already includes all page mappings
+  const extendedPageNames = { ...pageNames };
+
+  // Update switchPage function to handle new pages
+  const originalSwitchPage = switchPage;
+  switchPage = function(page) {
+    sidebarNavItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.page === page);
+    });
+    mobileNavItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.page === page);
+    });
+    demoSections.forEach(section => {
+      section.classList.toggle('active', section.id === 'section' + page.charAt(0).toUpperCase() + page.slice(1));
+    });
+    if (breadcrumbText) {
+      breadcrumbText.textContent = extendedPageNames[page] || '运营概览';
+    }
+    
+    // Initialize charts when entering specific pages
+    if (page === 'inventory') {
+      setTimeout(initInventoryCharts, 100);
+    }
+  };
+
+  console.log('店赢OS v9.1 - 增强功能初始化完成');
 });
 
 // ============================================
