@@ -115,7 +115,12 @@ document.addEventListener('DOMContentLoaded', function() {
     security: '权限管理',
     ticket: '工单系统',
     inventory: '库存预警',
-    competitor: '竞品监控'
+    competitor: '竞品监控',
+    health: '门店健康',
+    calendar: '运营日历',
+    report: '报表中心',
+    workflow: '工作流',
+    roi: 'ROI计算'
   };
 
   function switchPage(page) {
@@ -538,6 +543,146 @@ document.addEventListener('DOMContentLoaded', function() {
   // Note: pageNames already includes all page mappings
   const extendedPageNames = { ...pageNames };
 
+  // Chart instances for new pages
+  let healthRadarChart = null;
+  let reportTrendChart = null;
+
+  // Initialize Health Radar Chart
+  function initHealthRadarChart() {
+    const ctx = document.getElementById('healthRadarChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (healthRadarChart) healthRadarChart.destroy();
+
+    healthRadarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['流量健康度', '评分健康度', '营收健康度', '运营健康度', '增长健康度'],
+        datasets: [{
+          label: '本店',
+          data: [82, 85, 78, 72, 68],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.2)',
+          borderWidth: 2,
+          pointBackgroundColor: '#7C3AED'
+        }, {
+          label: '行业均值',
+          data: [75, 78, 72, 70, 65],
+          borderColor: '#06B6D4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#06B6D4'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { stepSize: 20, display: false },
+            grid: { color: '#E2E8F0' },
+            pointLabels: {
+              font: { size: 11 },
+              color: '#64748B'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Initialize Report Trend Chart
+  function initReportTrendChart() {
+    const ctx = document.getElementById('reportTrendChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (reportTrendChart) reportTrendChart.destroy();
+
+    reportTrendChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [{
+          label: '本周',
+          data: [16500, 17200, 15800, 18900, 20100, 22500, 19800],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          fill: true,
+          tension: 0.4
+        }, {
+          label: '上周',
+          data: [15000, 15800, 16200, 17500, 18500, 21000, 18200],
+          borderColor: '#94A3B8',
+          backgroundColor: 'rgba(148, 163, 184, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderDash: [5, 5]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => '¥' + (v/1000) + 'k' } }
+        }
+      }
+    });
+  }
+
+  // Workflow Tab Switching
+  const workflowTabs = document.querySelectorAll('.workflow-tab');
+  const workflowPanels = document.querySelectorAll('.workflow-panel');
+
+  workflowTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetWorkflow = tab.dataset.workflow;
+      workflowTabs.forEach(t => t.classList.toggle('active', t.dataset.workflow === targetWorkflow));
+      workflowPanels.forEach(p => p.classList.toggle('active', p.id === 'workflow' + targetWorkflow.charAt(0).toUpperCase() + targetWorkflow.slice(1)));
+      lucide.createIcons();
+    });
+  });
+
+  // Report Template Selection
+  const reportTemplates = document.querySelectorAll('.report-template-card');
+  reportTemplates.forEach(template => {
+    template.addEventListener('click', () => {
+      reportTemplates.forEach(t => t.classList.toggle('active', t === template));
+    });
+  });
+
+  // Export Format Selection
+  const exportOptions = document.querySelectorAll('.export-option');
+  exportOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      exportOptions.forEach(o => o.classList.toggle('active', o === option));
+    });
+  });
+
+  // Calendar Day Selection
+  const calendarDays = document.querySelectorAll('.calendar-day');
+  const taskDetail = document.getElementById('calendarTaskDetail');
+  calendarDays.forEach(day => {
+    day.addEventListener('click', () => {
+      calendarDays.forEach(d => d.classList.remove('selected'));
+      day.classList.add('selected');
+      // Update task detail date
+      const dateEl = taskDetail?.querySelector('.task-detail-date');
+      if (dateEl && day.textContent.trim()) {
+        dateEl.textContent = day.textContent.includes('5月') ? day.textContent : `5月${day.textContent}`;
+      }
+    });
+  });
+
   // Update switchPage function to handle new pages
   const originalSwitchPage = switchPage;
   switchPage = function(page) {
@@ -558,9 +703,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (page === 'inventory') {
       setTimeout(initInventoryCharts, 100);
     }
+    if (page === 'health') {
+      setTimeout(initHealthRadarChart, 100);
+    }
+    if (page === 'report') {
+      setTimeout(initReportTrendChart, 100);
+    }
   };
 
-  console.log('店赢OS v9.1 - 增强功能初始化完成');
+  console.log('店赢OS v9.2 - 5项高价值功能初始化完成');
 });
 
 // ============================================
