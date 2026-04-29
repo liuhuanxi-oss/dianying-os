@@ -871,6 +871,84 @@
       </div>
     </section>
     
+    <!-- Comparison Section -->
+    <section class="comparison-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            使用前 vs 使用后<span class="gradient-text">差距明显</span>
+          </h2>
+          <p class="section-subtitle">
+            一张图看懂店赢OS带来的改变
+          </p>
+        </div>
+        
+        <div class="comparison-grid">
+          <div class="comparison-card before reveal">
+            <span class="comparison-badge">使用前</span>
+            <h3 class="comparison-title">传统运营方式</h3>
+            <div class="comparison-list">
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">手动逐条回复差评，每天花2小时</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">凭感觉定价，错过最佳定价时机</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="user-x" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">会员流失才发现，没有预警机制</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="copy" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">每家店单独摸索，成功经验难以复制</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="comparison-card after reveal reveal-delay-1">
+            <span class="comparison-badge">使用后</span>
+            <h3 class="comparison-title">店赢OS 智能运营</h3>
+            <div class="comparison-list">
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="bot" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">AI自动处理，3分钟内回复，差评率下降76%</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">数据驱动动态定价，雨天增收¥2,800/周</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">流失风险提前预警，会员续费率提升45%</span>
+              </div>
+              <div class="comparison-item">
+                <div class="comparison-icon">
+                  <i data-lucide="git-branch" class="w-5 h-5"></i>
+                </div>
+                <span class="comparison-item-text">成功经验一键复制，新店冷启动周期缩短70%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
     <!-- 10. Pricing Section (Optimized) -->
     <section id="pricing" class="pricing-section">
       <div class="max-w-7xl mx-auto px-6">
@@ -1234,7 +1312,74 @@
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         <span>返回首页</span>
       </a>
+      
+      <!-- Store Selector -->
+      <div class="store-selector" id="storeSelector">
+        <button class="store-selector-btn" id="storeSelectorBtn">
+          <span class="store-icon" id="currentStoreIcon">🔥</span>
+          <span class="store-name" id="currentStoreName">老码头火锅</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 store-chevron"></i>
+        </button>
+        <div class="store-dropdown" id="storeDropdown">
+          <div class="store-option active" data-store="hotpot">
+            <span class="store-option-icon">🔥</span>
+            <div class="store-option-info">
+              <span class="store-option-name">老码头火锅</span>
+              <span class="store-option-tag">旗舰店</span>
+            </div>
+          </div>
+          <div class="store-option" data-store="tea">
+            <span class="store-option-icon">🧋</span>
+            <div class="store-option-info">
+              <span class="store-option-name">茶悦时光</span>
+              <span class="store-option-tag">万象城店</span>
+            </div>
+          </div>
+          <div class="store-option" data-store="gym">
+            <span class="store-option-icon">💪</span>
+            <div class="store-option-info">
+              <span class="store-option-name">力健健身房</span>
+              <span class="store-option-tag">科技园店</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div class="demo-nav-actions">
+        <!-- Daily Report Button -->
+        <button class="daily-report-btn-nav" id="dailyReportBtnNav">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>日报</span>
+        </button>
+        
+        <!-- About Button -->
+        <button class="about-btn-nav" id="aboutBtn" aria-label="关于本作品">
+          <i data-lucide="info" class="w-5 h-5"></i>
+        </button>
+        
+        <!-- Notification Bell -->
+        <div class="notification-bell" id="notificationBell">
+          <button class="notification-btn" id="notificationBtn">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="notification-badge" id="notificationBadge">0</span>
+          </button>
+          <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+              <span>消息通知</span>
+              <button class="notification-clear" id="notificationClear">清空</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- Notifications will be injected by JS -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Theme Toggle in Demo -->
+        <button class="theme-toggle demo-theme-toggle" id="demoThemeToggle" aria-label="切换主题">
+          <i data-lucide="moon" class="w-5 h-5 moon-icon"></i>
+          <i data-lucide="sun" class="w-5 h-5 sun-icon hidden"></i>
+        </button>
+        
         <button class="share-btn" id="shareBtn">
           <i data-lucide="share-2" class="w-4 h-4"></i>
           分享
@@ -1434,7 +1579,187 @@
               </div>
               <button class="connect-btn" id="douyinConnectBtn">点击连接</button>
             </div>
+            <div class="platform-card" id="xiaohongshuPlatform">
+              <div class="platform-icon xiaohongshu">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.38 0 2.5 1.12 2.5 2.5S13.38 10 12 10s-2.5-1.12-2.5-2.5S10.62 5 12 5zm0 14c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">小红书</span>
+                <span class="platform-status disconnected" id="xiaohongshuStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="xiaohongshuConnectBtn">点击连接</button>
+            </div>
+            <div class="platform-card" id="weishiPlatform">
+              <div class="platform-icon weishi">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-9.5c0-.83-.67-1.5-1.5-1.5S7 9.67 7 10.5 7.67 12 8.5 12s1.5-.67 1.5-1.5zm7 0c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5 1.5-.67 1.5-1.5zm-3.5 5c-2.33 0-4.32-1.45-5.12-3.5h1.67c.69 1.19 1.97 2 3.45 2s2.76-.81 3.45-2h1.67c-.8 2.05-2.79 3.5-5.12 3.5z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">微信视频号</span>
+                <span class="platform-status disconnected" id="weishiStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="weishiConnectBtn">点击连接</button>
+            </div>
+            <div class="platform-card" id="amapPlatform">
+              <div class="platform-icon amap">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">高德</span>
+                <span class="platform-status disconnected" id="amapStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="amapConnectBtn">点击连接</button>
+            </div>
+            <div class="platform-card" id="koubeiPlatform">
+              <div class="platform-icon koubei">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                </svg>
+              </div>
+              <div class="platform-info">
+                <span class="platform-name">口碑(支付宝)</span>
+                <span class="platform-status disconnected" id="koubeiStatus">
+                  <span class="status-dot"></span>
+                  未连接
+                </span>
+              </div>
+              <button class="connect-btn" id="koubeiConnectBtn">点击连接</button>
+            </div>
           </div>
+        </div>
+        
+        <!-- AI Decision Log -->
+        <div class="decision-log" id="decisionLog">
+          <div class="decision-log-header" id="decisionLogHeader">
+            <div class="decision-log-title">
+              <i data-lucide="list-checks" class="w-5 h-5"></i>
+              <span>AI决策日志</span>
+            </div>
+            <div class="decision-log-toggle">
+              <span>展开</span>
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="decision-log-content">
+            <div class="decision-log-list" id="decisionLogList">
+              <!-- Decision items will be injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Daily Report Modal -->
+    <div class="daily-report-modal" id="dailyReportModal">
+      <div class="daily-report-content">
+        <div class="daily-report-header">
+          <h3>今日运营日报</h3>
+          <button class="daily-report-close" id="dailyReportClose">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="daily-report-body">
+          <div class="daily-report-date" id="dailyReportDate"></div>
+          <div class="daily-report-stats">
+            <div class="daily-stat">
+              <div class="daily-stat-value" id="dailyRevenue">¥12.8万</div>
+              <div class="daily-stat-label">今日营收</div>
+            </div>
+            <div class="daily-stat">
+              <div class="daily-stat-value" id="dailyReviews">3条</div>
+              <div class="daily-stat-label">处理差评</div>
+            </div>
+            <div class="daily-stat">
+              <div class="daily-stat-value" id="dailyDecisions">12次</div>
+              <div class="daily-stat-label">AI决策</div>
+            </div>
+            <div class="daily-stat">
+              <div class="daily-stat-value" id="dailyTrust">A级</div>
+              <div class="daily-stat-label">信任等级</div>
+            </div>
+          </div>
+          <div class="daily-report-section">
+            <h4><i data-lucide="lightbulb" class="w-4 h-4"></i> 关键建议</h4>
+            <p id="dailySuggestion">建议优化午市套餐定价，当前翻台率有提升空间。</p>
+          </div>
+          <div class="daily-report-section">
+            <h4><i data-lucide="alert-circle" class="w-4 h-4"></i> 关注事项</h4>
+            <p id="dailyAlert">王女士等3位VIP会员流失风险较高，建议发送专属优惠召回。</p>
+          </div>
+        </div>
+        <div class="daily-report-footer">
+          <button class="daily-report-btn copy" id="copyReportBtn">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            复制日报
+          </button>
+          <button class="daily-report-btn close-btn" id="dailyReportCloseBtn">关闭</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div class="about-modal" id="aboutModal">
+      <div class="about-content">
+        <img src="assets/logo.svg" alt="店赢OS" class="about-logo">
+        <h3 class="about-title">店赢OS</h3>
+        <p class="about-subtitle">Multi-Agent 门店操作系统</p>
+        <div class="about-info">
+          <div class="about-info-item">
+            <span class="about-info-label">参赛赛事</span>
+            <span class="about-info-value">2026 WAIC OPC 独立先锋挑战赛（创业赛道）<br>腾讯云黑客松AI智能体争霸赛</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">技术栈</span>
+            <span class="about-info-value">Multi-Agent + Gemini 3.1 Pro + Coze平台</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">团队成员</span>
+            <span class="about-info-value">刘天龙Taylor / Hermes Liu / Hermes Tan</span>
+          </div>
+          <div class="about-info-item">
+            <span class="about-info-label">在线体验</span>
+            <a href="https://liuhuanxi-oss.github.io/dianying-os/" class="about-link" target="_blank">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              liuhuanxi-oss.github.io/dianying-os
+            </a>
+          </div>
+        </div>
+        <button class="about-close" id="aboutClose">知道了</button>
+      </div>
+    </div>
+    
+    <!-- Share Poster Modal -->
+    <div class="share-poster-modal" id="sharePosterModal">
+      <div class="share-poster-content">
+        <div class="share-poster-header">
+          <h3>分享海报</h3>
+          <button class="daily-report-close" id="sharePosterClose">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="share-poster-preview" id="sharePosterPreview">
+          <canvas id="posterCanvas" width="320" height="400"></canvas>
+        </div>
+        <div class="share-poster-actions">
+          <button class="share-poster-btn save" id="savePosterBtn">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            保存图片
+          </button>
+          <button class="share-poster-btn close-btn" id="sharePosterCloseBtn">关闭</button>
         </div>
       </div>
     </div>
@@ -1454,6 +1779,122 @@
           </div>
         </div>
         <p class="modal-desc" id="modalDesc">正在跳转授权页面，请稍候...</p>
+      </div>
+    </div>
+    
+    <!-- Loading Animation -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-content">
+        <img src="assets/logo.svg" alt="店赢OS" class="loading-logo">
+        <div class="loading-text">AI店长正在就位...</div>
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Guide Overlay -->
+    <div class="guide-overlay" id="guideOverlay">
+      <div class="guide-highlight" id="guideHighlight"></div>
+      <div class="guide-tooltip" id="guideTooltip">
+        <div class="guide-step" data-step="1">
+          <div class="guide-hand">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+              <path d="M9.5 11c1.93 0 3.5 1.57 3.5 3.5S11.43 18 9.5 18 6 16.43 6 14.5c0-.17.01-.34.04-.5H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S9.93 0 8 0 4.5 1.57 4.5 3.5v6c0 1.65 1.35 3 3 3h2v-5h1v2h2v1h-2v2h1c1.65 0 3-1.35 3-3v-3.5c0-1.93-1.57-3.5-3.5-3.5-.17 0-.34.01-.5.04V3.5C9.5 1.57 7.93 0 6 0S2.5 1.57 2.5 3.5v6c0 3.58 2.92 6.5 6.5 6.5s6.5-2.92 6.5-6.5c0-.17.01-.34.04-.5h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S23.93 0 22 0s-3.5 1.57-3.5 3.5v4c0 1.65-1.35 3-3 3h-1v2h1c3.58 0 6.5-2.92 6.5-6.5 0-.17.01-.34.04-.5H25c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-2.54c-.16.03-.33.04-.5.04z"/>
+            </svg>
+          </div>
+          <div class="guide-text">
+            <h4>选择一个运营场景</h4>
+            <p>点击按钮体验不同场景的AI协同对话</p>
+          </div>
+          <div class="guide-progress">
+            <span class="guide-dot active"></span>
+            <span class="guide-dot"></span>
+            <span class="guide-dot"></span>
+          </div>
+          <button class="guide-btn" id="guideNextBtn">下一步</button>
+        </div>
+        <div class="guide-step hidden" data-step="2">
+          <div class="guide-hand">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+              <path d="M9.5 11c1.93 0 3.5 1.57 3.5 3.5S11.43 18 9.5 18 6 16.43 6 14.5c0-.17.01-.34.04-.5H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S9.93 0 8 0 4.5 1.57 4.5 3.5v6c0 1.65 1.35 3 3 3h2v-5h1v2h2v1h-2v2h1c1.65 0 3-1.35 3-3v-3.5c0-1.93-1.57-3.5-3.5-3.5-.17 0-.34.01-.5.04V3.5C9.5 1.57 7.93 0 6 0S2.5 1.57 2.5 3.5v6c0 3.58 2.92 6.5 6.5 6.5s6.5-2.92 6.5-6.5c0-.17.01-.34.04-.5h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S23.93 0 22 0s-3.5 1.57-3.5 3.5v4c0 1.65-1.35 3-3 3h-1v2h1c3.58 0 6.5-2.92 6.5-6.5 0-.17.01-.34.04-.5H25c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-2.54c-.16.03-.33.04-.5.04z"/>
+            </svg>
+          </div>
+          <div class="guide-text">
+            <h4>查看AI多Agent协同对话</h4>
+            <p>线索Agent分析 → 方案Agent策略 → 交付Agent执行</p>
+          </div>
+          <div class="guide-progress">
+            <span class="guide-dot"></span>
+            <span class="guide-dot active"></span>
+            <span class="guide-dot"></span>
+          </div>
+          <button class="guide-btn" id="guideNextBtn">下一步</button>
+        </div>
+        <div class="guide-step hidden" data-step="3">
+          <div class="guide-hand">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+              <path d="M9.5 11c1.93 0 3.5 1.57 3.5 3.5S11.43 18 9.5 18 6 16.43 6 14.5c0-.17.01-.34.04-.5H4c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S9.93 0 8 0 4.5 1.57 4.5 3.5v6c0 1.65 1.35 3 3 3h2v-5h1v2h2v1h-2v2h1c1.65 0 3-1.35 3-3v-3.5c0-1.93-1.57-3.5-3.5-3.5-.17 0-.34.01-.5.04V3.5C9.5 1.57 7.93 0 6 0S2.5 1.57 2.5 3.5v6c0 3.58 2.92 6.5 6.5 6.5s6.5-2.92 6.5-6.5c0-.17.01-.34.04-.5h2.54c.16-.03.33-.04.5-.04 1.93 0 3.5-1.57 3.5-3.5S23.93 0 22 0s-3.5 1.57-3.5 3.5v4c0 1.65-1.35 3-3 3h-1v2h1c3.58 0 6.5-2.92 6.5-6.5 0-.17.01-.34.04-.5H25c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-2.54c-.16.03-.33.04-.5.04z"/>
+            </svg>
+          </div>
+          <div class="guide-text">
+            <h4>实时查看运营数据变化</h4>
+            <p>评分、差评率、营收、信任等级都会动态更新</p>
+            <p class="guide-tip">💡 快捷键：按 1-6 切换场景，ESC 返回首页，T 切换主题</p>
+          </div>
+          <div class="guide-progress">
+            <span class="guide-dot"></span>
+            <span class="guide-dot"></span>
+            <span class="guide-dot active"></span>
+          </div>
+          <button class="guide-btn guide-btn-primary" id="guideNextBtn">开始体验</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Date Range Modal -->
+    <div class="date-modal" id="dateModal">
+      <div class="date-modal-content">
+        <h3>选择导出日期范围</h3>
+        <div class="date-options">
+          <button class="date-option" data-days="7">最近7天</button>
+          <button class="date-option" data-days="30">最近30天</button>
+          <button class="date-option" data-days="custom">自定义</button>
+        </div>
+        <div class="date-custom hidden" id="dateCustom">
+          <input type="date" id="dateStart">
+          <span>至</span>
+          <input type="date" id="dateEnd">
+        </div>
+        <div class="date-actions">
+          <button class="date-cancel" id="dateCancel">取消</button>
+          <button class="date-confirm btn-gradient" id="dateConfirm">导出CSV</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="status-bar" id="statusBar">
+      <div class="status-bar-content">
+        <div class="status-item">
+          <span class="status-dot online"></span>
+          <span>AI店长运行中</span>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-item">
+          <i data-lucide="check-square" class="w-4 h-4"></i>
+          <span>已处理 <span id="taskCount">47</span> 条任务</span>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-item">
+          <i data-lucide="clock" class="w-4 h-4"></i>
+          <span>运行 <span id="runDays">23</span> 天</span>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-item">
+          <i data-lucide="award" class="w-4 h-4"></i>
+          <span>信任等级 <span class="trust-badge" id="statusTrustLevel">A</span></span>
+        </div>
       </div>
     </div>
     

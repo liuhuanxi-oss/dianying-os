@@ -722,3 +722,875 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.log('店赢OS v5 - 初始化完成');
 });
+
+// ============================================
+// v6 新增功能
+// ============================================
+
+// ----------------------------------------
+// 1. 暗色模式跟随系统偏好
+// ----------------------------------------
+(function initTheme() {
+  const savedTheme = localStorage.getItem('dianying_os_theme');
+  if (savedTheme) {
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+  } else {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark-mode');
+    }
+  }
+  updateThemeIcon();
+})();
+
+// 更新主题图标
+function updateThemeIcon() {
+  const isDark = document.body.classList.contains('dark-mode');
+  document.querySelectorAll('.moon-icon').forEach(el => el.classList.toggle('hidden', isDark));
+  document.querySelectorAll('.sun-icon').forEach(el => el.classList.toggle('hidden', !isDark));
+}
+
+// Demo主题切换
+const demoThemeToggle = document.getElementById('demoThemeToggle');
+if (demoThemeToggle) {
+  demoThemeToggle.addEventListener('click', function() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('dianying_os_theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+  });
+}
+
+// ----------------------------------------
+// 2. 门店切换功能
+// ----------------------------------------
+const storeSelector = document.getElementById('storeSelector');
+const storeSelectorBtn = document.getElementById('storeSelectorBtn');
+const storeDropdown = document.getElementById('storeDropdown');
+const storeOptions = document.querySelectorAll('.store-option');
+
+let currentStore = localStorage.getItem('dianying_os_store') || 'hotpot';
+
+// 门店数据
+const storeData = {
+  hotpot: { icon: '🔥', name: '老码头火锅', tag: '旗舰店', industry: 'restaurant' },
+  tea: { icon: '🧋', name: '茶悦时光', tag: '万象城店', industry: 'retail' },
+  gym: { icon: '💪', name: '力健健身房', tag: '科技园店', industry: 'fitness' }
+};
+
+// 门店场景数据
+const storeScenarios = {
+  hotpot: {
+    review: { rating: 4.8, negativeRate: 1.2, revenue: 128000, trustLevel: 92 },
+    pricing: { rating: 4.7, negativeRate: 2.1, revenue: 135000, trustLevel: 88 },
+    vip: { rating: 4.9, negativeRate: 0.8, revenue: 142000, trustLevel: 95 },
+    operation: { rating: 4.6, negativeRate: 2.8, revenue: 118000, trustLevel: 85 },
+    knowledge: { rating: 4.8, negativeRate: 1.5, revenue: 138000, trustLevel: 90 },
+    twin: { rating: 4.9, negativeRate: 1.0, revenue: 145000, trustLevel: 94 }
+  },
+  tea: {
+    review: { rating: 4.6, negativeRate: 2.5, revenue: 68000, trustLevel: 82 },
+    pricing: { rating: 4.8, negativeRate: 1.8, revenue: 82000, trustLevel: 90 },
+    vip: { rating: 4.7, negativeRate: 2.0, revenue: 75000, trustLevel: 86 },
+    operation: { rating: 4.5, negativeRate: 3.2, revenue: 58000, trustLevel: 78 },
+    knowledge: { rating: 4.6, negativeRate: 2.2, revenue: 72000, trustLevel: 84 },
+    twin: { rating: 4.8, negativeRate: 1.5, revenue: 88000, trustLevel: 92 }
+  },
+  gym: {
+    review: { rating: 4.4, negativeRate: 3.5, revenue: 95000, trustLevel: 75 },
+    pricing: { rating: 4.5, negativeRate: 2.8, revenue: 105000, trustLevel: 80 },
+    vip: { rating: 4.7, negativeRate: 1.5, revenue: 120000, trustLevel: 88 },
+    operation: { rating: 4.3, negativeRate: 4.0, revenue: 88000, trustLevel: 72 },
+    knowledge: { rating: 4.5, negativeRate: 2.5, revenue: 98000, trustLevel: 82 },
+    twin: { rating: 4.6, negativeRate: 2.0, revenue: 110000, trustLevel: 86 }
+  }
+};
+
+function updateStoreDisplay() {
+  const data = storeData[currentStore];
+  document.getElementById('currentStoreIcon').textContent = data.icon;
+  document.getElementById('currentStoreName').textContent = data.name;
+  
+  storeOptions.forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.store === currentStore);
+  });
+  
+  // 更新数据面板
+  updateStoreData();
+}
+
+function updateStoreData() {
+  const data = storeScenarios[currentStore][currentScenario || 'review'];
+  
+  const ratingValue = document.getElementById('ratingValue');
+  const negativeValue = document.getElementById('negativeValue');
+  const revenueValue = document.getElementById('revenueValue');
+  const trustBarFill = document.getElementById('trustBarFill');
+  const trustValue = document.getElementById('trustValue');
+  
+  if (ratingValue) ratingValue.textContent = data.rating;
+  if (negativeValue) negativeValue.textContent = data.negativeRate + '%';
+  if (revenueValue) revenueValue.textContent = '¥' + (data.revenue / 10000).toFixed(1) + '万';
+  if (trustBarFill) trustBarFill.style.width = data.trustLevel + '%';
+  if (trustValue) trustValue.textContent = getTrustLevel(data.trustLevel);
+  
+  // 更新状态条
+  const statusTrustLevel = document.getElementById('statusTrustLevel');
+  if (statusTrustLevel) statusTrustLevel.textContent = getTrustLevel(data.trustLevel);
+}
+
+if (storeSelectorBtn) {
+  storeSelectorBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    storeSelector.classList.toggle('open');
+  });
+}
+
+storeOptions.forEach(opt => {
+  opt.addEventListener('click', function() {
+    currentStore = this.dataset.store;
+    localStorage.setItem('dianying_os_store', currentStore);
+    updateStoreDisplay();
+    storeSelector.classList.remove('open');
+    
+    // 清除聊天并重新加载
+    chatMessages.innerHTML = '';
+    if (currentScenario) loadScenarioChat(currentScenario);
+  });
+});
+
+document.addEventListener('click', function() {
+  if (storeSelector) storeSelector.classList.remove('open');
+});
+
+// ----------------------------------------
+// 3. 通知系统
+// ----------------------------------------
+const notificationBell = document.getElementById('notificationBell');
+const notificationBtn = document.getElementById('notificationBtn');
+const notificationPanel = document.getElementById('notificationPanel');
+const notificationBadge = document.getElementById('notificationBadge');
+const notificationList = document.getElementById('notificationList');
+const notificationClear = document.getElementById('notificationClear');
+
+let notifications = [];
+let unreadCount = 0;
+let notificationInterval = null;
+
+const notificationTemplates = [
+  { icon: '🤖', text: '已自动回复1条差评（大众点评）' },
+  { icon: '📈', text: '动态定价已调整：午市套餐 ¥38→¥42' },
+  { icon: '⚠️', text: '检测到1条差评预警，正在处理...' },
+  { icon: '✅', text: '会员王女士已成功召回' },
+  { icon: '🔄', text: '跨店方案已同步至烧烤店' },
+  { icon: '💡', text: '建议：午市套餐可提价至¥45，预计增收¥800' },
+  { icon: '🎉', text: '今日营收突破新高：¥4,280' },
+  { icon: '📊', text: '数字孪生模拟完成，最优定价¥48' },
+  { icon: '👥', text: '新增3位高价值会员' },
+  { icon: '🔔', text: '差评转化成功，用户已修改评价为好评' }
+];
+
+function addNotification(notif) {
+  const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  notifications.unshift({ icon: notif.icon, text: notif.text, time });
+  if (notifications.length > 10) notifications.pop();
+  
+  unreadCount++;
+  updateNotificationBadge();
+  renderNotifications();
+}
+
+function updateNotificationBadge() {
+  if (notificationBadge) {
+    notificationBadge.textContent = unreadCount;
+    notificationBadge.classList.toggle('hidden', unreadCount === 0);
+  }
+}
+
+function renderNotifications() {
+  if (!notificationList) return;
+  notificationList.innerHTML = notifications.map(n => `
+    <div class="notification-item">
+      <div class="notification-item-content">
+        <span class="notification-item-icon">${n.icon}</span>
+        <span class="notification-item-text">${n.text}</span>
+      </div>
+      <div class="notification-item-time">${n.time}</div>
+    </div>
+  `).join('');
+}
+
+function startNotificationTimer() {
+  if (notificationInterval) clearInterval(notificationInterval);
+  notificationInterval = setInterval(() => {
+    if (document.querySelector('.demo-page.active')) {
+      const template = notificationTemplates[Math.floor(Math.random() * notificationTemplates.length)];
+      addNotification(template);
+    }
+  }, 15000 + Math.random() * 10000);
+}
+
+if (notificationBtn) {
+  notificationBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    notificationBell.classList.toggle('open');
+    unreadCount = 0;
+    updateNotificationBadge();
+  });
+}
+
+if (notificationClear) {
+  notificationClear.addEventListener('click', function() {
+    notifications = [];
+    unreadCount = 0;
+    updateNotificationBadge();
+    renderNotifications();
+  });
+}
+
+document.addEventListener('click', function(e) {
+  if (notificationBell && !notificationBell.contains(e.target)) {
+    notificationBell.classList.remove('open');
+  }
+});
+
+// ----------------------------------------
+// 4. 状态条
+// ----------------------------------------
+let taskCount = 47;
+let taskInterval = null;
+
+function updateStatusBar() {
+  const taskCountEl = document.getElementById('taskCount');
+  const runDaysEl = document.getElementById('runDays');
+  if (taskCountEl) taskCountEl.textContent = taskCount;
+  if (runDaysEl) runDaysEl.textContent = Math.floor(Math.random() * 10) + 20;
+}
+
+function startStatusTimer() {
+  if (taskInterval) clearInterval(taskInterval);
+  taskInterval = setInterval(() => {
+    if (document.querySelector('.demo-page.active')) {
+      taskCount++;
+      updateStatusBar();
+    }
+  }, 30000);
+}
+
+// ----------------------------------------
+// 5. 加载动画
+// ----------------------------------------
+const loadingOverlay = document.getElementById('loadingOverlay');
+
+function showLoading() {
+  if (loadingOverlay) {
+    loadingOverlay.classList.add('active');
+  }
+}
+
+function hideLoading() {
+  if (loadingOverlay) {
+    loadingOverlay.classList.remove('active');
+  }
+}
+
+// ----------------------------------------
+// 6. 引导蒙层
+// ----------------------------------------
+const guideOverlay = document.getElementById('guideOverlay');
+const guideHighlight = document.getElementById('guideHighlight');
+const guideTooltip = document.getElementById('guideTooltip');
+const guideSteps = document.querySelectorAll('.guide-step');
+let guideStep = 1;
+
+const guidePositions = [
+  { selector: '.chat-scenarios', tooltip: { top: '50%', left: '25%' } },
+  { selector: '.chat-messages', tooltip: { top: '50%', left: '25%' } },
+  { selector: '.data-panel-container', tooltip: { top: '30%', left: '70%' } }
+];
+
+function showGuide() {
+  if (localStorage.getItem('dianying_os_guide_seen')) return;
+  if (!guideOverlay) return;
+  
+  guideOverlay.classList.add('active');
+  updateGuideStep();
+}
+
+function updateGuideStep() {
+  guideSteps.forEach((step, i) => {
+    step.classList.toggle('hidden', i + 1 !== guideStep);
+  });
+  
+  const pos = guidePositions[guideStep - 1];
+  const target = document.querySelector(pos.selector);
+  if (target) {
+    const rect = target.getBoundingClientRect();
+    guideHighlight.style.cssText = `top: ${rect.top - 8}px; left: ${rect.left - 8}px; width: ${rect.width + 16}px; height: ${rect.height + 16}px;`;
+    guideTooltip.style.cssText = `top: ${rect.top + rect.height + 20}px; left: ${Math.max(20, rect.left)}px;`;
+  }
+}
+
+function nextGuideStep() {
+  if (guideStep < 3) {
+    guideStep++;
+    updateGuideStep();
+  } else {
+    closeGuide();
+  }
+}
+
+function closeGuide() {
+  if (guideOverlay) guideOverlay.classList.remove('active');
+  localStorage.setItem('dianying_os_guide_seen', 'true');
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'guideNextBtn' || e.target.closest('#guideNextBtn')) {
+    nextGuideStep();
+  }
+});
+
+// ----------------------------------------
+// 7. 日期选择弹窗
+// ----------------------------------------
+const downloadReportBtn = document.getElementById('downloadReportBtn');
+const dateModal = document.getElementById('dateModal');
+const dateOptions = document.querySelectorAll('.date-option');
+const dateCustom = document.getElementById('dateCustom');
+const dateStart = document.getElementById('dateStart');
+const dateEnd = document.getElementById('dateEnd');
+const dateCancel = document.getElementById('dateCancel');
+const dateConfirm = document.getElementById('dateConfirm');
+let selectedDays = 7;
+
+if (downloadReportBtn) {
+  downloadReportBtn.addEventListener('click', function() {
+    dateModal.classList.add('active');
+  });
+}
+
+dateOptions.forEach(opt => {
+  opt.addEventListener('click', function() {
+    dateOptions.forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+    selectedDays = this.dataset.days;
+    if (selectedDays === 'custom') {
+      dateCustom.classList.remove('hidden');
+    } else {
+      dateCustom.classList.add('hidden');
+    }
+  });
+});
+
+if (dateCancel) {
+  dateCancel.addEventListener('click', function() {
+    dateModal.classList.remove('active');
+  });
+}
+
+if (dateConfirm) {
+  dateConfirm.addEventListener('click', function() {
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    if (selectedDays === 'custom') {
+      startDate.setTime(dateEnd.value ? new Date(dateEnd.value).getTime() : endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+    } else {
+      startDate.setDate(endDate.getDate() - parseInt(selectedDays));
+    }
+    
+    const fileName = `dianying_os_report_${formatDate(startDate)}_${formatDate(endDate)}.csv`;
+    generateCSV(fileName);
+    dateModal.classList.remove('active');
+  });
+}
+
+function formatDate(date) {
+  return date.toISOString().split('T')[0];
+}
+
+function generateCSV(fileName) {
+  const data = storeScenarios[currentStore][currentScenario || 'review'];
+  const rows = [
+    ['日期', '门店', '评分', '差评率', '月营收', '信任等级'],
+    [new Date().toLocaleDateString('zh-CN'), storeData[currentStore].name, data.rating, data.negativeRate + '%', data.revenue, getTrustLevel(data.trustLevel)]
+  ];
+  
+  let csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ----------------------------------------
+// 8. AI决策日志
+// ----------------------------------------
+const decisionLog = document.getElementById('decisionLog');
+const decisionLogHeader = document.getElementById('decisionLogHeader');
+const decisionLogList = document.getElementById('decisionLogList');
+let decisionLogs = [];
+
+const decisionTemplates = [
+  { time: '09:15', tag: 'price', type: '调价', text: '午市套餐价格调整为¥38（原¥42），基于工作日客流预测' },
+  { time: '09:32', tag: 'review', type: '差评', text: '已自动回复大众点评1条差评，涉及等位时间问题' },
+  { time: '10:05', tag: 'vip', type: 'VIP', text: '识别到3位高流失风险会员，已发送个性化召回券' },
+  { time: '11:20', tag: 'marketing', type: '营销', text: '雨天外卖满减策略已生效，满100减20' },
+  { time: '13:45', tag: 'ops', type: '运营', text: '午市翻台率提升至3.2次/天，环比昨日+15%' },
+  { time: '14:30', tag: 'price', type: '调价', text: '根据竞品分析，晚市主推套餐建议调整至¥58' },
+  { time: '15:00', tag: 'review', type: '差评', text: '差评预警：检测到含"退款"关键词的新评价' },
+  { time: '16:20', tag: 'vip', type: 'VIP', text: '会员张先生消费满5次，发送专属8折券' }
+];
+
+function initDecisionLogs() {
+  decisionLogs = [
+    { time: '09:15', tag: 'price', type: '调价', text: '午市套餐价格调整为¥38（原¥42），基于工作日客流预测' },
+    { time: '09:32', tag: 'review', type: '差评', text: '已自动回复大众点评1条差评，涉及等位时间问题' },
+    { time: '10:05', tag: 'vip', type: 'VIP', text: '识别到3位高流失风险会员，已发送个性化召回券' }
+  ];
+  renderDecisionLogs();
+}
+
+function addDecisionLog() {
+  const templates = decisionTemplates.filter(t => !decisionLogs.find(l => l.text === t.text));
+  if (templates.length === 0) return;
+  const template = templates[Math.floor(Math.random() * templates.length)];
+  const now = new Date();
+  template.time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  decisionLogs.unshift(template);
+  if (decisionLogs.length > 8) decisionLogs.pop();
+  renderDecisionLogs();
+}
+
+function renderDecisionLogs() {
+  if (!decisionLogList) return;
+  decisionLogList.innerHTML = decisionLogs.map(log => `
+    <div class="decision-item">
+      <span class="decision-time">${log.time}</span>
+      <span class="decision-tag ${log.tag}">${log.type}</span>
+      <span class="decision-text">${log.text}</span>
+    </div>
+  `).join('');
+}
+
+if (decisionLogHeader) {
+  decisionLogHeader.addEventListener('click', function() {
+    decisionLog.classList.toggle('expanded');
+    const toggleText = decisionLog.classList.contains('expanded') ? '收起' : '展开';
+    this.querySelector('.decision-log-toggle span').textContent = toggleText;
+  });
+}
+
+// ----------------------------------------
+// 9. 日报功能
+// ----------------------------------------
+const dailyReportBtnNav = document.getElementById('dailyReportBtnNav');
+const dailyReportModal = document.getElementById('dailyReportModal');
+const dailyReportClose = document.getElementById('dailyReportClose');
+const dailyReportCloseBtn = document.getElementById('dailyReportCloseBtn');
+const copyReportBtn = document.getElementById('copyReportBtn');
+
+const dailySuggestions = [
+  '建议优化午市套餐定价，当前翻台率有提升空间。',
+  '周末客流预计增加30%，可适当上调高峰时段定价。',
+  '会员复购率呈下降趋势，建议增加老客专属活动。',
+  '雨天外卖需求上涨，建议加强外卖渠道推广。'
+];
+
+const dailyAlerts = [
+  '王女士等3位VIP会员流失风险较高，建议发送专属优惠召回。',
+  '近7天差评率上升0.3%，需关注服务质量和等位体验。',
+  '竞品新开业，建议加强差异化营销，突出本店特色。',
+  '下午茶时段客流量较低，可考虑推出下午茶套餐。'
+];
+
+if (dailyReportBtnNav) {
+  dailyReportBtnNav.addEventListener('click', function() {
+    const data = storeScenarios[currentStore][currentScenario || 'review'];
+    document.getElementById('dailyReportDate').textContent = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) + ' 运营报告';
+    document.getElementById('dailyRevenue').textContent = '¥' + Math.round(data.revenue / 30 * 100) / 100 + '万';
+    document.getElementById('dailyReviews').textContent = Math.floor(Math.random() * 5 + 1) + '条';
+    document.getElementById('dailyDecisions').textContent = Math.floor(Math.random() * 10 + 8) + '次';
+    document.getElementById('dailyTrust').textContent = getTrustLevel(data.trustLevel);
+    document.getElementById('dailySuggestion').textContent = dailySuggestions[Math.floor(Math.random() * dailySuggestions.length)];
+    document.getElementById('dailyAlert').textContent = dailyAlerts[Math.floor(Math.random() * dailyAlerts.length)];
+    dailyReportModal.classList.add('active');
+  });
+}
+
+if (dailyReportClose) dailyReportClose.addEventListener('click', () => dailyReportModal.classList.remove('active'));
+if (dailyReportCloseBtn) dailyReportCloseBtn.addEventListener('click', () => dailyReportModal.classList.remove('active'));
+
+if (copyReportBtn) {
+  copyReportBtn.addEventListener('click', function() {
+    const text = document.getElementById('dailyReportDate').textContent + '\n' +
+      '今日营收：' + document.getElementById('dailyRevenue').textContent + '\n' +
+      '处理差评：' + document.getElementById('dailyReviews').textContent + '\n' +
+      'AI决策：' + document.getElementById('dailyDecisions').textContent + '\n' +
+      '信任等级：' + document.getElementById('dailyTrust').textContent + '\n\n' +
+      '关键建议：' + document.getElementById('dailySuggestion').textContent + '\n' +
+      '关注事项：' + document.getElementById('dailyAlert').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      copyReportBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已复制';
+      lucide.createIcons();
+      setTimeout(() => {
+        copyReportBtn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i> 复制日报';
+        lucide.createIcons();
+      }, 2000);
+    });
+  });
+}
+
+// ----------------------------------------
+// 10. 关于弹窗
+// ----------------------------------------
+const aboutBtn = document.getElementById('aboutBtn');
+const aboutModal = document.getElementById('aboutModal');
+const aboutClose = document.getElementById('aboutClose');
+
+if (aboutBtn) {
+  aboutBtn.addEventListener('click', function() {
+    aboutModal.classList.add('active');
+  });
+}
+
+if (aboutClose) aboutClose.addEventListener('click', () => aboutModal.classList.remove('active'));
+if (aboutModal) aboutModal.addEventListener('click', function(e) {
+  if (e.target === aboutModal) aboutModal.classList.remove('active');
+});
+
+// ----------------------------------------
+// 11. 分享海报
+// ----------------------------------------
+const sharePosterModal = document.getElementById('sharePosterModal');
+const sharePosterClose = document.getElementById('sharePosterClose');
+const sharePosterCloseBtn = document.getElementById('sharePosterCloseBtn');
+const savePosterBtn = document.getElementById('savePosterBtn');
+const posterCanvas = document.getElementById('posterCanvas');
+
+// 替换原来的分享功能
+if (shareBtn) {
+  shareBtn.replaceWith(shareBtn.cloneNode(true));
+  document.getElementById('shareBtn').addEventListener('click', function() {
+    generatePoster();
+    sharePosterModal.classList.add('active');
+  });
+}
+
+function generatePoster() {
+  if (!posterCanvas) return;
+  const ctx = posterCanvas.getContext('2d');
+  const data = storeScenarios[currentStore][currentScenario || 'review'];
+  
+  // 背景
+  const gradient = ctx.createLinearGradient(0, 0, 320, 400);
+  gradient.addColorStop(0, '#6366F1');
+  gradient.addColorStop(1, '#8B5CF6');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 320, 400);
+  
+  // Logo区域
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 28px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('店赢OS', 160, 60);
+  
+  ctx.font = '14px system-ui';
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillText('AI透视门店运营', 160, 85);
+  
+  // 数据卡片
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  roundRect(ctx, 30, 110, 260, 220, 16);
+  ctx.fill();
+  
+  // 门店名称
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 18px system-ui';
+  ctx.fillText(storeData[currentStore].name, 160, 145);
+  
+  // 数据
+  ctx.font = '14px system-ui';
+  ctx.fillText('门店评分', 80, 180);
+  ctx.font = 'bold 24px system-ui';
+  ctx.fillText(data.rating, 80, 210);
+  
+  ctx.font = '14px system-ui';
+  ctx.fillText('差评率', 160, 180);
+  ctx.font = 'bold 24px system-ui';
+  ctx.fillText(data.negativeRate + '%', 160, 210);
+  
+  ctx.font = '14px system-ui';
+  ctx.fillText('月营收', 240, 180);
+  ctx.font = 'bold 24px system-ui';
+  ctx.fillText('¥' + (data.revenue / 10000).toFixed(1) + '万', 240, 210);
+  
+  // 信任等级
+  ctx.fillStyle = '#10B981';
+  ctx.font = 'bold 14px system-ui';
+  ctx.fillText('信任等级: ' + getTrustLevel(data.trustLevel), 160, 260);
+  
+  // 场景
+  const scenarioNames = { review: '差评处理', pricing: '动态定价', vip: 'VIP管理', operation: '运营建议', knowledge: '跨店迁移', twin: '数字孪生' };
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = '12px system-ui';
+  ctx.fillText('当前场景: ' + scenarioNames[currentScenario || 'review'], 160, 295);
+  
+  // 底部
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = '12px system-ui';
+  ctx.fillText('体验地址: liuhuanxi-oss.github.io/dianying-os', 160, 380);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+if (savePosterBtn) {
+  savePosterBtn.addEventListener('click', function() {
+    if (!posterCanvas) return;
+    const link = document.createElement('a');
+    link.download = 'dianying_os_share.png';
+    link.href = posterCanvas.toDataURL('image/png');
+    link.click();
+    sharePosterModal.classList.remove('active');
+  });
+}
+
+if (sharePosterClose) sharePosterClose.addEventListener('click', () => sharePosterModal.classList.remove('active'));
+if (sharePosterCloseBtn) sharePosterCloseBtn.addEventListener('click', () => sharePosterModal.classList.remove('active'));
+
+// ----------------------------------------
+// 12. 对话自动轮播
+// ----------------------------------------
+let autoPlayTimer = null;
+let isAutoPlaying = false;
+let lastActivityTime = Date.now();
+const scenarios = ['review', 'pricing', 'vip', 'operation', 'knowledge', 'twin'];
+let currentAutoIndex = 0;
+
+function startAutoPlay() {
+  if (autoPlayTimer) clearInterval(autoPlayTimer);
+  autoPlayTimer = setInterval(() => {
+    if (!document.querySelector('.demo-page.active')) return;
+    if (Date.now() - lastActivityTime < 10000) return;
+    
+    if (!isAutoPlaying) {
+      isAutoPlaying = true;
+      autoPlayNext();
+    }
+  }, 10000);
+}
+
+function autoPlayNext() {
+  if (!isAutoPlaying) return;
+  
+  currentAutoIndex = (currentAutoIndex + 1) % scenarios.length;
+  const nextScenario = scenarios[currentAutoIndex];
+  
+  scenarioBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.scenario === nextScenario);
+  });
+  
+  chatMessages.innerHTML = '';
+  currentScenario = nextScenario;
+  loadScenarioChat(nextScenario);
+  
+  setTimeout(autoPlayNext, 8000);
+}
+
+function resetAutoPlayTimer() {
+  lastActivityTime = Date.now();
+  isAutoPlaying = false;
+}
+
+// 监听用户操作
+document.addEventListener('click', function(e) {
+  if (e.target.closest('.demo-page')) {
+    resetAutoPlayTimer();
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  resetAutoPlayTimer();
+});
+
+// ----------------------------------------
+// 13. 数据呼吸动画
+// ----------------------------------------
+let breatheAnimation = null;
+let baseData = { rating: 4.8, negativeRate: 1.2, revenue: 128000 };
+
+function startBreatheAnimation() {
+  if (breatheAnimation) cancelAnimationFrame(breatheAnimation);
+  
+  function animate() {
+    if (!document.querySelector('.demo-page.active')) {
+      breatheAnimation = requestAnimationFrame(animate);
+      return;
+    }
+    
+    const time = Date.now() / 5000;
+    const ratingVariation = Math.sin(time) * 0.1;
+    const negativeVariation = Math.cos(time * 1.3) * 0.1;
+    const revenueVariation = Math.sin(time * 0.7) * 100;
+    
+    const data = storeScenarios[currentStore][currentScenario || 'review'];
+    baseData.rating = data.rating + ratingVariation;
+    baseData.negativeRate = data.negativeRate + negativeVariation;
+    baseData.revenue = data.revenue + revenueVariation;
+    
+    const ratingValue = document.getElementById('ratingValue');
+    const negativeValue = document.getElementById('negativeValue');
+    const revenueValue = document.getElementById('revenueValue');
+    
+    if (ratingValue) ratingValue.textContent = baseData.rating.toFixed(1);
+    if (negativeValue) negativeValue.textContent = baseData.negativeRate.toFixed(1) + '%';
+    if (revenueValue) revenueValue.textContent = '¥' + (baseData.revenue / 10000).toFixed(1) + '万';
+    
+    breatheAnimation = requestAnimationFrame(animate);
+  }
+  
+  breatheAnimation = requestAnimationFrame(animate);
+}
+
+// ----------------------------------------
+// 14. 快捷键支持
+// ----------------------------------------
+document.addEventListener('keydown', function(e) {
+  // 如果在输入框中，只响应Escape
+  if (e.target.closest('.chat-input')) {
+    if (e.key === 'Escape') {
+      showLanding();
+    }
+    return;
+  }
+  
+  // 数字键1-6切换场景
+  if (e.key >= '1' && e.key <= '6') {
+    const scenarioMap = { '1': 'review', '2': 'pricing', '3': 'vip', '4': 'operation', '5': 'knowledge', '6': 'twin' };
+    const scenario = scenarioMap[e.key];
+    if (scenario && document.querySelector('.demo-page.active')) {
+      scenarioBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.scenario === scenario);
+      });
+      chatMessages.innerHTML = '';
+      currentScenario = scenario;
+      loadScenarioChat(scenario);
+      resetAutoPlayTimer();
+    }
+  }
+  
+  // Escape返回首页
+  if (e.key === 'Escape') {
+    if (document.querySelector('.demo-page.active')) {
+      showLanding();
+    }
+    if (aboutModal) aboutModal.classList.remove('active');
+    if (dailyReportModal) dailyReportModal.classList.remove('active');
+    if (sharePosterModal) sharePosterModal.classList.remove('active');
+  }
+  
+  // D键进入Demo
+  if (e.key === 'd' || e.key === 'D') {
+    if (!document.querySelector('.demo-page.active')) {
+      showDemo();
+    }
+  }
+  
+  // T键切换主题
+  if (e.key === 't' || e.key === 'T') {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('dianying_os_theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+  }
+});
+
+// ----------------------------------------
+// 15. 修改showDemo和showLanding
+// ----------------------------------------
+const originalShowDemo = showDemo;
+const originalShowLanding = showLanding;
+
+function showDemo() {
+  landingPage.classList.add('hidden');
+  demoPage.classList.add('active');
+  window.scrollTo(0, 0);
+  
+  // 显示加载动画
+  showLoading();
+  
+  setTimeout(() => {
+    initDemo();
+    hideLoading();
+    document.getElementById('statusBar').classList.add('active');
+    
+    // 初始化门店
+    updateStoreDisplay();
+    
+    // 初始化决策日志
+    initDecisionLogs();
+    
+    // 启动定时器
+    startNotificationTimer();
+    startStatusTimer();
+    startAutoPlay();
+    startBreatheAnimation();
+    
+    // 显示引导
+    setTimeout(showGuide, 500);
+  }, 800);
+}
+
+function showLanding() {
+  demoPage.classList.remove('active');
+  landingPage.classList.remove('hidden');
+  window.scrollTo(0, 0);
+  
+  // 停止定时器
+  if (notificationInterval) clearInterval(notificationInterval);
+  if (taskInterval) clearInterval(taskInterval);
+  if (autoPlayTimer) clearInterval(autoPlayTimer);
+  if (breatheAnimation) cancelAnimationFrame(breatheAnimation);
+  
+  // 隐藏状态条
+  const statusBar = document.getElementById('statusBar');
+  if (statusBar) statusBar.classList.remove('active');
+}
+
+// ----------------------------------------
+// 16. 新增平台连接按钮
+// ----------------------------------------
+const platformConnectBtns = ['xiaohongshuConnectBtn', 'weishiConnectBtn', 'amapConnectBtn', 'koubeiConnectBtn'];
+platformConnectBtns.forEach(btnId => {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    const platformName = btnId.replace('ConnectBtn', '').replace(/([A-Z])/g, ' $1').trim();
+    btn.addEventListener('click', function() {
+      showConnectionModal(platformName, 'connecting');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 连接中...';
+      
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.add('connected');
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 已连接';
+        showConnectionModal(platformName, 'success');
+      }, 2000);
+    });
+  }
+});
+
+console.log('店赢OS v6 - 初始化完成');
