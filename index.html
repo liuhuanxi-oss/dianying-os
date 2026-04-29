@@ -3066,6 +3066,618 @@
     </div>
   </div>
   
+  <!-- Data Dashboard (数据大屏驾驶舱) -->
+  <div class="data-dashboard" id="dataDashboard">
+    <!-- 顶部标题栏 -->
+    <header class="dashboard-header">
+      <div class="dashboard-header-left">
+        <img src="assets/logo.svg" alt="店赢OS" class="dashboard-logo">
+        <h1 class="dashboard-title">智慧门店运营驾驶舱</h1>
+      </div>
+      <div class="dashboard-header-center">
+        <div class="dashboard-time" id="dashboardTime">--:--:--</div>
+        <div class="dashboard-store" id="dashboardStore">老码头火锅 · 旗舰店</div>
+      </div>
+      <div class="dashboard-header-right">
+        <div class="dashboard-date" id="dashboardDate">2026年5月12日</div>
+        <div class="dashboard-update">数据更新于 <span id="dashboardUpdateTime">--:--</span></div>
+        <button class="dashboard-exit" id="dashboardExitBtn">
+          <i data-lucide="x" class="w-5 h-5"></i>
+          退出大屏
+        </button>
+      </div>
+    </header>
+    
+    <!-- 主内容区 -->
+    <main class="dashboard-main">
+      <!-- 左列 -->
+      <div class="dashboard-col dashboard-col-left">
+        <!-- 核心指标卡片 -->
+        <div class="dashboard-card metrics-card">
+          <div class="card-header">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>核心指标</span>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-item" id="metricRevenue">
+              <div class="metric-value">¥<span class="metric-number">12.8</span>万</div>
+              <div class="metric-label">今日营收</div>
+              <div class="metric-change up"><i data-lucide="trending-up" class="w-3 h-3"></i>+12.3%</div>
+              <canvas class="sparkline" id="sparklineRevenue"></canvas>
+            </div>
+            <div class="metric-item" id="metricRating">
+              <div class="metric-value"><span class="metric-number">4.8</span></div>
+              <div class="metric-label">门店评分</div>
+              <div class="metric-change up"><i data-lucide="trending-up" class="w-3 h-3"></i>+0.3</div>
+              <canvas class="sparkline" id="sparklineRating"></canvas>
+            </div>
+            <div class="metric-item" id="metricNegative">
+              <div class="metric-value"><span class="metric-number">1.2</span>%</div>
+              <div class="metric-label">差评率</div>
+              <div class="metric-change down"><i data-lucide="trending-down" class="w-3 h-3"></i>-3.8%</div>
+              <canvas class="sparkline" id="sparklineNegative"></canvas>
+            </div>
+            <div class="metric-item" id="metricAI">
+              <div class="metric-value"><span class="metric-number">47</span>次</div>
+              <div class="metric-label">AI处理</div>
+              <div class="metric-change up"><i data-lucide="check-circle" class="w-3 h-3"></i>+8次</div>
+              <canvas class="sparkline" id="sparklineAI"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 营收趋势图 -->
+        <div class="dashboard-card chart-card">
+          <div class="card-header">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <span>营收趋势</span>
+            <div class="chart-toggle">
+              <button class="toggle-btn active" data-range="7">近7天</button>
+              <button class="toggle-btn" data-range="30">近30天</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="dashboardRevenueChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- 差评分析 -->
+        <div class="dashboard-card negative-card">
+          <div class="card-header">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>差评分析</span>
+          </div>
+          <div class="negative-bars">
+            <div class="negative-bar-item">
+              <span class="negative-bar-label">等位</span>
+              <div class="negative-bar-track">
+                <div class="negative-bar-fill" style="width: 35%"></div>
+              </div>
+              <span class="negative-bar-value">35%</span>
+              <span class="negative-bar-ai">AI处理率 92%</span>
+            </div>
+            <div class="negative-bar-item">
+              <span class="negative-bar-label">口味</span>
+              <div class="negative-bar-track">
+                <div class="negative-bar-fill" style="width: 25%"></div>
+              </div>
+              <span class="negative-bar-value">25%</span>
+              <span class="negative-bar-ai">AI处理率 85%</span>
+            </div>
+            <div class="negative-bar-item">
+              <span class="negative-bar-label">服务</span>
+              <div class="negative-bar-track">
+                <div class="negative-bar-fill" style="width: 20%"></div>
+              </div>
+              <span class="negative-bar-value">20%</span>
+              <span class="negative-bar-ai">AI处理率 88%</span>
+            </div>
+            <div class="negative-bar-item">
+              <span class="negative-bar-label">环境</span>
+              <div class="negative-bar-track">
+                <div class="negative-bar-fill" style="width: 12%"></div>
+              </div>
+              <span class="negative-bar-value">12%</span>
+              <span class="negative-bar-ai">AI处理率 90%</span>
+            </div>
+            <div class="negative-bar-item">
+              <span class="negative-bar-label">其他</span>
+              <div class="negative-bar-track">
+                <div class="negative-bar-fill" style="width: 8%"></div>
+              </div>
+              <span class="negative-bar-value">8%</span>
+              <span class="negative-bar-ai">AI处理率 95%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 中列 -->
+      <div class="dashboard-col dashboard-col-center">
+        <!-- 门店热力地图 -->
+        <div class="dashboard-card map-card">
+          <div class="card-header">
+            <i data-lucide="map-pin" class="w-4 h-4"></i>
+            <span>门店分布</span>
+          </div>
+          <div class="map-container">
+            <div class="store-map" id="storeMap">
+              <div class="map-bg"><div class="map-grid"></div></div>
+              <div class="store-marker active" data-store="0" style="left: 35%; top: 45%;">
+                <div class="marker-pulse"></div>
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                  <span class="marker-name">老码头火锅</span>
+                  <span class="marker-rating">⭐ 4.8</span>
+                  <span class="marker-revenue">¥4.2万/天</span>
+                </div>
+              </div>
+              <div class="store-marker" data-store="1" style="left: 55%; top: 35%;">
+                <div class="marker-pulse"></div>
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                  <span class="marker-name">茶悦时光</span>
+                  <span class="marker-rating">⭐ 4.7</span>
+                  <span class="marker-revenue">¥2.1万/天</span>
+                </div>
+              </div>
+              <div class="store-marker" data-store="2" style="left: 70%; top: 60%;">
+                <div class="marker-pulse"></div>
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                  <span class="marker-name">力健健身房</span>
+                  <span class="marker-rating">⭐ 4.6</span>
+                  <span class="marker-revenue">¥3.8万/天</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Multi-Agent状态面板 -->
+        <div class="dashboard-card agent-card">
+          <div class="card-header">
+            <i data-lucide="network" class="w-4 h-4"></i>
+            <span>Multi-Agent 状态</span>
+          </div>
+          <div class="agent-network">
+            <svg class="agent-svg-dashboard" viewBox="0 0 400 180">
+              <defs>
+                <marker id="arrowhead2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#7C3AED" opacity="0.6"/>
+                </marker>
+              </defs>
+              <line x1="100" y1="90" x2="200" y2="50" stroke="#7C3AED" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrowhead2)"/>
+              <line x1="100" y1="90" x2="200" y2="130" stroke="#06B6D4" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrowhead2)"/>
+              <line x1="300" y1="50" x2="350" y2="90" stroke="#7C3AED" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrowhead2)"/>
+              <line x1="300" y1="130" x2="350" y2="90" stroke="#10B981" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrowhead2)"/>
+              <circle class="data-flow" cx="150" cy="70" r="3" fill="#7C3AED"/>
+              <circle class="data-flow" cx="150" cy="110" r="3" fill="#06B6D4"/>
+              <g class="agent-node-dashboard clue" transform="translate(50, 70)">
+                <circle r="28" fill="#06B6D4" opacity="0.2"/>
+                <circle r="22" fill="#06B6D4"/>
+                <text y="4" text-anchor="middle" fill="white" font-size="10" font-weight="600">线索</text>
+              </g>
+              <g class="agent-node-dashboard solution" transform="translate(200, 40)">
+                <circle r="28" fill="#7C3AED" opacity="0.2"/>
+                <circle r="22" fill="#7C3AED"/>
+                <text y="4" text-anchor="middle" fill="white" font-size="10" font-weight="600">方案</text>
+              </g>
+              <g class="agent-node-dashboard delivery" transform="translate(200, 120)">
+                <circle r="28" fill="#10B981" opacity="0.2"/>
+                <circle r="22" fill="#10B981"/>
+                <text y="4" text-anchor="middle" fill="white" font-size="10" font-weight="600">交付</text>
+              </g>
+              <g class="agent-node-dashboard core" transform="translate(350, 90)">
+                <circle r="35" fill="#7C3AED" opacity="0.3"/>
+                <circle r="28" fill="#7C3AED"/>
+                <text y="-3" text-anchor="middle" fill="white" font-size="8">AI</text>
+                <text y="6" text-anchor="middle" fill="white" font-size="8">店长</text>
+              </g>
+            </svg>
+            <div class="agent-status">
+              <div class="agent-status-item">
+                <span class="status-dot online"></span>
+                <span class="agent-name">线索Agent</span>
+                <span class="agent-task" id="clueTask">正在分析...</span>
+              </div>
+              <div class="agent-status-item">
+                <span class="status-dot online"></span>
+                <span class="agent-name">方案Agent</span>
+                <span class="agent-task" id="solutionTask">等待中</span>
+              </div>
+              <div class="agent-status-item">
+                <span class="status-dot busy"></span>
+                <span class="agent-name">交付Agent</span>
+                <span class="agent-task" id="deliveryTask">执行中</span>
+              </div>
+              <div class="agent-status-item">
+                <span class="status-dot online"></span>
+                <span class="agent-name">运营Agent</span>
+                <span class="agent-task" id="operationTask">优化中</span>
+              </div>
+            </div>
+            <div class="agent-stats">
+              <span>已完成任务: <strong id="completedTasks">128</strong></span>
+              <span>运行时间: <strong id="runTime">23天</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右列 -->
+      <div class="dashboard-col dashboard-col-right">
+        <!-- 平台数据矩阵 -->
+        <div class="dashboard-card platform-card">
+          <div class="card-header">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            <span>平台数据矩阵</span>
+          </div>
+          <div class="platform-matrix">
+            <div class="platform-item">
+              <div class="platform-icon-small meituan">美</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">美团</span>
+                <span class="platform-item-rating">⭐ 4.8</span>
+                <span class="platform-item-order">286单</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small dianping">点</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">大众点评</span>
+                <span class="platform-item-rating">⭐ 4.8</span>
+                <span class="platform-item-order">1263条</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small ele">饿</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">饿了么</span>
+                <span class="platform-item-rating">⭐ 4.6</span>
+                <span class="platform-item-order">198单</span>
+              </div>
+              <span class="platform-item-trend down"><i data-lucide="trending-down" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small douyin">抖</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">抖音</span>
+                <span class="platform-item-rating">⭐ 4.5</span>
+                <span class="platform-item-order">89单</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small xhs">红</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">小红书</span>
+                <span class="platform-item-rating">⭐ 4.7</span>
+                <span class="platform-item-order">笔记45篇</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small amap">高</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">高德</span>
+                <span class="platform-item-rating">⭐ 4.8</span>
+                <span class="platform-item-order">指引328次</span>
+              </div>
+              <span class="platform-item-trend stable"><i data-lucide="minus" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small koubei">口</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">口碑</span>
+                <span class="platform-item-rating">⭐ 4.6</span>
+                <span class="platform-item-order">扫码156次</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+            <div class="platform-item">
+              <div class="platform-icon-small wechat">微</div>
+              <div class="platform-item-info">
+                <span class="platform-item-name">微信</span>
+                <span class="platform-item-rating">⭐ 4.7</span>
+                <span class="platform-item-order">曝光2.8万</span>
+              </div>
+              <span class="platform-item-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 会员画像环形图 -->
+        <div class="dashboard-card member-card">
+          <div class="card-header">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>会员画像</span>
+          </div>
+          <div class="member-chart-container">
+            <div class="member-chart">
+              <canvas id="dashboardMemberChart"></canvas>
+              <div class="member-center">
+                <span class="member-total">12,860</span>
+                <span class="member-label">总会员</span>
+              </div>
+            </div>
+            <div class="member-legend">
+              <div class="member-legend-item">
+                <span class="legend-dot" style="background: #7C3AED"></span>
+                <span class="legend-label">新客</span>
+                <span class="legend-value">35%</span>
+              </div>
+              <div class="member-legend-item">
+                <span class="legend-dot" style="background: #06B6D4"></span>
+                <span class="legend-label">活跃老客</span>
+                <span class="legend-value">40%</span>
+              </div>
+              <div class="member-legend-item">
+                <span class="legend-dot" style="background: #10B981"></span>
+                <span class="legend-label">沉默客</span>
+                <span class="legend-value">15%</span>
+              </div>
+              <div class="member-legend-item">
+                <span class="legend-dot" style="background: #F59E0B"></span>
+                <span class="legend-label">流失客</span>
+                <span class="legend-value">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- AI决策时间线 -->
+        <div class="dashboard-card timeline-card">
+          <div class="card-header">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+            <span>AI决策时间线</span>
+          </div>
+          <div class="ai-timeline">
+            <div class="timeline-item-dashboard completed">
+              <span class="timeline-time-dashboard">09:15</span>
+              <span class="timeline-status completed">✅</span>
+              <span class="timeline-text-dashboard">差评自动回复</span>
+            </div>
+            <div class="timeline-item-dashboard completed">
+              <span class="timeline-time-dashboard">11:30</span>
+              <span class="timeline-status completed">✅</span>
+              <span class="timeline-text-dashboard">午市调价+5%</span>
+            </div>
+            <div class="timeline-item-dashboard completed">
+              <span class="timeline-time-dashboard">14:00</span>
+              <span class="timeline-status completed">✅</span>
+              <span class="timeline-text-dashboard">VIP召回推送</span>
+            </div>
+            <div class="timeline-item-dashboard completed">
+              <span class="timeline-time-dashboard">17:00</span>
+              <span class="timeline-status completed">✅</span>
+              <span class="timeline-text-dashboard">外卖策略调整</span>
+            </div>
+            <div class="timeline-item-dashboard processing">
+              <span class="timeline-time-dashboard">20:00</span>
+              <span class="timeline-status processing">🔄</span>
+              <span class="timeline-text-dashboard">明日备货建议</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <!-- 底部滚动条 -->
+    <footer class="dashboard-footer">
+      <div class="news-ticker">
+        <div class="ticker-content" id="tickerContent">
+          <span class="ticker-item">🌟 美团新增1条好评 · 评分升至4.8</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">👤 VIP张女士到店消费¥286 · 复购第7次</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">📈 午市营收¥4.2万 · 超昨日同期15%</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">🤖 AI已处理47条差评 · 转化成功率89%</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">💰 本月累计营收¥12.8万 · 目标完成度92%</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">🎉 会员新增23人 · 活跃度提升8%</span>
+          <span class="ticker-separator">·</span>
+          <span class="ticker-item">⚡ 竞品调价预警 · 建议跟进调整</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- 快捷操作面板 (FAB) -->
+  <div class="fab-container" id="fabContainer">
+    <button class="fab-main" id="fabMain">
+      <i data-lucide="plus" class="w-6 h-6"></i>
+    </button>
+    <div class="fab-menu" id="fabMenu">
+      <button class="fab-item" data-action="dashboard" title="查看大屏">
+        <i data-lucide="monitor" class="w-5 h-5"></i>
+        <span>查看大屏</span>
+      </button>
+      <button class="fab-item" data-action="report" title="生成日报">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>生成日报</span>
+      </button>
+      <button class="fab-item" data-action="search" title="搜索功能">
+        <i data-lucide="search" class="w-5 h-5"></i>
+        <span>搜索功能</span>
+      </button>
+      <button class="fab-item" data-action="scene" title="切换场景">
+        <i data-lucide="layout-grid" class="w-5 h-5"></i>
+        <span>切换场景</span>
+      </button>
+      <button class="fab-item" data-action="theme" title="切换主题">
+        <i data-lucide="moon" class="w-5 h-5"></i>
+        <span>切换主题</span>
+      </button>
+      <button class="fab-item" data-action="share" title="分享演示">
+        <i data-lucide="share-2" class="w-5 h-5"></i>
+        <span>分享演示</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- 消息中心增强面板 -->
+  <div class="enhanced-notification-panel" id="enhancedNotificationPanel">
+    <div class="enhanced-notification-header">
+      <h3>消息中心</h3>
+      <div class="notification-tabs">
+        <button class="notif-tab active" data-category="all">全部</button>
+        <button class="notif-tab" data-category="negative">差评预警</button>
+        <button class="notif-tab" data-category="revenue">营收异动</button>
+        <button class="notif-tab" data-category="member">会员动态</button>
+        <button class="notif-tab" data-category="ai">AI建议</button>
+      </div>
+      <button class="enhanced-notification-close" id="enhancedNotificationClose">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="enhanced-notification-list" id="enhancedNotificationList"></div>
+  </div>
+  
+  <!-- AI建议行动卡 -->
+  <div class="ai-action-cards" id="aiActionCards">
+    <div class="ai-action-card urgent">
+      <div class="action-card-icon">🔴</div>
+      <div class="action-card-content">
+        <span class="action-card-tag">紧急</span>
+        <p class="action-card-text">3条差评未处理，建议立即回复</p>
+      </div>
+      <button class="action-card-btn" data-action="process-negative">执行</button>
+    </div>
+    <div class="ai-action-card suggestion">
+      <div class="action-card-icon">🟡</div>
+      <div class="action-card-content">
+        <span class="action-card-tag">建议</span>
+        <p class="action-card-text">午市翻台率低，推荐优化套餐组合</p>
+      </div>
+      <button class="action-card-btn" data-action="optimize-package">执行</button>
+    </div>
+    <div class="ai-action-card opportunity">
+      <div class="action-card-icon">🟢</div>
+      <div class="action-card-content">
+        <span class="action-card-tag">机会</span>
+        <p class="action-card-text">母亲节临近，建议启动感恩套餐预售</p>
+      </div>
+      <button class="action-card-btn" data-action="mother-day">执行</button>
+    </div>
+  </div>
+  
+  <!-- 门店对比面板 -->
+  <div class="store-compare-panel" id="storeComparePanel">
+    <div class="compare-header">
+      <h3>门店对比</h3>
+      <button class="compare-close" id="compareClose">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="compare-content">
+      <div class="compare-stores">
+        <div class="compare-store-item">
+          <span class="compare-store-icon">🔥</span>
+          <span class="compare-store-name">老码头火锅</span>
+          <span class="compare-store-badge">领先</span>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-store-item">
+          <span class="compare-store-icon">🧋</span>
+          <span class="compare-store-name">茶悦时光</span>
+        </div>
+      </div>
+      <div class="compare-items">
+        <div class="compare-item">
+          <span class="compare-item-label">评分</span>
+          <div class="compare-item-bars">
+            <div class="compare-bar" style="width: 96%"><span>4.8 ⭐</span></div>
+            <div class="compare-bar" style="width: 94%"><span>4.7 ⭐</span></div>
+          </div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-item-label">差评率</span>
+          <div class="compare-item-bars">
+            <div class="compare-bar low" style="width: 24%"><span>1.2%</span></div>
+            <div class="compare-bar low" style="width: 40%"><span>2.0%</span></div>
+          </div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-item-label">月营收</span>
+          <div class="compare-item-bars">
+            <div class="compare-bar" style="width: 85%"><span>¥12.8万</span></div>
+            <div class="compare-bar" style="width: 60%"><span>¥8.2万</span></div>
+          </div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-item-label">AI效率</span>
+          <div class="compare-item-bars">
+            <div class="compare-bar" style="width: 98%"><span>98%</span></div>
+            <div class="compare-bar" style="width: 88%"><span>88%</span></div>
+          </div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-item-label">会员数</span>
+          <div class="compare-item-bars">
+            <div class="compare-bar" style="width: 80%"><span>12,860人</span></div>
+            <div class="compare-bar" style="width: 55%"><span>6,800人</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 实时活动流 -->
+  <div class="realtime-activity-bar" id="realtimeActivityBar">
+    <div class="activity-content" id="activityContent">
+      <span class="activity-item">刚刚 · 美团新增1条评价</span>
+      <span class="activity-separator">·</span>
+      <span class="activity-item">2分钟前 · AI自动回复差评</span>
+      <span class="activity-separator">·</span>
+      <span class="activity-item">5分钟前 · 动态定价调整+3%</span>
+      <span class="activity-separator">·</span>
+      <span class="activity-item">8分钟前 · VIP会员到店</span>
+    </div>
+  </div>
+  
+  <!-- 快捷键帮助弹窗 -->
+  <div class="shortcuts-help" id="shortcutsHelp">
+    <div class="shortcuts-content">
+      <h3>快捷键帮助</h3>
+      <div class="shortcuts-list">
+        <div class="shortcut-item">
+          <kbd>D</kbd>
+          <span>切换数据大屏</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>C</kbd>
+          <span>切换对话/数据Tab</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>R</kbd>
+          <span>生成日报</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>S</kbd>
+          <span>分享</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>?</kbd>
+          <span>显示此帮助</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>1-6</kbd>
+          <span>切换场景</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd>ESC</kbd>
+          <span>返回首页</span>
+        </div>
+      </div>
+      <button class="shortcuts-close" id="shortcutsClose">关闭</button>
+    </div>
+  </div>
+  
   <!-- Scripts -->
   <script src="js/app.js"></script>
   <script>

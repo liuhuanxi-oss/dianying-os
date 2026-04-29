@@ -2875,3 +2875,463 @@ document.addEventListener('DOMContentLoaded', function() {
   
   console.log('店赢OS v15 - 15项新功能全家桶已加载 ✓');
 });
+
+// ==================== 数据大屏驾驶舱功能 ====================
+let dashboardChart = null;
+let memberChart = null;
+
+// 初始化数据大屏
+function initDashboard() {
+  const dashboard = document.getElementById('dataDashboard');
+  if (!dashboard) return;
+  
+  dashboard.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  initDashboardClock();
+  initRevenueChart();
+  initMemberChart();
+  initSparklines();
+  initStoreMarkers();
+  initAgentNodes();
+  initNewsTicker();
+  
+  // 数字滚动效果
+  animateMetrics();
+}
+
+// 退出数据大屏
+function exitDashboard() {
+  const dashboard = document.getElementById('dataDashboard');
+  if (!dashboard) return;
+  
+  dashboard.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  // 停止所有动画
+  if (dashboardChart) {
+    dashboardChart.destroy();
+    dashboardChart = null;
+  }
+  if (memberChart) {
+    memberChart.destroy();
+    memberChart = null;
+  }
+}
+
+// 初始化时钟
+function initDashboardClock() {
+  const clockEl = document.getElementById('dashboardTime');
+  if (!clockEl) return;
+  
+  function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+    
+    // 更新日期
+    const dateEl = document.getElementById('dashboardDate');
+    if (dateEl) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      dateEl.textContent = now.toLocaleDateString('zh-CN', options);
+    }
+  }
+  
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+// 初始化营收趋势图
+function initRevenueChart() {
+  const ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
+  
+  const labels = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'];
+  const data = [12, 8, 45, 78, 65, 89, 52];
+  
+  if (dashboardChart) dashboardChart.destroy();
+  
+  dashboardChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '营收(万元)',
+        data: data,
+        borderColor: '#7C3AED',
+        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#7C3AED'
+      }, {
+        label: '昨日',
+        data: [10, 6, 38, 65, 58, 72, 45],
+        borderColor: 'rgba(6, 182, 212, 0.5)',
+        borderDash: [5, 5],
+        fill: false,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20, 25, 50, 0.9)',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.7)',
+          borderColor: 'rgba(124, 58, 237, 0.3)',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 10 } }
+        }
+      }
+    }
+  });
+  
+  // 模拟实时更新
+  setInterval(() => {
+    if (!document.getElementById('dataDashboard')?.classList.contains('active')) return;
+    const newData = data.map(v => v + (Math.random() - 0.5) * 10);
+    dashboardChart.data.datasets[0].data = newData;
+    dashboardChart.update('none');
+  }, 3000);
+}
+
+// 初始化会员环形图
+function initMemberChart() {
+  const ctx = document.getElementById('dashboardMemberChart');
+  if (!ctx) return;
+  
+  if (memberChart) memberChart.destroy();
+  
+  memberChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['高活跃', '中等活跃', '低活跃', '沉默用户'],
+      datasets: [{
+        data: [35, 28, 22, 15],
+        backgroundColor: ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20, 25, 50, 0.9)',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.7)'
+        }
+      }
+    }
+  });
+}
+
+// 初始化迷你折线图
+function initSparklines() {
+  document.querySelectorAll('.sparkline').forEach(el => {
+    const values = Array.from({length: 12}, () => Math.random() * 50 + 25);
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    const range = max - min || 1;
+    
+    const points = values.map((v, i) => {
+      const x = (i / (values.length - 1)) * 100;
+      const y = 100 - ((v - min) / range) * 80 - 10;
+      return `${x},${y}`;
+    }).join(' ');
+    
+    el.innerHTML = `
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:0.3"/>
+            <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0"/>
+          </linearGradient>
+        </defs>
+        <polygon points="0,100 ${points} 100,100" fill="url(#sparkGrad)"/>
+        <polyline points="${points}" fill="none" stroke="#7C3AED" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      </svg>
+    `;
+  });
+}
+
+// 初始化门店标记
+function initStoreMarkers() {
+  const markers = document.querySelectorAll('.store-marker');
+  markers.forEach((marker, i) => {
+    marker.style.left = `${15 + Math.random() * 70}%`;
+    marker.style.top = `${15 + Math.random() * 70}%`;
+    marker.style.background = ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B'][i % 4];
+    
+    marker.addEventListener('click', () => {
+      markers.forEach(m => m.classList.remove('active'));
+      marker.classList.add('active');
+      
+      // 显示门店信息
+      if (storeInfo) {
+        storeInfo.style.display = 'block';
+        storeInfo.querySelector('.store-name').textContent = `门店 ${i + 1}`;
+      }
+    });
+  });
+  
+  // 随机高亮
+  setInterval(() => {
+    if (!document.getElementById('dataDashboard')?.classList.contains('active')) return;
+    const randomMarker = markers[Math.floor(Math.random() * markers.length)];
+    markers.forEach(m => m.classList.remove('active'));
+    randomMarker.classList.add('active');
+  }, 3000);
+}
+
+// 初始化Agent节点
+function initAgentNodes() {
+  const nodes = document.querySelectorAll('.agent-node:not(.center)');
+  nodes.forEach(node => {
+    node.addEventListener('click', () => {
+      nodes.forEach(n => n.style.transform = '');
+      node.style.transform = 'scale(1.15)';
+    });
+  });
+}
+
+// 初始化滚动通知
+function initNewsTicker() {
+  const ticker = document.querySelector('.ticker-text');
+  if (!ticker) return;
+  
+  // 复制内容实现无缝滚动
+  ticker.innerHTML += ticker.innerHTML;
+}
+
+// 数字动画
+function animateMetrics() {
+  document.querySelectorAll('.metric-value[data-value]').forEach(el => {
+    const target = parseFloat(el.dataset.value);
+    const suffix = el.dataset.suffix || '';
+    let current = 0;
+    const step = target / 30;
+    
+    const animate = () => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.round(current) + suffix;
+      if (current < target) requestAnimationFrame(animate);
+    };
+    
+    animate();
+  });
+}
+
+// 大屏按钮事件
+document.addEventListener('DOMContentLoaded', () => {
+  const dashboardBtn = document.getElementById('dashboardBtn');
+  const landingDashboardBtn = document.getElementById('landingDashboardBtn');
+  const dashboardExitBtn = document.getElementById('dashboardExitBtn');
+  
+  if (dashboardBtn) {
+    dashboardBtn.addEventListener('click', initDashboard);
+  }
+  
+  if (landingDashboardBtn) {
+    landingDashboardBtn.addEventListener('click', initDashboard);
+  }
+  
+  if (dashboardExitBtn) {
+    dashboardExitBtn.addEventListener('click', exitDashboard);
+  }
+  
+  // ESC退出大屏
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      exitDashboard();
+      closeStoreCompare();
+      closeShortcutsHelp();
+    }
+    // 按D键打开大屏
+    if (e.key === 'd' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const tag = document.activeElement.tagName;
+      if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        const dash = document.getElementById('dataDashboard');
+        if (!dash.classList.contains('active')) {
+          initDashboard();
+        }
+      }
+    }
+    // ?键显示快捷键帮助
+    if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+      openShortcutsHelp();
+    }
+  });
+});
+
+// ==================== 快捷操作FAB按钮 ====================
+let fabExpanded = false;
+
+function toggleFab() {
+  fabExpanded = !fabExpanded;
+  const fabMain = document.querySelector('.fab-main');
+  const fabItems = document.querySelector('.fab-items');
+  
+  if (fabExpanded) {
+    fabMain.classList.add('active');
+    fabItems.classList.add('expanded');
+  } else {
+    fabMain.classList.remove('active');
+    fabItems.classList.remove('expanded');
+  }
+}
+
+function fabAction(type) {
+  toggleFab();
+  
+  switch(type) {
+    case 'message':
+      toggleNotificationPanel();
+      break;
+    case 'ai':
+      toggleAIActionCards();
+      break;
+    case 'compare':
+      openStoreCompare();
+      break;
+    case 'activity':
+      toggleActivityBar();
+      break;
+    case 'shortcuts':
+      openShortcutsHelp();
+      break;
+  }
+}
+
+// ==================== 增强消息中心 ====================
+function toggleNotificationPanel() {
+  const panel = document.querySelector('.enhanced-notification-panel');
+  if (panel) {
+    panel.classList.toggle('open');
+  }
+}
+
+function switchNotificationTab(tab) {
+  document.querySelectorAll('.notification-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.notification-tab.${tab}`)?.classList.add('active');
+  
+  // 模拟筛选
+  document.querySelectorAll('.notification-item').forEach(item => {
+    const priority = item.dataset.priority;
+    if (tab === 'all' || priority === tab) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+// ==================== AI建议行动卡 ====================
+function toggleAIActionCards() {
+  const cards = document.querySelector('.ai-action-cards');
+  if (cards) {
+    cards.classList.toggle('active');
+  }
+}
+
+function executeAction(cardIndex) {
+  const actions = [
+    () => showToast('正在调整门店A库存策略...'),
+    () => showToast('已推送优惠券给高价值用户'),
+    () => showToast('已安排员工培训计划')
+  ];
+  
+  actions[cardIndex]?.();
+  toggleAIActionCards();
+}
+
+// ==================== 门店对比面板 ====================
+function openStoreCompare() {
+  const panel = document.querySelector('.store-compare-panel');
+  if (panel) {
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeStoreCompare() {
+  const panel = document.querySelector('.store-compare-panel');
+  if (panel) {
+    panel.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// ==================== 实时活动流 ====================
+function toggleActivityBar() {
+  const bar = document.querySelector('.realtime-activity-bar');
+  if (bar) {
+    bar.classList.toggle('active');
+  }
+}
+
+// ==================== 快捷键帮助 ====================
+function openShortcutsHelp() {
+  const help = document.querySelector('.shortcuts-help');
+  if (help) {
+    help.classList.add('open');
+  }
+}
+
+function closeShortcutsHelp() {
+  const help = document.querySelector('.shortcuts-help');
+  if (help) {
+    help.classList.remove('open');
+  }
+}
+
+// Toast提示
+function showToast(message) {
+  const existing = document.querySelector('.toast-message');
+  if (existing) existing.remove();
+  
+  const toast = document.createElement('div');
+  toast.className = 'toast-message';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #7C3AED, #06B6D4);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    z-index: 3000;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  `;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
