@@ -3335,3 +3335,442 @@ function showToast(message) {
     setTimeout(() => toast.remove(), 300);
   }, 2500);
 }
+
+
+// ============================================
+// 新版Demo UI v8 - 交互逻辑
+// ============================================
+
+// 页面导航
+const sidebarNavItems = document.querySelectorAll('.sidebar-nav-item');
+const pageContents = document.querySelectorAll('.page-content');
+const topbarBreadcrumb = document.getElementById('topbarBreadcrumb');
+const demoSidebar = document.getElementById('demoSidebar');
+const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+
+// 侧边栏折叠
+if (sidebarCollapseBtn) {
+  sidebarCollapseBtn.addEventListener('click', () => {
+    demoSidebar.classList.toggle('expanded');
+    const icon = sidebarCollapseBtn.querySelector('i');
+    if (demoSidebar.classList.contains('expanded')) {
+      icon.setAttribute('data-lucide', 'chevrons-left');
+    } else {
+      icon.setAttribute('data-lucide', 'chevrons-right');
+    }
+    lucide.createIcons();
+  });
+}
+
+// 页面切换
+function switchPage(pageName, breadcrumb) {
+  // 更新侧边栏选中状态
+  sidebarNavItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageName);
+  });
+  
+  // 更新页面内容
+  pageContents.forEach(page => {
+    page.classList.toggle('active', page.id === 'page' + pageName.charAt(0).toUpperCase() + pageName.slice(1));
+  });
+  
+  // 更新面包屑
+  if (topbarBreadcrumb) {
+    topbarBreadcrumb.textContent = breadcrumb;
+  }
+  
+  // 初始化页面图表
+  if (pageName === 'overview') {
+    initOverviewCharts();
+  } else if (pageName === 'data') {
+    initDataCharts();
+  }
+}
+
+sidebarNavItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    const breadcrumbMap = {
+      overview: '运营概览',
+      chat: 'AI对话',
+      data: '数据报表',
+      platform: '平台管理',
+      logs: '决策日志'
+    };
+    switchPage(page, breadcrumbMap[page] || '概览');
+  });
+});
+
+// 概览页图表
+function initOverviewCharts() {
+  const revenueChartEl = document.getElementById('revenueChart');
+  if (revenueChartEl && typeof Chart !== 'undefined') {
+    // 清除旧图表
+    const existingChart = Chart.getChart(revenueChartEl);
+    if (existingChart) existingChart.destroy();
+    
+    const ctx = revenueChartEl.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(124, 58, 237, 0.3)');
+    gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+    
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [{
+          label: '营收(万)',
+          data: [11.2, 12.8, 10.9, 13.5, 12.1, 14.2, 13.8],
+          borderColor: '#7C3AED',
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#7C3AED',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  }
+}
+
+// 数据页图表
+function initDataCharts() {
+  // 营收趋势
+  const dataRevenueEl = document.getElementById('dataRevenueChart');
+  if (dataRevenueEl && typeof Chart !== 'undefined') {
+    const existing = Chart.getChart(dataRevenueEl);
+    if (existing) existing.destroy();
+    
+    new Chart(dataRevenueEl.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [{
+          label: '营收',
+          data: [11.2, 12.8, 10.9, 13.5, 12.1, 14.2, 13.8],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'y'
+        }, {
+          label: '订单',
+          data: [380, 420, 365, 445, 398, 478, 461],
+          borderColor: '#06B6D4',
+          backgroundColor: 'transparent',
+          tension: 0.4,
+          yAxisID: 'y1'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: true, position: 'top' } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { type: 'linear', position: 'left', grid: { color: '#F1F5F9' } },
+          y1: { type: 'linear', position: 'right', grid: { display: false } }
+        }
+      }
+    });
+  }
+  
+  // 订单分布饼图
+  const orderPieEl = document.getElementById('orderPieChart');
+  if (orderPieEl && typeof Chart !== 'undefined') {
+    const existing = Chart.getChart(orderPieEl);
+    if (existing) existing.destroy();
+    
+    new Chart(orderPieEl.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['美团', '点评', '饿了么', '抖音', '其他'],
+        datasets: [{
+          data: [35, 25, 15, 15, 10],
+          backgroundColor: ['#7C3AED', '#A78BFA', '#06B6D4', '#F59E0B', '#94A3B8'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } } }
+      }
+    });
+  }
+}
+
+// AI助手浮窗
+const aiAssistantBtn = document.getElementById('aiAssistantBtn');
+const aiFloatPanel = document.getElementById('aiFloatPanel');
+const aiFloatClose = document.getElementById('aiFloatClose');
+
+if (aiAssistantBtn) {
+  aiAssistantBtn.addEventListener('click', () => {
+    aiFloatPanel.classList.toggle('show');
+  });
+}
+
+if (aiFloatClose) {
+  aiFloatClose.addEventListener('click', () => {
+    aiFloatPanel.classList.remove('show');
+  });
+}
+
+// AI浮窗场景点击
+const aiFloatScenes = document.querySelectorAll('.ai-float-scene');
+aiFloatScenes.forEach(scene => {
+  scene.addEventListener('click', () => {
+    const scenario = scene.dataset.scenario;
+    // 切换到对话页
+    switchPage('chat', 'AI对话');
+    aiFloatPanel.classList.remove('show');
+    // 加载对应场景
+    if (typeof loadScenarioChat === 'function' && scenario) {
+      loadScenarioChat(scenario);
+    }
+  });
+});
+
+// 轮播词条
+const carouselTexts = [
+  '今日客流+15%，表现优秀',
+  '3条差评已自动处理',
+  '午市调价建议已生成',
+  '王女士等VIP待召回',
+  '雨天策略已自动执行'
+];
+let carouselIndex = 0;
+const aiCarouselText = document.getElementById('aiCarouselText');
+
+function updateCarousel() {
+  if (aiCarouselText) {
+    aiCarouselText.textContent = carouselTexts[carouselIndex];
+    carouselIndex = (carouselIndex + 1) % carouselTexts.length;
+  }
+}
+setInterval(updateCarousel, 3000);
+
+// 通知badge更新
+const topbarNotificationBadge = document.getElementById('topbarNotificationBadge');
+const aiAssistantCursor = document.getElementById('aiAssistantCursor');
+if (topbarNotificationBadge && aiAssistantCursor) {
+  aiAssistantCursor.textContent = topbarNotificationBadge.textContent;
+}
+
+// 返回首页按钮
+const topbarHome = document.getElementById('topbarHome');
+const demoPage = document.getElementById('demoPage');
+const landingPage = document.querySelector('.landing-page');
+
+if (topbarHome) {
+  topbarHome.addEventListener('click', () => {
+    if (demoPage) demoPage.classList.remove('active');
+    if (landingPage) landingPage.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// Demo触发按钮
+const demoTriggers = document.querySelectorAll('[data-demo-trigger]');
+demoTriggers.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (landingPage) landingPage.style.display = 'none';
+    if (demoPage) {
+      demoPage.classList.add('active');
+      // 默认显示概览页
+      switchPage('overview', '运营概览');
+    }
+    lucide.createIcons();
+  });
+});
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  
+  // 默认显示概览页
+  const defaultDemoTrigger = document.querySelector('[data-demo-trigger]');
+  if (defaultDemoTrigger && demoPage) {
+    // 首次加载不需要自动触发
+  }
+  
+  // 初始化图表
+  setTimeout(() => {
+    initOverviewCharts();
+  }, 500);
+});
+
+// 场景按钮点击（对话页）
+const scenarioBtns = document.querySelectorAll('.scenario-btn');
+scenarioBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const scenario = btn.dataset.scenario;
+    scenarioBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 加载对应场景对话
+    if (typeof loadScenarioChat === 'function' && scenario) {
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) chatMessages.innerHTML = '';
+      loadScenarioChat(scenario);
+    }
+  });
+});
+
+// 时间选择器
+const timeBtns = document.querySelectorAll('.time-btn');
+timeBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    timeBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // 重新加载图表数据
+    initDataCharts();
+  });
+});
+
+// 响应式检测 - 移动端收起侧边栏
+function checkMobile() {
+  if (window.innerWidth <= 768) {
+    if (demoSidebar) demoSidebar.classList.remove('expanded');
+  }
+}
+window.addEventListener('resize', checkMobile);
+checkMobile();
+
+
+// ============================================
+// 多端适配 - Tab导航控制
+// ============================================
+
+// 检测断点并控制导航显示
+function updateNavDisplay() {
+  const width = window.innerWidth;
+  const sidebar = document.getElementById('demoSidebar');
+  const topbarTabNav = document.querySelector('.topbar-tab-nav');
+  const mobileBottomNav = document.querySelector('.mobile-bottom-nav');
+  const topbar = document.getElementById('demoTopbar');
+  const main = document.getElementById('demoMain');
+  
+  if (width >= 992) {
+    // 桌面/小桌面：显示侧边栏
+    if (sidebar) sidebar.style.display = 'flex';
+    if (topbarTabNav) topbarTabNav.style.display = 'none';
+    if (mobileBottomNav) mobileBottomNav.style.display = 'none';
+    if (topbar) topbar.style.left = '64px';
+    if (main) main.style.marginLeft = '64px';
+  } else if (width >= 768) {
+    // 平板：显示顶部Tab栏
+    if (sidebar) sidebar.style.display = 'none';
+    if (topbarTabNav) topbarTabNav.style.display = 'flex';
+    if (mobileBottomNav) mobileBottomNav.style.display = 'none';
+    if (topbar) topbar.style.left = '0';
+    if (main) main.style.marginLeft = '0';
+  } else {
+    // 手机：显示底部Tab栏
+    if (sidebar) sidebar.style.display = 'none';
+    if (topbarTabNav) topbarTabNav.style.display = 'none';
+    if (mobileBottomNav) mobileBottomNav.style.display = 'flex';
+    if (topbar) topbar.style.left = '0';
+    if (main) main.style.marginLeft = '0';
+    if (main) main.style.marginBottom = '64px';
+  }
+}
+
+// 页面切换 - 同步所有导航
+function switchPageAllNav(pageName, breadcrumb) {
+  // 更新侧边栏
+  const sidebarNavItems = document.querySelectorAll('.sidebar-nav-item');
+  sidebarNavItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageName);
+  });
+  
+  // 更新顶部Tab栏
+  const topbarTabItems = document.querySelectorAll('.topbar-tab-item');
+  topbarTabItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageName);
+  });
+  
+  // 更新底部Tab栏
+  const bottomNavItems = document.querySelectorAll('.mobile-bottom-nav-item');
+  bottomNavItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageName);
+  });
+  
+  // 更新页面内容
+  const pageContents = document.querySelectorAll('.page-content');
+  const pageId = 'page' + pageName.charAt(0).toUpperCase() + pageName.slice(1);
+  pageContents.forEach(page => {
+    page.classList.toggle('active', page.id === pageId);
+  });
+  
+  // 更新面包屑
+  const topbarBreadcrumb = document.getElementById('topbarBreadcrumb');
+  if (topbarBreadcrumb) {
+    topbarBreadcrumb.textContent = breadcrumb;
+  }
+  
+  // 初始化页面图表
+  if (pageName === 'overview') {
+    initOverviewCharts();
+  } else if (pageName === 'data') {
+    initDataCharts();
+  }
+  
+  // 隐藏AI浮窗
+  const aiFloatPanel = document.getElementById('aiFloatPanel');
+  if (aiFloatPanel) aiFloatPanel.classList.remove('show');
+}
+
+// 绑定顶部Tab栏点击
+document.addEventListener('DOMContentLoaded', () => {
+  updateNavDisplay();
+  
+  const topbarTabItems = document.querySelectorAll('.topbar-tab-item');
+  topbarTabItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      const breadcrumbMap = {
+        overview: '运营概览',
+        chat: 'AI对话',
+        data: '数据报表',
+        platform: '平台管理',
+        logs: '决策日志'
+      };
+      switchPageAllNav(page, breadcrumbMap[page] || '概览');
+    });
+  });
+  
+  // 绑定底部Tab栏点击
+  const bottomNavItems = document.querySelectorAll('.mobile-bottom-nav-item');
+  bottomNavItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      const breadcrumbMap = {
+        overview: '运营概览',
+        chat: 'AI对话',
+        data: '数据报表',
+        platform: '平台管理',
+        logs: '决策日志'
+      };
+      switchPageAllNav(page, breadcrumbMap[page] || '概览');
+    });
+  });
+  
+  // 窗口大小变化时更新导航显示
+  window.addEventListener('resize', () => {
+    updateNavDisplay();
+  });
+});
