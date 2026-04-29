@@ -14,6 +14,8 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.4/dist/driver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.4/dist/driver.min.css">
   <script>
@@ -2876,194 +2878,7 @@
           <span class="ds-map-total">8家门店</span>
         </div>
         <div class="ds-map-container">
-          <svg class="ds-map-svg" viewBox="0 0 600 480" id="chinaMap">
-            <defs>
-              <!-- 地图渐变填充 -->
-              <linearGradient id="landGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="rgba(30,27,75,0.9)"/>
-                <stop offset="100%" stop-color="rgba(49,46,129,0.85)"/>
-              </linearGradient>
-              <!-- 旗舰点发光 -->
-              <filter id="mapGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-            
-            <!-- 中国大陆主体轮廓（清晰"雄鸡"） -->
-            <g class="map-mainland">
-              <!-- 外发光轮廓 -->
-              <path class="map-border-glow" d="
-                M145,55 L175,48 L210,52 L245,45 L275,52 L305,60 L325,52 L350,62
-                L375,72 L400,68 L425,78 L455,88 L480,82 L505,95 L525,108 L538,130 L535,155
-                L542,180 L532,205 L522,225 L510,245 L498,265 L508,288 L520,310
-                L515,335 L495,358 L475,375 L455,392 L432,402 L408,415 L382,422 L358,428
-                L332,435 L305,442 L278,448 L252,452 L225,448 L200,440 L175,432 L150,425
-                L125,415 L100,400 L75,382 L55,362 L42,340 L38,318 L45,295 L52,272 L58,248
-                L52,225 L58,202 L78,180 L72,158 L78,135 L98,115 L115,92 L132,72 Z
-              " fill="rgba(6,182,212,0.05)" stroke="rgba(6,182,212,0.4)" stroke-width="2"/>
-              
-              <!-- 主大陆填充 -->
-              <path class="map-land-fill" d="
-                M145,55 L175,48 L210,52 L245,45 L275,52 L305,60 L325,52 L350,62
-                L375,72 L400,68 L425,78 L455,88 L480,82 L505,95 L525,108 L538,130 L535,155
-                L542,180 L532,205 L522,225 L510,245 L498,265 L508,288 L520,310
-                L515,335 L495,358 L475,375 L455,392 L432,402 L408,415 L382,422 L358,428
-                L332,435 L305,442 L278,448 L252,452 L225,448 L200,440 L175,432 L150,425
-                L125,415 L100,400 L75,382 L55,362 L42,340 L38,318 L45,295 L52,272 L58,248
-                L52,225 L58,202 L78,180 L72,158 L78,135 L98,115 L115,92 L132,72 Z
-              " fill="url(#landGradient)" stroke="rgba(6,182,212,0.7)" stroke-width="1.5"/>
-              
-              <!-- 东北区域 -->
-              <path class="map-northeast" d="
-                M445,78 L468,72 L492,78 L515,85 L535,92 L552,102 L558,118 L552,135
-                L542,148 L525,152 L508,148 L490,155 L472,160 L455,155 L438,148 L432,135
-                L440,115 L450,95 Z
-              " fill="rgba(30,27,75,0.85)" stroke="rgba(6,182,212,0.5)" stroke-width="1"/>
-              
-              <!-- 新疆区域 -->
-              <path class="map-xinjiang" d="
-                M62,248 L48,260 L32,285 L25,310 L32,338 L50,355 L72,365
-                L92,358 L108,342 L118,318 L115,292 L100,270 L82,260 Z
-              " fill="rgba(30,27,75,0.85)" stroke="rgba(6,182,212,0.5)" stroke-width="1"/>
-              
-              <!-- 西藏区域 -->
-              <path class="map-tibet" d="
-                M102,392 L85,398 L68,410 L52,425 L48,442 L60,458 L82,470
-                L105,478 L128,470 L142,458 L152,440 L158,420 L150,402 L132,393 Z
-              " fill="rgba(30,27,75,0.85)" stroke="rgba(6,182,212,0.5)" stroke-width="1"/>
-            </g>
-            
-            <!-- 省界虚线（细线不突出） -->
-            <g class="province-lines" stroke="rgba(6,182,212,0.15)" stroke-width="0.5" stroke-dasharray="4,6" fill="none">
-              <line x1="145" y1="55" x2="525" y2="120"/>
-              <line x1="62" y1="248" x2="525" y2="248"/>
-              <line x1="102" y1="392" x2="455" y2="385"/>
-              <line x1="425" y1="78" x2="425" y2="160"/>
-              <line x1="505" y1="95" x2="355" y2="420"/>
-            </g>
-            
-            <!-- 地理标签 -->
-            <g class="map-labels" fill="rgba(148,163,184,0.4)" font-size="8" font-family="system-ui">
-              <text x="200" y="115" text-anchor="middle">内蒙古</text>
-              <text x="320" y="95" text-anchor="middle">东北</text>
-              <text x="485" y="125" text-anchor="middle">黑龙江</text>
-              <text x="78" y="300" text-anchor="middle">新疆</text>
-              <text x="195" y="245" text-anchor="middle">甘肃</text>
-              <text x="280" y="195" text-anchor="middle">陕西</text>
-              <text x="345" y="295" text-anchor="middle">湖北</text>
-              <text x="418" y="275" text-anchor="middle">江苏</text>
-              <text x="98" y="425" text-anchor="middle">西藏</text>
-              <text x="195" y="335" text-anchor="middle">四川</text>
-              <text x="295" y="375" text-anchor="middle">贵州</text>
-              <text x="360" y="420" text-anchor="middle">海南</text>
-            </g>
-            
-            <!-- 门店标注点 -->
-            <g class="store-markers">
-              <!-- 北京-旗舰店 -->
-              <g class="ds-store-marker flagship" data-store="老码头火锅-北京旗舰店" data-revenue="¥28.6万" data-rating="4.9" data-orders="1245" data-type="旗舰">
-                <circle class="pulse-ring" cx="288" cy="142" r="18" fill="none" stroke="#7C3AED" stroke-width="2" opacity="0.6">
-                  <animate attributeName="r" values="10;22;10" dur="2s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="288" cy="142" r="8" fill="#7C3AED" filter="url(#mapGlow)"/>
-                <circle cx="288" cy="142" r="4" fill="white"/>
-                <text x="288" y="158" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">北京</text>
-              </g>
-              
-              <!-- 上海-直营 -->
-              <g class="ds-store-marker direct" data-store="老码头火锅-上海直营店" data-revenue="¥22.4万" data-rating="4.8" data-orders="986" data-type="直营">
-                <circle cx="368" cy="242" r="6" fill="#06B6D4"/>
-                <circle cx="368" cy="242" r="3" fill="white"/>
-                <text x="368" y="258" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">上海</text>
-              </g>
-              
-              <!-- 广州-直营 -->
-              <g class="ds-store-marker direct" data-store="老码头火锅-广州直营店" data-revenue="¥20.8万" data-rating="4.8" data-orders="912" data-type="直营">
-                <circle cx="318" cy="368" r="6" fill="#06B6D4"/>
-                <circle cx="318" cy="368" r="3" fill="white"/>
-                <text x="318" y="384" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">广州</text>
-              </g>
-              
-              <!-- 深圳-加盟 -->
-              <g class="ds-store-marker franchise" data-store="老码头火锅-深圳加盟店" data-revenue="¥18.2万" data-rating="4.7" data-orders="824" data-type="加盟">
-                <circle cx="335" cy="375" r="5" fill="#10B981"/>
-                <circle cx="335" cy="375" r="2.5" fill="white"/>
-                <text x="335" y="390" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">深圳</text>
-              </g>
-              
-              <!-- 成都-加盟 -->
-              <g class="ds-store-marker franchise" data-store="老码头火锅-成都加盟店" data-revenue="¥16.5万" data-rating="4.7" data-orders="756" data-type="加盟">
-                <circle cx="198" cy="292" r="5" fill="#10B981"/>
-                <circle cx="198" cy="292" r="2.5" fill="white"/>
-                <text x="198" y="307" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">成都</text>
-              </g>
-              
-              <!-- 杭州-加盟 -->
-              <g class="ds-store-marker franchise" data-store="老码头火锅-杭州加盟店" data-revenue="¥15.8万" data-rating="4.6" data-orders="698" data-type="加盟">
-                <circle cx="365" cy="248" r="5" fill="#10B981"/>
-                <circle cx="365" cy="248" r="2.5" fill="white"/>
-                <text x="365" y="263" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">杭州</text>
-              </g>
-              
-              <!-- 武汉-直营 -->
-              <g class="ds-store-marker direct" data-store="老码头火锅-武汉直营店" data-revenue="¥14.2万" data-rating="4.6" data-orders="645" data-type="直营">
-                <circle cx="298" cy="275" r="5" fill="#06B6D4"/>
-                <circle cx="298" cy="275" r="2.5" fill="white"/>
-                <text x="298" y="290" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">武汉</text>
-              </g>
-              
-              <!-- 南京-加盟 -->
-              <g class="ds-store-marker franchise" data-store="老码头火锅-南京加盟店" data-revenue="¥12.6万" data-rating="4.5" data-orders="578" data-type="加盟">
-                <circle cx="348" cy="225" r="5" fill="#10B981"/>
-                <circle cx="348" cy="225" r="2.5" fill="white"/>
-                <text x="348" y="240" text-anchor="middle" fill="#E2E8F0" font-size="7" font-weight="500">南京</text>
-              </g>
-            </g>
-            
-            <!-- 台湾 -->
-            <path class="map-taiwan" d="
-              M478,338 L484,332 L490,338 L492,355 L490,372 L484,388
-              L478,392 L472,386 L470,368 L472,350 L475,342 Z
-            " fill="rgba(30,27,75,0.85)" stroke="rgba(6,182,212,0.5)" stroke-width="1"/>
-            
-            <!-- 南海诸岛小地图 -->
-            <g class="map-south-sea" transform="translate(475, 400)">
-              <rect x="0" y="0" width="100" height="60" fill="rgba(10,14,26,0.8)" stroke="rgba(6,182,212,0.3)" stroke-width="1" rx="3"/>
-              <!-- 南海海域 -->
-              <ellipse cx="50" cy="30" rx="40" ry="22" fill="rgba(30,27,75,0.6)" stroke="rgba(6,182,212,0.3)" stroke-width="0.5"/>
-              <!-- 海南岛 -->
-              <ellipse cx="55" cy="35" rx="6" ry="4" fill="rgba(49,46,129,0.7)" stroke="rgba(6,182,212,0.4)" stroke-width="0.5"/>
-              <!-- 台湾 -->
-              <ellipse cx="30" cy="18" rx="8" ry="4" fill="rgba(49,46,129,0.7)" stroke="rgba(6,182,212,0.4)" stroke-width="0.5"/>
-              <!-- 东沙 -->
-              <circle cx="70" cy="20" r="2" fill="rgba(49,46,129,0.7)" stroke="rgba(6,182,212,0.4)" stroke-width="0.5"/>
-              <!-- 西沙 -->
-              <circle cx="45" cy="15" r="2" fill="rgba(49,46,129,0.7)" stroke="rgba(6,182,212,0.4)" stroke-width="0.5"/>
-              <!-- 南沙 -->
-              <circle cx="50" cy="45" r="2" fill="rgba(49,46,129,0.7)" stroke="rgba(6,182,212,0.4)" stroke-width="0.5"/>
-              <text x="50" y="55" text-anchor="middle" fill="rgba(148,163,184,0.5)" font-size="6">南海诸岛</text>
-            </g>
-          </svg>
-          
-          <!-- 门店Tooltip -->
-          <div class="ds-store-tooltip" id="storeTooltip">
-            <div class="tooltip-header">
-              <span class="tooltip-store-name"></span>
-              <span class="tooltip-type"></span>
-            </div>
-            <div class="tooltip-rating-line">
-              <span class="tooltip-rating"></span>
-            </div>
-            <div class="tooltip-row"><span>月营收</span><span class="tooltip-revenue"></span></div>
-            <div class="tooltip-row"><span>今日订单</span><span class="tooltip-orders"></span></div>
-          </div>
-          
-          <!-- 图例 -->
+          <div id="chinaMapChart" style="width:100%;height:280px;"></div>
           <div class="ds-map-legend">
             <div class="ds-legend-item"><span class="ds-legend-dot flagship"></span>旗舰</div>
             <div class="ds-legend-item"><span class="ds-legend-dot direct"></span>直营</div>
@@ -3071,7 +2886,7 @@
             <span class="ds-total-count">全国门店：8家</span>
           </div>
         </div>
-      </div>
+      </div>      </div>
 
       <!-- 中：Multi-Agent状态面板 -->
       <div class="ds-panel ds-agent-panel">

@@ -961,61 +961,119 @@ function initNewsTicker() {
   content.innerHTML = originalHTML + originalHTML;
 }
 
-// 门店分布图Tooltip
-function initHeatmapTooltip() {
-  const markers = document.querySelectorAll('.ds-store-marker');
-  const tooltip = document.getElementById('storeTooltip');
-  const mapContainer = document.querySelector('.ds-map-container');
+// 全国门店分布图（ECharts中国地图）
+let chinaMapChart = null;
+function initChinaMap() {
+  const container = document.getElementById('chinaMapChart');
+  if (!container || typeof echarts === 'undefined') return;
   
-  markers.forEach(marker => {
-    marker.addEventListener('mouseenter', (e) => {
-      const storeName = marker.dataset.store;
-      const revenue = marker.dataset.revenue;
-      const rating = marker.dataset.rating;
-      const orders = marker.dataset.orders;
-      const storeType = marker.dataset.type || '门店';
-      
-      if (tooltip && storeName) {
-        tooltip.querySelector('.tooltip-store-name').textContent = storeName;
-        
-        // 设置门店类型标签
-        const typeEl = tooltip.querySelector('.tooltip-type');
-        if (typeEl) {
-          typeEl.textContent = storeType;
-          typeEl.className = 'tooltip-type';
-          if (storeType === '直营') {
-            typeEl.classList.add('direct');
-          } else if (storeType === '加盟') {
-            typeEl.classList.add('franchise');
-          }
+  if (chinaMapChart) chinaMapChart.dispose();
+  chinaMapChart = echarts.init(container, null, { renderer: 'canvas' });
+  
+  const storeData = [
+    { name: '北京旗舰店', value: [116.46, 39.92, 28.6], rating: 4.9, orders: 1245, type: '旗舰' },
+    { name: '上海直营店', value: [121.48, 31.22, 22.4], rating: 4.8, orders: 986, type: '直营' },
+    { name: '广州直营店', value: [113.23, 23.16, 20.8], rating: 4.8, orders: 912, type: '直营' },
+    { name: '深圳加盟店', value: [114.07, 22.62, 18.2], rating: 4.7, orders: 824, type: '加盟' },
+    { name: '成都加盟店', value: [104.06, 30.67, 16.5], rating: 4.7, orders: 756, type: '加盟' },
+    { name: '杭州加盟店', value: [120.19, 30.26, 15.8], rating: 4.6, orders: 698, type: '加盟' },
+    { name: '武汉直营店', value: [114.31, 30.52, 14.2], rating: 4.6, orders: 645, type: '直营' },
+    { name: '南京加盟店', value: [118.78, 32.04, 12.6], rating: 4.5, orders: 578, type: '加盟' }
+  ];
+  
+  const flagship = storeData.filter(s => s.type === '旗舰');
+  const direct = storeData.filter(s => s.type === '直营');
+  const franchise = storeData.filter(s => s.type === '加盟');
+  
+  chinaMapChart.setOption({
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(15,23,42,0.95)',
+      borderColor: 'rgba(124,58,237,0.5)',
+      borderWidth: 1,
+      textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: function(params) {
+        if (params.seriesType === 'effectScatter') {
+          const d = params.data;
+          return '<b>' + d.name + '</b><br/>' +
+                 '类型：' + d.storeType + '<br/>' +
+                 '月营收：¥' + d.value[2] + '万<br/>' +
+                 '评分：★ ' + d.rating + '<br/>' +
+                 '月订单：' + d.orders + '单';
         }
-        
-        tooltip.querySelector('.tooltip-rating').textContent = '★ ' + rating;
-        tooltip.querySelector('.tooltip-revenue').textContent = revenue;
-        tooltip.querySelector('.tooltip-orders').textContent = orders + ' 单';
-        tooltip.classList.add('show');
-        
-        const rect = marker.getBoundingClientRect();
-        const containerRect = mapContainer.getBoundingClientRect();
-        const x = rect.left - containerRect.left;
-        const y = rect.top - containerRect.top - 60;
-        
-        // 确保tooltip不超出容器
-        let left = x - 50;
-        let top = y;
-        if (left < 0) left = 0;
-        if (left > containerRect.width - 170) left = containerRect.width - 170;
-        if (top < 0) top = y + 80;
-        
-        tooltip.style.left = left + 'px';
-        tooltip.style.top = top + 'px';
+        return params.name;
       }
-    });
-    
-    marker.addEventListener('mouseleave', () => {
-      if (tooltip) tooltip.classList.remove('show');
-    });
+    },
+    geo: {
+      map: 'china',
+      roam: false,
+      zoom: 1.2,
+      center: [104.5, 35.5],
+      label: { show: false },
+      itemStyle: {
+        areaColor: 'rgba(30,27,75,0.6)',
+        borderColor: 'rgba(6,182,212,0.3)',
+        borderWidth: 0.8
+      },
+      emphasis: {
+        itemStyle: {
+          areaColor: 'rgba(124,58,237,0.3)',
+          borderColor: 'rgba(124,58,237,0.6)',
+          borderWidth: 1.5
+        },
+        label: { show: false }
+      }
+    },
+    series: [
+      {
+        name: '旗舰',
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: flagship.map(s => ({
+          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+        })),
+        symbolSize: 18,
+        rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
+        itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
+        label: {
+          show: true, formatter: '{b}', position: 'right',
+          color: '#E2E8F0', fontSize: 9, fontWeight: 500
+        }
+      },
+      {
+        name: '直营',
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: direct.map(s => ({
+          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+        })),
+        symbolSize: 12,
+        rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
+        itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
+        label: {
+          show: true, formatter: '{b}', position: 'right',
+          color: '#E2E8F0', fontSize: 8
+        }
+      },
+      {
+        name: '加盟',
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: franchise.map(s => ({
+          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+        })),
+        symbolSize: 10,
+        rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
+        itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
+        label: {
+          show: true, formatter: '{b}', position: 'right',
+          color: '#E2E8F0', fontSize: 8
+        }
+      }
+    ]
   });
+  
+  window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
 }
 
 // 全屏切换
@@ -1167,8 +1225,8 @@ function initDataScreenV2() {
   // 初始化新闻滚动
   initNewsTicker();
   
-  // 初始化门店分布图Tooltip
-  initHeatmapTooltip();
+  // 初始化全国门店分布图（ECharts）
+  setTimeout(initChinaMap, 300);
   
   // 初始化新功能
   initFullscreenToggle();
