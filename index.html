@@ -601,6 +601,15 @@
             <i data-lucide="layout-grid" class="w-5 h-5"></i>
             <span class="sidebar-nav-text">平台</span>
           </div>
+          <div class="sidebar-nav-item" data-page="aipay" data-step="6" data-title="AI付">
+            <i data-lucide="scan-face" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">AI付</span>
+            <span class="sidebar-nav-badge">NEW</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="knowledge" data-step="7" data-title="知识库">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">知识库</span>
+          </div>
           <div class="sidebar-nav-item" data-page="logs" data-step="5" data-title="决策日志">
             <i data-lucide="file-text" class="w-5 h-5"></i>
             <span class="sidebar-nav-text">日志</span>
@@ -769,6 +778,98 @@
                   </div>
                 </div>
               </div>
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="calendar-clock" class="w-5 h-5 text-cyan-500"></i>
+                    智能排班建议
+                  </div>
+                  <button class="card-header-btn">查看详情</button>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="schedule-suggestions">
+                    <div class="schedule-item">
+                      <div class="schedule-time">午餐 11:30-14:00</div>
+                      <div class="schedule-info">
+                        <span class="schedule-count">建议4人</span>
+                        <span class="schedule-current">当前3人</span>
+                      </div>
+                      <div class="schedule-bar"><div class="schedule-bar-fill" style="width: 75%"></div></div>
+                    </div>
+                    <div class="schedule-item">
+                      <div class="schedule-time">晚餐 17:30-21:00</div>
+                      <div class="schedule-info">
+                        <span class="schedule-count">建议6人</span>
+                        <span class="schedule-current">当前5人</span>
+                      </div>
+                      <div class="schedule-bar"><div class="schedule-bar-fill" style="width: 83%"></div></div>
+                    </div>
+                    <div class="schedule-item">
+                      <div class="schedule-time">周末峰值</div>
+                      <div class="schedule-info">
+                        <span class="schedule-count">建议8人</span>
+                        <span class="schedule-current">当前6人</span>
+                      </div>
+                      <div class="schedule-bar"><div class="schedule-bar-fill" style="width: 75%"></div></div>
+                    </div>
+                  </div>
+                  <div class="schedule-cost">
+                    <span class="cost-label">预估人力成本：</span>
+                    <span class="cost-value">¥8,500/月</span>
+                    <span class="cost-save">可节省 ¥1,200</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- A/B测试卡片 -->
+            <div class="dashboard-grid" style="grid-template-columns: 1fr 2fr; margin-top: 24px;">
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="flask-conical" class="w-5 h-5 text-orange-500"></i>
+                    A/B测试对比
+                  </div>
+                  <span class="test-badge running">进行中</span>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="ab-test">
+                    <div class="ab-variant">
+                      <div class="ab-label">方案A</div>
+                      <div class="ab-name">原价策略</div>
+                      <div class="ab-metrics">
+                        <div class="ab-metric"><span class="ab-metric-value">¥12,800</span><span class="ab-metric-label">日营收</span></div>
+                        <div class="ab-metric"><span class="ab-metric-value">68%</span><span class="ab-metric-label">转化率</span></div>
+                      </div>
+                    </div>
+                    <div class="ab-vs">VS</div>
+                    <div class="ab-variant winner">
+                      <div class="ab-label">方案B <span class="winner-tag">领先</span></div>
+                      <div class="ab-name">满100减20</div>
+                      <div class="ab-metrics">
+                        <div class="ab-metric"><span class="ab-metric-value">¥14,200</span><span class="ab-metric-label">日营收</span></div>
+                        <div class="ab-metric"><span class="ab-metric-value">76%</span><span class="ab-metric-label">转化率</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ab-conclusion">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>预计提升 <strong>+10.9%</strong> 营收</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-purple-500"></i>
+                    营收趋势（7天）
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="chart-wrapper">
+                    <canvas id="overviewChart"></canvas>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
           
@@ -844,6 +945,10 @@
                 <button class="filter-btn active" data-filter="7d">近7天</button>
                 <button class="filter-btn" data-filter="30d">近30天</button>
                 <button class="filter-btn" data-filter="90d">近90天</button>
+                <div class="date-range-picker">
+                  <input type="date" class="date-input" id="dateStart"> -
+                  <input type="date" class="date-input" id="dateEnd">
+                </div>
               </div>
               <div class="data-toolbar-right">
                 <!-- Data Comparison Toggle -->
@@ -855,6 +960,11 @@
                 <button class="export-btn" id="exportReportBtn">
                   <i data-lucide="download" class="w-4 h-4"></i>
                   导出报告
+                </button>
+                <!-- Health Check Report Button -->
+                <button class="health-btn" id="healthReportBtn">
+                  <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                  门店体检报告
                 </button>
               </div>
             </div>
@@ -939,25 +1049,31 @@
                 <i data-lucide="search" class="w-4 h-4"></i>
                 <input type="text" class="platform-search-input" placeholder="搜索平台...">
               </div>
-              <div class="platform-actions">
-                <button class="batch-action-btn" id="batchActionBtn">
-                  <i data-lucide="layers" class="w-4 h-4"></i>
-                  批量操作
-                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              <div class="platform-toolbar-right">
+                <button class="publish-btn" id="publishBtn">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  一键发文
                 </button>
-                <div class="batch-dropdown hidden" id="batchDropdown">
-                  <button class="batch-dropdown-item" data-action="reply">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i>
-                    批量回复差评
+                <div class="platform-actions">
+                  <button class="batch-action-btn" id="batchActionBtn">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    批量操作
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
                   </button>
-                  <button class="batch-dropdown-item" data-action="price">
-                    <i data-lucide="tag" class="w-4 h-4"></i>
-                    批量调价
-                  </button>
-                  <button class="batch-dropdown-item" data-action="sync">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                    批量同步菜品
-                  </button>
+                  <div class="batch-dropdown hidden" id="batchDropdown">
+                    <button class="batch-dropdown-item" data-action="reply">
+                      <i data-lucide="message-circle" class="w-4 h-4"></i>
+                      批量回复差评
+                    </button>
+                    <button class="batch-dropdown-item" data-action="price">
+                      <i data-lucide="tag" class="w-4 h-4"></i>
+                      批量调价
+                    </button>
+                    <button class="batch-dropdown-item" data-action="sync">
+                      <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                      批量同步菜品
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1209,6 +1325,305 @@
               </div>
             </div>
           </section>
+
+          <!-- AI付 Section -->
+          <section class="demo-section" id="sectionAipay">
+            <div class="aipay-header">
+              <div class="aipay-logo">
+                <svg viewBox="0 0 24 24" fill="#1677FF" width="48" height="48"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2zm0-2h2V7h-2z"/></svg>
+                <div class="aipay-title">
+                  <h2>支付宝AI付</h2>
+                  <span class="aipay-badge">独立功能模块</span>
+                </div>
+              </div>
+              <div class="aipay-status connected">
+                <span class="status-dot"></span>
+                <span>已接入</span>
+              </div>
+            </div>
+            <div class="aipay-notice">
+              <i data-lucide="info" class="w-4 h-4"></i>
+              <span>支付宝AI付是独立功能模块，不与店赢OS核心绑定。作为可选能力展示，需单独申请支付宝AI付能力。</span>
+            </div>
+            <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="scan-face" class="w-5 h-5 text-blue-500"></i>
+                    AI付能力概览
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="aipay-capabilities">
+                    <div class="capability-item">
+                      <div class="capability-icon smart"><i data-lucide="sparkles" class="w-6 h-6"></i></div>
+                      <div class="capability-info">
+                        <div class="capability-name">智能收款</div>
+                        <div class="capability-desc">AI自动识别订单金额并发起收款</div>
+                      </div>
+                      <span class="capability-status active">已开通</span>
+                    </div>
+                    <div class="capability-item">
+                      <div class="capability-icon voice"><i data-lucide="mic" class="w-6 h-6"></i></div>
+                      <div class="capability-info">
+                        <div class="capability-name">语音收款</div>
+                        <div class="capability-desc">语音唤醒收款功能，说"收款"即可</div>
+                      </div>
+                      <span class="capability-status active">已开通</span>
+                    </div>
+                    <div class="capability-item">
+                      <div class="capability-icon face"><i data-lucide="scan-face" class="w-6 h-6"></i></div>
+                      <div class="capability-info">
+                        <div class="capability-name">刷脸收款</div>
+                        <div class="capability-desc">支付宝刷脸支付，秒级结算</div>
+                      </div>
+                      <span class="capability-status active">已开通</span>
+                    </div>
+                    <div class="capability-item">
+                      <div class="capability-icon service"><i data-lucide="bot" class="w-6 h-6"></i></div>
+                      <div class="capability-info">
+                        <div class="capability-name">AI客服</div>
+                        <div class="capability-desc">AI自动处理支付相关问题</div>
+                      </div>
+                      <span class="capability-status active">已开通</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="store" class="w-5 h-5 text-green-500"></i>
+                    已绑定商户
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="merchant-list">
+                    <div class="merchant-item">
+                      <div class="merchant-icon">🔥</div>
+                      <div class="merchant-info">
+                        <div class="merchant-name">老码头火锅-旗舰店</div>
+                        <div class="merchant-id">商户号：2026A001</div>
+                      </div>
+                      <span class="merchant-status online">在线</span>
+                    </div>
+                    <div class="merchant-item">
+                      <div class="merchant-icon">☕</div>
+                      <div class="merchant-info">
+                        <div class="merchant-name">老码头火锅-徐汇店</div>
+                        <div class="merchant-id">商户号：2026A002</div>
+                      </div>
+                      <span class="merchant-status online">在线</span>
+                    </div>
+                    <div class="merchant-item">
+                      <div class="merchant-icon">🍜</div>
+                      <div class="merchant-info">
+                        <div class="merchant-name">老码头火锅-浦东店</div>
+                        <div class="merchant-id">商户号：2026A003</div>
+                      </div>
+                      <span class="merchant-status online">在线</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="receipt" class="w-5 h-5 text-purple-500"></i>
+                  交易示例
+                </div>
+              </div>
+              <div class="dashboard-card-body">
+                <div class="transaction-list">
+                  <div class="transaction-item">
+                    <div class="transaction-icon success"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+                    <div class="transaction-info">
+                      <div class="transaction-amount">¥328.00</div>
+                      <div class="transaction-time">2026-05-20 12:35</div>
+                    </div>
+                    <div class="transaction-method">刷脸支付</div>
+                    <span class="transaction-status success">已完成</span>
+                  </div>
+                  <div class="transaction-item">
+                    <div class="transaction-icon success"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+                    <div class="transaction-info">
+                      <div class="transaction-amount">¥156.00</div>
+                      <div class="transaction-time">2026-05-20 11:20</div>
+                    </div>
+                    <div class="transaction-method">智能收款</div>
+                    <span class="transaction-status success">已完成</span>
+                  </div>
+                  <div class="transaction-item">
+                    <div class="transaction-icon success"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+                    <div class="transaction-info">
+                      <div class="transaction-amount">¥88.00</div>
+                      <div class="transaction-time">2026-05-20 10:45</div>
+                    </div>
+                    <div class="transaction-method">语音收款</div>
+                    <span class="transaction-status success">已完成</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="aipay-demo-section">
+              <h3 class="aipay-demo-title">Demo交互体验</h3>
+              <div class="aipay-demo-actions">
+                <button class="simulate-btn" id="simulateAipayBtn">
+                  <i data-lucide="play" class="w-5 h-5"></i>
+                  模拟AI付收款
+                </button>
+              </div>
+              <div class="payment-animation hidden" id="paymentAnimation">
+                <div class="animation-content">
+                  <div class="payment-step" id="step1">
+                    <div class="step-icon scanning"><i data-lucide="scan-face" class="w-8 h-8"></i></div>
+                    <div class="step-text">扫描顾客面部...</div>
+                  </div>
+                  <div class="payment-step hidden" id="step2">
+                    <div class="step-icon recognizing"><i data-lucide="user-check" class="w-8 h-8"></i></div>
+                    <div class="step-text">识别成功：张三</div>
+                  </div>
+                  <div class="payment-step hidden" id="step3">
+                    <div class="step-icon processing"><i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i></div>
+                    <div class="step-text">正在支付...</div>
+                  </div>
+                  <div class="payment-step hidden" id="step4">
+                    <div class="step-icon success"><i data-lucide="check-circle" class="w-8 h-8"></i></div>
+                    <div class="step-text">收款成功！¥328.00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 知识库 Section -->
+          <section class="demo-section" id="sectionKnowledge">
+            <div class="knowledge-header">
+              <h2 class="knowledge-title">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
+                RAG知识库管理
+              </h2>
+              <div class="knowledge-actions">
+                <div class="knowledge-search">
+                  <i data-lucide="search" class="w-4 h-4"></i>
+                  <input type="text" placeholder="搜索知识条目...">
+                </div>
+                <button class="add-knowledge-btn">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  新增知识
+                </button>
+              </div>
+            </div>
+            <div class="knowledge-stats">
+              <div class="knowledge-stat">
+                <div class="knowledge-stat-value">128</div>
+                <div class="knowledge-stat-label">知识条目</div>
+              </div>
+              <div class="knowledge-stat">
+                <div class="knowledge-stat-value">6</div>
+                <div class="knowledge-stat-label">知识分类</div>
+              </div>
+              <div class="knowledge-stat">
+                <div class="knowledge-stat-value">99.2%</div>
+                <div class="knowledge-stat-label">检索准确率</div>
+              </div>
+              <div class="knowledge-stat">
+                <div class="knowledge-stat-value">1,280</div>
+                <div class="knowledge-stat-label">本周检索</div>
+              </div>
+            </div>
+            <div class="knowledge-categories">
+              <button class="category-btn active" data-category="all">全部</button>
+              <button class="category-btn" data-category="product">产品知识</button>
+              <button class="category-btn" data-category="service">服务规范</button>
+              <button class="category-btn" data-category="marketing">营销策略</button>
+              <button class="category-btn" data-category="faq">常见问题</button>
+              <button class="category-btn" data-category="training">培训资料</button>
+            </div>
+            <div class="knowledge-list">
+              <div class="knowledge-item">
+                <div class="knowledge-item-header">
+                  <span class="knowledge-tag product">产品知识</span>
+                  <span class="knowledge-date">2026-05-15</span>
+                </div>
+                <div class="knowledge-item-title">招牌毛肚标准制作流程</div>
+                <div class="knowledge-item-preview">选用新鲜水牛毛肚，切割厚度3mm，冰鲜保存，水温控制75°C，涮烫时间15秒...</div>
+                <div class="knowledge-item-footer">
+                  <span class="knowledge-ref-count"><i data-lucide="file-text" class="w-3 h-3"></i> 引用 23 次</span>
+                  <div class="knowledge-item-actions">
+                    <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="knowledge-item">
+                <div class="knowledge-item-header">
+                  <span class="knowledge-tag service">服务规范</span>
+                  <span class="knowledge-date">2026-05-12</span>
+                </div>
+                <div class="knowledge-item-title">顾客投诉处理话术模板</div>
+                <div class="knowledge-item-preview">第一阶段：道歉认错；第二阶段：了解情况；第三阶段：提出方案；第四阶段：跟进反馈...</div>
+                <div class="knowledge-item-footer">
+                  <span class="knowledge-ref-count"><i data-lucide="file-text" class="w-3 h-3"></i> 引用 56 次</span>
+                  <div class="knowledge-item-actions">
+                    <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="knowledge-item">
+                <div class="knowledge-item-header">
+                  <span class="knowledge-tag marketing">营销策略</span>
+                  <span class="knowledge-date">2026-05-10</span>
+                </div>
+                <div class="knowledge-item-title">节假日促销方案库</div>
+                <div class="knowledge-item-preview">春节：全家福套餐；情人节：双人套餐；儿童节：亲子套餐；端午节：粽子礼盒...</div>
+                <div class="knowledge-item-footer">
+                  <span class="knowledge-ref-count"><i data-lucide="file-text" class="w-3 h-3"></i> 引用 89 次</span>
+                  <div class="knowledge-item-actions">
+                    <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="knowledge-item">
+                <div class="knowledge-item-header">
+                  <span class="knowledge-tag faq">常见问题</span>
+                  <span class="knowledge-date">2026-05-08</span>
+                </div>
+                <div class="knowledge-item-title">等位时间过长FAQ</div>
+                <div class="knowledge-item-preview">Q：等位超过30分钟怎么办？A：1.免费赠送小吃；2.优先安排入座；3.下次消费9折...</div>
+                <div class="knowledge-item-footer">
+                  <span class="knowledge-ref-count"><i data-lucide="file-text" class="w-3 h-3"></i> 引用 134 次</span>
+                  <div class="knowledge-item-actions">
+                    <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="knowledge-item">
+                <div class="knowledge-item-header">
+                  <span class="knowledge-tag training">培训资料</span>
+                  <span class="knowledge-date">2026-05-05</span>
+                </div>
+                <div class="knowledge-item-title">新员工入职培训手册</div>
+                <div class="knowledge-item-preview">第一章：企业文化；第二章：门店规范；第三章：产品知识；第四章：服务标准；第五章：安全须知...</div>
+                <div class="knowledge-item-footer">
+                  <span class="knowledge-ref-count"><i data-lucide="file-text" class="w-3 h-3"></i> 引用 45 次</span>
+                  <div class="knowledge-item-actions">
+                    <button class="knowledge-action-btn"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    <button class="knowledge-action-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
           
         </div>
       </main>
@@ -1224,19 +1639,19 @@
         <div class="mobile-nav-item" data-page="chat">
           <i data-lucide="message-square"></i>
           <span>对话</span>
-          <span class="mobile-nav-badge">3</span>
         </div>
         <div class="mobile-nav-item" data-page="data">
           <i data-lucide="bar-chart-2"></i>
           <span>数据</span>
         </div>
-        <div class="mobile-nav-item" data-page="platform">
-          <i data-lucide="layout-grid"></i>
-          <span>平台</span>
+        <div class="mobile-nav-item" data-page="aipay">
+          <i data-lucide="scan-face"></i>
+          <span>AI付</span>
+          <span class="mobile-nav-badge new">NEW</span>
         </div>
-        <div class="mobile-nav-item" data-page="logs">
-          <i data-lucide="file-text"></i>
-          <span>日志</span>
+        <div class="mobile-nav-item" data-page="knowledge">
+          <i data-lucide="book-open"></i>
+          <span>知识库</span>
         </div>
       </div>
     </nav>
