@@ -226,6 +226,26 @@ document.addEventListener('DOMContentLoaded', function() {
         { type: 'ai', agent: 'solution', text: '[方案Agent] 优化建议：\n1. 【午市】推出"商务套餐"锁定办公人群，缩短点餐-出餐时间\n2. 【晚市】18:30前结账享9折，提升19:00后入座率\n3. 【下午茶】开放茶点套餐，盘活14:00-17:00闲置时段' },
         { type: 'ai', agent: 'delivery', text: '[交付Agent] 预计整体提升翻台率至3.6次/天，月增收约¥2,400。已生成优化方案PPT，是否同步给店长群？' }
       ]
+    },
+    knowledge: {
+      title: '跨店迁移',
+      messages: [
+        { type: 'user', text: '火锅店的促销方案能直接用到新开的烧烤店吗？' },
+        { type: 'ai', agent: 'virtual', text: '收到，正在调用运营Agent分析跨店迁移可行性...' },
+        { type: 'ai', agent: 'operation', text: '[运营Agent] 火锅店"满100减20"方案分析：核心驱动力是"高客单价+社交场景"。烧烤店同样满足这两个条件，迁移可行度82%。但需要调整：1）优惠门槛从100降至80（烧烤客单价更低），2）增加"烤串组合"替代"锅底+配菜"组合' },
+        { type: 'ai', agent: 'solution', text: '[方案Agent] 已生成烧烤店适配方案，差异点已标注。预计试运行期1周，期间会对比两家店的数据。' },
+        { type: 'ai', agent: 'delivery', text: '[交付Agent] 方案已推送到烧烤店后台，店长确认后即可启动。同步开启了A/B测试，火锅店保持原方案作为对照组。' }
+      ]
+    },
+    twin: {
+      title: '数字孪生',
+      messages: [
+        { type: 'user', text: '下周想推出午市套餐，但不确定定价多少合适' },
+        { type: 'ai', agent: 'virtual', text: '收到，正在调用方案Agent进行数字孪生模拟...' },
+        { type: 'ai', agent: 'solution', text: '[方案Agent] 已在数字孪生环境中模拟3种定价方案：¥38/¥48/¥58。模拟条件：当前客群结构、周边竞品定价、食材成本占比。结果显示：¥48方案综合评分最高（营收+满意度+翻台率），预计午市增收¥3,200/天。' },
+        { type: 'ai', agent: 'clue', text: '[线索Agent] 补充数据：隔壁商场新开快餐店定价¥35，如果定价¥48需要搭配差异化价值感。建议加一个"免费续饭"标签。' },
+        { type: 'ai', agent: 'delivery', text: '[交付Agent] ¥48午市套餐已创建草稿，含"免费续饭"标签。同时设置了3天后自动复盘提醒，会对比模拟值和实际值。' }
+      ]
     }
   };
   
@@ -338,6 +358,10 @@ document.addEventListener('DOMContentLoaded', function() {
           matchedScenario = 'vip';
         } else if (lowerText.includes('翻台') || lowerText.includes('运营') || lowerText.includes('客流')) {
           matchedScenario = 'operation';
+        } else if (lowerText.includes('跨店') || lowerText.includes('迁移') || lowerText.includes('复制') || lowerText.includes('烧烤') || lowerText.includes('火锅')) {
+          matchedScenario = 'knowledge';
+        } else if (lowerText.includes('孪生') || lowerText.includes('模拟') || lowerText.includes('定价') || lowerText.includes('套餐') || lowerText.includes('合适')) {
+          matchedScenario = 'twin';
         }
         
         scenarioBtns.forEach(b => {
@@ -399,7 +423,9 @@ document.addEventListener('DOMContentLoaded', function() {
       review: { rating: 4.8, ratingChange: '+0.3', negativeRate: 1.2, negativeChange: '-3.8%', revenue: 128000, revenueChange: '+12%', trustLevel: 92 },
       pricing: { rating: 4.7, ratingChange: '+0.1', negativeRate: 2.1, negativeChange: '-1.2%', revenue: 135000, revenueChange: '+18%', trustLevel: 88 },
       vip: { rating: 4.9, ratingChange: '+0.4', negativeRate: 0.8, negativeChange: '-4.2%', revenue: 142000, revenueChange: '+15%', trustLevel: 95 },
-      operation: { rating: 4.6, ratingChange: '+0.2', negativeRate: 2.8, negativeChange: '-0.6%', revenue: 118000, revenueChange: '+8%', trustLevel: 85 }
+      operation: { rating: 4.6, ratingChange: '+0.2', negativeRate: 2.8, negativeChange: '-0.6%', revenue: 118000, revenueChange: '+8%', trustLevel: 85 },
+      knowledge: { rating: 4.8, ratingChange: '+0.2', negativeRate: 1.5, negativeChange: '-2.1%', revenue: 138000, revenueChange: '+22%', trustLevel: 90 },
+      twin: { rating: 4.9, ratingChange: '+0.3', negativeRate: 1.0, negativeChange: '-3.0%', revenue: 145000, revenueChange: '+25%', trustLevel: 94 }
     };
     
     const data = demoData[scenario];
@@ -513,7 +539,9 @@ document.addEventListener('DOMContentLoaded', function() {
       review: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8] },
       pricing: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5] },
       vip: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2] },
-      operation: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8] }
+      operation: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8] },
+      knowledge: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.0, 8.8, 10.2, 11.5, 12.8, 13.8] },
+      twin: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], data: [8.5, 9.5, 10.5, 12.0, 13.5, 14.5] }
     };
     
     const currentData = chartData[currentScenario] || chartData.review;
@@ -556,7 +584,9 @@ document.addEventListener('DOMContentLoaded', function() {
       review: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8],
       pricing: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5],
       vip: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2],
-      operation: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8]
+      operation: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8],
+      knowledge: [8.0, 8.8, 10.2, 11.5, 12.8, 13.8],
+      twin: [8.5, 9.5, 10.5, 12.0, 13.5, 14.5]
     };
     
     if (revenueChart) {
