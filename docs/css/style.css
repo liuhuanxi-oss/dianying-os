@@ -1063,47 +1063,901 @@ body.dark-mode .mobile-menu a { color: #94A3B8; border-bottom-color: rgba(255, 2
 }
 
 /* ============================================
-   Demo Page - 全面移动端优化
+   移动端横屏提示
    ============================================ */
-.demo-page { display: none; min-height: 100vh; background: var(--bg-gray); }
-.demo-page.active { display: block; }
-.demo-nav { 
-  background: rgba(255, 255, 255, 0.9); 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid #E2E8F0; 
-  padding: 16px 20px; 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  position: sticky; 
-  top: 0; 
-  z-index: 100;
+.mobile-landscape-warning {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0F172A;
+  z-index: 99999;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  text-align: center;
 }
-.demo-nav-actions { display: flex; align-items: center; gap: 12px; }
-.demo-nav-home { cursor: pointer; transition: all 0.3s ease; }
-.demo-nav-home:hover { opacity: 0.8; }
-.demo-nav-home span { font-size: 0.9rem; color: var(--text-secondary); }
-.share-btn { 
-  display: flex; 
-  align-items: center; 
-  gap: 6px; 
-  padding: 10px 16px; 
-  background: var(--bg-gray); 
-  border: 1px solid #E2E8F0; 
-  border-radius: 10px; 
-  font-size: 0.875rem; 
-  color: var(--text-secondary); 
-  cursor: pointer; 
+
+.mobile-landscape-warning svg {
+  width: 48px;
+  height: 48px;
+  color: #6366F1;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+
+@keyframes rotate-phone {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+}
+
+.mobile-landscape-warning p {
+  color: #E2E8F0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-landscape-warning {
+    display: flex;
+  }
+  .demo-page.active > *:not(.mobile-landscape-warning) {
+    visibility: hidden;
+  }
+}
+
+/* ============================================
+   Demo页面移动端全面优化
+   ============================================ */
+@media (max-width: 768px) {
+  /* Demo容器改为单列布局 */
+  .demo-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  
+  /* Tab切换按钮 */
+  .demo-tabs {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 60px;
+    z-index: 50;
+  }
+  
+  .demo-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .demo-tab.active {
+    color: #6366F1;
+  }
+  
+  .demo-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: linear-gradient(90deg, #6366F1, #8B5CF6);
+    border-radius: 3px 3px 0 0;
+  }
+  
+  body.dark-mode .demo-tabs {
+    background: #1E293B;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  body.dark-mode .demo-tab {
+    color: #94A3B8;
+  }
+  
+  body.dark-mode .demo-tab.active {
+    color: #818CF8;
+  }
+  
+  /* Tab内容显示/隐藏 */
+  .demo-container > .chat-panel,
+  .demo-container > .data-panel-container {
+    display: none;
+  }
+  
+  .demo-container.chat-active > .chat-panel,
+  .demo-container.data-active > .data-panel-container {
+    display: flex;
+  }
+  
+  /* 聊天面板移动端优化 */
+  .chat-panel {
+    border-radius: 0 !important;
+    max-height: none !important;
+    height: calc(100vh - 120px) !important;
+  }
+  
+  .chat-header {
+    padding: 14px 16px !important;
+  }
+  
+  .chat-scenarios {
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+  
+  .scenario-btn {
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .chat-messages {
+    max-height: calc(100vh - 280px) !important;
+    min-height: 200px !important;
+    padding: 12px !important;
+  }
+  
+  .message-bubble {
+    max-width: 88% !important;
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .agent-tag {
+    padding: 2px 8px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .chat-input-container {
+    padding: 12px !important;
+  }
+  
+  .chat-input {
+    padding: 12px 16px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .chat-send-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  
+  /* 数据面板移动端优化 */
+  .data-panel-container {
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+  
+  /* 健康评分卡片 */
+  .health-score-card {
+    padding: 16px !important;
+  }
+  
+  .health-score-header {
+    margin-bottom: 12px !important;
+  }
+  
+  .health-score-content {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+  }
+  
+  .health-score-ring {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  
+  .health-score-value {
+    font-size: 2rem !important;
+  }
+  
+  .health-score-details {
+    width: 100% !important;
+    padding-top: 12px !important;
+  }
+  
+  .health-detail-item {
+    margin-bottom: 10px !important;
+  }
+  
+  /* 数据统计卡片 2x2网格 */
+  .data-overview {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .data-stat-card {
+    padding: 14px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .data-stat-value {
+    font-size: 1.5rem !important;
+  }
+  
+  .data-stat-change {
+    font-size: 0.75rem !important;
+    padding: 3px 8px !important;
+  }
+  
+  /* 图表高度缩小 */
+  .chart-card {
+    padding: 14px !important;
+  }
+  
+  .chart-container {
+    height: 180px !important;
+  }
+  
+  /* 信任等级条 */
+  .trust-indicator {
+    padding: 14px !important;
+  }
+  
+  .trust-bar-container {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .trust-bar {
+    width: 100% !important;
+  }
+  
+  .trust-value {
+    text-align: left !important;
+  }
+  
+  /* 平台管理2列4行 */
+  .platform-section {
+    padding: 14px !important;
+  }
+  
+  .platform-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .platform-card {
+    padding: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .platform-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .connect-btn {
+    width: 100% !important;
+    margin-top: 8px !important;
+  }
+  
+  /* 状态条 */
+  .status-bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100 !important;
+    border-radius: 0 !important;
+    padding: 10px 12px !important;
+  }
+  
+  .status-bar-content {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: center !important;
+  }
+  
+  .status-item {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .status-divider {
+    display: none !important;
+  }
+  
+  /* 返回按钮调整位置 */
+  .back-btn {
+    bottom: 60px !important;
+    right: 16px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  
+  /* 通知面板手机端不超出屏幕 */
+  .notification-panel {
+    position: fixed !important;
+    top: 70px !important;
+    right: 8px !important;
+    left: 8px !important;
+    max-height: 70vh !important;
+    border-radius: 16px !important;
+  }
+  
+  /* 门店选择器移动端优化 */
+  .store-selector-btn {
+    padding: 8px 12px !important;
+  }
+  
+  .store-icon {
+    font-size: 1.1rem !important;
+  }
+  
+  .store-name {
+    max-width: 80px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .store-dropdown {
+    position: fixed !important;
+    top: 70px !important;
+    left: 8px !important;
+    right: 8px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* 导航栏按钮文字隐藏，显示图标 */
+  .nav-btn-text {
+    display: none !important;
+  }
+  
+  .daily-report-btn-nav,
+  .about-btn-nav,
+  .share-btn {
+    padding: 10px !important;
+  }
+  
+  .share-btn span {
+    display: none !important;
+  }
+  
+  /* 语言选择器移动端 */
+  .lang-selector {
+    position: relative !important;
+  }
+  
+  .lang-toggle {
+    padding: 10px !important;
+  }
+  
+  .lang-dropdown {
+    position: fixed !important;
+    top: 70px !important;
+    right: 8px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* 日报模态框手机端全屏 */
+  .daily-report-modal {
+    padding: 0 !important;
+  }
+  
+  .daily-report-content {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .daily-report-header {
+    padding: 16px !important;
+  }
+  
+  .daily-report-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .daily-report-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 16px !important;
+  }
+  
+  .daily-report-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .daily-stat {
+    padding: 12px !important;
+  }
+  
+  .daily-report-footer {
+    padding: 16px !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  
+  .daily-report-btn {
+    flex: 1 !important;
+    min-width: 100px !important;
+  }
+  
+  /* 关于模态框手机端全屏 */
+  .about-modal {
+    padding: 0 !important;
+  }
+  
+  .about-content {
+    width: 100% !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    padding: 32px 24px !important;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .about-logo {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .about-title {
+    font-size: 1.75rem !important;
+  }
+  
+  .about-info {
+    flex: 1 !important;
+    overflow-y: auto !important;
+  }
+  
+  /* 分享海报模态框 */
+  .share-poster-modal {
+    padding: 0 !important;
+  }
+  
+  .share-poster-content {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .share-poster-preview {
+    flex: 1 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #posterCanvas {
+    max-width: 100% !important;
+    max-height: 60vh !important;
+  }
+  
+  /* 引导蒙层手机端适配 */
+  .guide-highlight {
+    border-radius: 12px !important;
+  }
+  
+  .guide-tooltip {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    padding: 16px !important;
+  }
+  
+  .guide-text h4 {
+    font-size: 1rem !important;
+  }
+  
+  .guide-text p {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ============================================
+   健康评分圆形进度环
+   ============================================ */
+.health-score-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #E2E8F0;
   transition: all 0.3s ease;
+}
+
+.health-score-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.health-score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.health-score-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.health-detail-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--bg-gray);
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.health-detail-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--primary-start);
+  color: var(--primary-start);
+}
+
+.health-score-content {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.health-score-ring {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.health-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.health-bg {
+  fill: none;
+  stroke: #E2E8F0;
+  stroke-width: 10;
+}
+
+.health-progress {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 314.16;
+  stroke-dashoffset: 314.16;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease;
+}
+
+.health-progress.score-green { stroke: #10B981; }
+.health-progress.score-blue { stroke: #3B82F6; }
+.health-progress.score-yellow { stroke: #F59E0B; }
+.health-progress.score-red { stroke: #EF4444; }
+
+.health-score-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.health-score-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.health-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-label {
+  width: 80px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.detail-bar {
+  flex: 1;
+  height: 6px;
+  background: #E2E8F0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.detail-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-start), var(--accent));
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.detail-fill.negative {
+  background: linear-gradient(90deg, #F59E0B, #EF4444);
+}
+
+.detail-value {
+  width: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* 健康评分展开详情 */
+.health-score-details.expanded {
+  display: flex;
+}
+
+.health-score-details:not(.expanded) .detail-bar,
+.health-score-details:not(.expanded) .detail-value {
+  display: block;
+}
+
+/* ============================================
+   实时数据流效果
+   ============================================ */
+.data-value-stream {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.data-value-stream.updating {
+  animation: valueStream 0.3s ease;
+}
+
+@keyframes valueStream {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.revenue-odometer {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   语音播报按钮
+   ============================================ */
+.voice-btn-nav {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gray);
+  border: 1px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+}
+
+.voice-btn-nav:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--primary-start);
+  color: var(--primary-start);
+}
+
+.voice-btn-nav:active {
+  transform: scale(0.95);
+}
+
+.voice-btn-nav.speaking {
+  background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+  border-color: transparent;
+  color: white;
+  animation: voicePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes voicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+}
+
+.voice-btn-nav.speaking .voice-icon {
+  animation: voiceWave 0.6s ease-in-out infinite;
+}
+
+@keyframes voiceWave {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ============================================
+   语言切换器
+   ============================================ */
+.lang-selector {
+  position: relative;
+}
+
+.lang-toggle {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gray);
+  border: 1px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
   font-family: inherit;
 }
-.share-btn:hover { 
-  background: rgba(99, 102, 241, 0.1); 
-  border-color: var(--primary-start); 
-  color: var(--primary-start); 
+
+.lang-toggle:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--primary-start);
+  color: var(--primary-start);
 }
-.share-btn:active { transform: scale(0.97); }
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 80px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+}
+
+.lang-selector.open .lang-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+body.dark-mode .lang-dropdown {
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.lang-option {
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-family: inherit;
+}
+
+.lang-option:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-start);
+}
+
+.lang-option.active {
+  background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+  color: white;
+}
+
+body.dark-mode .lang-option {
+  color: #94A3B8;
+}
+
+body.dark-mode .lang-option:hover {
+  background: rgba(129, 140, 248, 0.2);
+  color: #818CF8;
+}
+
+/* ============================================
+   30秒快速体验按钮
+   ============================================ */
+.quick-demo-btn {
+  background: linear-gradient(135deg, #F59E0B, #F97316) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4) !important;
+}
+
+.quick-demo-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5) !important;
+}
+
+.quick-demo-btn:active {
+  transform: scale(0.97) !important;
+}
+
+.quick-demo-btn::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+}
+
+/* ============================================
+   Mobile Only 工具类
+   ============================================ */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   暗色模式适配
+   ============================================ */
+body.dark-mode .health-score-card,
+body.dark-mode .notification-panel,
+body.dark-mode .lang-dropdown,
+body.dark-mode .store-dropdown,
+body.dark-mode .daily-report-content,
+body.dark-mode .about-content,
+body.dark-mode .share-poster-content {
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .health-score-title,
+body.dark-mode .detail-label,
+body.dark-mode .detail-value,
+body.dark-mode .lang-toggle,
+body.dark-mode .voice-btn-nav {
+  color: #E2E8F0;
+}
+
+body.dark-mode .health-bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .detail-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
 
 .demo-container { 
   display: grid; 

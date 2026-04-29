@@ -1310,7 +1310,7 @@
     <nav class="demo-nav">
       <a href="#" class="demo-nav-home flex items-center gap-2" id="demoHomeBtn">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
-        <span>返回首页</span>
+        <span class="nav-btn-text" data-i18n="back_home">返回首页</span>
       </a>
       
       <!-- Store Selector -->
@@ -1346,10 +1346,27 @@
       </div>
       
       <div class="demo-nav-actions">
+        <!-- Language Selector -->
+        <div class="lang-selector" id="langSelector">
+          <button class="lang-toggle" id="langToggle" title="切换语言">
+            <span class="lang-current" id="langCurrent">简</span>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option active" data-lang="zh-CN">简</button>
+            <button class="lang-option" data-lang="zh-TW">繁</button>
+            <button class="lang-option" data-lang="en">EN</button>
+          </div>
+        </div>
+        
+        <!-- Voice Broadcast Button -->
+        <button class="voice-btn-nav" id="voiceBtn" title="语音播报">
+          <i data-lucide="volume-2" class="w-4 h-4"></i>
+        </button>
+        
         <!-- Daily Report Button -->
         <button class="daily-report-btn-nav" id="dailyReportBtnNav">
           <i data-lucide="file-text" class="w-4 h-4"></i>
-          <span>日报</span>
+          <span class="nav-btn-text" data-i18n="daily_report">日报</span>
         </button>
         
         <!-- About Button -->
@@ -1390,37 +1407,49 @@
       </div>
     </nav>
     
-    <!-- Demo Container -->
-    <div class="demo-container">
+    <!-- Demo Container - 手机端改为上下布局+Tab切换 -->
+    <div class="demo-container" id="demoContainer">
+      <!-- 手机端Tab切换 -->
+      <div class="demo-tabs mobile-only">
+        <button class="demo-tab active" data-tab="chat">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span data-i18n="chat">对话</span>
+        </button>
+        <button class="demo-tab" data-tab="data">
+          <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+          <span data-i18n="data">数据</span>
+        </button>
+      </div>
+      
       <!-- Chat Panel -->
-      <div class="chat-panel">
+      <div class="chat-panel" id="chatPanel">
         <div class="chat-header">
           <div class="chat-header-icon">
             <i data-lucide="bot" class="w-6 h-6"></i>
           </div>
           <div>
-            <h3>AI虚拟店长</h3>
-            <p>正在为你的门店服务</p>
+            <h3 data-i18n="ai_manager">AI虚拟店长</h3>
+            <p data-i18n="store_service">正在为你的门店服务</p>
           </div>
         </div>
         
         <div class="chat-scenarios">
-          <button class="scenario-btn active" data-scenario="review">
+          <button class="scenario-btn active" data-scenario="review" data-i18n-key="review">
             差评处理
           </button>
-          <button class="scenario-btn" data-scenario="pricing">
+          <button class="scenario-btn" data-scenario="pricing" data-i18n-key="pricing">
             动态定价
           </button>
-          <button class="scenario-btn" data-scenario="vip">
+          <button class="scenario-btn" data-scenario="vip" data-i18n-key="vip">
             VIP管理
           </button>
-          <button class="scenario-btn" data-scenario="operation">
+          <button class="scenario-btn" data-scenario="operation" data-i18n-key="operation">
             运营建议
           </button>
-          <button class="scenario-btn" data-scenario="knowledge">
+          <button class="scenario-btn" data-scenario="knowledge" data-i18n-key="knowledge">
             跨店迁移
           </button>
-          <button class="scenario-btn" data-scenario="twin">
+          <button class="scenario-btn" data-scenario="twin" data-i18n-key="twin">
             数字孪生
           </button>
         </div>
@@ -1436,12 +1465,12 @@
             <span></span>
             <span></span>
           </div>
-          <span class="typing-text">AI正在思考...</span>
+          <span class="typing-text" data-i18n="ai_thinking">AI正在思考...</span>
         </div>
         
         <!-- Chat Input -->
         <div class="chat-input-container">
-          <input type="text" class="chat-input" id="chatInput" placeholder="输入您的门店问题...">
+          <input type="text" class="chat-input" id="chatInput" placeholder="输入您的门店问题..." data-i18n-placeholder="chat_placeholder">
           <button class="chat-send-btn" id="chatSendBtn">
             <i data-lucide="send" class="w-5 h-5"></i>
           </button>
@@ -1492,20 +1521,20 @@
         <!-- Revenue Chart -->
         <div class="chart-card">
           <div class="chart-card-header">
-            <h4>营收趋势</h4>
+            <h4 data-i18n="revenue_trend">营收趋势</h4>
             <button class="download-btn" id="downloadReportBtn">
               <i data-lucide="download" class="w-4 h-4"></i>
-              下载报表
+              <span class="btn-text" data-i18n="download_report">下载报表</span>
             </button>
           </div>
-          <div style="height: 250px;">
+          <div class="chart-container">
             <canvas id="revenueChart"></canvas>
           </div>
         </div>
         
         <!-- Trust Indicator -->
         <div class="trust-indicator">
-          <div class="trust-label">门店信任等级</div>
+          <div class="trust-label" data-i18n="trust_level">门店信任等级</div>
           <div class="trust-bar-container">
             <div class="trust-bar">
               <div class="trust-bar-fill" id="trustBarFill" style="width: 92%"></div>
@@ -1518,7 +1547,7 @@
         <div class="platform-section">
           <div class="platform-header">
             <i data-lucide="link" class="w-5 h-5"></i>
-            <span>平台管理</span>
+            <span data-i18n="platform_management">平台管理</span>
           </div>
           <div class="platform-grid">
             <div class="platform-card connected">
@@ -1667,7 +1696,7 @@
     <div class="daily-report-modal" id="dailyReportModal">
       <div class="daily-report-content">
         <div class="daily-report-header">
-          <h3>今日运营日报</h3>
+          <h3 data-i18n="daily_report_title">今日运营日报</h3>
           <button class="daily-report-close" id="dailyReportClose">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
@@ -1677,15 +1706,15 @@
         <div class="daily-report-tabs">
           <button class="daily-tab-btn active" data-tab="overview">
             <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-            <span>运营概览</span>
+            <span data-i18n="tab_overview">运营概览</span>
           </button>
           <button class="daily-tab-btn" data-tab="news">
             <i data-lucide="newspaper" class="w-4 h-4"></i>
-            <span>行业资讯</span>
+            <span data-i18n="tab_news">行业资讯</span>
           </button>
           <button class="daily-tab-btn" data-tab="insight">
             <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>AI洞察</span>
+            <span data-i18n="tab_insight">AI洞察</span>
           </button>
           <div class="daily-tab-indicator"></div>
         </div>
@@ -1698,31 +1727,31 @@
             <div class="daily-report-stats">
               <div class="daily-stat">
                 <div class="daily-stat-value" id="dailyRevenue">¥12.8万</div>
-                <div class="daily-stat-label">今日营收</div>
+                <div class="daily-stat-label" data-i18n="today_revenue">今日营收</div>
                 <div class="daily-stat-change positive" id="revenueChange">+12.3%</div>
               </div>
               <div class="daily-stat">
                 <div class="daily-stat-value" id="dailyReviews">3条</div>
-                <div class="daily-stat-label">处理差评</div>
+                <div class="daily-stat-label" data-i18n="processed_reviews">处理差评</div>
                 <div class="daily-stat-change negative">-1条</div>
               </div>
               <div class="daily-stat">
                 <div class="daily-stat-value" id="dailyDecisions">12次</div>
-                <div class="daily-stat-label">AI决策</div>
+                <div class="daily-stat-label" data-i18n="ai_decisions">AI决策</div>
                 <div class="daily-stat-change positive">+3次</div>
               </div>
               <div class="daily-stat">
                 <div class="daily-stat-value" id="dailyTrust">A级</div>
-                <div class="daily-stat-label">信任等级</div>
+                <div class="daily-stat-label" data-i18n="trust_level_short">信任等级</div>
                 <div class="daily-stat-change positive">稳定</div>
               </div>
             </div>
             <div class="daily-report-section">
-              <h4><i data-lucide="lightbulb" class="w-4 h-4"></i> 关键建议</h4>
+              <h4><i data-lucide="lightbulb" class="w-4 h-4"></i> <span data-i18n="key_suggestions">关键建议</span></h4>
               <p id="dailySuggestion">建议优化午市套餐定价，当前翻台率有提升空间。</p>
             </div>
             <div class="daily-report-section">
-              <h4><i data-lucide="alert-circle" class="w-4 h-4"></i> 关注事项</h4>
+              <h4><i data-lucide="alert-circle" class="w-4 h-4"></i> <span data-i18n="attention_items">关注事项</span></h4>
               <p id="dailyAlert">王女士等3位VIP会员流失风险较高，建议发送专属优惠召回。</p>
             </div>
           </div>
@@ -1781,29 +1810,29 @@
       <div class="about-content">
         <img src="assets/logo.svg" alt="店赢OS" class="about-logo">
         <h3 class="about-title">店赢OS</h3>
-        <p class="about-subtitle">Multi-Agent 门店操作系统</p>
+        <p class="about-subtitle" data-i18n="about_subtitle">Multi-Agent 门店操作系统</p>
         <div class="about-info">
           <div class="about-info-item">
-            <span class="about-info-label">参赛赛事</span>
+            <span class="about-info-label" data-i18n="about_competition">参赛赛事</span>
             <span class="about-info-value">2026 WAIC OPC 独立先锋挑战赛（创业赛道）<br>腾讯云黑客松AI智能体争霸赛</span>
           </div>
           <div class="about-info-item">
-            <span class="about-info-label">技术栈</span>
+            <span class="about-info-label" data-i18n="about_tech">技术栈</span>
             <span class="about-info-value">Multi-Agent + Gemini 3.1 Pro + Coze平台</span>
           </div>
           <div class="about-info-item">
-            <span class="about-info-label">团队成员</span>
+            <span class="about-info-label" data-i18n="about_team">团队成员</span>
             <span class="about-info-value">刘天龙Taylor / Hermes Liu / Hermes Tan</span>
           </div>
           <div class="about-info-item">
-            <span class="about-info-label">在线体验</span>
+            <span class="about-info-label" data-i18n="about_online">在线体验</span>
             <a href="https://liuhuanxi-oss.github.io/dianying-os/" class="about-link" target="_blank">
               <i data-lucide="external-link" class="w-4 h-4"></i>
               liuhuanxi-oss.github.io/dianying-os
             </a>
           </div>
         </div>
-        <button class="about-close" id="aboutClose">知道了</button>
+        <button class="about-close" id="aboutClose" data-i18n="about_got_it">知道了</button>
       </div>
     </div>
     
@@ -1811,7 +1840,7 @@
     <div class="share-poster-modal" id="sharePosterModal">
       <div class="share-poster-content">
         <div class="share-poster-header">
-          <h3>分享海报</h3>
+          <h3 data-i18n="share_poster">分享海报</h3>
           <button class="daily-report-close" id="sharePosterClose">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
@@ -1822,9 +1851,9 @@
         <div class="share-poster-actions">
           <button class="share-poster-btn save" id="savePosterBtn">
             <i data-lucide="download" class="w-4 h-4"></i>
-            保存图片
+            <span data-i18n="save_image">保存图片</span>
           </button>
-          <button class="share-poster-btn close-btn" id="sharePosterCloseBtn">关闭</button>
+          <button class="share-poster-btn close-btn" id="sharePosterCloseBtn" data-i18n="close">关闭</button>
         </div>
       </div>
     </div>
@@ -1943,22 +1972,22 @@
       <div class="status-bar-content">
         <div class="status-item">
           <span class="status-dot online"></span>
-          <span>AI店长运行中</span>
+          <span data-i18n="ai_running">AI店长运行中</span>
         </div>
         <div class="status-divider"></div>
         <div class="status-item">
           <i data-lucide="check-square" class="w-4 h-4"></i>
-          <span>已处理 <span id="taskCount">47</span> 条任务</span>
+          <span data-i18n="tasks_processed">已处理 <span id="taskCount">47</span> 条任务</span>
         </div>
         <div class="status-divider"></div>
         <div class="status-item">
           <i data-lucide="clock" class="w-4 h-4"></i>
-          <span>运行 <span id="runDays">23</span> 天</span>
+          <span data-i18n="running_days">运行 <span id="runDays">23</span> 天</span>
         </div>
         <div class="status-divider"></div>
         <div class="status-item">
           <i data-lucide="award" class="w-4 h-4"></i>
-          <span>信任等级 <span class="trust-badge" id="statusTrustLevel">A</span></span>
+          <span data-i18n="trust_level">信任等级 <span class="trust-badge" id="statusTrustLevel">A</span></span>
         </div>
       </div>
     </div>

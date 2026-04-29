@@ -1863,3 +1863,284 @@ platformConnectBtns.forEach(btnId => {
 });
 
 console.log('店赢OS v6 - 初始化完成');
+
+
+// ============================================
+// v7 新功能：手机适配+5项创新功能
+// ============================================
+
+// ----------------------------------------
+// 1. 多语言切换系统 (zh-CN/zh-TW/en)
+// ----------------------------------------
+const i18n = {
+  'zh-CN': {
+    back_home: '返回首页', daily_report: '日报', chat: '对话', data: '数据',
+    review: '差评处理', pricing: '动态定价', vip: 'VIP管理', operation: '运营建议',
+    knowledge: '跨店迁移', twin: '数字孪生',
+    health_score: '门店健康评分', rating: '门店评分', negative: '差评率', revenue: '月营收',
+    ai_efficiency: 'AI处理效率', excellent: '优秀', revenue_trend: '营收趋势',
+    download_report: '下载报表', trust_level: '门店信任等级', platform_management: '平台管理',
+    ai_manager: 'AI虚拟店长', store_service: '正在为你的门店服务',
+    ai_thinking: 'AI正在思考...', chat_placeholder: '输入您的门店问题...',
+    ai_running: 'AI店长运行中', tasks_processed: '已处理 {count} 条任务',
+    running_days: '运行 {count} 天', trust_level_short: '信任等级',
+    daily_report_title: '今日运营日报', tab_overview: '运营概览', tab_news: '行业资讯',
+    tab_insight: 'AI洞察', today_revenue: '今日营收', processed_reviews: '处理差评',
+    ai_decisions: 'AI决策', key_suggestions: '关键建议', attention_items: '关注事项',
+    about_subtitle: 'Multi-Agent 门店操作系统', about_competition: '参赛赛事',
+    about_tech: '技术栈', about_team: '团队成员', about_online: '在线体验',
+    about_got_it: '知道了', share_poster: '分享海报', save_image: '保存图片', close: '关闭',
+    voice_broadcast: '语音播报', rating_weight: '评分权重', negative_weight: '差评率权重',
+    revenue_weight: '营收趋势权重', efficiency_weight: 'AI处理效率',
+    quick_demo: '30秒体验', quick_demo_desc: '这就是AI帮你管店的效果，想试试其他场景吗？'
+  },
+  'zh-TW': {
+    back_home: '返回首頁', daily_report: '日報', chat: '對話', data: '數據',
+    review: '差評處理', pricing: '動態定價', vip: 'VIP管理', operation: '運營建議',
+    knowledge: '跨店遷移', twin: '數字孿生',
+    health_score: '門店健康評分', rating: '門店評分', negative: '差評率', revenue: '月營收',
+    ai_efficiency: 'AI處理效率', excellent: '優秀', revenue_trend: '營收趨勢',
+    download_report: '下載報表', trust_level: '門店信任等級', platform_management: '平台管理',
+    ai_manager: 'AI虛擬店長', store_service: '正在為你的門店服務',
+    ai_thinking: 'AI正在思考...', chat_placeholder: '輸入您的門店問題...',
+    ai_running: 'AI店長運行中', tasks_processed: '已處理 {count} 條任務',
+    running_days: '運行 {count} 天', trust_level_short: '信任等級',
+    daily_report_title: '今日運營日報', tab_overview: '運營概覽', tab_news: '行業資訊',
+    tab_insight: 'AI洞察', today_revenue: '今日營收', processed_reviews: '處理差評',
+    ai_decisions: 'AI決策', key_suggestions: '關鍵建議', attention_items: '關注事項',
+    about_subtitle: 'Multi-Agent 門店操作系統', about_competition: '參賽賽事',
+    about_tech: '技術棧', about_team: '團隊成員', about_online: '在線體驗',
+    about_got_it: '知道了', share_poster: '分享海報', save_image: '保存圖片', close: '關閉',
+    voice_broadcast: '語音播報', rating_weight: '評分權重', negative_weight: '差評率權重',
+    revenue_weight: '營收趨勢權重', efficiency_weight: 'AI處理效率',
+    quick_demo: '30秒體驗', quick_demo_desc: '這就是AI幫你管店的效果，想試試其他場景嗎？'
+  },
+  'en': {
+    back_home: 'Home', daily_report: 'Report', chat: 'Chat', data: 'Data',
+    review: 'Review Handler', pricing: 'Dynamic Pricing', vip: 'VIP Management',
+    operation: 'Operations', knowledge: 'Cross-Store', twin: 'Digital Twin',
+    health_score: 'Health Score', rating: 'Store Rating', negative: 'Negative Rate',
+    revenue: 'Monthly Revenue', ai_efficiency: 'AI Efficiency', excellent: 'Excellent',
+    revenue_trend: 'Revenue Trend', download_report: 'Download', trust_level: 'Trust Level',
+    platform_management: 'Platforms', ai_manager: 'AI Store Manager',
+    store_service: 'Managing your store', ai_thinking: 'AI thinking...',
+    chat_placeholder: 'Ask about your store...', ai_running: 'AI Manager Online',
+    tasks_processed: '{count} tasks processed', running_days: 'Running {count} days',
+    trust_level_short: 'Trust Level', daily_report_title: 'Daily Report',
+    tab_overview: 'Overview', tab_news: 'Industry News', tab_insight: 'AI Insights',
+    today_revenue: 'Today Revenue', processed_reviews: 'Reviews Handled',
+    ai_decisions: 'AI Decisions', key_suggestions: 'Key Suggestions',
+    attention_items: 'Attention Items', about_subtitle: 'Multi-Agent Store OS',
+    about_competition: 'Competition', about_tech: 'Tech Stack', about_team: 'Team',
+    about_online: 'Live Demo', about_got_it: 'Got it', share_poster: 'Share Poster',
+    save_image: 'Save Image', close: 'Close', voice_broadcast: 'Voice Broadcast',
+    rating_weight: 'Rating Score', negative_weight: 'Negative Rate',
+    revenue_weight: 'Revenue Trend', efficiency_weight: 'AI Efficiency',
+    quick_demo: '30s Demo', quick_demo_desc: 'This is how AI manages your store. Want to try other scenarios?'
+  }
+};
+
+let currentLang = localStorage.getItem('dianying_os_lang') || 'zh-CN';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('dianying_os_lang', lang);
+  const langLabels = { 'zh-CN': '简', 'zh-TW': '繁', 'en': 'EN' };
+  const langCurrent = document.getElementById('langCurrent');
+  if (langCurrent) langCurrent.textContent = langLabels[lang];
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-key]').forEach(el => {
+    const key = el.dataset.i18nKey;
+    if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  const langSelector = document.getElementById('langSelector');
+  if (langSelector) langSelector.classList.remove('open');
+}
+
+const langSelector = document.getElementById('langSelector');
+const langToggle = document.getElementById('langToggle');
+if (langToggle) {
+  langToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (langSelector) langSelector.classList.toggle('open');
+  });
+}
+document.querySelectorAll('.lang-option').forEach(opt => {
+  opt.addEventListener('click', function() { setLanguage(this.dataset.lang); });
+});
+document.addEventListener('click', function() {
+  if (langSelector) langSelector.classList.remove('open');
+});
+setLanguage(currentLang);
+
+// ----------------------------------------
+// 2. 语音播报功能
+// ----------------------------------------
+let isSpeaking = false;
+function checkSpeechSupport() {
+  const voiceBtn = document.getElementById('voiceBtn');
+  if (!voiceBtn) return;
+  if (!('speechSynthesis' in window)) { voiceBtn.style.display = 'none'; return; }
+  setTimeout(() => { if (speechSynthesis.getVoices().length === 0) voiceBtn.style.display = 'none'; }, 100);
+}
+checkSpeechSupport();
+window.addEventListener('voiceschanged', checkSpeechSupport);
+
+function speakReport() {
+  const voiceBtn = document.getElementById('voiceBtn');
+  if (!voiceBtn) return;
+  if (isSpeaking) {
+    speechSynthesis.cancel();
+    voiceBtn.classList.remove('speaking');
+    isSpeaking = false;
+    return;
+  }
+  const revenue = document.getElementById('revenueValue')?.textContent || '¥12.8万';
+  const revenueChange = document.querySelector('[data-stat="revenue"] .data-stat-change span')?.textContent || '+12%';
+  const negativeRate = document.getElementById('negativeValue')?.textContent || '1.2%';
+  const trustLevel = document.getElementById('trustValue')?.textContent || 'A级';
+  const reportText = `今日营收${revenue}，较昨日增长${revenueChange.replace('+', '')}。差评率${negativeRate}，已自动处理5条差评。AI店长运行正常，信任等级${trustLevel}。`;
+  const voices = speechSynthesis.getVoices();
+  const zhVoice = voices.find(v => v.lang.includes('zh')) || voices[0];
+  const utterance = new SpeechSynthesisUtterance(reportText);
+  utterance.voice = zhVoice;
+  utterance.lang = zhVoice?.lang || 'zh-CN';
+  utterance.rate = 1;
+  utterance.onstart = () => { voiceBtn.classList.add('speaking'); isSpeaking = true; };
+  utterance.onend = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
+  utterance.onerror = () => { voiceBtn.classList.remove('speaking'); isSpeaking = false; };
+  speechSynthesis.speak(utterance);
+}
+const voiceBtn = document.getElementById('voiceBtn');
+if (voiceBtn) voiceBtn.addEventListener('click', speakReport);
+
+// ----------------------------------------
+// 3. 移动端Tab切换
+// ----------------------------------------
+const demoTabs = document.querySelectorAll('.demo-tab');
+const demoContainer = document.getElementById('demoContainer');
+if (demoTabs.length > 0 && demoContainer) {
+  demoTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.dataset.tab;
+      demoTabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      demoContainer.classList.remove('chat-active', 'data-active');
+      demoContainer.classList.add(tabName + '-active');
+    });
+  });
+  demoContainer.classList.add('chat-active');
+}
+
+// ----------------------------------------
+// 4. AI门店健康评分
+// ----------------------------------------
+const healthScoreData = {
+  review: { score: 92, rating: 90, negative: 85, revenue: 95, efficiency: 98 },
+  pricing: { score: 88, rating: 85, negative: 78, revenue: 92, efficiency: 95 },
+  vip: { score: 95, rating: 95, negative: 92, revenue: 90, efficiency: 98 },
+  operation: { score: 82, rating: 80, negative: 72, revenue: 85, efficiency: 90 },
+  knowledge: { score: 90, rating: 88, negative: 85, revenue: 94, efficiency: 92 },
+  twin: { score: 94, rating: 92, negative: 90, revenue: 96, efficiency: 98 }
+};
+
+function updateHealthScore(scenario) {
+  const data = healthScoreData[scenario] || healthScoreData.review;
+  const scoreEl = document.getElementById('healthScoreValue');
+  const progressEl = document.getElementById('healthProgress');
+  if (scoreEl) scoreEl.textContent = data.score;
+  if (progressEl) {
+    const circumference = 2 * Math.PI * 50;
+    const offset = circumference - (data.score / 100) * circumference;
+    progressEl.style.strokeDashoffset = offset;
+    progressEl.classList.remove('score-green', 'score-blue', 'score-yellow', 'score-red');
+    if (data.score >= 90) progressEl.classList.add('score-green');
+    else if (data.score >= 70) progressEl.classList.add('score-blue');
+    else if (data.score >= 50) progressEl.classList.add('score-yellow');
+    else progressEl.classList.add('score-red');
+  }
+  if (document.getElementById('ratingFill')) document.getElementById('ratingFill').style.width = data.rating + '%';
+  if (document.getElementById('negativeFill')) document.getElementById('negativeFill').style.width = data.negative + '%';
+  if (document.getElementById('revenueFill')) document.getElementById('revenueFill').style.width = data.revenue + '%';
+  if (document.getElementById('efficiencyFill')) document.getElementById('efficiencyFill').style.width = data.efficiency + '%';
+  if (document.getElementById('ratingScore')) document.getElementById('ratingScore').textContent = data.rating + '分';
+  if (document.getElementById('negativeScore')) document.getElementById('negativeScore').textContent = data.negative + '分';
+  if (document.getElementById('revenueScore')) document.getElementById('revenueScore').textContent = data.revenue + '分';
+  if (document.getElementById('efficiencyScore')) document.getElementById('efficiencyScore').textContent = data.efficiency + '分';
+}
+
+const healthDetailBtn = document.getElementById('healthDetailBtn');
+const healthScoreDetails = document.getElementById('healthScoreDetails');
+if (healthDetailBtn && healthScoreDetails) {
+  healthDetailBtn.addEventListener('click', () => healthScoreDetails.classList.toggle('expanded'));
+}
+
+// ----------------------------------------
+// 5. 实时数据流效果
+// ----------------------------------------
+let streamInterval = null;
+function startDataStream() {
+  if (streamInterval) clearInterval(streamInterval);
+  streamInterval = setInterval(() => {
+    if (!document.querySelector('.demo-page.active')) return;
+    const revenueEl = document.getElementById('revenueValue');
+    if (revenueEl) { revenueEl.classList.add('updating'); setTimeout(() => revenueEl.classList.remove('updating'), 300); }
+    const taskCountEl = document.getElementById('taskCount');
+    if (taskCountEl && Math.random() > 0.7) taskCountEl.textContent = parseInt(taskCountEl.textContent) + 1;
+  }, 5000);
+}
+
+// ----------------------------------------
+// 6. 30秒快速体验引导
+// ----------------------------------------
+const quickDemoBtn = document.getElementById('quickDemoBtn');
+let quickDemoActive = false;
+if (quickDemoBtn) {
+  quickDemoBtn.addEventListener('click', function() {
+    if (quickDemoActive) return;
+    quickDemoActive = true;
+    showDemo();
+    setTimeout(() => {
+      const dataTab = document.querySelector('.demo-tab[data-tab="data"]');
+      if (dataTab) dataTab.click();
+      setTimeout(() => {
+        const chatTab = document.querySelector('.demo-tab[data-tab="chat"]');
+        if (chatTab) chatTab.click();
+        const reviewBtn = document.querySelector('.scenario-btn[data-scenario="review"]');
+        if (reviewBtn) reviewBtn.click();
+        setTimeout(() => {
+          const toast = document.getElementById('shareToast');
+          if (toast) {
+            toast.querySelector('span').textContent = i18n[currentLang]?.quick_demo_desc || '想试试其他场景吗？';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+          }
+          quickDemoActive = false;
+        }, 30000);
+      }, 2000);
+    }, 500);
+  });
+}
+
+setTimeout(() => { updateHealthScore('review'); startDataStream(); }, 1000);
+
+// 场景切换时更新健康评分
+if (typeof loadScenarioChat === 'function') {
+  const _loadScenarioChat = loadScenarioChat;
+  window.loadScenarioChat = function(scenario) {
+    updateHealthScore(scenario);
+    return _loadScenarioChat(scenario);
+  };
+}
+
+console.log('店赢OS v7 - 手机适配+5项新功能已加载');
