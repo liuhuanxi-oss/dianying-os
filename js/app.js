@@ -374,35 +374,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 800);
   }
   
-  // 修复：重新定义addMessage（解决重复定义问题）
-  function addMessage(type, text, agent = null) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${type}`;
-    
-    const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    
-    let agentTag = '';
-    if (type === 'ai' && agent && agent !== 'virtual') {
-      const agentNames = {
-        clue: '线索Agent',
-        solution: '方案Agent',
-        delivery: '交付Agent',
-        operation: '运营Agent'
-      };
-      agentTag = `<div class="agent-tag ${agent}">${agentNames[agent] || agent}</div>`;
-    }
-    
-    const formattedText = text.replace(/\n/g, '<br>');
-    
-    messageDiv.innerHTML = `
-      <div class="message-bubble">${agentTag}${formattedText}</div>
-      <div class="message-time">${time}</div>
-    `;
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
   if (chatSendBtn) {
     chatSendBtn.addEventListener('click', handleUserInput);
   }

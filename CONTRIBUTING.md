@@ -91,7 +91,7 @@ git checkout -b feature/your-feature-name
 ```bash
 # 方式1: 直接运行
 python -m http.server 8080
-# 访问 http://localhost:8080/src/index.html
+# 访问 http://localhost:8080/index.html
 
 # 方式2: Docker 运行
 docker-compose up -d
