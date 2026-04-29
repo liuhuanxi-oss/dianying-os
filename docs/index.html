@@ -1201,41 +1201,54 @@
       <div class="ds-panel ds-heatmap-panel">
         <div class="ds-panel-header">
           <i data-lucide="map-pin" class="w-4 h-4"></i>
-          <span>门店分布热力图</span>
-          <span class="ds-heatmap-total">7家门店</span>
+          <span>全国门店分布热力图</span>
+          <span class="ds-heatmap-total">8家门店</span>
         </div>
         <div class="ds-heatmap-container">
-          <svg class="ds-heatmap-svg" viewBox="0 0 400 280" id="shanghaiMap">
+          <svg class="ds-heatmap-svg" viewBox="0 0 600 500" id="chinaMap">
             <defs>
-              <!-- 上海地图轮廓渐变 -->
+              <!-- 地图轮廓渐变 -->
               <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="rgba(124,58,237,0.15)"/>
-                <stop offset="100%" stop-color="rgba(6,182,212,0.1)"/>
+                <stop offset="0%" stop-color="rgba(124,58,237,0.12)"/>
+                <stop offset="50%" stop-color="rgba(6,182,212,0.08)"/>
+                <stop offset="100%" stop-color="rgba(16,185,129,0.06)"/>
               </linearGradient>
-              <!-- 热力渐变 -->
+              <!-- 热力渐变 - 高 -->
               <radialGradient id="heatHigh" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="rgba(124,58,237,0.9)"/>
-                <stop offset="50%" stop-color="rgba(124,58,237,0.4)"/>
+                <stop offset="40%" stop-color="rgba(124,58,237,0.5)"/>
                 <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
               </radialGradient>
+              <!-- 热力渐变 - 中 -->
               <radialGradient id="heatMed" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="rgba(6,182,212,0.8)"/>
-                <stop offset="60%" stop-color="rgba(6,182,212,0.3)"/>
+                <stop offset="50%" stop-color="rgba(6,182,212,0.4)"/>
                 <stop offset="100%" stop-color="rgba(6,182,212,0)"/>
               </radialGradient>
+              <!-- 热力渐变 - 低 -->
               <radialGradient id="heatLow" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="rgba(16,185,129,0.6)"/>
-                <stop offset="70%" stop-color="rgba(16,185,129,0.2)"/>
+                <stop offset="60%" stop-color="rgba(16,185,129,0.25)"/>
                 <stop offset="100%" stop-color="rgba(16,185,129,0)"/>
               </radialGradient>
-              <!-- 脉冲动画 -->
-              <radialGradient id="pulseGradient" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(124,58,237,0.6)"/>
-                <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
+              <!-- 全国辐射渐变 -->
+              <radialGradient id="chinaHeat" cx="50%" cy="45%" r="60%">
+                <stop offset="0%" stop-color="rgba(124,58,237,0.15)"/>
+                <stop offset="30%" stop-color="rgba(6,182,212,0.08)"/>
+                <stop offset="60%" stop-color="rgba(16,185,129,0.04)"/>
+                <stop offset="100%" stop-color="rgba(16,185,129,0)"/>
               </radialGradient>
-              <!-- 标记发光效果 -->
+              <!-- 发光效果 -->
               <filter id="glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <!-- 强发光 -->
+              <filter id="glowStrong">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
                 <feMerge>
                   <feMergeNode in="coloredBlur"/>
                   <feMergeNode in="SourceGraphic"/>
@@ -1243,105 +1256,174 @@
               </filter>
             </defs>
             
-            <!-- 上海地图轮廓 -->
+            <!-- 全国热力背景 -->
+            <rect x="50" y="30" width="500" height="400" fill="url(#chinaHeat)" rx="10"/>
+            
+            <!-- 中国大陆轮廓（简化版"雄鸡"） -->
             <g class="map-outline">
-              <!-- 上海市大致轮廓（简化版） -->
-              <path class="map-land" d="M120,20 L280,15 L340,30 L370,50 L380,80 L375,120 L360,160 L340,200 L300,240 L260,260 L220,255 L180,250 L150,230 L130,200 L110,160 L90,120 L85,80 L100,40 Z" fill="url(#mapGradient)" stroke="rgba(124,58,237,0.3)" stroke-width="1"/>
-              <!-- 浦东区域（突出部分） -->
-              <path class="map-pudong" d="M320,100 L380,90 L390,110 L385,140 L370,150 L340,140 L320,120 Z" fill="rgba(6,182,212,0.1)" stroke="rgba(6,182,212,0.3)" stroke-width="1"/>
-              <!-- 黄浦江（S曲线） -->
-              <path class="map-river" d="M130,60 Q180,80 200,100 T260,140 T300,180 T340,210 L335,215 Q295,185 255,145 T195,105 T145,65 Q135,55 130,60" fill="none" stroke="rgba(6,182,212,0.5)" stroke-width="3" stroke-linecap="round"/>
-              <!-- 区域分界线（虚线） -->
-              <line x1="200" y1="30" x2="200" y2="100" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="4,4"/>
-              <line x1="200" y1="100" x2="350" y2="100" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="4,4"/>
-              <line x1="130" y1="150" x2="350" y2="150" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="4,4"/>
+              <!-- 大陆主体轮廓 -->
+              <path class="map-land" d="
+                M140,60 
+                L170,55 L200,58 L230,52 L260,58 L290,65 L310,58 L330,65
+                L360,72 L380,80 L400,75 L420,85
+                L440,95 L460,100 L480,95 L500,110 L520,120 L530,140 L525,160
+                L530,180 L520,200 L510,220 L500,240 L490,260 L500,280 L510,300
+                L505,320 L490,340 L475,355 L460,370 L440,380 L420,390 L400,395
+                L380,400 L360,405 L340,410 L320,415 L300,420 L280,425 L260,430
+                L240,435 L220,430 L200,425 L180,420 L160,415 L140,410 L120,400
+                L100,385 L80,370 L60,350 L50,330 L45,310 L50,290 L55,270 L60,250
+                L55,230 L60,210 L75,190 L70,170 L75,150 L90,130 L100,110 L115,90
+                L125,75 Z
+              " fill="url(#mapGradient)" stroke="rgba(124,58,237,0.25)" stroke-width="1.5"/>
+              
+              <!-- 东北区域轮廓（突出部分） -->
+              <path class="map-northeast" d="
+                M440,85 L460,80 L480,85 L500,90 L520,95 L540,100 L555,110
+                L560,125 L555,140 L545,150 L530,155 L515,150 L500,155 L485,160
+                L470,165 L455,160 L440,155 L425,150 L420,140 L425,125 L435,110 L440,95 Z
+              " fill="rgba(124,58,237,0.08)" stroke="rgba(124,58,237,0.2)" stroke-width="1"/>
+              
+              <!-- 新疆区域轮廓（西北突出） -->
+              <path class="map-xinjiang" d="
+                M60,250 L45,260 L30,280 L25,300 L30,320 L45,335 L65,345
+                L85,340 L100,330 L110,315 L115,295 L110,275 L95,260 L80,255 Z
+              " fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
+              
+              <!-- 西藏/西南轮廓 -->
+              <path class="map-tibet" d="
+                M100,385 L85,390 L70,400 L55,410 L50,425 L60,440 L80,450
+                L100,455 L120,450 L135,440 L145,425 L150,410 L145,395 L130,388 Z
+              " fill="rgba(6,182,212,0.06)" stroke="rgba(6,182,212,0.2)" stroke-width="1"/>
+              
+              <!-- 台湾岛 -->
+              <path class="map-taiwan" d="
+                M480,340 L485,335 L490,340 L492,355 L490,370 L485,385
+                L480,390 L475,385 L472,370 L473,355 L475,345 Z
+              " fill="rgba(124,58,237,0.15)" stroke="rgba(124,58,237,0.3)" stroke-width="1"/>
+              
+              <!-- 海南岛 -->
+              <path class="map-hainan" d="
+                M350,415 L355,410 L360,415 L362,425 L358,435 L352,438
+                L347,435 L345,425 Z
+              " fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
             </g>
             
-            <!-- 区域标签 -->
-            <g class="map-labels" fill="rgba(148,163,184,0.6)" font-size="8" font-family="system-ui">
-              <text x="140" y="45">徐汇</text>
-              <text x="220" y="45">长宁</text>
-              <text x="300" y="45">闵行</text>
-              <text x="345" y="85">浦东</text>
-              <text x="140" y="120">静安</text>
-              <text x="200" y="120">黄浦</text>
-              <text x="260" y="120">虹口</text>
-              <text x="140" y="200">嘉定</text>
-              <text x="200" y="220">宝山</text>
-              <text x="270" y="230">青浦</text>
-              <text x="230" y="250">松江</text>
+            <!-- 省界虚线（简化划分） -->
+            <g class="province-lines" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="6,4">
+              <!-- 北方分界线 -->
+              <line x1="140" y1="60" x2="520" y2="120"/>
+              <!-- 中部横线 -->
+              <line x1="60" y1="250" x2="530" y2="250"/>
+              <!-- 南方分界线 -->
+              <line x1="100" y1="385" x2="460" y2="380"/>
+              <!-- 东北分界 -->
+              <line x1="420" y1="85" x2="420" y2="165"/>
+              <!-- 沿海纵线 -->
+              <line x1="500" y1="110" x2="360" y2="420"/>
+            </g>
+            
+            <!-- 省份标签 -->
+            <g class="map-labels" fill="rgba(148,163,184,0.5)" font-size="9" font-family="system-ui">
+              <text x="200" y="120" text-anchor="middle">内蒙古</text>
+              <text x="320" y="100" text-anchor="middle">东北</text>
+              <text x="480" y="130" text-anchor="middle">黑龙江</text>
+              <text x="80" y="300" text-anchor="middle">新疆</text>
+              <text x="200" y="250" text-anchor="middle">甘肃</text>
+              <text x="280" y="200" text-anchor="middle">陕西</text>
+              <text x="350" y="300" text-anchor="middle">湖北</text>
+              <text x="420" y="280" text-anchor="middle">江苏</text>
+              <text x="100" y="420" text-anchor="middle">西藏</text>
+              <text x="200" y="340" text-anchor="middle">四川</text>
+              <text x="300" y="380" text-anchor="middle">贵州</text>
+              <text x="485" y="365" text-anchor="middle">台湾</text>
+              <text x="355" y="425" text-anchor="middle">海南</text>
             </g>
             
             <!-- 热力图层 -->
             <g class="heat-layer">
-              <!-- 徐汇/静安区域热力 -->
-              <ellipse cx="150" cy="90" rx="60" ry="50" fill="url(#heatHigh)" opacity="0.6"/>
-              <!-- 长宁区域热力 -->
-              <ellipse cx="210" cy="80" rx="45" ry="40" fill="url(#heatMed)" opacity="0.5"/>
-              <!-- 闵行区域热力 -->
-              <ellipse cx="290" cy="110" rx="40" ry="35" fill="url(#heatLow)" opacity="0.4"/>
-              <!-- 浦东区域热力 -->
-              <ellipse cx="350" cy="110" rx="35" ry="30" fill="url(#heatMed)" opacity="0.5"/>
-              <!-- 虹口区域热力 -->
-              <ellipse cx="270" cy="150" rx="30" ry="25" fill="url(#heatLow)" opacity="0.35"/>
-              <!-- 松江/嘉定外围 -->
-              <ellipse cx="220" cy="240" rx="50" ry="35" fill="url(#heatLow)" opacity="0.25"/>
-              <ellipse cx="140" cy="200" rx="35" ry="30" fill="url(#heatLow)" opacity="0.2"/>
+              <!-- 京津冀热力圈 -->
+              <ellipse cx="290" cy="150" rx="80" ry="60" fill="url(#heatHigh)" opacity="0.5"/>
+              <!-- 长三角热力圈 -->
+              <ellipse cx="370" cy="245" rx="70" ry="55" fill="url(#heatHigh)" opacity="0.45"/>
+              <!-- 珠三角热力圈 -->
+              <ellipse cx="320" cy="365" rx="60" ry="50" fill="url(#heatHigh)" opacity="0.5"/>
+              <!-- 成都热力圈 -->
+              <ellipse cx="200" cy="290" rx="50" ry="45" fill="url(#heatMed)" opacity="0.4"/>
+              <!-- 武汉热力圈 -->
+              <ellipse cx="300" cy="275" rx="45" ry="40" fill="url(#heatMed)" opacity="0.35"/>
+              <!-- 全国微弱辐射 -->
+              <ellipse cx="300" cy="280" rx="180" ry="140" fill="rgba(124,58,237,0.03)"/>
             </g>
             
             <!-- 门店标记 -->
             <g class="store-markers">
-              <!-- 旗舰店 - 徐汇区（营收最高） -->
-              <g class="ds-store-marker flagship" data-store="老码头火锅-旗舰店" data-revenue="¥18.6万" data-rating="4.9" data-orders="892">
-                <circle class="pulse-ring" cx="150" cy="85" r="15" fill="url(#pulseGradient)">
-                  <animate attributeName="r" values="8;20;8" dur="2s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/>
+              <!-- 北京旗舰店 - 营收最高 -->
+              <g class="ds-store-marker flagship" data-store="老码头火锅-北京旗舰店" data-revenue="¥28.6万" data-rating="4.9" data-orders="1245" data-type="旗舰">
+                <circle class="pulse-ring" cx="290" cy="150" r="25" fill="rgba(124,58,237,0.4)">
+                  <animate attributeName="r" values="12;28;12" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="150" cy="85" r="8" fill="#7C3AED" filter="url(#glow)"/>
-                <circle cx="150" cy="85" r="5" fill="white"/>
-                <text x="150" y="75" text-anchor="middle" fill="#A78BFA" font-size="7" font-weight="600">旗舰店</text>
+                <circle cx="290" cy="150" r="10" fill="#7C3AED" filter="url(#glowStrong)"/>
+                <circle cx="290" cy="150" r="6" fill="white"/>
+                <text x="290" y="135" text-anchor="middle" fill="#A78BFA" font-size="8" font-weight="600">旗舰</text>
+                <text x="290" y="168" text-anchor="middle" fill="#94A3B8" font-size="6">北京</text>
               </g>
               
-              <!-- 徐汇店 -->
-              <g class="ds-store-marker xuhui" data-store="老码头火锅-徐汇店" data-revenue="¥15.2万" data-rating="4.8" data-orders="756">
-                <circle cx="130" cy="100" r="6" fill="#06B6D4" filter="url(#glow)"/>
-                <circle cx="130" cy="100" r="4" fill="white"/>
-                <text x="130" y="90" text-anchor="middle" fill="#94A3B8" font-size="6">徐汇店</text>
+              <!-- 上海直营店 -->
+              <g class="ds-store-marker direct" data-store="老码头火锅-上海直营店" data-revenue="¥22.4万" data-rating="4.8" data-orders="986" data-type="直营">
+                <circle class="pulse-ring" cx="370" cy="245" r="18" fill="rgba(6,182,212,0.4)">
+                  <animate attributeName="r" values="10;22;10" dur="2.5s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.4;0;0.4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="370" cy="245" r="8" fill="#06B6D4" filter="url(#glow)"/>
+                <circle cx="370" cy="245" r="5" fill="white"/>
+                <text x="370" y="262" text-anchor="middle" fill="#94A3B8" font-size="6">上海</text>
               </g>
               
-              <!-- 浦东店 -->
-              <g class="ds-store-marker pudong" data-store="老码头火锅-浦东店" data-revenue="¥14.8万" data-rating="4.7" data-orders="698">
-                <circle cx="350" cy="115" r="6" fill="#06B6D4" filter="url(#glow)"/>
-                <circle cx="350" cy="115" r="4" fill="white"/>
-                <text x="350" y="105" text-anchor="middle" fill="#94A3B8" font-size="6">浦东店</text>
+              <!-- 广州直营店 -->
+              <g class="ds-store-marker direct" data-store="老码头火锅-广州直营店" data-revenue="¥20.8万" data-rating="4.8" data-orders="912" data-type="直营">
+                <circle class="pulse-ring" cx="320" cy="365" r="18" fill="rgba(6,182,212,0.4)">
+                  <animate attributeName="r" values="10;22;10" dur="2.5s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.4;0;0.4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="320" cy="365" r="8" fill="#06B6D4" filter="url(#glow)"/>
+                <circle cx="320" cy="365" r="5" fill="white"/>
+                <text x="320" y="382" text-anchor="middle" fill="#94A3B8" font-size="6">广州</text>
               </g>
               
-              <!-- 静安店 -->
-              <g class="ds-store-marker jingan" data-store="老码头火锅-静安店" data-revenue="¥12.6万" data-rating="4.8" data-orders="624">
-                <circle cx="155" cy="140" r="5" fill="#F59E0B" filter="url(#glow)"/>
-                <circle cx="155" cy="140" r="3" fill="white"/>
-                <text x="155" y="130" text-anchor="middle" fill="#94A3B8" font-size="6">静安店</text>
+              <!-- 深圳加盟店 -->
+              <g class="ds-store-marker franchise" data-store="老码头火锅-深圳加盟店" data-revenue="¥18.2万" data-rating="4.7" data-orders="824" data-type="加盟">
+                <circle cx="338" cy="372" r="7" fill="#10B981" filter="url(#glow)"/>
+                <circle cx="338" cy="372" r="4" fill="white"/>
+                <text x="338" y="388" text-anchor="middle" fill="#94A3B8" font-size="6">深圳</text>
               </g>
               
-              <!-- 闵行店 -->
-              <g class="ds-store-marker minhang" data-store="老码头火锅-闵行店" data-revenue="¥10.2万" data-rating="4.6" data-orders="512">
-                <circle cx="285" cy="115" r="5" fill="#10B981" filter="url(#glow)"/>
-                <circle cx="285" cy="115" r="3" fill="white"/>
-                <text x="285" y="105" text-anchor="middle" fill="#94A3B8" font-size="6">闵行店</text>
+              <!-- 成都加盟店 -->
+              <g class="ds-store-marker franchise" data-store="老码头火锅-成都加盟店" data-revenue="¥16.5万" data-rating="4.7" data-orders="756" data-type="加盟">
+                <circle cx="200" cy="290" r="7" fill="#10B981" filter="url(#glow)"/>
+                <circle cx="200" cy="290" r="4" fill="white"/>
+                <text x="200" y="306" text-anchor="middle" fill="#94A3B8" font-size="6">成都</text>
               </g>
               
-              <!-- 长宁店 -->
-              <g class="ds-store-marker changning" data-store="老码头火锅-长宁店" data-revenue="¥9.4万" data-rating="4.7" data-orders="478">
-                <circle cx="195" cy="80" r="4" fill="#64748B" filter="url(#glow)"/>
-                <circle cx="195" cy="80" r="2.5" fill="white"/>
-                <text x="195" y="70" text-anchor="middle" fill="#64748B" font-size="6">长宁店</text>
+              <!-- 杭州加盟店 -->
+              <g class="ds-store-marker franchise" data-store="老码头火锅-杭州加盟店" data-revenue="¥15.8万" data-rating="4.6" data-orders="698" data-type="加盟">
+                <circle cx="368" cy="250" r="6" fill="#10B981" filter="url(#glow)"/>
+                <circle cx="368" cy="250" r="3.5" fill="white"/>
+                <text x="368" y="265" text-anchor="middle" fill="#94A3B8" font-size="6">杭州</text>
               </g>
               
-              <!-- 虹口店 -->
-              <g class="ds-store-marker hongkou" data-store="老码头火锅-虹口店" data-revenue="¥8.8万" data-rating="4.5" data-orders="445">
-                <circle cx="275" cy="155" r="4" fill="#64748B" filter="url(#glow)"/>
-                <circle cx="275" cy="155" r="2.5" fill="white"/>
-                <text x="275" y="145" text-anchor="middle" fill="#64748B" font-size="6">虹口店</text>
+              <!-- 武汉直营店 -->
+              <g class="ds-store-marker direct" data-store="老码头火锅-武汉直营店" data-revenue="¥14.2万" data-rating="4.6" data-orders="645" data-type="直营">
+                <circle cx="300" cy="275" r="7" fill="#06B6D4" filter="url(#glow)"/>
+                <circle cx="300" cy="275" r="4" fill="white"/>
+                <text x="300" y="290" text-anchor="middle" fill="#94A3B8" font-size="6">武汉</text>
+              </g>
+              
+              <!-- 南京加盟店 -->
+              <g class="ds-store-marker franchise" data-store="老码头火锅-南京加盟店" data-revenue="¥12.6万" data-rating="4.5" data-orders="578" data-type="加盟">
+                <circle cx="350" cy="228" r="6" fill="#10B981" filter="url(#glow)"/>
+                <circle cx="350" cy="228" r="3.5" fill="white"/>
+                <text x="350" y="243" text-anchor="middle" fill="#94A3B8" font-size="6">南京</text>
               </g>
             </g>
           </svg>
@@ -1350,6 +1432,9 @@
           <div class="ds-store-tooltip" id="storeTooltip">
             <div class="tooltip-header">
               <span class="tooltip-store-name"></span>
+              <span class="tooltip-type"></span>
+            </div>
+            <div class="tooltip-rating-line">
               <span class="tooltip-rating"></span>
             </div>
             <div class="tooltip-row"><span>月营收</span><span class="tooltip-revenue"></span></div>
@@ -1361,10 +1446,7 @@
             <span class="ds-legend-item"><span class="ds-legend-dot purple pulse"></span>旗舰</span>
             <span class="ds-legend-item"><span class="ds-legend-dot cyan"></span>直营</span>
             <span class="ds-legend-item"><span class="ds-legend-dot green"></span>加盟</span>
-            <span class="ds-legend-item heat-legend">
-              <span class="heat-gradient"></span>
-              <span>热力强度</span>
-            </span>
+            <span class="ds-total-count">全国门店：8家</span>
           </div>
         </div>
       </div>
