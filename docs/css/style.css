@@ -1698,8 +1698,12 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   overflow-x: hidden;
 }
 
-/* 顶部导航栏 */
-.ds-topbar {
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* 主网格区域 */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1707,18 +1711,15 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
-.ds-topbar-left {
+.ds-toolbar-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.ds-logo {
-  height: 32px;
-  width: auto;
-}
-.ds-topbar-title {
+.ds-logo { height: 32px; width: auto; }
+.ds-toolbar-title {
   font-size: 1.25rem;
   font-weight: 700;
   background: linear-gradient(135deg, #7C3AED, #06B6D4);
@@ -1726,13 +1727,8 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.ds-topbar-center {
-  text-align: center;
-}
-.ds-date {
-  font-size: 0.875rem;
-  color: #94A3B8;
-}
+.ds-toolbar-center { text-align: center; }
+.ds-date { font-size: 0.875rem; color: #94A3B8; }
 .ds-clock {
   font-size: 1.5rem;
   font-weight: 700;
@@ -1740,10 +1736,46 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   color: #06B6D4;
   text-shadow: 0 0 20px rgba(6,182,212,0.5);
 }
-.ds-topbar-right {
+.ds-toolbar-right { display: flex; align-items: center; gap: 12px; }
+.ds-toolbar-actions { display: flex; align-items: center; gap: 10px; }
+.ds-store-select {
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #E2E8F0;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  outline: none;
+}
+.ds-store-select:hover { border-color: rgba(124,58,237,0.5); }
+.ds-time-btns { display: flex; gap: 4px; }
+.ds-time-btn {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: #64748B;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ds-time-btn:hover { color: #94A3B8; border-color: rgba(255,255,255,0.2); }
+.ds-time-btn.active { color: white; background: rgba(124,58,237,0.3); border-color: rgba(124,58,237,0.5); }
+.ds-action-btn {
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.2s;
 }
+.ds-action-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 .ds-live-badge {
   display: flex;
   align-items: center;
@@ -1762,9 +1794,31 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+
+/* 今日全域汇总 */
+.ds-overview-stats {
+  display: flex;
+  gap: 16px;
+  padding: 12px 20px;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.ds-overview-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-right: 1px solid rgba(124,58,237,0.2);
+}
+.ds-overview-item:last-child { border-right: none; }
+.ds-overview-label { font-size: 0.75rem; color: #64748B; }
+.ds-overview-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 20px rgba(124,58,237,0.3);
 }
 
 /* 主网格区域 */
@@ -1897,7 +1951,9 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   background: rgba(255,255,255,0.03);
   border-radius: 6px;
   font-size: 0.75rem;
+  transition: all 0.2s;
 }
+.ds-badreview-item:hover { background: rgba(255,255,255,0.06); }
 .ds-badreview-type {
   padding: 2px 6px;
   background: rgba(239,68,68,0.2);
@@ -1912,6 +1968,15 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.ds-badreview-ai-tag {
+  padding: 2px 6px;
+  background: rgba(16,185,129,0.2);
+  color: #10B981;
+  border-radius: 4px;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
 .ds-badreview-result {
   padding: 2px 6px;
   border-radius: 4px;
@@ -1920,10 +1985,19 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
 .ds-badreview-result.success { background: rgba(16,185,129,0.2); color: #10B981; }
 
 /* 门店热力地图 */
+.ds-heatmap-panel { }
+.ds-heatmap-total {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(6,182,212,0.2);
+  color: #06B6D4;
+  border-radius: 100px;
+  font-size: 0.625rem;
+}
 .ds-heatmap-container { position: relative; height: 240px; }
 .ds-heatmap-svg { width: 100%; height: 100%; border-radius: 8px; }
 .ds-store-marker { cursor: pointer; transition: transform 0.2s; }
-.ds-store-marker:hover { transform: scale(1.2); }
+.ds-store-marker:hover { transform: scale(1.15); }
 .ds-heatmap-legend {
   position: absolute;
   bottom: 8px;
@@ -1932,26 +2006,61 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   gap: 12px;
   font-size: 0.75rem;
   color: #94A3B8;
+  align-items: center;
 }
 .ds-legend-item { display: flex; align-items: center; gap: 4px; }
 .ds-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 .ds-legend-dot.purple { background: #7C3AED; }
+.ds-legend-dot.purple.pulse { animation: pulse 2s infinite; }
 .ds-legend-dot.cyan { background: #06B6D4; }
 .ds-legend-dot.green { background: #10B981; }
+.heat-legend { gap: 6px; }
+.heat-gradient {
+  width: 40px;
+  height: 8px;
+  background: linear-gradient(90deg, rgba(16,185,129,0.8), rgba(6,182,212,0.8), rgba(124,58,237,0.9));
+  border-radius: 4px;
+}
+
+/* 门店Tooltip */
 .ds-store-tooltip {
   position: absolute;
-  padding: 8px 12px;
-  background: rgba(15,23,42,0.95);
+  padding: 12px 14px;
+  background: rgba(15,23,42,0.98);
   border: 1px solid rgba(124,58,237,0.5);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 0.75rem;
   color: white;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
   z-index: 10;
+  min-width: 140px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 .ds-store-tooltip.show { opacity: 1; }
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.tooltip-store-name { font-weight: 600; color: white; }
+.tooltip-rating { color: #F59E0B; font-weight: 600; }
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+  color: #94A3B8;
+}
+.tooltip-row span:last-child { color: white; font-weight: 500; }
+
+/* 地图样式 */
+.map-land { transition: fill 0.3s; }
+.map-river { stroke-linecap: round; }
+.ds-store-marker .pulse-ring { animation: pulse 2s infinite; }
 
 /* Agent状态面板 */
 .ds-agent-panel { display: flex; flex-direction: column; }
@@ -2012,9 +2121,18 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   background: rgba(255,255,255,0.03);
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.05);
+  border-left: 3px solid transparent;
   transition: all 0.2s;
 }
 .ds-platform-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+.ds-platform-item.meituan-border { border-left-color: #FF6B35; }
+.ds-platform-item.dianping-border { border-left-color: #FF6633; }
+.ds-platform-item.elm-border { border-left-color: #00BFFF; }
+.ds-platform-item.douyin-border { border-left-color: #FF0050; }
+.ds-platform-item.xhs-border { border-left-color: #FF2442; }
+.ds-platform-item.wx-border { border-left-color: #07C160; }
+.ds-platform-item.gaode-border { border-left-color: #1E8E3E; }
+.ds-platform-item.koubei-border { border-left-color: #FF9500; }
 .ds-platform-logo {
   font-size: 0.75rem;
   font-weight: 700;
@@ -2034,6 +2152,8 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
 .ds-platform-data { display: flex; flex-direction: column; gap: 3px; }
 .ds-platform-row { display: flex; justify-content: space-between; font-size: 0.625rem; color: #64748B; }
 .ds-platform-value { color: white; font-weight: 500; }
+.ds-platform-value .trend-up { color: #10B981; font-size: 0.5625rem; }
+.ds-platform-value .trend-down { color: #EF4444; font-size: 0.5625rem; }
 .ds-platform-value .up { color: #10B981; font-size: 0.5625rem; }
 .ds-platform-value .down { color: #EF4444; font-size: 0.5625rem; }
 
@@ -2074,7 +2194,9 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   margin-left: 8px;
   padding-left: 20px;
   position: relative;
+  transition: all 0.2s;
 }
+.ds-timeline-item:hover { background: rgba(255,255,255,0.02); }
 .ds-timeline-item:first-child { border-left-color: #7C3AED; }
 .ds-timeline-time { font-size: 0.625rem; color: #64748B; width: 40px; flex-shrink: 0; }
 .ds-timeline-dot {
@@ -2085,13 +2207,53 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   height: 10px;
   border-radius: 50%;
   border: 2px solid #0A0E1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .ds-timeline-dot.completed { background: #10B981; }
 .ds-timeline-dot.running { background: #7C3AED; animation: pulse 2s infinite; }
 .ds-timeline-dot.pending { background: #F59E0B; }
+.ds-timeline-dot i { width: 6px; height: 6px; color: white; }
 .ds-timeline-content { flex: 1; }
-.ds-timeline-agent { font-size: 0.75rem; font-weight: 600; color: #A78BFA; margin-bottom: 2px; }
+.ds-timeline-agent {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #A78BFA;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agent-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.agent-icon.purple { background: rgba(124,58,237,0.3); color: #A78BFA; }
+.agent-icon.cyan { background: rgba(6,182,212,0.3); color: #22D3EE; }
+.agent-icon.green { background: rgba(16,185,129,0.3); color: #34D399; }
+.agent-icon.orange { background: rgba(245,158,11,0.3); color: #FBBF24; }
+.agent-icon.blue { background: rgba(59,130,246,0.3); color: #60A5FA; }
 .ds-timeline-text { font-size: 0.75rem; color: #94A3B8; line-height: 1.4; }
+.ds-timeline-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.ds-timeline-tag {
+  padding: 2px 6px;
+  background: rgba(124,58,237,0.15);
+  color: #A78BFA;
+  border-radius: 4px;
+  font-size: 0.5625rem;
+  font-weight: 500;
+}
+.ds-timeline-tag.pending { background: rgba(245,158,11,0.15); color: #F59E0B; }
 .ds-timeline-status { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.5625rem; margin-top: 4px; }
 .ds-timeline-status.success { background: rgba(16,185,129,0.2); color: #10B981; }
 .ds-timeline-status.primary { background: rgba(124,58,237,0.2); color: #A78BFA; }
@@ -2147,6 +2309,52 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
 .ds-news-item { font-size: 0.75rem; color: #94A3B8; display: inline-flex; align-items: center; gap: 8px; }
 .ds-news-item::before { content: ''; width: 4px; height: 4px; background: rgba(124,58,237,0.5); border-radius: 50%; }
 
+/* 实时数据流动画 */
+.ds-realtime-stream {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, rgba(124,58,237,0.1), rgba(6,182,212,0.05), rgba(124,58,237,0.1));
+  border: 1px solid rgba(124,58,237,0.15);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.ds-stream-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(124,58,237,0.2);
+  color: #A78BFA;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.ds-stream-label i { color: #10B981; }
+.ds-stream-track { flex: 1; overflow: hidden; }
+.ds-stream-content {
+  display: flex;
+  gap: 32px;
+  animation: streamScroll 15s linear infinite;
+  white-space: nowrap;
+}
+@keyframes streamScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.ds-stream-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  font-size: 0.6875rem;
+  color: #94A3B8;
+}
+.ds-stream-item.success { color: #10B981; background: rgba(16,185,129,0.1); }
+.ds-stream-item.warning { color: #F59E0B; background: rgba(245,158,11,0.1); }
+.ds-stream-item.info { color: #06B6D4; background: rgba(6,182,212,0.1); }
+
 /* 返回按钮 */
 .ds-close-btn {
   position: fixed;
@@ -2173,18 +2381,26 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   .ds-main-grid { grid-template-columns: repeat(2, 1fr); }
   .ds-agent-grid { grid-template-columns: repeat(3, 1fr); }
   .ds-platform-grid { grid-template-columns: repeat(4, 1fr); }
+  .ds-overview-stats { flex-wrap: wrap; }
+  .ds-toolbar { flex-wrap: wrap; gap: 12px; }
+  .ds-toolbar-center { order: 3; width: 100%; }
 }
 @media (max-width: 1024px) {
   .ds-main-grid { grid-template-columns: 1fr; }
   .ds-metrics-grid { grid-template-columns: repeat(4, 1fr); }
   .ds-agent-grid { grid-template-columns: repeat(5, 1fr); }
   .ds-platform-grid { grid-template-columns: repeat(4, 1fr); }
+  .ds-overview-stats { gap: 8px; }
+  .ds-overview-item { padding: 0 12px; }
 }
 @media (max-width: 768px) {
   .data-screen { padding: 12px; }
-  .ds-topbar { flex-direction: column; gap: 12px; text-align: center; }
-  .ds-topbar-left { flex-direction: column; }
-  .ds-topbar-center { order: -1; }
+  .ds-toolbar { flex-direction: column; gap: 12px; text-align: center; }
+  .ds-toolbar-left { flex-direction: column; }
+  .ds-toolbar-center { order: -1; }
+  .ds-toolbar-right { flex-wrap: wrap; justify-content: center; }
+  .ds-overview-stats { flex-wrap: wrap; justify-content: center; }
+  .ds-overview-item { border-right: none; border-bottom: 1px solid rgba(124,58,237,0.2); padding: 8px 16px; }
   .ds-metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .ds-agent-grid { grid-template-columns: repeat(2, 1fr); }
   .ds-platform-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2192,5 +2408,7 @@ body.dark-mode .ai-float-btn { box-shadow: 0 4px 20px rgba(124,58,237,0.6); }
   .ds-ai-donut { margin: 0 auto; }
   .ds-news-ticker { padding: 10px 12px; }
   .ds-news-label { display: none; }
+  .ds-realtime-stream { flex-wrap: wrap; justify-content: center; }
+  .ds-stream-label { width: 100%; justify-content: center; margin-bottom: 4px; }
   .ds-close-btn { bottom: 70px; right: 12px; padding: 8px 12px; }
 }

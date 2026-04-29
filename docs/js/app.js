@@ -808,18 +808,36 @@ function initNewsTicker() {
 function initHeatmapTooltip() {
   const markers = document.querySelectorAll('.ds-store-marker');
   const tooltip = document.getElementById('storeTooltip');
+  const mapContainer = document.querySelector('.ds-heatmap-container');
   
   markers.forEach(marker => {
     marker.addEventListener('mouseenter', (e) => {
       const storeName = marker.dataset.store;
+      const revenue = marker.dataset.revenue;
+      const rating = marker.dataset.rating;
+      const orders = marker.dataset.orders;
+      
       if (tooltip && storeName) {
-        tooltip.textContent = storeName;
+        tooltip.querySelector('.tooltip-store-name').textContent = storeName;
+        tooltip.querySelector('.tooltip-rating').textContent = '★ ' + rating;
+        tooltip.querySelector('.tooltip-revenue').textContent = revenue;
+        tooltip.querySelector('.tooltip-orders').textContent = orders + ' 单';
         tooltip.classList.add('show');
         
         const rect = marker.getBoundingClientRect();
-        const containerRect = marker.closest('.ds-heatmap-container').getBoundingClientRect();
-        tooltip.style.left = (rect.left - containerRect.left) + 'px';
-        tooltip.style.top = (rect.top - containerRect.top - 35) + 'px';
+        const containerRect = mapContainer.getBoundingClientRect();
+        const x = rect.left - containerRect.left;
+        const y = rect.top - containerRect.top - 60;
+        
+        // 确保tooltip不超出容器
+        let left = x - 50;
+        let top = y;
+        if (left < 0) left = 0;
+        if (left > containerRect.width - 150) left = containerRect.width - 150;
+        if (top < 0) top = y + 80;
+        
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
       }
     });
     
@@ -829,9 +847,84 @@ function initHeatmapTooltip() {
   });
 }
 
-// 数字滚动动画
+// 全屏切换
+function initFullscreenToggle() {
+  const fullscreenBtn = document.getElementById('dsFullscreenBtn');
+  if (!fullscreenBtn) return;
+  
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('全屏请求失败:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  
+  // 更新按钮图标
+  document.addEventListener('fullscreenchange', () => {
+    const icon = fullscreenBtn.querySelector('i');
+    if (document.fullscreenElement) {
+      icon.setAttribute('data-lucide', 'minimize');
+    } else {
+      icon.setAttribute('data-lucide', 'maximize');
+    }
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  });
+}
+
+// 时间范围切换
+function initTimeRangeToggle() {
+  const timeBtns = document.querySelectorAll('.ds-time-btn');
+  timeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      timeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // 这里可以添加数据更新逻辑
+      console.log('切换时间范围:', btn.dataset.range);
+    });
+  });
+}
+
+// 门店筛选
+function initStoreFilter() {
+  const storeSelect = document.getElementById('storeSelect');
+  if (!storeSelect) return;
+  
+  storeSelect.addEventListener('change', () => {
+    const store = storeSelect.value;
+    console.log('筛选门店:', store);
+    // 这里可以添加门店筛选逻辑
+  });
+}
+
+// 刷新按钮
+function initRefreshBtn() {
+  const refreshBtn = document.getElementById('dsRefreshBtn');
+  if (!refreshBtn) return;
+  
+  refreshBtn.addEventListener('click', () => {
+    // 添加旋转动画
+    const icon = refreshBtn.querySelector('i');
+    icon.style.animation = 'spin 1s linear infinite';
+    
+    // 模拟刷新
+    setTimeout(() => {
+      icon.style.animation = '';
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      console.log('数据已刷新');
+    }, 1000);
+  });
+}
+
+// 数字滚动动画 (countUp效果)
 function animateNumbers() {
-  const statElements = document.querySelectorAll('.ds-metric-value, .ds-agent-stat-value');
+  const statElements = document.querySelectorAll('.ds-metric-value, .ds-agent-stat-value, .ds-overview-value');
   statElements.forEach(el => {
     const text = el.textContent;
     const match = text.match(/[\d.]+/);
@@ -857,6 +950,16 @@ function animateNumbers() {
       setTimeout(animate, Math.random() * 500);
     }
   });
+}
+
+// 实时数据流滚动复制
+function initStreamTicker() {
+  const content = document.getElementById('streamContent');
+  if (!content) return;
+  
+  // 复制内容以确保无缝滚动
+  const originalHTML = content.innerHTML;
+  content.innerHTML = originalHTML + originalHTML;
 }
 
 // 增强版大屏初始化
@@ -895,6 +998,13 @@ function initDataScreenV2() {
   
   // 初始化热力图Tooltip
   initHeatmapTooltip();
+  
+  // 初始化新功能
+  initFullscreenToggle();
+  initTimeRangeToggle();
+  initStoreFilter();
+  initRefreshBtn();
+  initStreamTicker();
   
   // 数字动画
   setTimeout(animateNumbers, 500);
