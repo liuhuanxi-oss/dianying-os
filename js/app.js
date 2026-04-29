@@ -5,9 +5,12 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   // ============================================
-  // 滚动渐入动画
+  // 滚动渐入动画 - 移动端优化
   // ============================================
   const revealElements = document.querySelectorAll('.reveal');
+  
+  // 检测是否为移动端
+  const isMobile = window.innerWidth <= 768;
   
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -16,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: isMobile ? 0.05 : 0.1,
+    rootMargin: isMobile ? '0px 0px -30px 0px' : '0px 0px -50px 0px'
   });
   
   revealElements.forEach(el => revealObserver.observe(el));
