@@ -121,7 +121,7 @@
 - **图标库**: Lucide Icons
 - **图表库**: Chart.js
 - **字体**: Google Fonts (Inter)
-- **AI模型**: 豆包1.8深度思考模型
+- **AI模型**: Gemini 3.1 Pro
 - **部署**: GitHub Pages
 
 ---
