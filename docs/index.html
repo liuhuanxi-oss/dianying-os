@@ -1,359 +1,825 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>店赢OS - AI透视门店运营，驱动流量·星级·营收全面增长</title>
-    <meta name="description" content="店赢OS是一款AI驱动的门店操作系统，为餐饮、零售等行业提供智能数据分析、差评处理、动态定价等一站式解决方案。">
-    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - AI透视门店运营</title>
+  <meta name="description" content="店赢OS，AI驱动的智能门店运营系统，让您的门店实现流量、评分、营收的全面增长">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              start: '#6366F1',
+              end: '#8B5CF6'
+            },
+            accent: '#06B6D4',
+            success: '#10B981',
+            dark: '#0F172A'
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body>
-    <!-- ============================================
-         LANDING PAGE
-         ============================================ -->
-    <div class="landing">
-        <!-- Navigation -->
-        <nav class="landing-nav">
-            <div class="nav-container">
-                <a href="#" class="nav-logo">
-                    <img src="assets/logo.svg" alt="店赢OS">
-                    <span>店赢OS</span>
-                </a>
-                <div class="nav-links">
-                    <a href="#features" class="nav-link">功能特点</a>
-                    <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
-                </div>
-                <a href="#" class="nav-cta" id="startDemoBtn">立即体验</a>
-            </div>
-        </nav>
-
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-container">
-                <div class="hero-badge">
-                    <i data-lucide="Sparkles"></i>
-                    <span>AI驱动的门店操作系统</span>
-                </div>
-                <h1 class="hero-title">
-                    <span>店赢OS</span>
-                </h1>
-                <p class="hero-subtitle">
-                    AI透视门店运营，驱动流量·星级·营收全面增长
-                </p>
-                <div class="hero-actions">
-                    <a href="#" class="btn btn-primary" id="heroStartBtn">
-                        <i data-lucide="Play"></i>
-                        立即体验Demo
-                    </a>
-                    <a href="https://github.com" target="_blank" class="btn btn-secondary">
-                        <i data-lucide="Github"></i>
-                        查看源码
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Value Proposition -->
-        <section class="values" id="features">
-            <div class="values-container">
-                <h2 class="section-title">为什么选择店赢OS</h2>
-                <div class="values-grid">
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="Brain"></i>
-                        </div>
-                        <h3 class="value-title">AI智能分析</h3>
-                        <p class="value-desc">7×24小时监控门店数据，智能识别异常并预警，自动学习优化运营策略。</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="MessageSquare"></i>
-                        </div>
-                        <h3 class="value-title">差评秒级响应</h3>
-                        <p class="value-desc">自动抓取差评，AI生成个性化回复模板，将差评转化为展示服务态度的机会。</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="TrendingUp"></i>
-                        </div>
-                        <h3 class="value-title">动态定价引擎</h3>
-                        <p class="value-desc">基于天气、客流、节假日等因素智能推荐定价策略，最大化营收收益。</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="BarChart3"></i>
-                        </div>
-                        <h3 class="value-title">数据驾驶舱</h3>
-                        <p class="value-desc">营收、评分、客流一目了然，历史趋势分析，帮你做更明智的经营决策。</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="CalendarClock"></i>
-                        </div>
-                        <h3 class="value-title">智能排班建议</h3>
-                        <p class="value-desc">根据历史客流数据预测高峰期，智能推荐员工排班方案，人效提升30%。</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon">
-                            <i data-lucide="Repeat"></i>
-                        </div>
-                        <h3 class="value-title">复购率追踪</h3>
-                        <p class="value-desc">深度分析顾客复购行为，识别高价值用户，制定精准营销策略提升复购。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="landing-footer">
-            <div class="footer-container">
-                <div class="footer-brand">
-                    <img src="assets/logo.svg" alt="店赢OS">
-                    <span>店赢OS 2026</span>
-                </div>
-                <div class="footer-links">
-                    <a href="https://github.com" target="_blank" class="footer-link">GitHub</a>
-                    <a href="#" class="footer-link">文档</a>
-                    <a href="#" class="footer-link">联系我们</a>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <!-- ============================================
-         DEMO PAGE
-         ============================================ -->
-    <div class="demo hidden">
-        <!-- Header -->
-        <header class="demo-header">
-            <div class="demo-header-container">
-                <a href="#" class="demo-logo">
-                    <img src="assets/logo.svg" alt="店赢OS">
-                    <span>店赢OS</span>
-                </a>
-                
-                <div class="demo-center">
-                    <div class="store-selector">
-                        <i data-lucide="Store"></i>
-                        <select id="storeSelect">
-                            <option value="hotpot">老码头火锅（旗舰店）</option>
-                            <option value="tea">茶悦时光（万象城店）</option>
-                        </select>
-                    </div>
-                    <div class="demo-status">
-                        <span class="status-dot"></span>
-                        <span>系统正常</span>
-                    </div>
-                </div>
-                
-                <div class="demo-header-right">
-                    <span class="header-time" id="currentTime">2026-04-28 19:30:00</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="demo-main">
-            <!-- Left: Chat Panel -->
-            <section class="chat-panel">
-                <div class="chat-header">
-                    <div class="ai-manager-info">
-                        <div class="ai-avatar">
-                            <i data-lucide="Bot"></i>
-                        </div>
-                        <div class="ai-info">
-                            <h3>AI虚拟店长</h3>
-                            <span>7×24 在线</span>
-                        </div>
-                    </div>
-                    <div class="chat-actions">
-                        <button class="btn-sm" id="demoAlertBtn">
-                            <i data-lucide="AlertTriangle"></i>
-                            差评预警
-                        </button>
-                        <button class="btn-sm" id="demoPricingBtn">
-                            <i data-lucide="TrendingUp"></i>
-                            动态定价
-                        </button>
-                        <button class="btn-sm" id="demoReportBtn">
-                            <i data-lucide="FileText"></i>
-                            运营日报
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Messages will be inserted here -->
-                </div>
-                
-                <div class="chat-input-area">
-                    <div class="quick-actions">
-                        <button class="quick-action" data-action="review">
-                            <i data-lucide="Star"></i>
-                            查看评价
-                        </button>
-                        <button class="quick-action" data-action="pricing">
-                            <i data-lucide="DollarSign"></i>
-                            调整定价
-                        </button>
-                        <button class="quick-action" data-action="report">
-                            <i data-lucide="BarChart2"></i>
-                            生成报告
-                        </button>
-                        <button class="quick-action" data-action="schedule">
-                            <i data-lucide="Calendar"></i>
-                            查看排班
-                        </button>
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="输入问题或选择快捷操作..." autocomplete="off">
-                        <button class="send-btn" id="sendBtn">
-                            <i data-lucide="Send"></i>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Right: Data Panel -->
-            <aside class="data-panel">
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-label">
-                                <i data-lucide="Star"></i>
-                                门店评分
-                            </span>
-                        </div>
-                        <div class="stat-value positive" id="ratingValue">4.8</div>
-                        <div class="stat-change up">
-                            <i data-lucide="TrendingUp"></i>
-                            +0.2
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-label">
-                                <i data-lucide="MessageSquare"></i>
-                                评价数
-                            </span>
-                        </div>
-                        <div class="stat-value" id="reviewCount">2,847</div>
-                        <div class="stat-change up">
-                            <i data-lucide="TrendingUp"></i>
-                            本月+128
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-label">
-                                <i data-lucide="ThumbsDown"></i>
-                                差评率
-                            </span>
-                        </div>
-                        <div class="stat-value" id="badReviewRate">1.2%</div>
-                        <div class="stat-change up">
-                            <i data-lucide="TrendingUp"></i>
-                            -0.3%
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <span class="stat-label">
-                                <i data-lucide="Reply"></i>
-                                回复率
-                            </span>
-                        </div>
-                        <div class="stat-value positive" id="replyRate">98%</div>
-                        <div class="stat-change up">
-                            <i data-lucide="Check"></i>
-                            已达标
-                        </div>
-                    </div>
-                    <div class="stat-card full">
-                        <div class="stat-header">
-                            <span class="stat-label">
-                                <i data-lucide="Banknote"></i>
-                                今日营收
-                            </span>
-                        </div>
-                        <div class="stat-value" id="todayRevenue">¥12,580</div>
-                        <div class="stat-change up">
-                            <i data-lucide="TrendingUp"></i>
-                            比昨日 +8%
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Revenue Chart -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <span class="chart-title">近7天营收趋势</span>
-                        <span class="chart-period">本周</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Alerts -->
-                <div class="alerts-card">
-                    <div class="alerts-header">
-                        <span class="alerts-title">
-                            <i data-lucide="Bell"></i>
-                            实时预警
-                        </span>
-                    </div>
-                    <div class="alerts-list" id="alertsList">
-                        <div class="alert-item warning">
-                            <i data-lucide="AlertTriangle"></i>
-                            <div>
-                                <div>老码头火锅：等位超40分钟，建议增加值班人员</div>
-                                <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">10分钟前</div>
-                            </div>
-                        </div>
-                        <div class="alert-item success">
-                            <i data-lucide="CheckCircle"></i>
-                            <div>
-                                <div>茶悦时光：今日复购率提升至32%</div>
-                                <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">1小时前</div>
-                            </div>
-                        </div>
-                        <div class="alert-item danger">
-                            <i data-lucide="AlertCircle"></i>
-                            <div>
-                                <div>差评预警：老码头火锅收到1条新差评</div>
-                                <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">15分钟前</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </main>
-    </div>
-
-    <script src="js/app.js"></script>
-    <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
+  <!-- ==========================================
+       Landing Page
+       ========================================== -->
+  <div class="landing-page">
+    
+    <!-- 1. Navbar -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <a href="#" class="flex items-center gap-3">
+            <img src="assets/logo.svg" alt="店赢OS" class="h-8">
+          </a>
+          
+          <!-- Navigation Links (Desktop) -->
+          <div class="hidden md:flex items-center gap-8">
+            <a href="#features" class="text-gray-600 hover:text-primary-start transition-colors font-medium">功能</a>
+            <a href="#pricing" class="text-gray-600 hover:text-primary-start transition-colors font-medium">价格</a>
+            <a href="#testimonials" class="text-gray-600 hover:text-primary-start transition-colors font-medium">案例</a>
+            <a href="#faqs" class="text-gray-600 hover:text-primary-start transition-colors font-medium">文档</a>
+          </div>
+          
+          <!-- CTA Button -->
+          <button class="btn-gradient hidden md:block" data-demo-trigger>
+            免费体验
+          </button>
+          
+          <!-- Mobile Menu Button -->
+          <button class="md:hidden p-2 text-gray-600">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- 2. Hero Section -->
+    <section class="hero-section pt-24 pb-20 md:pt-32 md:pb-28">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-4xl mx-auto mb-12">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 bg-indigo-50 text-primary-start px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>AI驱动的新一代门店运营系统</span>
+          </div>
+          
+          <!-- Main Title -->
+          <h1 class="hero-title mb-4">
+            <span class="gradient-text">AI透视门店运营</span>
+          </h1>
+          
+          <!-- Subtitle -->
+          <p class="hero-subtitle text-gray-600 mb-6">
+            驱动流量<span class="text-primary-start">·</span>星级<span class="text-primary-start">·</span>营收全面增长
+          </p>
+          
+          <!-- Description -->
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+            一个系统搞定差评处理、动态定价、会员运营，让AI帮你管店，省人增效。
+          </p>
+          
+          <!-- CTA Buttons -->
+          <div class="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button class="btn-gradient flex items-center gap-2 text-lg px-8 py-4" data-demo-trigger>
+              <i data-lucide="play" class="w-5 h-5"></i>
+              立即体验
+            </button>
+            <button class="btn-outline flex items-center gap-2 text-lg px-8 py-4">
+              <i data-lucide="play-circle" class="w-5 h-5"></i>
+              观看演示
+            </button>
+          </div>
+        </div>
         
-        // Landing page start button
-        document.getElementById('startDemoBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector('.landing').classList.add('hidden');
-            document.querySelector('.demo').classList.remove('hidden');
-            App.init();
-        });
+        <!-- Product Mockup -->
+        <div class="browser-mockup max-w-5xl mx-auto reveal">
+          <div class="browser-mockup-header">
+            <div class="browser-dot red"></div>
+            <div class="browser-dot yellow"></div>
+            <div class="browser-dot green"></div>
+            <div class="flex-1 text-center text-sm text-gray-400">dianying.os</div>
+          </div>
+          <div class="browser-mockup-content p-6">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <div class="data-card highlight">
+                <div class="text-3xl font-bold text-primary-start">4.8</div>
+                <div class="flex items-center gap-1 mt-1">
+                  <div class="stars">
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  </div>
+                  <span class="text-sm text-gray-500 ml-1">今日</span>
+                </div>
+              </div>
+              <div class="data-card">
+                <div class="text-3xl font-bold text-red-500">1.2%</div>
+                <div class="text-sm text-gray-500 mt-1">差评率 <span class="text-green-500 text-xs">↓3.8%</span></div>
+              </div>
+              <div class="data-card">
+                <div class="text-3xl font-bold text-green-500">¥12.8万</div>
+                <div class="text-sm text-gray-500 mt-1">本月营收 <span class="text-green-500 text-xs">↑12%</span></div>
+              </div>
+            </div>
+            <div class="chart-placeholder relative">
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgba(99,102,241,0.3)"/>
+                    <stop offset="100%" style="stop-color:rgba(99,102,241,0)"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,80 Q50,70 100,55 T200,40 T300,25 T400,15 L400,100 L0,100 Z" fill="url(#chartGrad)"/>
+                <path d="M0,80 Q50,70 100,55 T200,40 T300,25 T400,15" fill="none" stroke="#6366F1" stroke-width="3"/>
+                <circle cx="400" cy="15" r="5" fill="#6366F1"/>
+              </svg>
+              <div class="absolute bottom-2 left-4 text-xs text-gray-400">近6个月营收趋势</div>
+            </div>
+            <div class="mt-4 flex gap-3">
+              <div class="flex-1 bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                <div class="text-green-600 font-bold">AI店长</div>
+                <div class="text-xs text-green-500 mt-1">运行中 · 7×24</div>
+              </div>
+              <div class="flex-1 bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                <div class="text-blue-600 font-bold">待处理</div>
+                <div class="text-xs text-blue-500 mt-1">0 条差评</div>
+              </div>
+              <div class="flex-1 bg-purple-50 border border-purple-200 rounded-lg p-3 text-center">
+                <div class="text-purple-600 font-bold">信任等级</div>
+                <div class="text-xs text-purple-500 mt-1">A级 · 92分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 3. Stats Section -->
+    <section class="stats-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3">
+          <div class="stat-card reveal">
+            <div class="stat-number">10,000+</div>
+            <div class="stat-label">门店信赖</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-1">
+            <div class="stat-number">50万+</div>
+            <div class="stat-label">差评已处理</div>
+          </div>
+          <div class="stat-card reveal reveal-delay-2">
+            <div class="stat-number">32%</div>
+            <div class="stat-label">平均营收提升</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 4. Section Heading -->
+    <section id="features" class="features-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            6大核心能力<span class="gradient-text">一步到位</span>
+          </h2>
+          <p class="section-subtitle">
+            从差评处理到智能定价，从会员运营到跨店复制，一个系统覆盖门店运营全场景
+          </p>
+        </div>
         
-        document.getElementById('heroStartBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector('.landing').classList.add('hidden');
-            document.querySelector('.demo').classList.remove('hidden');
-            App.init();
-        });
-    </script>
+        <!-- 5. Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Feature 1 -->
+          <div class="feature-card reveal">
+            <div class="feature-icon">
+              <i data-lucide="bot" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">AI虚拟店长</h3>
+            <p class="feature-desc">
+              7×24小时自主决策，像真人店长一样思考问题、处理异常、给出建议。节假日不休息，永不离职。
+            </p>
+          </div>
+          
+          <!-- Feature 2 -->
+          <div class="feature-card reveal reveal-delay-1">
+            <div class="feature-icon">
+              <i data-lucide="message-circle" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">差评秒处理</h3>
+            <p class="feature-desc">
+              智能识别差评类型，千人千面自动生成回复。不再手动逐条回复，差评变转机。
+            </p>
+          </div>
+          
+          <!-- Feature 3 -->
+          <div class="feature-card reveal reveal-delay-2">
+            <div class="feature-icon">
+              <i data-lucide="trending-up" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">动态定价引擎</h3>
+            <p class="feature-desc">
+              天气、时段、竞品、节假日综合考量，自动调价。晴天卖座位，雨天推外卖，淡季做活动。
+            </p>
+          </div>
+          
+          <!-- Feature 4 -->
+          <div class="feature-card reveal reveal-delay-3">
+            <div class="feature-icon">
+              <i data-lucide="users" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">客户生命周期</h3>
+            <p class="feature-desc">
+              从获客到复购全自动驾驶。新客转化、沉睡唤醒、忠诚度提升，AI帮你搞定每个环节。
+            </p>
+          </div>
+          
+          <!-- Feature 5 -->
+          <div class="feature-card reveal reveal-delay-4">
+            <div class="feature-icon">
+              <i data-lucide="git-branch" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">跨店知识迁移</h3>
+            <p class="feature-desc">
+              一家店的成功经验，复制到N家店。爆品打法、促销策略、服务流程，智能适配不同门店。
+            </p>
+          </div>
+          
+          <!-- Feature 6 -->
+          <div class="feature-card reveal reveal-delay-5">
+            <div class="feature-icon">
+              <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+            </div>
+            <h3 class="feature-title">门店数字孪生</h3>
+            <p class="feature-desc">
+              实时洞察运营全貌，数据可视化一目了然。营收、评分、客流、成本，一切尽在掌握。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 6. Bento Grid Section -->
+    <section class="bento-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            真实场景<span class="gradient-text">即刻体验</span>
+          </h2>
+          <p class="section-subtitle">
+            点击下方卡片，感受AI如何解决实际经营问题
+          </p>
+        </div>
+        
+        <div class="bento-grid">
+          <!-- Large Card - Review Flow -->
+          <div class="bento-card large reveal">
+            <div class="bento-icon purple">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="bento-title text-white">差评预警 → 自动处理 → 声誉恢复</h3>
+            <p class="bento-desc">完整流程图：AI如何在第一时间发现差评，自动生成个性化回复，并持续追踪转化效果</p>
+            
+            <div class="workflow-diagram">
+              <div class="workflow-step">
+                <div class="workflow-node">差评关键词识别</div>
+                <i data-lucide="arrow-right" class="workflow-arrow"></i>
+                <div class="workflow-node">情绪分析</div>
+                <i data-lucide="arrow-right" class="workflow-arrow"></i>
+                <div class="workflow-node">回复生成</div>
+              </div>
+              <div class="workflow-step">
+                <div class="workflow-badge">平均响应 &lt; 3分钟</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Medium Card - Pricing Dashboard -->
+          <div class="bento-card medium reveal reveal-delay-1">
+            <div class="bento-icon cyan">
+              <i data-lucide="gauge" class="w-6 h-6"></i>
+            </div>
+            <h3 class="bento-title">动态定价仪表盘</h3>
+            <p class="bento-desc">实时显示当前定价策略、调价建议、执行效果</p>
+            
+            <div class="dashboard-preview mt-4">
+              <div class="dashboard-metric">
+                <span class="dashboard-metric-label">午市套餐</span>
+                <span class="dashboard-metric-value highlight">¥38 <span class="text-xs text-gray-400">原价42</span></span>
+              </div>
+              <div class="dashboard-metric">
+                <span class="dashboard-metric-label">晚市主推</span>
+                <span class="dashboard-metric-value warning">¥58 <span class="text-xs text-gray-400">建议+5</span></span>
+              </div>
+              <div class="dashboard-metric">
+                <span class="dashboard-metric-label">雨天外卖</span>
+                <span class="dashboard-metric-value highlight">满100减20</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Medium Card - Customer Funnel -->
+          <div class="bento-card medium reveal reveal-delay-2">
+            <div class="bento-icon green">
+              <i data-lucide="filter" class="w-6 h-6"></i>
+            </div>
+            <h3 class="bento-title">客户生命周期漏斗</h3>
+            <p class="bento-desc">从新客到忠诚客户的完整旅程追踪</p>
+            
+            <div class="funnel-container">
+              <div class="funnel-step">
+                <span class="funnel-label">新客</span>
+                <div class="funnel-bar" style="width: 100%">1,280</div>
+              </div>
+              <div class="funnel-step">
+                <span class="funnel-label">复购</span>
+                <div class="funnel-bar" style="width: 65%">832</div>
+              </div>
+              <div class="funnel-step">
+                <span class="funnel-label">活跃</span>
+                <div class="funnel-bar" style="width: 42%">538</div>
+              </div>
+              <div class="funnel-step">
+                <span class="funnel-label">忠诚</span>
+                <div class="funnel-bar" style="width: 25%">320</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Small Card - Trust Level -->
+          <div class="bento-card small reveal reveal-delay-3">
+            <div class="bento-icon indigo">
+              <i data-lucide="award" class="w-6 h-6"></i>
+            </div>
+            <h3 class="bento-title">信任等级</h3>
+            <p class="bento-desc">平台信誉可视化</p>
+            <div class="mt-4 text-center">
+              <div class="text-4xl font-bold gradient-text">A</div>
+              <div class="text-sm text-gray-400 mt-1">92分 · 优秀</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 7. Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            真实反馈<span class="gradient-text">亲眼见证</span>
+          </h2>
+          <p class="section-subtitle">
+            来自不同行业商家的真实使用体验
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card reveal">
+            <p class="testimonial-text">
+              "以前每天手动回复差评，头都大了。现在AI自动处理，差评率从5%降到1.2%，我还省了一个运营的人力。"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar red">李</div>
+              <div class="author-info">
+                <h4>李老板</h4>
+                <p>火锅店 · 成都 · 3家门店</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card reveal reveal-delay-1">
+            <p class="testimonial-text">
+              "动态定价太香了！上周下雨，AI自动调高外卖优惠力度，一周下来多赚了2800块。这钱以前都让平台赚了。"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar purple">张</div>
+              <div class="author-info">
+                <h4>张店长</h4>
+                <p>奶茶店 · 杭州 · 1家门店</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card reveal reveal-delay-2">
+            <p class="testimonial-text">
+              "会员续费率一直上不去，用了AI分析才发现问题在哪。现在会员续费率从45%提到62%，一个月多赚小一万。"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar cyan">王</div>
+              <div class="author-info">
+                <h4>王经理</h4>
+                <p>健身房 · 北京 · 2家门店</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 8. Pricing Section -->
+    <section id="pricing" class="pricing-section">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            简单透明<span class="gradient-text">按需选择</span>
+          </h2>
+          <p class="section-subtitle">
+            不管是单店还是连锁，总有一款适合你
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
+          <!-- Basic Plan -->
+          <div class="pricing-card reveal">
+            <div class="pricing-name">基础版</div>
+            <div class="pricing-price">
+              ¥0 <span>/月</span>
+            </div>
+            <p class="pricing-desc">适合个人小店，先试试看</p>
+            <ul class="pricing-features">
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                1个门店
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                基础数据看板
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                每日报告推送
+              </li>
+              <li>
+                <i data-lucide="x" class="w-5 h-5 text-gray-300"></i>
+                <span class="text-gray-400">AI差评处理</span>
+              </li>
+              <li>
+                <i data-lucide="x" class="w-5 h-5 text-gray-300"></i>
+                <span class="text-gray-400">动态定价</span>
+              </li>
+            </ul>
+            <button class="pricing-btn secondary">免费开始</button>
+          </div>
+          
+          <!-- Pro Plan -->
+          <div class="pricing-card featured reveal reveal-delay-1">
+            <div class="pricing-badge">推荐</div>
+            <div class="pricing-name">专业版</div>
+            <div class="pricing-price">
+              ¥299 <span>/月</span>
+            </div>
+            <p class="pricing-desc">适合成长期门店，功能全覆盖</p>
+            <ul class="pricing-features">
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                5个门店
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                完整数据看板
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                AI虚拟店长
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                差评自动处理
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                动态定价引擎
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                会员生命周期管理
+              </li>
+            </ul>
+            <button class="pricing-btn primary">立即开通</button>
+          </div>
+          
+          <!-- Enterprise Plan -->
+          <div class="pricing-card reveal reveal-delay-2">
+            <div class="pricing-name">旗舰版</div>
+            <div class="pricing-price">
+              ¥799 <span>/月</span>
+            </div>
+            <p class="pricing-desc">适合多门店连锁，省心更省钱</p>
+            <ul class="pricing-features">
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                无限门店
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                专业版全部功能
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                跨店知识迁移
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                专属客服支持
+              </li>
+              <li>
+                <i data-lucide="check" class="w-5 h-5"></i>
+                优先新功能体验
+              </li>
+            </ul>
+            <button class="pricing-btn secondary">联系销售</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 9. CTA Banner -->
+    <section class="cta-section">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 class="cta-title reveal">
+          开始让AI帮你管店
+        </h2>
+        <div class="reveal reveal-delay-1">
+          <button class="cta-btn" data-demo-trigger>
+            <i data-lucide="rocket" class="w-5 h-5"></i>
+            免费开始
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 10. FAQs Section -->
+    <section id="faqs" class="faqs-section">
+      <div class="max-w-3xl mx-auto px-6">
+        <div class="section-heading reveal">
+          <h2 class="section-title">
+            常见问题<span class="gradient-text">快速解答</span>
+          </h2>
+        </div>
+        
+        <div class="reveal">
+          <div class="faq-item active">
+            <button class="faq-question">
+              <span>店赢OS适合什么类型的门店？</span>
+              <i data-lucide="plus" class="faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              <p>店赢OS适合所有需要线上运营的实体门店，特别是餐饮类（火锅、烧烤、奶茶、小吃）、休闲娱乐（健身房、美容院、棋牌室）、生活服务（洗衣、洗车、美甲）等行业。系统会自动适配不同行业的特点。</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>AI自动处理差评安全吗？</span>
+              <i data-lucide="plus" class="faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              <p>非常安全。AI生成的每条回复都会经过智能审核，确保语气得体、不会引发二次纠纷。同时所有操作都有记录，你可以随时查看、修改或撤回。系统还会学习你的品牌调性，越用越懂你。</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>不懂技术能用吗？</span>
+              <i data-lucide="plus" class="faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              <p>当然可以。店赢OS的设计理念就是"零门槛"，界面简洁直观，操作逻辑和日常使用的App一致。开通账号、绑定店铺后，AI会自动开始工作，你只需要偶尔确认一下即可。</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>数据安全怎么保障？</span>
+              <i data-lucide="plus" class="faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              <p>数据安全是我们的生命线。所有数据采用银行级加密传输，存储在符合等保三级要求的云服务器上。数据仅用于为你提供服务，绝不会用于任何商业用途。你可以随时导出或删除自己的数据。</p>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>可以先试用再决定吗？</span>
+              <i data-lucide="plus" class="faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              <p>可以。基础版永久免费，包含核心数据看板和每日报告，让你先感受一下系统能提供什么价值。专业版和旗舰版有7天全功能试用期，不满意随时退款。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 11. Footer -->
+    <footer class="footer">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+          <!-- Brand -->
+          <div>
+            <div class="footer-logo">
+              <img src="assets/logo.svg" alt="店赢OS" class="h-8">
+            </div>
+            <p class="footer-desc">
+              AI驱动的智能门店运营系统，让天下没有难管的店。
+            </p>
+          </div>
+          
+          <!-- Product -->
+          <div>
+            <h4 class="footer-title">产品</h4>
+            <ul class="footer-links">
+              <li><a href="#features">功能介绍</a></li>
+              <li><a href="#pricing">定价方案</a></li>
+              <li><a href="#">更新日志</a></li>
+              <li><a href="#">API文档</a></li>
+            </ul>
+          </div>
+          
+          <!-- Resources -->
+          <div>
+            <h4 class="footer-title">资源</h4>
+            <ul class="footer-links">
+              <li><a href="#">使用教程</a></li>
+              <li><a href="#">行业案例</a></li>
+              <li><a href="#">常见问题</a></li>
+              <li><a href="#">视频演示</a></li>
+            </ul>
+          </div>
+          
+          <!-- Connect -->
+          <div>
+            <h4 class="footer-title">联系我们</h4>
+            <div class="footer-social">
+              <a href="#" aria-label="GitHub">
+                <i data-lucide="github" class="w-5 h-5"></i>
+              </a>
+              <a href="#" aria-label="Email">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+              </a>
+              <a href="#" aria-label="WeChat">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <span>© 2026 店赢OS. 保留所有权利.</span>
+          <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">隐私政策</a>
+            <a href="#" class="hover:text-white transition-colors">服务条款</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- ==========================================
+       Demo 体验页面
+       ========================================== -->
+  <div class="demo-page">
+    <!-- Demo Nav -->
+    <nav class="demo-nav">
+      <a href="#" class="flex items-center gap-3">
+        <img src="assets/logo.svg" alt="店赢OS" class="h-7">
+        <span class="text-gray-500 text-sm">体验Demo</span>
+      </a>
+      <button class="btn-gradient text-sm px-4 py-2">
+        开通正式版
+      </button>
+    </nav>
+    
+    <!-- Demo Container -->
+    <div class="demo-container">
+      <!-- Chat Panel -->
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div class="chat-header-icon">
+            <i data-lucide="bot" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3>AI虚拟店长</h3>
+            <p>正在为你的门店服务</p>
+          </div>
+        </div>
+        
+        <div class="chat-scenarios">
+          <button class="scenario-btn active" data-scenario="review">
+            差评处理
+          </button>
+          <button class="scenario-btn" data-scenario="pricing">
+            动态定价
+          </button>
+          <button class="scenario-btn" data-scenario="vip">
+            VIP管理
+          </button>
+          <button class="scenario-btn" data-scenario="operation">
+            运营建议
+          </button>
+        </div>
+        
+        <div class="chat-messages">
+          <!-- Messages will be injected by JS -->
+        </div>
+      </div>
+      
+      <!-- Data Panel -->
+      <div class="data-panel-container">
+        <!-- Overview Stats -->
+        <div class="data-overview">
+          <div class="data-stat-card" data-stat="rating">
+            <div class="data-stat-label">门店评分</div>
+            <div class="data-stat-value text-yellow-500">4.8</div>
+            <div class="data-stat-change up">
+              <i data-lucide="trending-up" class="w-3 h-3"></i>
+              <span>+0.3</span>
+            </div>
+          </div>
+          
+          <div class="data-stat-card" data-stat="negative">
+            <div class="data-stat-label">差评率</div>
+            <div class="data-stat-value negative">1.2%</div>
+            <div class="data-stat-change down">
+              <i data-lucide="trending-down" class="w-3 h-3"></i>
+              <span>-3.8%</span>
+            </div>
+          </div>
+          
+          <div class="data-stat-card" data-stat="revenue">
+            <div class="data-stat-label">月营收</div>
+            <div class="data-stat-value text-green-500">¥12.8万</div>
+            <div class="data-stat-change up">
+              <i data-lucide="trending-up" class="w-3 h-3"></i>
+              <span>+12%</span>
+            </div>
+          </div>
+          
+          <div class="data-stat-card highlight" data-stat="ai">
+            <div class="data-stat-label">AI处理效率</div>
+            <div class="data-stat-value gradient-text">98%</div>
+            <div class="data-stat-change up">
+              <i data-lucide="check-circle" class="w-3 h-3"></i>
+              <span>优秀</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Revenue Chart -->
+        <div class="chart-card">
+          <h4>营收趋势</h4>
+          <div style="height: 250px;">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+        
+        <!-- Trust Indicator -->
+        <div class="trust-indicator">
+          <div class="trust-label">门店信任等级</div>
+          <div class="trust-bar-container">
+            <div class="trust-bar">
+              <div class="trust-bar-fill" style="width: 92%"></div>
+            </div>
+            <div class="trust-value">A级</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Back Button -->
+    <button class="back-btn" aria-label="返回首页">
+      <i data-lucide="arrow-left" class="w-5 h-5"></i>
+    </button>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
 </body>
 </html>
