@@ -1,488 +1,445 @@
 /**
- * 店赢OS - 专业SaaS应用
- * 2026
+ * 店赢OS - 交互逻辑
+ * 包含：滚动动画、FAQ折叠、Demo体验、Mock数据
  */
 
-// ============================================
-// MOCK DATA
-// ============================================
-
-const Stores = {
-    data: {
-        hotpot: {
-            id: 'hotpot',
-            name: '老码头火锅',
-            location: '朝阳区旗舰店',
-            rating: 4.8,
-            reviews: 2847,
-            badReviewRate: 1.2,
-            replyRate: 98,
-            todayRevenue: 12580,
-            revenueTrend: [9800, 10200, 11500, 10800, 12100, 11900, 12580]
-        },
-        tea: {
-            id: 'tea',
-            name: '茶悦时光',
-            location: '万象城店',
-            rating: 4.6,
-            reviews: 1523,
-            badReviewRate: 2.1,
-            replyRate: 95,
-            todayRevenue: 4832,
-            revenueTrend: [4200, 4500, 4100, 4700, 4600, 4900, 4832]
-        }
-    },
-    current: 'hotpot',
+document.addEventListener('DOMContentLoaded', function() {
+  // ============================================
+  // 滚动渐入动画
+  // ============================================
+  const revealElements = document.querySelectorAll('.reveal');
+  
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  
+  revealElements.forEach(el => revealObserver.observe(el));
+  
+  // ============================================
+  // FAQ 折叠功能
+  // ============================================
+  const faqItems = document.querySelectorAll('.faq-item');
+  
+  faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
     
-    get() {
-        return this.data[this.current];
-    },
-    
-    switch(id) {
-        if (this.data[id]) {
-            this.current = id;
-            return this.data[id];
+    question.addEventListener('click', () => {
+      // 关闭其他已打开的FAQ
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item && otherItem.classList.contains('active')) {
+          otherItem.classList.remove('active');
         }
-        return null;
+      });
+      
+      // 切换当前项
+      item.classList.toggle('active');
+    });
+  });
+  
+  // ============================================
+  // Demo 体验功能
+  // ============================================
+  const demoTriggers = document.querySelectorAll('[data-demo-trigger]');
+  const landingPage = document.querySelector('.landing-page');
+  const demoPage = document.querySelector('.demo-page');
+  const backBtns = document.querySelectorAll('.back-btn');
+  
+  // 进入Demo
+  demoTriggers.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showDemo();
+    });
+  });
+  
+  // 返回首页
+  backBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      showLanding();
+    });
+  });
+  
+  function showDemo() {
+    landingPage.classList.add('hidden');
+    demoPage.classList.add('active');
+    window.scrollTo(0, 0);
+    initDemo();
+  }
+  
+  function showLanding() {
+    demoPage.classList.remove('active');
+    landingPage.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+  
+  // ============================================
+  // Demo 场景对话
+  // ============================================
+  const scenarioBtns = document.querySelectorAll('.scenario-btn');
+  const chatMessages = document.querySelector('.chat-messages');
+  let currentScenario = null;
+  
+  // Mock对话数据
+  const scenarios = {
+    review: {
+      title: '差评处理',
+      messages: [
+        { type: 'user', text: '刚收到一条差评，说等位40分钟，态度很差' },
+        { type: 'ai', text: '已识别差评关键词：等位时间长、服务态度。正在生成个性化回复方案...' },
+        { type: 'ai', text: '✅ 已自动在大众点评回复：\n\n"亲爱的顾客您好，非常抱歉给您带来了不好的体验。您说得对，昨天的等候时间确实超出预期。我们已将您的反馈转达给管理团队，并会对服务流程进行改进。您的意见对我们非常重要，期待您下次光临时能看到我们的改变。"' },
+        { type: 'ai', text: '📊 影响评估：\n• 预计挽回潜在客流损失：约15%\n• 回复速度超过98%同类商家\n• 情绪安抚评分：92分' }
+      ]
+    },
+    pricing: {
+      title: '动态定价',
+      messages: [
+        { type: 'user', text: '明天下雨，对生意有影响吗？' },
+        { type: 'ai', text: '正在分析天气数据与历史销售关联...\n\n📊 数据显示：\n• 雨天客流平均下降 23%\n• 外卖订单上涨 41%\n• 适合推"雨天特惠套餐"' },
+        { type: 'ai', text: '💡 建议策略：\n\n1. 外卖渠道：\n   • 满100减15 → 满100减20\n   • 预计增收 ¥1,200/天\n\n2. 堂食渠道：\n   • 推出"雨天热汤套餐"\n   • 提升客单价 ¥18\n\n3. 已自动同步至美团/饿了么后台' }
+      ]
+    },
+    vip: {
+      title: 'VIP管理',
+      messages: [
+        { type: 'user', text: '王女士1个月没来了，怎么回事？' },
+        { type: 'ai', text: '正在分析王女士的消费档案...\n\n👤 档案摘要：\n• 累计消费 ¥3,280\n• 平均客单价 ¥164\n• 消费频率：每月2-3次\n• 上次消费：4月8日（距今28天）' },
+        { type: 'ai', text: '🔍 流失风险分析：\n\n• 流失概率：68%（中高风险）\n• 可能原因：\n  ① 竞争对手新店开业\n  ② 近期未推出新品\n  ③ 未推送专属优惠\n\n💌 建议发送：\n"王姐，好久不见！新上了您爱吃的酸菜鱼，还有您专属的8折券哦~"' }
+      ]
+    },
+    operation: {
+      title: '运营建议',
+      messages: [
+        { type: 'user', text: '最近翻台率有点低，怎么办？' },
+        { type: 'ai', text: '正在分析近期运营数据...\n\n📊 翻台率诊断：\n\n• 当前翻台率：2.8次/天\n• 行业均值：3.5次/天\n• 目标值：4次/天\n\n⏱️ 时间分布问题：\n• 午市11:30-12:30：满座但等位\n• 晚市18:00-19:00：排队严重\n• 14:00-17:00：空桌率47%' },
+        { type: 'ai', text: '💡 优化建议：\n\n1. 【午市】推出"商务套餐"\n   锁定12点前到店的办公人群\n\n2. 【晚市】限时优惠策略\n   18:30前结账享9折\n   预计提升19:00后入座率15%\n\n3. 【下午茶时段】\n   开放茶点套餐，盘活闲置时段\n   预计增收 ¥800/天\n\n📈 预计整体提升翻台率至 3.6次' }
+      ]
     }
-};
-
-const Alerts = {
-    data: [
-        {
-            id: 1,
-            type: 'warning',
-            text: '老码头火锅：等位超40分钟，建议增加值班人员',
-            time: '10分钟前'
-        },
-        {
-            id: 2,
-            type: 'success',
-            text: '茶悦时光：今日复购率提升至32%',
-            time: '1小时前'
-        },
-        {
-            id: 3,
-            type: 'danger',
-            text: '差评预警：老码头火锅收到1条新差评',
-            time: '15分钟前'
+  };
+  
+  scenarioBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const scenario = btn.dataset.scenario;
+      
+      // 更新按钮状态
+      scenarioBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 清空并加载新对话
+      chatMessages.innerHTML = '';
+      currentScenario = scenario;
+      
+      // 模拟AI逐条发送消息
+      loadScenarioChat(scenario);
+    });
+  });
+  
+  function loadScenarioChat(scenario) {
+    const data = scenarios[scenario];
+    let delay = 500;
+    
+    data.messages.forEach((msg, index) => {
+      setTimeout(() => {
+        addMessage(msg.type, msg.text);
+        
+        // 最后一条消息时，更新数据面板
+        if (index === data.messages.length - 1) {
+          updateDemoData(scenario);
         }
-    ]
-};
-
-// 营收趋势数据（过去7天）
-const RevenueData = {
-    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '今天'],
-    datasets: [{
-        label: '营收(元)',
-        data: [9800, 10200, 11500, 10800, 12100, 11900, 12580],
-        borderColor: '#4F46E5',
-        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: '#4F46E5',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        pointHoverRadius: 6
-    }]
-};
-
-// ============================================
-// SCENARIOS - 预设对话场景
-// ============================================
-
-const Scenarios = {
-    // 场景1：差评预警
-    alertReview: {
-        trigger: ['差评', '预警', '投诉', '负面'],
-        response: '刚收到1条差评，老码头火锅，顾客说等位超40分钟。我查了一下，今天周六高峰期排班少了2人。要不要我现在回复这条差评？',
-        data: {
-            type: 'warning',
-            icon: 'AlertTriangle',
-            title: '差评预警',
-            content: '顾客反馈：等位时间过长，超过40分钟，体验很差'
-        }
-    },
+      }, delay);
+      delay += msg.type === 'user' ? 800 : 1500;
+    });
+  }
+  
+  function addMessage(type, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
     
-    // 场景2：动态定价
-    dynamicPricing: {
-        trigger: ['定价', '价格', '调价', '建议'],
-        response: '明天降温8度，火锅品类预计客流涨25%。建议午市套餐保持原价，晚市双人套餐调到168元（原价148），加一份赠饮。预计增收1200元左右。',
-        data: {
-            type: 'success',
-            icon: 'TrendingUp',
-            title: '定价建议已生成',
-            content: '晚市双人套餐：¥148 → ¥168\n预计客流+25%\n预计日增收：¥1,200'
-        }
-    },
+    const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     
-    // 场景3：运营日报
-    dailyReport: {
-        trigger: ['日报', '报告', '今日', '总结'],
-        response: '今日营收12,580元，比昨天涨8%。好消息是复购率到32%了，坏消息是下午茶时段空桌率60%。我建议上14:00-17:00的下午茶套餐试试。',
-        data: {
-            type: 'success',
-            icon: 'FileText',
-            title: '今日运营日报',
-            content: '营收¥12,580 ↑8%\n复购率32%\n空桌率60%（下午茶时段）'
-        }
-    },
+    // 处理换行
+    const formattedText = text.replace(/\n/g, '<br>');
     
-    // 场景4：排班查询
-    schedule: {
-        trigger: ['排班', '人手', '员工', '值班'],
-        response: '今天周六，门店安排了6人值班。但客流比预期多了30%，建议临时加派2人。明天周日预计客流平稳，维持现有排班即可。',
-        data: null
-    },
+    messageDiv.innerHTML = `
+      <div class="message-bubble">${formattedText}</div>
+      <div class="message-time">${time}</div>
+    `;
     
-    // 场景5：门店评分
-    rating: {
-        trigger: ['评分', '星级', '好评', '口碑'],
-        response: '门店当前评分4.8分，近30天好评率97.3%，差评率仅1.2%。差评主要集中在等位时间和上菜速度，运营优化后有明显改善。',
-        data: null
-    },
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  // ============================================
+  // Demo 数据面板更新
+  // ============================================
+  function updateDemoData(scenario) {
+    const demoData = {
+      review: {
+        rating: 4.8,
+        ratingChange: '+0.3',
+        negativeRate: 1.2,
+        negativeChange: '-3.8%',
+        revenue: 128000,
+        revenueChange: '+12%',
+        trustLevel: 92
+      },
+      pricing: {
+        rating: 4.7,
+        ratingChange: '+0.1',
+        negativeRate: 2.1,
+        negativeChange: '-1.2%',
+        revenue: 135000,
+        revenueChange: '+18%',
+        trustLevel: 88
+      },
+      vip: {
+        rating: 4.9,
+        ratingChange: '+0.4',
+        negativeRate: 0.8,
+        negativeChange: '-4.2%',
+        revenue: 142000,
+        revenueChange: '+15%',
+        trustLevel: 95
+      },
+      operation: {
+        rating: 4.6,
+        ratingChange: '+0.2',
+        negativeRate: 2.8,
+        negativeChange: '-0.6%',
+        revenue: 118000,
+        revenueChange: '+8%',
+        trustLevel: 85
+      }
+    };
     
-    // 场景6：客流分析
-    customer: {
-        trigger: ['客流', '人数', '人流量', '顾客'],
-        response: '今天客流1,247人次，高峰期集中在11:30-13:30和17:30-20:00。与上周六相比，午餐时段客流持平，晚餐时段上涨18%。',
-        data: null
-    },
+    const data = demoData[scenario];
     
-    // 默认回复
-    default: {
-        response: '我理解你的问题。店赢OS可以帮你分析门店运营数据、预测客流趋势、处理差评回复等。试试点击上方的快捷按钮体验具体功能？',
-        data: null
+    // 更新数值显示
+    const ratingValue = document.querySelector('[data-stat="rating"] .data-stat-value');
+    const ratingChange = document.querySelector('[data-stat="rating"] .data-stat-change');
+    if (ratingValue) ratingValue.textContent = data.rating;
+    if (ratingChange) {
+      ratingChange.querySelector('span').textContent = data.ratingChange;
     }
-};
-
-// ============================================
-// APP CONTROLLER
-// ============================================
-
-const App = {
-    chart: null,
-    chatHistory: [],
     
-    // 初始化
-    init() {
-        this.bindEvents();
-        this.initChart();
-        this.updateTime();
-        this.updateStoreInfo();
-        this.updateStats();
-        this.updateAlerts();
-        this.addWelcomeMessage();
-        
-        // 定时更新
-        setInterval(() => this.updateTime(), 1000);
-    },
+    const negativeValue = document.querySelector('[data-stat="negative"] .data-stat-value');
+    const negativeChange = document.querySelector('[data-stat="negative"] .data-stat-change');
+    if (negativeValue) negativeValue.textContent = data.negativeRate + '%';
+    if (negativeChange) {
+      const changeSpan = negativeChange.querySelector('span');
+      if (changeSpan) changeSpan.textContent = data.negativeChange;
+      negativeChange.classList.remove('down');
+      negativeChange.classList.add('up');
+    }
     
-    // 绑定事件
-    bindEvents() {
-        // 门店切换
-        document.getElementById('storeSelect').addEventListener('change', (e) => {
-            this.switchStore(e.target.value);
-        });
-        
-        // 发送消息
-        document.getElementById('sendBtn').addEventListener('click', () => this.sendMessage());
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
-        });
-        
-        // 快捷操作
-        document.querySelectorAll('.quick-action').forEach(btn => {
-            btn.addEventListener('click', () => this.handleQuickAction(btn.dataset.action));
-        });
-        
-        // 演示按钮
-        document.getElementById('demoAlertBtn').addEventListener('click', () => this.triggerScenario('alertReview'));
-        document.getElementById('demoPricingBtn').addEventListener('click', () => this.triggerScenario('dynamicPricing'));
-        document.getElementById('demoReportBtn').addEventListener('click', () => this.triggerScenario('dailyReport'));
-    },
+    const revenueValue = document.querySelector('[data-stat="revenue"] .data-stat-value');
+    const revenueChange = document.querySelector('[data-stat="revenue"] .data-stat-change');
+    if (revenueValue) revenueValue.textContent = '¥' + (data.revenue / 10000).toFixed(1) + '万';
+    if (revenueChange) {
+      const changeSpan = revenueChange.querySelector('span');
+      if (changeSpan) changeSpan.textContent = data.revenueChange;
+    }
     
-    // 更新时钟
-    updateTime() {
-        const now = new Date();
-        const timeStr = now.toLocaleString('zh-CN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        const el = document.getElementById('currentTime');
-        if (el) el.textContent = timeStr;
-    },
-    
-    // 切换门店
-    switchStore(storeId) {
-        const store = Stores.switch(storeId);
-        if (store) {
-            this.updateStoreInfo();
-            this.updateStats();
-            this.updateChart();
-            
-            // 添加切换提示
-            this.addMessage('ai', `已切换到 ${store.name}（${store.location}）`);
-        }
-    },
-    
-    // 更新门店信息
-    updateStoreInfo() {
-        const store = Stores.get();
-        if (!store) return;
-        
-        // 更新select显示
-        const select = document.getElementById('storeSelect');
-        if (select) select.value = store.id;
-    },
-    
-    // 更新统计数据
-    updateStats() {
-        const store = Stores.get();
-        if (!store) return;
-        
-        document.getElementById('ratingValue').textContent = store.rating;
-        document.getElementById('reviewCount').textContent = store.reviews.toLocaleString();
-        document.getElementById('badReviewRate').textContent = store.badReviewRate + '%';
-        document.getElementById('replyRate').textContent = store.replyRate + '%';
-        document.getElementById('todayRevenue').textContent = '¥' + store.todayRevenue.toLocaleString();
-    },
-    
-    // 更新预警列表
-    updateAlerts() {
-        const alertsList = document.getElementById('alertsList');
-        if (!alertsList) return;
-        
-        alertsList.innerHTML = Alerts.data.map(alert => `
-            <div class="alert-item ${alert.type}">
-                <i data-lucide="${alert.type === 'danger' ? 'AlertCircle' : alert.type === 'success' ? 'CheckCircle' : 'AlertTriangle'}"></i>
-                <div>
-                    <div>${alert.text}</div>
-                    <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">${alert.time}</div>
-                </div>
-            </div>
-        `).join('');
-        
-        // 重新初始化lucide图标
-        if (window.lucide) lucide.createIcons();
-    },
-    
-    // 初始化图表
-    initChart() {
-        const ctx = document.getElementById('revenueChart');
-        if (!ctx) return;
-        
-        this.chart = new Chart(ctx, {
-            type: 'line',
-            data: RevenueData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#111827',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return '营收: ¥' + context.raw.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#9CA3AF',
-                            font: {
-                                size: 11
-                            }
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: '#F3F4F6'
-                        },
-                        ticks: {
-                            color: '#9CA3AF',
-                            font: {
-                                size: 11
-                            },
-                            callback: function(value) {
-                                return '¥' + (value / 1000) + 'k';
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                }
-            }
-        });
-    },
+    // 更新信任等级
+    const trustFill = document.querySelector('.trust-bar-fill');
+    const trustValue = document.querySelector('.trust-value');
+    if (trustFill) {
+      trustFill.style.width = data.trustLevel + '%';
+    }
+    if (trustValue) {
+      trustValue.textContent = 'A级';
+    }
     
     // 更新图表
-    updateChart() {
-        if (!this.chart) return;
-        const store = Stores.get();
-        if (!store) return;
-        
-        this.chart.data.datasets[0].data = store.revenueTrend;
-        this.chart.update('none');
-    },
+    updateChart(scenario);
+  }
+  
+  // ============================================
+  // Chart.js 图表
+  // ============================================
+  let revenueChart = null;
+  
+  function initChart() {
+    const ctx = document.getElementById('revenueChart');
+    if (!ctx) return;
     
-    // 添加欢迎消息
-    addWelcomeMessage() {
-        setTimeout(() => {
-            this.addMessage('ai', `你好！我是店赢OS的AI店长。我可以帮你分析门店运营数据、处理差评、给出定价建议。试试点击「模拟差评预警」或「模拟定价建议」体验一下？`);
-        }, 500);
-    },
+    // 销毁已存在的图表
+    if (revenueChart) {
+      revenueChart.destroy();
+    }
     
-    // 添加消息
-    addMessage(type, content) {
-        const container = document.getElementById('chatMessages');
-        if (!container) return;
-        
-        const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-        
-        const message = document.createElement('div');
-        message.className = `message ${type}`;
-        message.innerHTML = `
-            <div class="message-avatar">
-                <i data-lucide="${type === 'ai' ? 'Bot' : 'User'}"></i>
-            </div>
-            <div>
-                <div class="message-content">${content}</div>
-                <div class="message-time">${time}</div>
-            </div>
-        `;
-        
-        container.appendChild(message);
-        container.scrollTop = container.scrollHeight;
-        
-        // 初始化新添加的图标
-        if (window.lucide) lucide.createIcons();
-    },
+    const chartData = {
+      review: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        data: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8]
+      },
+      pricing: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        data: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5]
+      },
+      vip: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        data: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2]
+      },
+      operation: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        data: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8]
+      }
+    };
     
-    // 发送消息
-    sendMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        
-        if (!text) return;
-        
-        this.addMessage('user', text);
-        input.value = '';
-        
-        // 分析意图并回复
-        setTimeout(() => {
-            const response = this.analyzeIntent(text);
-            this.addMessage('ai', response.text);
-        }, 800);
-    },
+    const currentData = chartData[currentScenario] || chartData.review;
     
-    // 快捷操作
-    handleQuickAction(action) {
-        const actions = {
-            review: () => this.triggerScenario('alertReview'),
-            pricing: () => this.triggerScenario('dynamicPricing'),
-            report: () => this.triggerScenario('dailyReport'),
-            schedule: () => this.triggerScenario('schedule')
-        };
-        
-        if (actions[action]) {
-            actions[action]();
-        }
-    },
-    
-    // 触发预设场景
-    triggerScenario(scenarioKey) {
-        const scenario = Scenarios[scenarioKey];
-        if (!scenario) return;
-        
-        // 添加AI回复
-        this.addMessage('ai', scenario.response);
-        
-        // 如果有数据更新，更新UI
-        if (scenario.data) {
-            setTimeout(() => this.showDataCard(scenario.data), 1000);
-        }
-    },
-    
-    // 分析用户意图
-    analyzeIntent(text) {
-        const lowerText = text.toLowerCase();
-        
-        for (const [key, scenario] of Object.entries(Scenarios)) {
-            if (key === 'default') continue;
-            
-            for (const trigger of scenario.trigger) {
-                if (lowerText.includes(trigger)) {
-                    return { text: scenario.response, data: scenario.data };
-                }
+    revenueChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: currentData.labels,
+        datasets: [{
+          label: '月营收（万元）',
+          data: currentData.data,
+          borderColor: '#6366F1',
+          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#6366F1',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1E293B',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: '#64748B'
             }
+          },
+          y: {
+            grid: {
+              color: '#E2E8F0'
+            },
+            ticks: {
+              color: '#64748B',
+              callback: function(value) {
+                return value + '万';
+              }
+            }
+          }
         }
-        
-        return Scenarios.default;
-    },
+      }
+    });
+  }
+  
+  function updateChart(scenario) {
+    const chartData = {
+      review: [8.2, 8.8, 9.1, 9.6, 10.5, 12.8],
+      pricing: [8.5, 9.0, 9.8, 10.2, 11.5, 13.5],
+      vip: [8.0, 8.5, 9.5, 10.8, 12.0, 14.2],
+      operation: [8.8, 9.2, 9.5, 10.0, 10.8, 11.8]
+    };
     
-    // 显示数据卡片
-    showDataCard(data) {
-        // 可以扩展为模态框或其他UI展示
-        console.log('Data card:', data);
+    if (revenueChart) {
+      revenueChart.data.datasets[0].data = chartData[scenario] || chartData.review;
+      revenueChart.update();
     }
-};
-
-// ============================================
-// LANDING PAGE
-// ============================================
-
-const Landing = {
-    init() {
-        // 绑定Landing页事件
-        const startBtn = document.getElementById('startDemoBtn');
-        if (startBtn) {
-            startBtn.addEventListener('click', () => this.showDemo());
-        }
-    },
-    
-    showDemo() {
-        document.querySelector('.landing').classList.add('hidden');
-        document.querySelector('.demo').classList.remove('hidden');
-        App.init();
-    }
-};
-
-// ============================================
-// INITIALIZE
-// ============================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 初始化Lucide图标
-    if (window.lucide) {
-        lucide.createIcons();
+  }
+  
+  // ============================================
+  // 初始化 Demo
+  // ============================================
+  function initDemo() {
+    // 初始化图表
+    if (typeof Chart !== 'undefined') {
+      initChart();
     }
     
-    // 检查当前页面
-    if (document.querySelector('.landing')) {
-        Landing.init();
-    } else if (document.querySelector('.demo')) {
-        App.init();
+    // 默认加载第一个场景
+    const firstScenario = document.querySelector('.scenario-btn');
+    if (firstScenario) {
+      firstScenario.click();
     }
+  }
+  
+  // ============================================
+  // 平滑滚动到锚点
+  // ============================================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+  
+  // ============================================
+  // 导航栏滚动效果
+  // ============================================
+  const navbar = document.querySelector('.navbar');
+  
+  if (navbar) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  }
+  
+  // ============================================
+  // 手机菜单切换
+  // ============================================
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+  
+  if (mobileMenuBtn && navLinks) {
+    mobileMenuBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  }
+  
+  // ============================================
+  // 定价卡片交互
+  // ============================================
+  const pricingBtns = document.querySelectorAll('.pricing-btn');
+  
+  pricingBtns.forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transform = 'translateY(-3px)';
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translateY(0)';
+    });
+  });
+  
+  console.log('店赢OS - 初始化完成');
 });
