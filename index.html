@@ -984,57 +984,603 @@
        DATA SCREEN (数据大屏)
        ========================================== -->
   <div class="data-screen hidden" id="dataScreen">
-    <div class="data-screen-header">
-      <h1 class="data-screen-title">店赢OS 数据大屏</h1>
-      <p class="data-screen-subtitle">实时监控门店运营状态</p>
-    </div>
-    <div class="data-screen-grid">
-      <div class="data-screen-card">
-        <div class="data-screen-card-title"><i data-lucide="wallet" class="w-4 h-4"></i>月营收</div>
-        <div class="data-screen-stat">
-          <div class="data-screen-stat-value">¥12.8万</div>
-          <div class="data-screen-stat-label">+12% vs 上月</div>
-        </div>
+    <!-- 顶部导航栏 -->
+    <div class="ds-topbar">
+      <div class="ds-topbar-left">
+        <img src="assets/logo.svg" class="ds-logo" alt="店赢OS">
+        <h1 class="ds-topbar-title">店赢OS 数据驾驶舱</h1>
       </div>
-      <div class="data-screen-card">
-        <div class="data-screen-card-title"><i data-lucide="shopping-cart" class="w-4 h-4"></i>月订单</div>
-        <div class="data-screen-stat">
-          <div class="data-screen-stat-value">1,247</div>
-          <div class="data-screen-stat-label">+8% vs 上月</div>
-        </div>
+      <div class="ds-topbar-center">
+        <div class="ds-date" id="dsDate">2026年04月29日</div>
+        <div class="ds-clock" id="dsClock">18:20:30</div>
       </div>
-      <div class="data-screen-card">
-        <div class="data-screen-card-title"><i data-lucide="star" class="w-4 h-4"></i>评分</div>
-        <div class="data-screen-stat">
-          <div class="data-screen-stat-value">4.8</div>
-          <div class="data-screen-stat-label">+0.3 vs 上月</div>
-        </div>
-      </div>
-      <div class="data-screen-card" style="grid-column: span 2;">
-        <div class="data-screen-card-title"><i data-lucide="trending-up" class="w-4 h-4"></i>营收趋势</div>
-        <div class="chart-wrapper"><canvas id="screenChart"></canvas></div>
-      </div>
-      <div class="data-screen-card">
-        <div class="data-screen-card-title"><i data-lucide="users" class="w-4 h-4"></i>AI处理</div>
-        <div class="data-screen-stat">
-          <div class="data-screen-stat-value">47次</div>
-          <div class="data-screen-stat-label">本月</div>
-        </div>
-      </div>
-      <div class="data-screen-card">
-        <div class="data-screen-card-title"><i data-lucide="check-circle" class="w-4 h-4"></i>平台连接</div>
-        <div class="data-screen-stat">
-          <div class="data-screen-stat-value">8个</div>
-          <div class="data-screen-stat-label">全部在线</div>
-        </div>
+      <div class="ds-topbar-right">
+        <span class="ds-live-badge"><span class="ds-live-dot"></span>实时</span>
       </div>
     </div>
-    <div style="text-align: center; margin-top: 32px;">
-      <button class="btn-secondary" id="closeDataScreen" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2);">
-        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
-        返回
-      </button>
+
+    <!-- 主网格区域 -->
+    <div class="ds-main-grid">
+      <!-- 第1行：核心指标 + 营收趋势 + 差评分析 -->
+      
+      <!-- 左：核心指标区 -->
+      <div class="ds-panel ds-metrics-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+          <span>核心指标</span>
+        </div>
+        <div class="ds-metrics-grid">
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon purple"><i data-lucide="wallet" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">¥12.8万</div>
+              <div class="ds-metric-label">月营收</div>
+              <div class="ds-metric-trend up">+12%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkRevenue" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon cyan"><i data-lucide="shopping-cart" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">1,247</div>
+              <div class="ds-metric-label">月订单</div>
+              <div class="ds-metric-trend up">+8%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkOrders" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon green"><i data-lucide="star" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">4.8</div>
+              <div class="ds-metric-label">评分</div>
+              <div class="ds-metric-trend up">+0.3</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkRating" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon orange"><i data-lucide="bot" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">47次</div>
+              <div class="ds-metric-label">AI处理</div>
+              <div class="ds-metric-trend up">+15%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkAI" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon blue"><i data-lucide="repeat" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">32%</div>
+              <div class="ds-metric-label">复购率</div>
+              <div class="ds-metric-trend up">+5%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkRepurchase" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon purple"><i data-lucide="badge-dollar-sign" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">¥168</div>
+              <div class="ds-metric-label">客单价</div>
+              <div class="ds-metric-trend up">+3%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkAOV" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon green"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">94%</div>
+              <div class="ds-metric-label">差评处理率</div>
+              <div class="ds-metric-trend up">+8%</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkBadReview" width="60" height="24"></canvas>
+          </div>
+          <div class="ds-metric-item">
+            <div class="ds-metric-icon cyan"><i data-lucide="layout-grid" class="w-4 h-4"></i></div>
+            <div class="ds-metric-content">
+              <div class="ds-metric-value">8个</div>
+              <div class="ds-metric-label">在线平台</div>
+              <div class="ds-metric-trend neutral">全部在线</div>
+            </div>
+            <canvas class="ds-sparkline" id="sparkPlatforms" width="60" height="24"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中上：营收趋势图 -->
+      <div class="ds-panel ds-revenue-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="trending-up" class="w-4 h-4"></i>
+          <span>营收趋势</span>
+          <div class="ds-tab-group">
+            <button class="ds-tab active" data-tab="revenue">营收</button>
+            <button class="ds-tab" data-tab="orders">订单</button>
+            <button class="ds-tab" data-tab="traffic">流量</button>
+          </div>
+        </div>
+        <div class="ds-chart-container">
+          <canvas id="screenRevenueChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 右：差评分析 -->
+      <div class="ds-panel ds-badreview-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="message-circle-warning" class="w-4 h-4"></i>
+          <span>差评分析</span>
+        </div>
+        <div class="ds-badreview-content">
+          <div class="ds-badreview-pie">
+            <canvas id="badReviewPieChart"></canvas>
+          </div>
+          <div class="ds-badreview-stats">
+            <div class="ds-badreview-stat">
+              <span class="ds-badreview-stat-label">本月差评</span>
+              <span class="ds-badreview-stat-value danger">12条</span>
+            </div>
+            <div class="ds-badreview-stat">
+              <span class="ds-badreview-stat-label">AI处理成功</span>
+              <span class="ds-badreview-stat-value success">94%</span>
+            </div>
+          </div>
+          <div class="ds-badreview-trend">
+            <canvas id="badReviewTrendChart" height="80"></canvas>
+          </div>
+          <div class="ds-badreview-list">
+            <div class="ds-badreview-item">
+              <span class="ds-badreview-type">口味</span>
+              <span class="ds-badreview-content-text">菜品偏咸...</span>
+              <span class="ds-badreview-result success">已处理</span>
+            </div>
+            <div class="ds-badreview-item">
+              <span class="ds-badreview-type">服务</span>
+              <span class="ds-badreview-content-text">等待时间过长...</span>
+              <span class="ds-badreview-result success">已处理</span>
+            </div>
+            <div class="ds-badreview-item">
+              <span class="ds-badreview-type">环境</span>
+              <span class="ds-badreview-content-text">空调温度太低...</span>
+              <span class="ds-badreview-result success">已处理</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第2行：门店热力 + Agent状态 + 平台数据 -->
+
+      <!-- 左：门店热力地图 -->
+      <div class="ds-panel ds-heatmap-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>门店分布热力图</span>
+        </div>
+        <div class="ds-heatmap-container">
+          <svg class="ds-heatmap-svg" viewBox="0 0 400 280">
+            <!-- 背景网格 -->
+            <defs>
+              <pattern id="heatmapGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              </pattern>
+              <radialGradient id="heatGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(124,58,237,0.8)"/>
+                <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
+              </radialGradient>
+            </defs>
+            <rect width="400" height="280" fill="url(#heatmapGrid)"/>
+            <!-- 模拟热力点 -->
+            <circle cx="80" cy="60" r="40" fill="url(#heatGlow)" opacity="0.6"/>
+            <circle cx="200" cy="100" r="50" fill="url(#heatGlow)" opacity="0.8"/>
+            <circle cx="320" cy="80" r="35" fill="url(#heatGlow)" opacity="0.5"/>
+            <circle cx="120" cy="180" r="45" fill="url(#heatGlow)" opacity="0.7"/>
+            <circle cx="280" cy="200" r="40" fill="url(#heatGlow)" opacity="0.6"/>
+            <circle cx="180" cy="240" r="30" fill="url(#heatGlow)" opacity="0.4"/>
+            <circle cx="350" cy="160" r="25" fill="url(#heatGlow)" opacity="0.3"/>
+            <!-- 门店标记点 -->
+            <g class="ds-store-marker" data-store="老码头火锅-旗舰店">
+              <circle cx="200" cy="100" r="6" fill="#7C3AED"/>
+              <circle cx="200" cy="100" r="10" fill="none" stroke="#7C3AED" stroke-width="1" opacity="0.5"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-徐汇店">
+              <circle cx="80" cy="60" r="5" fill="#06B6D4"/>
+              <circle cx="80" cy="60" r="8" fill="none" stroke="#06B6D4" stroke-width="1" opacity="0.5"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-浦东店">
+              <circle cx="320" cy="80" r="4" fill="#10B981"/>
+              <circle cx="320" cy="80" r="7" fill="none" stroke="#10B981" stroke-width="1" opacity="0.5"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-静安店">
+              <circle cx="120" cy="180" r="5" fill="#F59E0B"/>
+              <circle cx="120" cy="180" r="8" fill="none" stroke="#F59E0B" stroke-width="1" opacity="0.5"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-闵行店">
+              <circle cx="280" cy="200" r="4" fill="#10B981"/>
+              <circle cx="280" cy="200" r="7" fill="none" stroke="#10B981" stroke-width="1" opacity="0.5"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-长宁店">
+              <circle cx="180" cy="240" r="3" fill="#64748B"/>
+            </g>
+            <g class="ds-store-marker" data-store="老码头火锅-虹口店">
+              <circle cx="350" cy="160" r="3" fill="#64748B"/>
+            </g>
+          </svg>
+          <div class="ds-heatmap-legend">
+            <span class="ds-legend-item"><span class="ds-legend-dot purple"></span>旗舰</span>
+            <span class="ds-legend-item"><span class="ds-legend-dot cyan"></span>直营</span>
+            <span class="ds-legend-item"><span class="ds-legend-dot green"></span>加盟店</span>
+          </div>
+          <div class="ds-store-tooltip" id="storeTooltip"></div>
+        </div>
+      </div>
+
+      <!-- 中：Multi-Agent状态面板 -->
+      <div class="ds-panel ds-agent-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span>Multi-Agent 状态</span>
+        </div>
+        <div class="ds-agent-grid">
+          <div class="ds-agent-card running">
+            <div class="ds-agent-avatar purple">
+              <i data-lucide="crown" class="w-5 h-5"></i>
+            </div>
+            <div class="ds-agent-info">
+              <div class="ds-agent-name">虚拟店长</div>
+              <div class="ds-agent-status"><span class="ds-status-dot running"></span>运行中</div>
+            </div>
+            <div class="ds-agent-stats">
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">23</span><span class="ds-agent-stat-label">今日决策</span></div>
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">0.8s</span><span class="ds-agent-stat-label">响应速度</span></div>
+            </div>
+          </div>
+          <div class="ds-agent-card running">
+            <div class="ds-agent-avatar cyan">
+              <i data-lucide="search" class="w-5 h-5"></i>
+            </div>
+            <div class="ds-agent-info">
+              <div class="ds-agent-name">线索Agent</div>
+              <div class="ds-agent-status"><span class="ds-status-dot running"></span>运行中</div>
+            </div>
+            <div class="ds-agent-stats">
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">156</span><span class="ds-agent-stat-label">今日处理</span></div>
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">0.3s</span><span class="ds-agent-stat-label">响应速度</span></div>
+            </div>
+          </div>
+          <div class="ds-agent-card running">
+            <div class="ds-agent-avatar green">
+              <i data-lucide="lightbulb" class="w-5 h-5"></i>
+            </div>
+            <div class="ds-agent-info">
+              <div class="ds-agent-name">方案Agent</div>
+              <div class="ds-agent-status"><span class="ds-status-dot running"></span>运行中</div>
+            </div>
+            <div class="ds-agent-stats">
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">18</span><span class="ds-agent-stat-label">今日方案</span></div>
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">1.2s</span><span class="ds-agent-stat-label">响应速度</span></div>
+            </div>
+          </div>
+          <div class="ds-agent-card standby">
+            <div class="ds-agent-avatar orange">
+              <i data-lucide="rocket" class="w-5 h-5"></i>
+            </div>
+            <div class="ds-agent-info">
+              <div class="ds-agent-name">交付Agent</div>
+              <div class="ds-agent-status"><span class="ds-status-dot standby"></span>待命</div>
+            </div>
+            <div class="ds-agent-stats">
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">12</span><span class="ds-agent-stat-label">执行任务</span></div>
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">0.5s</span><span class="ds-agent-stat-label">响应速度</span></div>
+            </div>
+          </div>
+          <div class="ds-agent-card running">
+            <div class="ds-agent-avatar blue">
+              <i data-lucide="settings" class="w-5 h-5"></i>
+            </div>
+            <div class="ds-agent-info">
+              <div class="ds-agent-name">运营Agent</div>
+              <div class="ds-agent-status"><span class="ds-status-dot running"></span>运行中</div>
+            </div>
+            <div class="ds-agent-stats">
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">45</span><span class="ds-agent-stat-label">今日操作</span></div>
+              <div class="ds-agent-stat"><span class="ds-agent-stat-value">0.4s</span><span class="ds-agent-stat-label">响应速度</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Agent通信动画 -->
+        <svg class="ds-agent-flow" viewBox="0 0 300 30">
+          <defs>
+            <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0">
+              <stop offset="0%" stop-color="#7C3AED" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#06B6D4" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="ds-flow-path" d="M0,15 Q75,5 150,15 T300,15" fill="none" stroke="url(#flowGrad)" stroke-width="2" stroke-dasharray="8,4"/>
+          <circle class="ds-flow-particle" r="3" fill="#06B6D4">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M0,15 Q75,5 150,15 T300,15"/>
+          </circle>
+        </svg>
+      </div>
+
+      <!-- 右：平台数据矩阵 -->
+      <div class="ds-panel ds-platform-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <span>平台数据矩阵</span>
+        </div>
+        <div class="ds-platform-grid">
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo meituan">美团</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.8</span></div>
+              <div class="ds-platform-row"><span>月流量</span><span class="ds-platform-value">12,580</span></div>
+              <div class="ds-platform-row"><span>月订单</span><span class="ds-platform-value">892</span></div>
+              <div class="ds-platform-row"><span>排名</span><span class="ds-platform-value">TOP 5 <span class="up">↑2</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo dianping">点评</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.7</span></div>
+              <div class="ds-platform-row"><span>月流量</span><span class="ds-platform-value">8,320</span></div>
+              <div class="ds-platform-row"><span>月订单</span><span class="ds-platform-value">456</span></div>
+              <div class="ds-platform-row"><span>排名</span><span class="ds-platform-value">TOP 8 <span class="up">↑1</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo elm">饿了么</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.6</span></div>
+              <div class="ds-platform-row"><span>月流量</span><span class="ds-platform-value">15,200</span></div>
+              <div class="ds-platform-row"><span>月订单</span><span class="ds-platform-value">1,245</span></div>
+              <div class="ds-platform-row"><span>排名</span><span class="ds-platform-value">TOP 3 <span class="down">↓1</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo douyin">抖音</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.9</span></div>
+              <div class="ds-platform-row"><span>月流量</span><span class="ds-platform-value">28,500</span></div>
+              <div class="ds-platform-row"><span>月订单</span><span class="ds-platform-value">623</span></div>
+              <div class="ds-platform-row"><span>排名</span><span class="ds-platform-value">热门 <span class="up">↑5</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo xhs">小红书</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.8</span></div>
+              <div class="ds-platform-row"><span>曝光</span><span class="ds-platform-value">45,200</span></div>
+              <div class="ds-platform-row"><span>互动</span><span class="ds-platform-value">2,340</span></div>
+              <div class="ds-platform-row"><span>收藏</span><span class="ds-platform-value">892 <span class="up">↑120</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo wx">视频号</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.5</span></div>
+              <div class="ds-platform-row"><span>播放</span><span class="ds-platform-value">18,900</span></div>
+              <div class="ds-platform-row"><span>订单</span><span class="ds-platform-value">156</span></div>
+              <div class="ds-platform-row"><span>转化</span><span class="ds-platform-value">0.8% <span class="up">↑0.2%</span></span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo gaode">高德</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.7</span></div>
+              <div class="ds-platform-row"><span>曝光</span><span class="ds-platform-value">8,900</span></div>
+              <div class="ds-platform-row"><span>导航</span><span class="ds-platform-value">1,230</span></div>
+              <div class="ds-platform-row"><span>转化</span><span class="ds-platform-value">3.2%</span></div>
+            </div>
+          </div>
+          <div class="ds-platform-item">
+            <div class="ds-platform-logo koubei">口碑</div>
+            <div class="ds-platform-data">
+              <div class="ds-platform-row"><span>评分</span><span class="ds-platform-value">4.6</span></div>
+              <div class="ds-platform-row"><span>流量</span><span class="ds-platform-value">5,600</span></div>
+              <div class="ds-platform-row"><span>订单</span><span class="ds-platform-value">234</span></div>
+              <div class="ds-platform-row"><span>排名</span><span class="ds-platform-value">TOP 15</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第3行：会员画像 + AI决策时间线 -->
+
+      <!-- 左：会员画像 -->
+      <div class="ds-panel ds-member-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>会员画像</span>
+        </div>
+        <div class="ds-member-content">
+          <div class="ds-member-chart">
+            <div class="ds-member-pie">
+              <canvas id="memberGenderChart" width="100" height="100"></canvas>
+              <div class="ds-member-pie-center">
+                <div class="ds-member-pie-value">8,920</div>
+                <div class="ds-member-pie-label">会员</div>
+              </div>
+            </div>
+            <div class="ds-member-legend">
+              <div class="ds-member-legend-item"><span class="ds-legend-color" style="background:#7C3AED"></span>女性 58%</div>
+              <div class="ds-member-legend-item"><span class="ds-legend-color" style="background:#06B6D4"></span>男性 42%</div>
+            </div>
+          </div>
+          <div class="ds-member-age">
+            <div class="ds-member-age-title">年龄段分布</div>
+            <div class="ds-member-bar">
+              <div class="ds-member-bar-label">18-25</div>
+              <div class="ds-member-bar-fill" style="width:35%"></div>
+              <div class="ds-member-bar-value">35%</div>
+            </div>
+            <div class="ds-member-bar">
+              <div class="ds-member-bar-label">26-35</div>
+              <div class="ds-member-bar-fill" style="width:48%"></div>
+              <div class="ds-member-bar-value">48%</div>
+            </div>
+            <div class="ds-member-bar">
+              <div class="ds-member-bar-label">36-45</div>
+              <div class="ds-member-bar-fill" style="width:12%"></div>
+              <div class="ds-member-bar-value">12%</div>
+            </div>
+            <div class="ds-member-bar">
+              <div class="ds-member-bar-label">45+</div>
+              <div class="ds-member-bar-fill" style="width:5%"></div>
+              <div class="ds-member-bar-value">5%</div>
+            </div>
+          </div>
+          <div class="ds-member-rfm">
+            <div class="ds-member-rfm-title">RFM分层</div>
+            <canvas id="memberRFMChart" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 中：AI决策时间线 -->
+      <div class="ds-panel ds-timeline-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="activity" class="w-4 h-4"></i>
+          <span>AI决策时间线</span>
+          <span class="ds-timeline-badge">今日 23条</span>
+        </div>
+        <div class="ds-timeline">
+          <div class="ds-timeline-item completed">
+            <div class="ds-timeline-time">18:20</div>
+            <div class="ds-timeline-dot running"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">虚拟店长</div>
+              <div class="ds-timeline-text">自动回复差评3条，评分预计+0.1</div>
+              <div class="ds-timeline-status success">已完成</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item completed">
+            <div class="ds-timeline-time">18:05</div>
+            <div class="ds-timeline-dot completed"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">线索Agent</div>
+              <div class="ds-timeline-text">发现午市客流异常，已调整配送优先级</div>
+              <div class="ds-timeline-status success">已完成</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item running">
+            <div class="ds-timeline-time">17:45</div>
+            <div class="ds-timeline-dot running"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">方案Agent</div>
+              <div class="ds-timeline-text">分析周末促销方案，模拟中...</div>
+              <div class="ds-timeline-status primary">执行中</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item completed">
+            <div class="ds-timeline-time">17:30</div>
+            <div class="ds-timeline-dot completed"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">交付Agent</div>
+              <div class="ds-timeline-text">同步价格至8个平台，节省手动操作45分钟</div>
+              <div class="ds-timeline-status success">已完成</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item pending">
+            <div class="ds-timeline-time">17:00</div>
+            <div class="ds-timeline-dot pending"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">运营Agent</div>
+              <div class="ds-timeline-text">VIP客户召回方案，等待确认</div>
+              <div class="ds-timeline-status warning">待确认</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item completed">
+            <div class="ds-timeline-time">16:20</div>
+            <div class="ds-timeline-dot completed"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">虚拟店长</div>
+              <div class="ds-timeline-text">生成每日运营报告，已推送至企业微信</div>
+              <div class="ds-timeline-status success">已完成</div>
+            </div>
+          </div>
+          <div class="ds-timeline-item completed">
+            <div class="ds-timeline-time">15:30</div>
+            <div class="ds-timeline-dot completed"></div>
+            <div class="ds-timeline-content">
+              <div class="ds-timeline-agent">线索Agent</div>
+              <div class="ds-timeline-text">识别高价值客户3名，标记为重点关注</div>
+              <div class="ds-timeline-status success">已完成</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右：AI处理统计 -->
+      <div class="ds-panel ds-ai-stats-panel">
+        <div class="ds-panel-header">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>AI处理统计</span>
+        </div>
+        <div class="ds-ai-stats-content">
+          <div class="ds-ai-donut">
+            <canvas id="aiDonutChart" width="140" height="140"></canvas>
+            <div class="ds-ai-donut-center">
+              <div class="ds-ai-donut-value">94%</div>
+              <div class="ds-ai-donut-label">成功率</div>
+            </div>
+          </div>
+          <div class="ds-ai-stats-list">
+            <div class="ds-ai-stat-item">
+              <div class="ds-ai-stat-icon purple"><i data-lucide="message-circle" class="w-4 h-4"></i></div>
+              <div class="ds-ai-stat-info">
+                <div class="ds-ai-stat-label">差评自动回复</div>
+                <div class="ds-ai-stat-value">47条 / 50条</div>
+              </div>
+              <div class="ds-ai-stat-rate success">94%</div>
+            </div>
+            <div class="ds-ai-stat-item">
+              <div class="ds-ai-stat-icon cyan"><i data-lucide="badge-dollar-sign" class="w-4 h-4"></i></div>
+              <div class="ds-ai-stat-info">
+                <div class="ds-ai-stat-label">价格自动调整</div>
+                <div class="ds-ai-stat-value">128次 / 130次</div>
+              </div>
+              <div class="ds-ai-stat-rate success">98%</div>
+            </div>
+            <div class="ds-ai-stat-item">
+              <div class="ds-ai-stat-icon green"><i data-lucide="user-check" class="w-4 h-4"></i></div>
+              <div class="ds-ai-stat-info">
+                <div class="ds-ai-stat-label">客户召回</div>
+                <div class="ds-ai-stat-value">23人 / 25人</div>
+              </div>
+              <div class="ds-ai-stat-rate success">92%</div>
+            </div>
+            <div class="ds-ai-stat-item">
+              <div class="ds-ai-stat-icon orange"><i data-lucide="bell" class="w-4 h-4"></i></div>
+              <div class="ds-ai-stat-info">
+                <div class="ds-ai-stat-label">预警处理</div>
+                <div class="ds-ai-stat-value">15次 / 15次</div>
+              </div>
+              <div class="ds-ai-stat-rate success">100%</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- 底部滚动通知条 -->
+    <div class="ds-news-ticker">
+      <div class="ds-news-label"><i data-lucide="radio" class="w-4 h-4"></i> 实时动态</div>
+      <div class="ds-news-track">
+        <div class="ds-news-content" id="newsContent">
+          <span class="ds-news-item">🔥 美团新订单 ¥128 — 12:30</span>
+          <span class="ds-news-item">⭐ 大众点评新增5星好评 — 12:28</span>
+          <span class="ds-news-item">🤖 AI自动处理差评成功 — 12:25</span>
+          <span class="ds-news-item">📊 抖音新增3条评价 — 12:20</span>
+          <span class="ds-news-item">💰 饿了么订单 ¥86 已确认 — 12:15</span>
+          <span class="ds-news-item">🔔 高德导航到店+5 — 12:10</span>
+          <span class="ds-news-item">👤 VIP客户王女士到店 — 12:05</span>
+          <span class="ds-news-item">📱 小红书笔记被收藏+12 — 12:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 返回按钮 -->
+    <button class="ds-close-btn" id="closeDataScreen">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      <span>返回</span>
+    </button>
   </div>
 
   <script src="js/app.js"></script>
