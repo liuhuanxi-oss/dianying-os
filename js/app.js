@@ -3,6 +3,12 @@
  * 保留核心功能，简化交互代码
  */
 
+// 全局图表实例（用于页面切换时销毁旧图表）
+let overviewChart = null;
+let healthRadarChart = null;
+let reportTrendChart = null;
+let locationFlowChart = null;
+
 document.addEventListener('DOMContentLoaded', function() {
   // 初始化Lucide图标
   if (typeof lucide !== 'undefined') {
@@ -135,7 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
     supply: '供应链管理',
     member: '会员运营',
     sentiment: '舆情监控',
-    pricing: '智能定价'
+    pricing: '智能定价',
+    changelog: '更新日志',
+    alert: '智能预警',
+    inspection: '门店巡检',
+    datalab: '数据实验室'
   };
 
   function switchPage(page) {
@@ -188,8 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================
   // Demo Charts
   // ============================================
-  let overviewChart = null;
-
   function initDemo() {
     const ctx = document.getElementById('overviewChart');
     if (!ctx || typeof Chart === 'undefined') return;
@@ -557,11 +565,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Page name mapping for new pages
   const extendedPageNames = { ...pageNames };
 
-  // Chart instances for new pages
-  let healthRadarChart = null;
-  let reportTrendChart = null;
-  let locationFlowChart = null;
-
   // Initialize Health Radar Chart
   function initHealthRadarChart() {
     const ctx = document.getElementById('healthRadarChart');
@@ -745,6 +748,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (page === 'pricing') {
       setTimeout(initElasticityChart, 100);
+    }
+    // New system pages initialization
+    if (page === 'alert') {
+      setTimeout(initAlertTypeChart, 100);
+    }
+    if (page === 'inspection') {
+      setTimeout(initInspectionTrendChart, 100);
+    }
+    if (page === 'datalab') {
+      setTimeout(initDatalabCompareChart, 100);
+    }
+    // Competitor page initialization
+    if (page === 'competitor') {
+      setTimeout(initCompetitorCharts, 100);
     }
   };
 
@@ -949,7 +966,256 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  console.log('店赢OS v9.3 - 5项运营管理功能初始化完成');
+  // Alert Type Pie Chart
+  let alertTypeChart = null;
+  function initAlertTypeChart() {
+    const ctx = document.getElementById('alertTypeChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (alertTypeChart) alertTypeChart.destroy();
+
+    alertTypeChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['库存不足', '差评预警', '竞品异动', '设备故障', '客流异常', '员工缺勤'],
+        datasets: [{
+          data: [25, 30, 15, 12, 10, 8],
+          backgroundColor: ['#EF4444', '#F59E0B', '#8B5CF6', '#06B6D4', '#10B981', '#64748B'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { boxWidth: 12, padding: 8, font: { size: 10 } }
+          }
+        }
+      }
+    });
+  }
+
+  // Inspection Trend Chart
+  let inspectionTrendChart = null;
+  function initInspectionTrendChart() {
+    const ctx = document.getElementById('inspectionTrendChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (inspectionTrendChart) inspectionTrendChart.destroy();
+
+    inspectionTrendChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        datasets: [{
+          label: '巡检评分',
+          data: [85, 87, 88, 90, 91, 92],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#7C3AED'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: '#E2E8F0' }, min: 80, max: 100, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  // Datalab Compare Chart
+  let datalabCompareChart = null;
+  function initDatalabCompareChart() {
+    const ctx = document.getElementById('datalabCompareChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (datalabCompareChart) datalabCompareChart.destroy();
+
+    datalabCompareChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['第1周', '第2周', '第3周', '第4周'],
+        datasets: [{
+          label: '北京旗舰店',
+          data: [48500, 51200, 53800, 56200],
+          backgroundColor: '#7C3AED',
+          borderRadius: 4
+        }, {
+          label: '上海徐汇店',
+          data: [42800, 44500, 46200, 48100],
+          backgroundColor: '#06B6D4',
+          borderRadius: 4
+        }, {
+          label: '广州天河店',
+          data: [38900, 40200, 41800, 43500],
+          backgroundColor: '#10B981',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => '¥' + (v/10000) + '万', font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  // ============================================
+  // COMPETITOR PAGE CHARTS - 竞品监控图表
+  // ============================================
+
+  let competitorRadarChart = null;
+  let marketShareChart = null;
+  let sentimentTrendChart = null;
+
+  function initCompetitorCharts() {
+    initCompetitorRadarChart();
+    initMarketShareChart();
+    initSentimentTrendChart();
+  }
+
+  // 竞品雷达图 - 多维度能力对比
+  function initCompetitorRadarChart() {
+    const ctx = document.getElementById('competitorRadarChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (competitorRadarChart) competitorRadarChart.destroy();
+
+    competitorRadarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['口味', '服务', '环境', '性价比', '品牌力', '创新力'],
+        datasets: [{
+          label: '本店',
+          data: [78, 75, 82, 88, 65, 85],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.25)',
+          borderWidth: 3,
+          pointBackgroundColor: '#7C3AED',
+          pointRadius: 4
+        }, {
+          label: '海底捞',
+          data: [82, 95, 88, 60, 92, 75],
+          borderColor: '#F59E0B',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#F59E0B',
+          pointRadius: 3
+        }, {
+          label: '小龙坎',
+          data: [85, 78, 72, 80, 70, 72],
+          borderColor: '#06B6D4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          borderWidth: 2,
+          pointBackgroundColor: '#06B6D4',
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { stepSize: 20, display: false },
+            grid: { color: '#E2E8F0' },
+            pointLabels: {
+              font: { size: 11, weight: '500' },
+              color: '#64748B'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 市场份额环形图
+  function initMarketShareChart() {
+    const ctx = document.getElementById('marketShareChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (marketShareChart) marketShareChart.destroy();
+
+    marketShareChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['老码头火锅', '海底捞', '小龙坎', '巴奴毛肚', '其他'],
+        datasets: [{
+          data: [24, 32, 18, 14, 12],
+          backgroundColor: ['#7C3AED', '#F59E0B', '#06B6D4', '#10B981', '#94A3B8'],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.label + ': ' + context.parsed + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 口碑趋势迷你折线图
+  function initSentimentTrendChart() {
+    const ctx = document.getElementById('sentimentTrendChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (sentimentTrendChart) sentimentTrendChart.destroy();
+
+    sentimentTrendChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [{
+          data: [4.5, 4.5, 4.6, 4.6, 4.7, 4.8, 4.7],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 2,
+          pointBackgroundColor: '#7C3AED'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false, min: 4.0, max: 5.0 }
+        }
+      }
+    });
+  }
+
+  console.log('店赢OS v10.0 - 新增4项系统功能初始化完成');
 });
 
 // ============================================
