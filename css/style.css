@@ -106,7 +106,7 @@ input, textarea { font: inherit; }
 /* ============================================
    Gradient Text
    ============================================ */
-.gradient-text { color: #1E293B; }
+.gradient-text { color: inherit; }
 
 /* ============================================
    Buttons - Linear Style with Pill & Gradient
@@ -11950,7 +11950,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 }
 
 /* Dark Gradient Text */
-.landing-page .gradient-text { color: #1E293B; }
+.landing-page .gradient-text { color: #fff; }
 
 /* Dark Hero Buttons - Pill Shape + Gradient */
 .landing-page .hero-buttons .btn-primary {
@@ -12017,9 +12017,9 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 
 .landing-page .mockup-chart {
   flex: 1;
-  background: #f8fafc;
+  background: #0f172a;
   border-radius: 6px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.08);
   position: relative;
   overflow: hidden;
 }
@@ -12333,7 +12333,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 
 /* Dark Reveal Animation */
 .landing-page .reveal {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
@@ -12356,8 +12356,8 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 
 /* Dashboard Glass Topbar */
 .demo-topbar {
-  background: var(--glass-bg, rgba(255,255,255,0.85));
-    -webkit-  border-bottom: 1px solid var(--glass-border, rgba(0,0,0,0.06));
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 /* Dashboard Sidebar Refinements */
@@ -12514,32 +12514,23 @@ html {
    RESPONSIVE DARK MODE ADJUSTMENTS
    ============================================ */
 @media (max-width: 768px) {
-  .landing-page .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  margin-bottom: 16px;
-  color: #fff;
-}
-  
   .landing-page .features-grid {
     grid-template-columns: 1fr;
   }
   
   .landing-page .pricing-grid {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
   
   .landing-page .stats-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
 }

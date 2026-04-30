@@ -192,33 +192,53 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 根据页面初始化对应的图表
   function initPageCharts(page) {
-    switch(page) {
-      case 'competitor':
-        // 竞品分析页
-        initCompetitorRadarChart();
-        initMarketShareChart();
-        initSentimentTrendChart();
-        break;
-      case 'sentiment':
-        // 舆情监控页
-        initSentimentTrendChart();
-        break;
-      case 'alert':
-        // 智能预警页
-        initAlertTypeChart();
-        break;
-      case 'inspection':
-        // 门店巡检页
-        initInspectionTrendChart();
-        break;
-      case 'datalab':
-        // 数据实验室
-        initDatalabCompareChart();
-        break;
-      case 'location':
-        // 智能选址页
-        initLocationFlowChart();
-        break;
+    try {
+      switch(page) {
+        case 'inventory':
+          initInventoryCharts();
+          break;
+        case 'competitor':
+          initCompetitorRadarChart();
+          initMarketShareChart();
+          initSentimentTrendChart();
+          break;
+        case 'health':
+          initHealthRadarChart();
+          break;
+        case 'report':
+          initReportTrendChart();
+          break;
+        case 'supply':
+          initSupplyCostChart();
+          break;
+        case 'member':
+          initMemberRfmChart();
+          break;
+        case 'sentiment':
+          initSentimentCharts();
+          initSentimentTrendChart();
+          break;
+        case 'pricing':
+          initElasticityChart();
+          break;
+        case 'alert':
+          initAlertTypeChart();
+          break;
+        case 'inspection':
+          initInspectionTrendChart();
+          break;
+        case 'datalab':
+          initDatalabCompareChart();
+          break;
+        case 'location':
+          initLocationFlowChart();
+          break;
+        case 'aidaily':
+          if (typeof initAidaily === 'function') initAidaily();
+          break;
+      }
+    } catch(e) {
+      console.warn('Chart init error for page', page, e);
     }
   }
 
