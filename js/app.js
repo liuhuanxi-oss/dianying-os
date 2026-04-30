@@ -2631,45 +2631,6 @@ function initExportReport() {
 }
 
 // ============================================
-// 10. 竞品雷达图
-// ============================================
-let competitorRadarChart = null;
-
-function initCompetitorRadarChart() {
-  const ctx = document.getElementById('competitorRadarChart');
-  if (!ctx || typeof Chart === 'undefined') return;
-  
-  if (competitorRadarChart) competitorRadarChart.destroy();
-  
-  const isDark = document.body.classList.contains('dark-mode');
-  
-  competitorRadarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: ['服务态度', '出餐速度', '菜品质量', '环境氛围', '性价比', '配送时效'],
-      datasets: [
-        { label: '本店', data: [92, 88, 95, 85, 78, 90], borderColor: '#7C3AED', backgroundColor: 'rgba(124,58,237,0.2)', borderWidth: 2, pointBackgroundColor: '#7C3AED' },
-        { label: '行业均值', data: [75, 72, 78, 70, 80, 68], borderColor: '#06B6D4', backgroundColor: 'rgba(6,182,212,0.1)', borderWidth: 2, pointBackgroundColor: '#06B6D4' },
-        { label: '竞品A', data: [85, 90, 80, 88, 72, 82], borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.1)', borderWidth: 2, pointBackgroundColor: '#F59E0B' }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: isDark ? '#E2E8F0' : '#374151', usePointStyle: true, padding: 15 } } },
-      scales: {
-        r: {
-          angleLines: { color: isDark ? 'rgba(255,255,255,0.1)' : '#E5E7EB' },
-          grid: { color: isDark ? 'rgba(255,255,255,0.1)' : '#E5E7EB' },
-          pointLabels: { color: isDark ? '#E2E8F0' : '#374151', font: { size: 11 } },
-          ticks: { color: isDark ? '#94A3B8' : '#9CA3AF', backdropColor: 'transparent' }
-        }
-      }
-    }
-  });
-}
-
-// ============================================
 // 11. AI预测图表
 // ============================================
 let forecastChart = null;
@@ -3895,18 +3856,19 @@ function initAIInsight() {
       let index = 0;
       isTyping = true;
       
-      function typeChar() {
+      // 使用外部typeChar实现打字机效果
+      function doType() {
         if (index < text.length) {
           textEl.textContent += text[index];
           index++;
-          setTimeout(typeChar, 30 + Math.random() * 20);
+          setTimeout(doType, 30 + Math.random() * 20);
         } else {
           isTyping = false;
           if (callback) callback();
         }
       }
       
-      typeChar();
+      doType();
     }
     
     function createCursor() {
@@ -4125,21 +4087,6 @@ function initStrategyExecute() {
   });
 }
 
-function showToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'toast-notification';
-  toast.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i><span>' + message + '</span>';
-  toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--success);color:white;padding:12px 20px;border-radius:8px;display:flex;align-items:center;gap:8px;font-size:0.875rem;z-index:9999;animation:slideIn 0.3s ease';
-  
-  document.body.appendChild(toast);
-  lucide.createIcons();
-  
-  setTimeout(() => {
-    toast.style.animation = 'slideOut 0.3s ease';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
 // ============================================
 // 升级功能: 门店健康改善路线图
 // ============================================
@@ -4188,6 +4135,153 @@ function updateRoadmapProgress(completed, total) {
 }
 
 // ============================================
+// 数据导出中心初始化
+// ============================================
+function initExport() {
+  const exportSection = document.getElementById('sectionExport');
+  if (!exportSection) return;
+  
+  // 导出类型选择
+  const exportTypeOptions = exportSection.querySelectorAll('.export-type-option');
+  exportTypeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      exportTypeOptions.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      updateExportPreview();
+    });
+  });
+  
+  // 数据范围选择
+  const rangeBtns = exportSection.querySelectorAll('.export-range-btn');
+  const customRange = exportSection.querySelector('.export-custom-range');
+  
+  rangeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      rangeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      if (btn.dataset.range === 'custom') {
+        customRange?.classList.remove('hidden');
+      } else {
+        customRange?.classList.add('hidden');
+      }
+      updateExportPreview();
+    });
+  });
+  
+  // 内容模块多选
+  const moduleItems = exportSection.querySelectorAll('.export-module-item');
+  moduleItems.forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+      item.querySelector('input').checked = item.classList.contains('checked');
+      updateExportPreview();
+    });
+  });
+  
+  // 导出按钮
+  const exportBtn = document.getElementById('exportMainBtn');
+  const progressCard = document.getElementById('exportProgressCard');
+  const progressBar = document.getElementById('exportProgressBar');
+  const progressPercent = document.getElementById('exportProgressPercent');
+  
+  exportBtn?.addEventListener('click', () => {
+    if (progressCard) progressCard.classList.remove('hidden');
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        
+        setTimeout(() => {
+          if (progressCard) progressCard.classList.add('hidden');
+          showToast('导出完成，文件已开始下载');
+          
+          // 添加到历史记录
+          addExportHistory();
+        }, 500);
+      }
+      
+      if (progressBar) progressBar.style.width = progress + '%';
+      if (progressPercent) progressPercent.textContent = Math.round(progress) + '%';
+    }, 150);
+  });
+  
+  // 导出历史下载按钮
+  const historyDownloads = exportSection.querySelectorAll('.export-history-download');
+  historyDownloads.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const historyItem = btn.closest('.export-history-item');
+      const fileName = historyItem?.querySelector('.export-history-name')?.textContent || '文件';
+      showToast('开始下载: ' + fileName);
+    });
+  });
+  
+  // 初始预览更新
+  updateExportPreview();
+  
+  function updateExportPreview() {
+    const typeValue = exportSection.querySelector('input[name="exportType"]:checked')?.value || 'pdf';
+    const rangeValue = exportSection.querySelector('.export-range-btn.active')?.dataset.range || 'today';
+    const modules = exportSection.querySelectorAll('.export-module-item.checked');
+    
+    const typeNames = { pdf: 'PDF报告', excel: 'Excel表格', image: '图片' };
+    const rangeNames = { today: '今日', week: '本周', month: '本月', custom: '自定义' };
+    
+    const moduleNames = Array.from(modules).map(m => {
+      const labels = { overview: '概览数据', revenue: '营收分析', competitor: '竞品对比', suggestions: '运营建议' };
+      return labels[m.querySelector('input')?.value] || '';
+    }).filter(Boolean);
+    
+    const previewValues = exportSection.querySelectorAll('.export-preview-item .preview-value');
+    if (previewValues[0]) previewValues[0].textContent = typeNames[typeValue] || 'PDF报告';
+    if (previewValues[1]) {
+      const now = new Date();
+      previewValues[1].textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+    }
+    if (previewValues[2]) previewValues[2].textContent = moduleNames.join('、') || '无';
+    if (previewValues[3]) previewValues[3].textContent = '约' + Math.max(1, Math.ceil(moduleNames.length * 0.8)) + '页';
+  }
+  
+  function addExportHistory() {
+    const historyList = exportSection.querySelector('.export-history-list');
+    if (!historyList) return;
+    
+    const typeValue = exportSection.querySelector('input[name="exportType"]:checked')?.value || 'pdf';
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    const iconClass = typeValue === 'pdf' ? 'pdf' : (typeValue === 'excel' ? 'excel' : 'image');
+    const iconType = typeValue === 'pdf' ? 'file-text' : (typeValue === 'excel' ? 'table' : 'image');
+    const typeName = typeValue === 'pdf' ? 'PDF报告' : (typeValue === 'excel' ? 'Excel表格' : '图片');
+    const fileName = typeValue === 'excel' ? `营收数据_${now.getMonth()+1}月.xlsx` : `运营日报_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.${typeValue === 'pdf' ? 'pdf' : 'png'}`;
+    
+    const newItem = document.createElement('div');
+    newItem.className = 'export-history-item';
+    newItem.innerHTML = `
+      <div class="export-history-icon ${iconClass}"><i data-lucide="${iconType}" class="w-5 h-5"></i></div>
+      <div class="export-history-info">
+        <div class="export-history-name">${fileName}</div>
+        <div class="export-history-meta"><span>${typeName}</span><span>•</span><span>${dateStr}</span></div>
+      </div>
+      <button class="export-history-download"><i data-lucide="download" class="w-4 h-4"></i></button>
+    `;
+    
+    historyList.insertBefore(newItem, historyList.firstChild);
+    lucide.createIcons();
+    
+    // 新添加的下载按钮事件
+    newItem.querySelector('.export-history-download')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showToast('开始下载: ' + fileName);
+    });
+  }
+}
+
+// ============================================
 // 页面切换时初始化功能
 // ============================================
 const originalSwitchPage = switchPage;
@@ -4215,6 +4309,9 @@ switchPage = function(page) {
       case 'health':
         initHealthRoadmap();
         break;
+      case 'export':
+        initExport();
+        break;
     }
   }, 100);
 };
@@ -4231,7 +4328,24 @@ document.addEventListener('DOMContentLoaded', function() {
         case 'overview':
           initAIInsight();
           break;
-        // Other page-specific inits already called in DCL #1/DCL #2
+        case 'aidaily':
+          initAidaily();
+          break;
+        case 'export':
+          initExport();
+          break;
+        case 'chat':
+          initChatEnhancements();
+          break;
+        case 'data':
+          initFlipCards();
+          break;
+        case 'competitor':
+          initStrategyExecute();
+          break;
+        case 'health':
+          initHealthRoadmap();
+          break;
       }
     }
   }, 600);
