@@ -130,7 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
     twin: '门店数字孪生',
     location: '智能选址分析',
     journey: '顾客旅程地图',
-    safety: '食品安全监控'
+    safety: '食品安全监控',
+    employee: '员工绩效',
+    supply: '供应链管理',
+    member: '会员运营',
+    sentiment: '舆情监控',
+    pricing: '智能定价'
   };
 
   function switchPage(page) {
@@ -728,9 +733,223 @@ document.addEventListener('DOMContentLoaded', function() {
     if (page === 'creation') {
       setTimeout(initCreationInteractions, 100);
     }
+    // New pages initialization
+    if (page === 'supply') {
+      setTimeout(initSupplyCostChart, 100);
+    }
+    if (page === 'member') {
+      setTimeout(initMemberRfmChart, 100);
+    }
+    if (page === 'sentiment') {
+      setTimeout(initSentimentCharts, 100);
+    }
+    if (page === 'pricing') {
+      setTimeout(initElasticityChart, 100);
+    }
   };
 
-  console.log('店赢OS v9.2 - 5项高价值功能初始化完成');
+  // ============================================
+  // NEW PAGES CHARTS INITIALIZATION
+  // ============================================
+
+  // Supply Chain Cost Chart
+  function initSupplyCostChart() {
+    const ctx = document.getElementById('supplyCostChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['1月', '2月', '3月', '4月', '5月'],
+        datasets: [{
+          label: '肉类',
+          data: [18000, 18500, 19200, 19800, 20100],
+          backgroundColor: '#7C3AED',
+          borderRadius: 4
+        }, {
+          label: '蔬菜',
+          data: [8500, 8200, 8800, 9200, 9500],
+          backgroundColor: '#10B981',
+          borderRadius: 4
+        }, {
+          label: '调料',
+          data: [5800, 5600, 5900, 6100, 6200],
+          backgroundColor: '#06B6D4',
+          borderRadius: 4
+        }, {
+          label: '其他',
+          data: [5200, 4800, 5300, 5400, 7000],
+          backgroundColor: '#F59E0B',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => '¥' + (v/10000) + '万' } }
+        }
+      }
+    });
+  }
+
+  // Member RFM Pie Chart
+  function initMemberRfmChart() {
+    const ctx = document.getElementById('memberRfmPieChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['高价值', '潜力', '新客', '流失'],
+        datasets: [{
+          data: [35, 28, 22, 15],
+          backgroundColor: ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  // Sentiment Charts
+  function initSentimentCharts() {
+    // Sentiment Trend Chart
+    const trendCtx = document.getElementById('sentimentTrendChart');
+    if (trendCtx && typeof Chart !== 'undefined') {
+      new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          datasets: [{
+            label: '正面',
+            data: [85, 87, 88, 89, 90, 88, 89],
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4
+          }, {
+            label: '中性',
+            data: [10, 9, 8, 8, 7, 8, 8],
+            borderColor: '#94A3B8',
+            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+            fill: true,
+            tension: 0.4
+          }, {
+            label: '负面',
+            data: [5, 4, 4, 3, 3, 4, 3],
+            borderColor: '#EF4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, padding: 10, font: { size: 10 } }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+            y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => v + '%', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    // Sentiment Source Chart
+    const sourceCtx = document.getElementById('sentimentSourceChart');
+    if (sourceCtx && typeof Chart !== 'undefined') {
+      new Chart(sourceCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['美团', '大众点评', '抖音', '小红书'],
+          datasets: [{
+            data: [35, 28, 22, 15],
+            backgroundColor: ['#00B7FF', '#FF6B00', '#FE2C55', '#FF6633'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  }
+
+  // Elasticity Chart
+  function initElasticityChart() {
+    const ctx = document.getElementById('elasticityChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['¥38', '¥48', '¥58', '¥68', '¥78', '¥88'],
+        datasets: [{
+          label: '销量',
+          data: [120, 95, 72, 52, 38, 28],
+          borderColor: '#7C3AED',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          fill: true,
+          tension: 0.4
+        }, {
+          label: '营收',
+          data: [4560, 4560, 4176, 3536, 2964, 2464],
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'y1'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: { 
+            grid: { color: '#E2E8F0' }, 
+            ticks: { font: { size: 10 } },
+            title: { display: true, text: '销量', font: { size: 10 } }
+          },
+          y1: {
+            position: 'right',
+            grid: { display: false },
+            ticks: { callback: v => '¥' + v, font: { size: 10 } },
+            title: { display: true, text: '营收', font: { size: 10 } }
+          }
+        }
+      }
+    });
+  }
+
+  console.log('店赢OS v9.3 - 5项运营管理功能初始化完成');
 });
 
 // ============================================

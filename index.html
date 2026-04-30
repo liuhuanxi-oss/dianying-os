@@ -681,6 +681,28 @@
             <span class="sidebar-nav-text">食安</span>
             <span class="sidebar-nav-badge safe">SAFE</span>
           </div>
+          <div class="sidebar-nav-divider"></div>
+          <div class="sidebar-nav-group-title">运营管理</div>
+          <div class="sidebar-nav-item" data-page="employee" data-step="23" data-title="员工绩效">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">员工绩效</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="supply" data-step="24" data-title="供应链管理">
+            <i data-lucide="truck" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">供应链</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="member" data-step="25" data-title="会员运营">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">会员</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="sentiment" data-step="26" data-title="舆情监控">
+            <i data-lucide="message-circle" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">舆情</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="pricing" data-step="27" data-title="智能定价">
+            <i data-lucide="tag" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">定价</span>
+          </div>
         </nav>
         <div class="sidebar-footer">
           <div class="sidebar-nav-item" id="demoHomeBtn">
@@ -4360,6 +4382,930 @@
                 <button class="btn-secondary training-btn">
                   <i data-lucide="users" class="w-4 h-4"></i> 查看培训详情
                 </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 员工绩效看板 Section -->
+          <section class="demo-section" id="sectionEmployee">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="users" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">员工绩效看板</h2>
+                <p class="section-header-new-desc">KPI追踪、排班管理、培训进度一站式管理</p>
+              </div>
+            </div>
+            <!-- KPI概览 -->
+            <div class="stats-grid-demo">
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon purple"><i data-lucide="star" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.2</div>
+                </div>
+                <div class="stat-card-demo-value">4.85</div>
+                <div class="stat-card-demo-label">平均服务评分</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon cyan"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +12s</div>
+                </div>
+                <div class="stat-card-demo-value">45s</div>
+                <div class="stat-card-demo-label">平均响应速度</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon green"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +¥8</div>
+                </div>
+                <div class="stat-card-demo-value">¥168</div>
+                <div class="stat-card-demo-label">人均客单价贡献</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon orange"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> 98%</div>
+                </div>
+                <div class="stat-card-demo-value">98%</div>
+                <div class="stat-card-demo-label">出勤率</div>
+              </div>
+            </div>
+            <div class="dashboard-grid" style="margin-top: 24px;">
+              <!-- 员工排名 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="trophy" class="w-5 h-5 text-purple-500"></i>
+                    员工绩效排名
+                  </div>
+                  <button class="card-header-btn">导出报告</button>
+                </div>
+                <div class="dashboard-card-body" style="padding: 0;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>排名</th>
+                        <th>姓名</th>
+                        <th>职位</th>
+                        <th>服务评分</th>
+                        <th>客单价</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="rank-badge gold">🥇</span></td>
+                        <td>张伟</td>
+                        <td>主管</td>
+                        <td>4.98</td>
+                        <td>¥185</td>
+                        <td><span class="table-badge success">优秀</span></td>
+                      </tr>
+                      <tr>
+                        <td><span class="rank-badge silver">🥈</span></td>
+                        <td>李娜</td>
+                        <td>服务员</td>
+                        <td>4.92</td>
+                        <td>¥178</td>
+                        <td><span class="table-badge success">优秀</span></td>
+                      </tr>
+                      <tr>
+                        <td><span class="rank-badge bronze">🥉</span></td>
+                        <td>王强</td>
+                        <td>领班</td>
+                        <td>4.88</td>
+                        <td>¥172</td>
+                        <td><span class="table-badge success">优秀</span></td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>赵敏</td>
+                        <td>服务员</td>
+                        <td>4.82</td>
+                        <td>¥165</td>
+                        <td><span class="table-badge success">良好</span></td>
+                      </tr>
+                      <tr>
+                        <td>5</td>
+                        <td>陈峰</td>
+                        <td>收银</td>
+                        <td>4.78</td>
+                        <td>¥158</td>
+                        <td><span class="table-badge success">良好</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- 排班管理 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="calendar-check" class="w-5 h-5 text-cyan-500"></i>
+                    排班管理
+                  </div>
+                  <button class="card-header-btn ai-btn"><i data-lucide="sparkles" class="w-4 h-4"></i> AI排班</button>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="schedule-grid">
+                    <div class="schedule-day">
+                      <div class="schedule-day-header">今天 (周三)</div>
+                      <div class="schedule-slots">
+                        <div class="schedule-slot">
+                          <div class="slot-time">早班 08:00-14:00</div>
+                          <div class="slot-staff">
+                            <span class="staff-tag">张伟</span>
+                            <span class="staff-tag">李娜</span>
+                          </div>
+                        </div>
+                        <div class="schedule-slot">
+                          <div class="slot-time">中班 14:00-20:00</div>
+                          <div class="slot-staff">
+                            <span class="staff-tag">王强</span>
+                            <span class="staff-tag">赵敏</span>
+                          </div>
+                        </div>
+                        <div class="schedule-slot">
+                          <div class="slot-time">晚班 20:00-02:00</div>
+                          <div class="slot-staff">
+                            <span class="staff-tag">陈峰</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="schedule-ai-tip">
+                      <i data-lucide="sparkles" class="w-4 h-4"></i>
+                      <span>AI建议：周五晚市客流预计+35%，建议增加2名兼职</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 培训进度 -->
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="graduation-cap" class="w-5 h-5 text-green-500"></i>
+                  员工培训进度
+                </div>
+                <button class="card-header-btn">添加培训</button>
+              </div>
+              <div class="dashboard-card-body">
+                <div class="training-progress-grid">
+                  <div class="training-employee-card">
+                    <div class="employee-avatar">张</div>
+                    <div class="employee-info">
+                      <div class="employee-name">张伟</div>
+                      <div class="employee-progress">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 92%"></div></div>
+                        <span class="progress-text">92%</span>
+                      </div>
+                    </div>
+                    <span class="training-status completed">已完成</span>
+                  </div>
+                  <div class="training-employee-card">
+                    <div class="employee-avatar">李</div>
+                    <div class="employee-info">
+                      <div class="employee-name">李娜</div>
+                      <div class="employee-progress">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                        <span class="progress-text">85%</span>
+                      </div>
+                    </div>
+                    <span class="training-status in-progress">进行中</span>
+                  </div>
+                  <div class="training-employee-card">
+                    <div class="employee-avatar">王</div>
+                    <div class="employee-info">
+                      <div class="employee-name">王强</div>
+                      <div class="employee-progress">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 68%"></div></div>
+                        <span class="progress-text">68%</span>
+                      </div>
+                    </div>
+                    <span class="training-status in-progress">进行中</span>
+                  </div>
+                  <div class="training-employee-card new">
+                    <div class="employee-avatar">新</div>
+                    <div class="employee-info">
+                      <div class="employee-name">刘洋</div>
+                      <div class="employee-progress">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
+                        <span class="progress-text">15%</span>
+                      </div>
+                    </div>
+                    <span class="training-status pending">待培训</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 供应链管理 Section -->
+          <section class="demo-section" id="sectionSupply">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="truck" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">供应链管理</h2>
+                <p class="section-header-new-desc">供应商管理、采购追踪、成本优化全链路协同</p>
+              </div>
+            </div>
+            <!-- 供应链概览 -->
+            <div class="stats-grid-demo">
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon purple"><i data-lucide="package" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +12</div>
+                </div>
+                <div class="stat-card-demo-value">28</div>
+                <div class="stat-card-demo-label">合作供应商</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon cyan"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +8</div>
+                </div>
+                <div class="stat-card-demo-value">156</div>
+                <div class="stat-card-demo-label">本月采购单</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon green"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend down"><i data-lucide="trending-down" class="w-3 h-3"></i> -3%</div>
+                </div>
+                <div class="stat-card-demo-value">¥4.28万</div>
+                <div class="stat-card-demo-label">月采购成本</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon orange"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +5%</div>
+                </div>
+                <div class="stat-card-demo-value">98.2%</div>
+                <div class="stat-card-demo-label">准时到货率</div>
+              </div>
+            </div>
+            <div class="dashboard-grid" style="margin-top: 24px;">
+              <!-- 供应商管理 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="building-2" class="w-5 h-5 text-purple-500"></i>
+                    供应商管理
+                  </div>
+                  <button class="card-header-btn"><i data-lucide="plus" class="w-4 h-4"></i> 添加</button>
+                </div>
+                <div class="dashboard-card-body" style="padding: 0;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>供应商</th>
+                        <th>主营</th>
+                        <th>评分</th>
+                        <th>合作订单</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>华润供应商A</td>
+                        <td>肉类</td>
+                        <td><span class="rating">⭐ 4.9</span></td>
+                        <td>89单</td>
+                        <td><span class="table-badge success">优秀</span></td>
+                      </tr>
+                      <tr>
+                        <td>永辉供应商B</td>
+                        <td>海鲜</td>
+                        <td><span class="rating">⭐ 4.8</span></td>
+                        <td>76单</td>
+                        <td><span class="table-badge success">优秀</span></td>
+                      </tr>
+                      <tr>
+                        <td>光明农场</td>
+                        <td>蔬菜</td>
+                        <td><span class="rating">⭐ 4.7</span></td>
+                        <td>52单</td>
+                        <td><span class="table-badge success">良好</span></td>
+                      </tr>
+                      <tr>
+                        <td>四川老字号</td>
+                        <td>底料</td>
+                        <td><span class="rating">⭐ 4.6</span></td>
+                        <td>38单</td>
+                        <td><span class="table-badge success">良好</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- AI采购预测 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="brain" class="w-5 h-5 text-cyan-500"></i>
+                    AI预测性采购
+                  </div>
+                  <span class="ai-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> AI生成</span>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="purchase-forecast">
+                    <div class="forecast-item">
+                      <div class="forecast-header">
+                        <span class="forecast-name">鲜毛肚</span>
+                        <span class="forecast-urgency high">紧急</span>
+                      </div>
+                      <div class="forecast-reason">周末客流+35%，需提前备货30kg</div>
+                      <div class="forecast-action">
+                        <button class="forecast-btn">查看详情</button>
+                        <button class="forecast-btn primary">立即采购</button>
+                      </div>
+                    </div>
+                    <div class="forecast-item">
+                      <div class="forecast-header">
+                        <span class="forecast-name">肥牛卷</span>
+                        <span class="forecast-urgency medium">注意</span>
+                      </div>
+                      <div class="forecast-reason">季节性需求下降，建议减少20%采购量</div>
+                      <div class="forecast-action">
+                        <button class="forecast-btn">调整采购</button>
+                      </div>
+                    </div>
+                    <div class="forecast-item">
+                      <div class="forecast-header">
+                        <span class="forecast-name">蔬菜拼盘</span>
+                        <span class="forecast-urgency low">正常</span>
+                      </div>
+                      <div class="forecast-reason">根据历史数据，本周需求稳定</div>
+                      <div class="forecast-action">
+                        <button class="forecast-btn">维持现状</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 成本分析图表 -->
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="bar-chart-2" class="w-5 h-5 text-green-500"></i>
+                  采购成本分析
+                </div>
+              </div>
+              <div class="dashboard-card-body">
+                <div class="chart-wrapper" style="height: 250px;">
+                  <canvas id="supplyCostChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 会员运营中心 Section -->
+          <section class="demo-section" id="sectionMember">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="heart" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">会员运营中心</h2>
+                <p class="section-header-new-desc">RFM分层、智能营销、积分体系全链路运营</p>
+              </div>
+            </div>
+            <!-- 会员概览 -->
+            <div class="stats-grid-demo">
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon purple"><i data-lucide="users" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +128</div>
+                </div>
+                <div class="stat-card-demo-value">12,580</div>
+                <div class="stat-card-demo-label">会员总数</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon cyan"><i data-lucide="gift" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +35%</div>
+                </div>
+                <div class="stat-card-demo-value">¥168</div>
+                <div class="stat-card-demo-label">平均客单价</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon green"><i data-lucide="repeat" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +2%</div>
+                </div>
+                <div class="stat-card-demo-value">32%</div>
+                <div class="stat-card-demo-label">复购率</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon orange"><i data-lucide="star" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +8%</div>
+                </div>
+                <div class="stat-card-demo-value">128,640</div>
+                <div class="stat-card-demo-label">积分库存</div>
+              </div>
+            </div>
+            <div class="dashboard-grid" style="margin-top: 24px;">
+              <!-- RFM分层 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="layers" class="w-5 h-5 text-purple-500"></i>
+                    RFM会员分层
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="rfm-pie-container">
+                    <canvas id="memberRfmPieChart"></canvas>
+                  </div>
+                  <div class="rfm-legend">
+                    <div class="rfm-item"><span class="rfm-dot high"></span>高价值 35%</div>
+                    <div class="rfm-item"><span class="rfm-dot potential"></span>潜力 28%</div>
+                    <div class="rfm-item"><span class="rfm-dot new"></span>新客 22%</div>
+                    <div class="rfm-item"><span class="rfm-dot churn"></span>流失 15%</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 智能营销推荐 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-cyan-500"></i>
+                    智能营销推荐
+                  </div>
+                  <span class="ai-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> AI推荐</span>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="marketing-recommendations">
+                    <div class="recommendation-card">
+                      <div class="rec-header">
+                        <span class="rec-title">沉睡用户召回</span>
+                        <span class="rec-tier high">高价值</span>
+                      </div>
+                      <div class="rec-content">
+                        <p>筛选出186位30天未消费的高价值会员</p>
+                        <div class="rec-metrics">
+                          <span class="rec-metric"><i data-lucide="users" class="w-3 h-3"></i> 186人</span>
+                          <span class="rec-metric"><i data-lucide="percent" class="w-3 h-3"></i> 预计召回率 35%</span>
+                        </div>
+                      </div>
+                      <button class="rec-btn">执行召回计划</button>
+                    </div>
+                    <div class="recommendation-card">
+                      <div class="rec-header">
+                        <span class="rec-title">新客转化激励</span>
+                        <span class="rec-tier new">新客</span>
+                      </div>
+                      <div class="rec-content">
+                        <p>为720位新注册会员推送首单优惠</p>
+                        <div class="rec-metrics">
+                          <span class="rec-metric"><i data-lucide="users" class="w-3 h-3"></i> 720人</span>
+                          <span class="rec-metric"><i data-lucide="percent" class="w-3 h-3"></i> 预计转化率 28%</span>
+                        </div>
+                      </div>
+                      <button class="rec-btn">发送优惠券</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 会员列表 -->
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="list" class="w-5 h-5 text-green-500"></i>
+                  重点会员列表
+                </div>
+                <button class="card-header-btn">导出名单</button>
+              </div>
+              <div class="dashboard-card-body" style="padding: 0;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>会员</th>
+                      <th>等级</th>
+                      <th>累计消费</th>
+                      <th>最近消费</th>
+                      <th>积分</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>王女士</td>
+                      <td><span class="level-badge vip">黑金VIP</span></td>
+                      <td>¥28,600</td>
+                      <td>3天前</td>
+                      <td>28,600</td>
+                      <td><button class="table-action-btn">查看</button></td>
+                    </tr>
+                    <tr>
+                      <td>张先生</td>
+                      <td><span class="level-badge gold">金卡</span></td>
+                      <td>¥15,800</td>
+                      <td>7天前</td>
+                      <td>15,800</td>
+                      <td><button class="table-action-btn">查看</button></td>
+                    </tr>
+                    <tr>
+                      <td>李女士</td>
+                      <td><span class="level-badge silver">银卡</span></td>
+                      <td>¥8,200</td>
+                      <td>15天前</td>
+                      <td>8,200</td>
+                      <td><button class="table-action-btn">查看</button></td>
+                    </tr>
+                    <tr>
+                      <td>陈先生</td>
+                      <td><span class="level-badge normal">普通</span></td>
+                      <td>¥2,800</td>
+                      <td>45天前</td>
+                      <td>2,800</td>
+                      <td><button class="table-action-btn warning">流失预警</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- 舆情监控中心 Section -->
+          <section class="demo-section" id="sectionSentiment">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="message-circle" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">舆情监控中心</h2>
+                <p class="section-header-new-desc">全网评价监控、情感分析、差评预警</p>
+              </div>
+            </div>
+            <!-- 舆情概览 -->
+            <div class="stats-grid-demo">
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon purple"><i data-lucide="star" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.1</div>
+                </div>
+                <div class="stat-card-demo-value">4.85</div>
+                <div class="stat-card-demo-label">综合评分</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon green"><i data-lucide="thumbs-up" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +5%</div>
+                </div>
+                <div class="stat-card-demo-value">89%</div>
+                <div class="stat-card-demo-label">好评率</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon orange"><i data-lucide="alert-circle" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend down"><i data-lucide="trending-down" class="w-3 h-3"></i> -2</div>
+                </div>
+                <div class="stat-card-demo-value">8</div>
+                <div class="stat-card-demo-label">差评待处理</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon cyan"><i data-lucide="clock" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> &lt;3min</div>
+                </div>
+                <div class="stat-card-demo-value">2.5min</div>
+                <div class="stat-card-demo-label">平均响应时长</div>
+              </div>
+            </div>
+            <div class="dashboard-grid" style="margin-top: 24px;">
+              <!-- 情感分析趋势 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-purple-500"></i>
+                    情感趋势分析
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="chart-wrapper" style="height: 200px;">
+                    <canvas id="sentimentTrendChart"></canvas>
+                  </div>
+                  <div class="sentiment-summary">
+                    <div class="sentiment-item positive">
+                      <span class="sentiment-icon"><i data-lucide="smile" class="w-4 h-4"></i></span>
+                      <span class="sentiment-label">正面</span>
+                      <span class="sentiment-value">89%</span>
+                    </div>
+                    <div class="sentiment-item neutral">
+                      <span class="sentiment-icon"><i data-lucide="meh" class="w-4 h-4"></i></span>
+                      <span class="sentiment-label">中性</span>
+                      <span class="sentiment-value">8%</span>
+                    </div>
+                    <div class="sentiment-item negative">
+                      <span class="sentiment-icon"><i data-lucide="frown" class="w-4 h-4"></i></span>
+                      <span class="sentiment-label">负面</span>
+                      <span class="sentiment-value">3%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 关键词云 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="cloud" class="w-5 h-5 text-cyan-500"></i>
+                    评价热词
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="keyword-cloud">
+                    <span class="keyword large">服务热情</span>
+                    <span class="keyword medium">口味正宗</span>
+                    <span class="keyword large">环境好</span>
+                    <span class="keyword small">性价比</span>
+                    <span class="keyword medium">份量足</span>
+                    <span class="keyword small">位置好</span>
+                    <span class="keyword medium">回头客</span>
+                    <span class="keyword small">干净</span>
+                    <span class="keyword small">上菜快</span>
+                    <span class="keyword small">价格实惠</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 平台来源分布 -->
+            <div class="dashboard-grid" style="grid-template-columns: 1fr 2fr; margin-top: 24px;">
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="pie-chart" class="w-5 h-5 text-green-500"></i>
+                    评价来源分布
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="source-chart-container">
+                    <canvas id="sentimentSourceChart"></canvas>
+                  </div>
+                  <div class="source-list">
+                    <div class="source-item"><span class="source-dot meituan"></span>美团 35%</div>
+                    <div class="source-item"><span class="source-dot dianping"></span>大众点评 28%</div>
+                    <div class="source-item"><span class="source-dot douyin"></span>抖音 22%</div>
+                    <div class="source-item"><span class="source-dot xiaohongshu"></span>小红书 15%</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 最新差评列表 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500"></i>
+                    差评预警与回复
+                  </div>
+                  <button class="card-header-btn">全部处理</button>
+                </div>
+                <div class="dashboard-card-body" style="padding: 0;">
+                  <div class="negative-reviews">
+                    <div class="review-item danger">
+                      <div class="review-header">
+                        <span class="review-platform meituan">美团</span>
+                        <span class="review-time">10分钟前</span>
+                      </div>
+                      <div class="review-content">等位40分钟，菜才上了一半</div>
+                      <div class="review-sentiment negative">负面情绪</div>
+                      <div class="review-ai-reply">
+                        <span class="ai-reply-label">AI回复建议：</span>
+                        <span class="ai-reply-text">非常抱歉给您带来不好的体验，我们已记录您的问题...</span>
+                      </div>
+                      <button class="review-action-btn">立即回复</button>
+                    </div>
+                    <div class="review-item warning">
+                      <div class="review-header">
+                        <span class="review-platform dianping">大众点评</span>
+                        <span class="review-time">1小时前</span>
+                      </div>
+                      <div class="review-content">服务员态度一般，表情冷淡</div>
+                      <div class="review-sentiment neutral">中性情绪</div>
+                      <div class="review-ai-reply">
+                        <span class="ai-reply-label">AI回复建议：</span>
+                        <span class="ai-reply-text">感谢您的反馈，我们会加强员工培训...</span>
+                      </div>
+                      <button class="review-action-btn">立即回复</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 智能定价引擎 Section -->
+          <section class="demo-section" id="sectionPricing">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="tag" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">智能定价引擎</h2>
+                <p class="section-header-new-desc">基于时段/天气/竞品/历史的动态定价策略</p>
+              </div>
+            </div>
+            <!-- 定价概览 -->
+            <div class="stats-grid-demo">
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon purple"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +8%</div>
+                </div>
+                <div class="stat-card-demo-value">¥168</div>
+                <div class="stat-card-demo-label">当前客单价</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon cyan"><i data-lucide="percent" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +3%</div>
+                </div>
+                <div class="stat-card-demo-value">72%</div>
+                <div class="stat-card-demo-label">价格竞争力</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon green"><i data-lucide="flask-conical" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +12%</div>
+                </div>
+                <div class="stat-card-demo-value">3</div>
+                <div class="stat-card-demo-label">进行中A/B测试</div>
+              </div>
+              <div class="stat-card-demo">
+                <div class="stat-card-demo-header">
+                  <div class="stat-card-demo-icon orange"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                  <div class="stat-card-demo-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> 已设置</div>
+                </div>
+                <div class="stat-card-demo-value">24</div>
+                <div class="stat-card-demo-label">定价策略数</div>
+              </div>
+            </div>
+            <div class="dashboard-grid" style="margin-top: 24px;">
+              <!-- 动态定价建议 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-purple-500"></i>
+                    AI定价建议
+                  </div>
+                  <span class="ai-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> 实时分析</span>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="pricing-factors">
+                    <div class="factor-item">
+                      <div class="factor-header">
+                        <span class="factor-icon weather"><i data-lucide="cloud-rain" class="w-4 h-4"></i></span>
+                        <span class="factor-name">天气因素</span>
+                        <span class="factor-impact positive">正向 +15%</span>
+                      </div>
+                      <div class="factor-desc">明天中雨，外卖需求预计上涨，建议提升外卖定价5%</div>
+                    </div>
+                    <div class="factor-item">
+                      <div class="factor-header">
+                        <span class="factor-icon time"><i data-lucide="clock" class="w-4 h-4"></i></span>
+                        <span class="factor-name">时段因素</span>
+                        <span class="factor-impact neutral">午市平峰</span>
+                      </div>
+                      <div class="factor-desc">当前11:30，午市刚开始，建议午市套餐维持原价</div>
+                    </div>
+                    <div class="factor-item">
+                      <div class="factor-header">
+                        <span class="factor-icon competitor"><i data-lucide="radar" class="w-4 h-4"></i></span>
+                        <span class="factor-name">竞品因素</span>
+                        <span class="factor-impact warning">注意 -5%</span>
+                      </div>
+                      <div class="factor-desc">海底捞正在进行8折活动，建议跟进或差异化</div>
+                    </div>
+                    <div class="factor-item">
+                      <div class="factor-header">
+                        <span class="factor-icon demand"><i data-lucide="activity" class="w-4 h-4"></i></span>
+                        <span class="factor-name">需求因素</span>
+                        <span class="factor-impact positive">高峰 +20%</span>
+                      </div>
+                      <div class="factor-desc">周五晚市包间已预订80%，可适当提升价格</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 价格弹性分析 -->
+              <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                  <div class="dashboard-card-title">
+                    <i data-lucide="gauge" class="w-5 h-5 text-cyan-500"></i>
+                    价格弹性分析
+                  </div>
+                </div>
+                <div class="dashboard-card-body">
+                  <div class="elasticity-chart">
+                    <canvas id="elasticityChart"></canvas>
+                  </div>
+                  <div class="elasticity-insight">
+                    <div class="insight-header"><i data-lucide="lightbulb" class="w-4 h-4"></i> 洞察</div>
+                    <p>当前价格弹性系数为-1.2，意味着价格下降10%会带来12%的销量增长。适合在淡季使用降价策略。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 定价日历 -->
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="calendar-range" class="w-5 h-5 text-green-500"></i>
+                  定价策略日历
+                </div>
+                <button class="card-header-btn"><i data-lucide="plus" class="w-4 h-4"></i> 添加策略</button>
+              </div>
+              <div class="dashboard-card-body">
+                <div class="pricing-calendar">
+                  <div class="pricing-strategy-item">
+                    <div class="strategy-time">周一-周四 (工作日)</div>
+                    <div class="strategy-content">
+                      <span class="strategy-tag normal">常规定价</span>
+                      <span class="strategy-desc">午市套餐¥42，晚市套餐¥68</span>
+                    </div>
+                    <button class="strategy-btn">调整</button>
+                  </div>
+                  <div class="pricing-strategy-item">
+                    <div class="strategy-time">周五-周六 (周末)</div>
+                    <div class="strategy-content">
+                      <span class="strategy-tag weekend">周末溢价</span>
+                      <span class="strategy-desc">全时段价格+10%，高峰期套餐限流</span>
+                    </div>
+                    <button class="strategy-btn">调整</button>
+                  </div>
+                  <div class="pricing-strategy-item">
+                    <div class="strategy-time">雨天/恶劣天气</div>
+                    <div class="strategy-content">
+                      <span class="strategy-tag weather">天气触发</span>
+                      <span class="strategy-desc">外卖价格-15%，堂食推"热汤套餐"引流</span>
+                    </div>
+                    <button class="strategy-btn">调整</button>
+                  </div>
+                  <div class="pricing-strategy-item">
+                    <div class="strategy-time">节假日 (端午/中秋等)</div>
+                    <div class="strategy-content">
+                      <span class="strategy-tag holiday">节日特惠</span>
+                      <span class="strategy-desc">推出节日限定套餐，提前7天开启预售</span>
+                    </div>
+                    <button class="strategy-btn">调整</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- A/B测试 -->
+            <div class="dashboard-card" style="margin-top: 24px;">
+              <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                  <i data-lucide="flask-conical" class="w-5 h-5 text-orange-500"></i>
+                  定价A/B测试
+                </div>
+              </div>
+              <div class="dashboard-card-body">
+                <div class="ab-test-grid">
+                  <div class="ab-test-card running">
+                    <div class="ab-test-header">
+                      <span class="test-status running">进行中</span>
+                      <span class="test-name">晚市套餐定价测试</span>
+                    </div>
+                    <div class="ab-test-variants">
+                      <div class="ab-variant">
+                        <div class="variant-label">方案A</div>
+                        <div class="variant-price">¥68</div>
+                        <div class="variant-metrics">
+                          <span>转化率 65%</span>
+                          <span>营收 ¥8,200</span>
+                        </div>
+                      </div>
+                      <div class="ab-variant winner">
+                        <div class="variant-label">方案B <span class="winner-tag">领先</span></div>
+                        <div class="variant-price">¥72</div>
+                        <div class="variant-metrics">
+                          <span>转化率 68%</span>
+                          <span>营收 ¥9,100</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ab-test-conclusion">
+                      <i data-lucide="check-circle" class="w-4 h-4"></i>
+                      <span>预计采用方案B可增收 +10.9%</span>
+                    </div>
+                    <button class="ab-apply-btn">应用方案B</button>
+                  </div>
+                  <div class="ab-test-card pending">
+                    <div class="ab-test-header">
+                      <span class="test-status pending">待开始</span>
+                      <span class="test-name">新品定价测试</span>
+                    </div>
+                    <div class="ab-test-variants">
+                      <div class="ab-variant">
+                        <div class="variant-label">方案A</div>
+                        <div class="variant-price">¥38</div>
+                      </div>
+                      <div class="ab-variant">
+                        <div class="variant-label">方案B</div>
+                        <div class="variant-price">¥42</div>
+                      </div>
+                    </div>
+                    <button class="ab-start-btn">开始测试</button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
