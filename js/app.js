@@ -51,6 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
   themeToggle?.addEventListener('click', toggleTheme);
   demoThemeToggle?.addEventListener('click', toggleTheme);
 
+  // 初始化顶栏门店选择器
+  initStoreSelector();
+  // 初始化数据大屏门店同步
+  initDataScreenStoreSync();
+
   // ============================================
   // Demo Navigation
   // ============================================
@@ -2211,4 +2216,274 @@ function initCreationInteractions() {
   });
 }
 
+// ============================================
+// 门店切换功能
+// ============================================
+
+// 8个门店数据
+const storeData = {
+  'beijing-flagship': {
+    name: '老码头火锅 - 北京旗舰店',
+    shortName: '老码头火锅',
+    type: '旗舰',
+    monthlyRevenue: 28.6,
+    monthlyOrders: 1247,
+    rating: 4.9,
+    repurchaseRate: 38,
+    aov: 168,
+    aiProcessed: 180
+  },
+  'shanghai-xuhui': {
+    name: '老码头火锅 - 上海徐汇店',
+    shortName: '老码头火锅',
+    type: '直营',
+    monthlyRevenue: 22.4,
+    monthlyOrders: 986,
+    rating: 4.8,
+    repurchaseRate: 35,
+    aov: 158,
+    aiProcessed: 120
+  },
+  'guangzhou-tianhe': {
+    name: '老码头火锅 - 广州天河店',
+    shortName: '老码头火锅',
+    type: '直营',
+    monthlyRevenue: 20.8,
+    monthlyOrders: 912,
+    rating: 4.8,
+    repurchaseRate: 32,
+    aov: 148,
+    aiProcessed: 110
+  },
+  'shenzhen-nanshan': {
+    name: '老码头火锅 - 深圳南山店',
+    shortName: '老码头火锅',
+    type: '加盟',
+    monthlyRevenue: 18.2,
+    monthlyOrders: 824,
+    rating: 4.7,
+    repurchaseRate: 30,
+    aov: 138,
+    aiProcessed: 95
+  },
+  'chengdu-jinjiang': {
+    name: '老码头火锅 - 成都锦江店',
+    shortName: '老码头火锅',
+    type: '加盟',
+    monthlyRevenue: 16.5,
+    monthlyOrders: 756,
+    rating: 4.7,
+    repurchaseRate: 28,
+    aov: 128,
+    aiProcessed: 88
+  },
+  'hangzhou-xihu': {
+    name: '老码头火锅 - 杭州西湖店',
+    shortName: '老码头火锅',
+    type: '加盟',
+    monthlyRevenue: 15.8,
+    monthlyOrders: 698,
+    rating: 4.6,
+    repurchaseRate: 27,
+    aov: 138,
+    aiProcessed: 82
+  },
+  'wuhan-jianghan': {
+    name: '老码头火锅 - 武汉江汉店',
+    shortName: '老码头火锅',
+    type: '直营',
+    monthlyRevenue: 14.2,
+    monthlyOrders: 645,
+    rating: 4.6,
+    repurchaseRate: 28,
+    aov: 138,
+    aiProcessed: 80
+  },
+  'nanjing-gulou': {
+    name: '老码头火锅 - 南京鼓楼店',
+    shortName: '老码头火锅',
+    type: '加盟',
+    monthlyRevenue: 12.6,
+    monthlyOrders: 578,
+    rating: 4.5,
+    repurchaseRate: 25,
+    aov: 128,
+    aiProcessed: 65
+  }
+};
+
+// 当前选中的门店ID
+let currentStoreId = 'beijing-flagship';
+
+// 数字动画函数
+function animateNumber(element, target, isDecimal = false, duration = 600) {
+  if (!element) return;
+  const start = parseFloat(element.textContent.replace(/[^0-9.]/g, '')) || 0;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+    
+    const current = start + (target - start) * easeProgress;
+    element.textContent = isDecimal ? current.toFixed(1) : Math.round(current).toLocaleString();
+    
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+  
+  requestAnimationFrame(update);
+}
+
+// 更新概览页面的核心数据卡片
+function updateOverviewCards(storeId) {
+  const store = storeData[storeId];
+  if (!store) return;
+  
+  // 获取概览页面的4个核心数据卡片
+  const statCards = document.querySelectorAll('.stat-card-demo');
+  if (statCards.length >= 4) {
+    // 月营收
+    const revenueEl = statCards[0].querySelector('.stat-card-demo-value');
+    if (revenueEl) {
+      animateNumber(revenueEl, store.monthlyRevenue, true, 600);
+      setTimeout(() => { revenueEl.textContent = '¥' + store.monthlyRevenue.toFixed(1) + '万'; }, 600);
+    }
+    
+    // 月订单
+    const ordersEl = statCards[1].querySelector('.stat-card-demo-value');
+    if (ordersEl) {
+      animateNumber(ordersEl, store.monthlyOrders, false, 600);
+      setTimeout(() => { ordersEl.textContent = store.monthlyOrders.toLocaleString(); }, 600);
+    }
+    
+    // 评分
+    const ratingEl = statCards[2].querySelector('.stat-card-demo-value');
+    if (ratingEl) {
+      animateNumber(ratingEl, store.rating, true, 600);
+      setTimeout(() => { ratingEl.textContent = store.rating.toFixed(1); }, 600);
+    }
+    
+    // 复购率
+    const repurchaseEl = statCards[3].querySelector('.stat-card-demo-value');
+    if (repurchaseEl) {
+      animateNumber(repurchaseEl, store.repurchaseRate, false, 600);
+      setTimeout(() => { repurchaseEl.textContent = store.repurchaseRate + '%'; }, 600);
+    }
+  }
+}
+
+// 切换门店
+function switchStore(storeId) {
+  if (!storeData[storeId]) return;
+  
+  currentStoreId = storeId;
+  const store = storeData[storeId];
+  
+  // 更新顶栏门店选择器显示
+  const storeSelector = document.getElementById('storeSelector');
+  const storeTag = document.getElementById('currentStoreTag');
+  const storeName = storeSelector?.querySelector('.store-name');
+  
+  if (storeTag) {
+    storeTag.textContent = store.type + '店';
+    // 更新tag颜色
+    storeTag.className = 'store-tag';
+    if (store.type === '旗舰') {
+      storeTag.classList.add('tag-flagship');
+    } else if (store.type === '直营') {
+      storeTag.classList.add('tag-direct');
+    } else {
+      storeTag.classList.add('tag-franchise');
+    }
+  }
+  
+  // 更新下拉菜单选中状态
+  const options = document.querySelectorAll('.store-option');
+  options.forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.store === storeId);
+  });
+  
+  // 同步更新数据大屏的select
+  const dsStoreSelect = document.getElementById('storeSelect');
+  if (dsStoreSelect) {
+    dsStoreSelect.value = storeId;
+  }
+  
+  // 更新概览页面的数据卡片
+  updateOverviewCards(storeId);
+  
+  console.log('切换门店:', store.name);
+}
+
+// 初始化顶栏门店选择器
+function initStoreSelector() {
+  const storeSelector = document.getElementById('storeSelector');
+  const storeDropdown = document.getElementById('storeDropdown');
+  
+  if (!storeSelector || !storeDropdown) return;
+  
+  // 点击切换器展开/收起下拉菜单
+  storeSelector.addEventListener('click', (e) => {
+    e.stopPropagation();
+    storeSelector.classList.toggle('active');
+  });
+  
+  // 点击门店选项
+  const options = document.querySelectorAll('.store-option');
+  options.forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const storeId = option.dataset.store;
+      switchStore(storeId);
+      storeSelector.classList.remove('active');
+    });
+  });
+  
+  // 点击其他区域关闭下拉菜单
+  document.addEventListener('click', (e) => {
+    if (!storeSelector.contains(e.target)) {
+      storeSelector.classList.remove('active');
+    }
+  });
+}
+
+// 初始化数据大屏门店选择同步
+function initDataScreenStoreSync() {
+  const dsStoreSelect = document.getElementById('storeSelect');
+  if (!dsStoreSelect) return;
+  
+  dsStoreSelect.addEventListener('change', () => {
+    const storeId = dsStoreSelect.value;
+    
+    // 同步更新顶栏选择器
+    const storeSelector = document.getElementById('storeSelector');
+    const storeTag = document.getElementById('currentStoreTag');
+    const store = storeData[storeId];
+    
+    if (store && storeTag) {
+      storeTag.textContent = store.type + '店';
+      storeTag.className = 'store-tag';
+      if (store.type === '旗舰') {
+        storeTag.classList.add('tag-flagship');
+      } else if (store.type === '直营') {
+        storeTag.classList.add('tag-direct');
+      } else {
+        storeTag.classList.add('tag-franchise');
+      }
+    }
+    
+    // 更新下拉菜单选中状态
+    const options = document.querySelectorAll('.store-option');
+    options.forEach(opt => {
+      opt.classList.toggle('selected', opt.dataset.store === storeId);
+    });
+    
+    console.log('数据大屏切换门店:', storeId);
+  });
+}
+
 console.log('店赢OS v10 - 5项差异化功能初始化完成');
+console.log('店赢OS - 多门店切换功能已加载');

@@ -695,10 +695,72 @@
         <!-- Topbar -->
         <header class="demo-topbar">
           <div class="topbar-left">
-            <div class="store-selector">
+            <div class="store-selector" id="storeSelector">
               <span class="store-icon">🔥</span>
               <span class="store-name">老码头火锅</span>
-              <span class="store-tag">旗舰店</span>
+              <span class="store-tag" id="currentStoreTag">旗舰店</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 store-arrow"></i>
+              <div class="store-dropdown" id="storeDropdown">
+                <div class="store-dropdown-header">切换门店</div>
+                <div class="store-dropdown-list">
+                  <div class="store-option selected" data-store="beijing-flagship" data-type="旗舰">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 北京旗舰店</div>
+                      <div class="store-option-tags"><span class="store-type-tag flagship">旗舰</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="shanghai-xuhui" data-type="直营">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 上海徐汇店</div>
+                      <div class="store-option-tags"><span class="store-type-tag direct">直营</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="guangzhou-tianhe" data-type="直营">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 广州天河店</div>
+                      <div class="store-option-tags"><span class="store-type-tag direct">直营</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="shenzhen-nanshan" data-type="加盟">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 深圳南山店</div>
+                      <div class="store-option-tags"><span class="store-type-tag franchise">加盟</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="chengdu-jinjiang" data-type="加盟">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 成都锦江店</div>
+                      <div class="store-option-tags"><span class="store-type-tag franchise">加盟</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="hangzhou-xihu" data-type="加盟">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 杭州西湖店</div>
+                      <div class="store-option-tags"><span class="store-type-tag franchise">加盟</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="wuhan-jianghan" data-type="直营">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 武汉江汉店</div>
+                      <div class="store-option-tags"><span class="store-type-tag direct">直营</span></div>
+                    </div>
+                  </div>
+                  <div class="store-option" data-store="nanjing-gulou" data-type="加盟">
+                    <div class="store-option-indicator"></div>
+                    <div class="store-option-info">
+                      <div class="store-option-name">老码头火锅 - 南京鼓楼店</div>
+                      <div class="store-option-tags"><span class="store-type-tag franchise">加盟</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="topbar-breadcrumb">
               <span id="breadcrumbText">运营概览</span>
@@ -928,12 +990,12 @@
                 <div class="dashboard-card-header">
                   <div class="dashboard-card-title">
                     <i data-lucide="trending-up" class="w-5 h-5 text-purple-500"></i>
-                    营收趋势（7天）
+                    营收趋势对比（A/B测试）
                   </div>
                 </div>
                 <div class="dashboard-card-body">
                   <div class="chart-wrapper">
-                    <canvas id="overviewChart"></canvas>
+                    <canvas id="overviewAbTestChart"></canvas>
                   </div>
                 </div>
               </div>
@@ -4360,14 +4422,14 @@
         <span class="ds-live-badge"><span class="ds-live-dot"></span>实时</span>
         <div class="ds-toolbar-actions">
           <select class="ds-store-select" id="storeSelect">
-            <option value="all">全部门店</option>
-            <option value="flagship" selected>老码头火锅-旗舰店</option>
-            <option value="xuhui">老码头火锅-徐汇店</option>
-            <option value="pudong">老码头火锅-浦东店</option>
-            <option value="jingan">老码头火锅-静安店</option>
-            <option value="minhang">老码头火锅-闵行店</option>
-            <option value="changning">老码头火锅-长宁店</option>
-            <option value="hongkou">老码头火锅-虹口店</option>
+            <option value="beijing-flagship">老码头火锅 - 北京旗舰店</option>
+            <option value="shanghai-xuhui">老码头火锅 - 上海徐汇店</option>
+            <option value="guangzhou-tianhe">老码头火锅 - 广州天河店</option>
+            <option value="shenzhen-nanshan">老码头火锅 - 深圳南山店</option>
+            <option value="chengdu-jinjiang">老码头火锅 - 成都锦江店</option>
+            <option value="hangzhou-xihu">老码头火锅 - 杭州西湖店</option>
+            <option value="wuhan-jianghan">老码头火锅 - 武汉江汉店</option>
+            <option value="nanjing-gulou">老码头火锅 - 南京鼓楼店</option>
           </select>
           <div class="ds-time-btns">
             <button class="ds-time-btn active" data-range="today">今日</button>
@@ -4753,7 +4815,7 @@
             <span class="ds-total-count">全国门店：8家</span>
           </div>
         </div>
-      </div>      </div>
+      </div>
 
       <!-- 中：Multi-Agent状态面板 -->
       <div class="ds-panel ds-agent-panel">
