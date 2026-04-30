@@ -11838,6 +11838,13 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   background: var(--dark-bg-primary, #08090a);
   color: var(--dark-text-primary, #f7f8f8);
   min-height: 100vh;
+  --text: #f7f8f8;
+  --text-secondary: #8b8e94;
+  --text-muted: #6c6f76;
+  --bg-primary: #08090a;
+  --bg-secondary: #0f0f11;
+  --bg-tertiary: #1c1c1f;
+  --border: rgba(255,255,255,0.08);
 }
 
 /* Dark Navbar with Glass Effect */
@@ -12087,10 +12094,30 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   color: var(--dark-text-secondary, #8b8e94);
 }
 
+.landing-page .demo-video-player {
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.landing-page .video-placeholder {
+  background: #1E293B;
+}
+
+.landing-page .video-placeholder-inner {
+  color: #e2e8f0;
+}
+
+.landing-page .video-placeholder-inner svg {
+  color: #8b8e94;
+}
+
 /* Dark Stats Section */
 .landing-page .stats {
   background: #0a0c10;
   padding: 60px 24px;
+}
+
+.landing-page .stat-card {
+  color: #f7f8f8;
 }
 
 .landing-page .stat-number {
@@ -12101,7 +12128,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 
 .landing-page .stat-label {
   font-size: 0.875rem;
-  color: #64748B;
+  color: #8b8e94;
   margin-top: 8px;
 }
 
