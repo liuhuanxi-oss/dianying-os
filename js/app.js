@@ -183,6 +183,43 @@ document.addEventListener('DOMContentLoaded', function() {
     if (breadcrumbText) {
       breadcrumbText.textContent = pageNames[page] || '运营概览';
     }
+    // 页面切换后初始化对应页面的图表
+    setTimeout(() => {
+      initPageCharts(page);
+      lucide.createIcons();
+    }, 50);
+  }
+  
+  // 根据页面初始化对应的图表
+  function initPageCharts(page) {
+    switch(page) {
+      case 'competitor':
+        // 竞品分析页
+        initCompetitorRadarChart();
+        initMarketShareChart();
+        initSentimentTrendChart();
+        break;
+      case 'sentiment':
+        // 舆情监控页
+        initSentimentTrendChart();
+        break;
+      case 'alert':
+        // 智能预警页
+        initAlertTypeChart();
+        break;
+      case 'inspection':
+        // 门店巡检页
+        initInspectionTrendChart();
+        break;
+      case 'datalab':
+        // 数据实验室
+        initDatalabCompareChart();
+        break;
+      case 'location':
+        // 智能选址页
+        initLocationFlowChart();
+        break;
+    }
   }
 
   sidebarNavItems.forEach(item => {
@@ -1218,62 +1255,80 @@ document.addEventListener('DOMContentLoaded', function() {
     initSentimentTrendChart();
   }
 
-  // 竞品雷达图 - 多维度能力对比
+  // 竞品雷达图 - 多维度能力对比（同时初始化竞品分析页和大屏中的雷达图）
+  let dsCompetitorRadarChart = null;
+  
   function initCompetitorRadarChart() {
-    const ctx = document.getElementById('competitorRadarChart');
-    if (!ctx || typeof Chart === 'undefined') return;
-    if (competitorRadarChart) competitorRadarChart.destroy();
-
-    competitorRadarChart = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: ['口味', '服务', '环境', '性价比', '品牌力', '创新力'],
-        datasets: [{
-          label: '本店',
-          data: [78, 75, 82, 88, 65, 85],
-          borderColor: '#7C3AED',
-          backgroundColor: 'rgba(124, 58, 237, 0.25)',
-          borderWidth: 3,
-          pointBackgroundColor: '#7C3AED',
-          pointRadius: 4
-        }, {
-          label: '海底捞',
-          data: [82, 95, 88, 60, 92, 75],
-          borderColor: '#F59E0B',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          borderWidth: 2,
-          pointBackgroundColor: '#F59E0B',
-          pointRadius: 3
-        }, {
-          label: '小龙坎',
-          data: [85, 78, 72, 80, 70, 72],
-          borderColor: '#06B6D4',
-          backgroundColor: 'rgba(6, 182, 212, 0.1)',
-          borderWidth: 2,
-          pointBackgroundColor: '#06B6D4',
-          pointRadius: 3
-        }]
+    const radarData = {
+      labels: ['口味', '服务', '环境', '性价比', '品牌力', '创新力'],
+      datasets: [{
+        label: '本店',
+        data: [78, 75, 82, 88, 65, 85],
+        borderColor: '#7C3AED',
+        backgroundColor: 'rgba(124, 58, 237, 0.25)',
+        borderWidth: 3,
+        pointBackgroundColor: '#7C3AED',
+        pointRadius: 4
+      }, {
+        label: '海底捞',
+        data: [82, 95, 88, 60, 92, 75],
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        borderWidth: 2,
+        pointBackgroundColor: '#F59E0B',
+        pointRadius: 3
+      }, {
+        label: '小龙坎',
+        data: [85, 78, 72, 80, 70, 72],
+        borderColor: '#06B6D4',
+        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+        borderWidth: 2,
+        pointBackgroundColor: '#06B6D4',
+        pointRadius: 3
+      }]
+    };
+    
+    const radarOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          r: {
-            beginAtZero: true,
-            max: 100,
-            ticks: { stepSize: 20, display: false },
-            grid: { color: '#E2E8F0' },
-            pointLabels: {
-              font: { size: 11, weight: '500' },
-              color: '#64748B'
-            }
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 20, display: false },
+          grid: { color: '#E2E8F0' },
+          pointLabels: {
+            font: { size: 11, weight: '500' },
+            color: '#64748B'
           }
         }
       }
-    });
+    };
+    
+    // 初始化竞品分析页的雷达图
+    const ctx = document.getElementById('competitorRadarChart');
+    if (ctx && typeof Chart !== 'undefined') {
+      if (competitorRadarChart) competitorRadarChart.destroy();
+      competitorRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: radarData,
+        options: radarOptions
+      });
+    }
+    
+    // 初始化数据大屏的雷达图
+    const dsCtx = document.getElementById('dsCompetitorRadarChart');
+    if (dsCtx && typeof Chart !== 'undefined') {
+      if (dsCompetitorRadarChart) dsCompetitorRadarChart.destroy();
+      dsCompetitorRadarChart = new Chart(dsCtx, {
+        type: 'radar',
+        data: radarData,
+        options: radarOptions
+      });
+    }
   }
 
   // 市场份额环形图
@@ -2002,8 +2057,22 @@ function initChinaMap() {
     const primarySource = 'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json';
     // 备用数据源：unpkg CDN
     const fallbackSource = 'https://unpkg.com/echarts@5.4.3/map/json/china.json';
+    // 内联备用GeoJSON（简化版，只包含省份轮廓）
+    const inlineChinaGeoJson = {
+      "type": "FeatureCollection",
+      "features": [
+        {"type":"Feature","properties":{"name":"北京","cp":[116.46,39.92]},"geometry":{"type":"Polygon","coordinates":[[[116.2,39.8],[116.5,39.8],[116.5,40.1],[116.2,40.1],[116.2,39.8]]]}},
+        {"type":"Feature","properties":{"name":"上海","cp":[121.48,31.22]},"geometry":{"type":"Polygon","coordinates":[[[121.1,31.0],[121.7,31.0],[121.7,31.4],[121.1,31.4],[121.1,31.0]]]}},
+        {"type":"Feature","properties":{"name":"广东","cp":[113.23,23.16]},"geometry":{"type":"Polygon","coordinates":[[[109.5,20.2],[117.2,20.2],[117.2,25.5],[109.5,25.5],[109.5,20.2]]]}},
+        {"type":"Feature","properties":{"name":"四川","cp":[104.06,30.67]},"geometry":{"type":"Polygon","coordinates":[[[97.5,26.0],[108.5,26.0],[108.5,34.3],[97.5,34.3],[97.5,26.0]]]}},
+        {"type":"Feature","properties":{"name":"浙江","cp":[120.19,30.26]},"geometry":{"type":"Polygon","coordinates":[[[118.0,27.0],[123.0,27.0],[123.0,31.0],[118.0,31.0],[118.0,27.0]]]}},
+        {"type":"Feature","properties":{"name":"江苏","cp":[118.78,32.04]},"geometry":{"type":"Polygon","coordinates":[[[116.6,31.0],[122.0,31.0],[122.0,35.0],[116.6,35.0],[116.6,31.0]]]}},
+        {"type":"Feature","properties":{"name":"湖北","cp":[114.31,30.52]},"geometry":{"type":"Polygon","coordinates":[[[108.5,29.0],[116.6,29.0],[116.6,33.0],[108.5,33.0],[108.5,29.0]]]}},
+        {"type":"Feature","properties":{"name":"全国","cp":[104.5,35.5]},"geometry":{"type":"Polygon","coordinates":[[[73.0,18.0],[135.0,18.0],[135.0,54.0],[73.0,54.0],[73.0,18.0]]]}}
+      ]
+    };
     
-    // 加载地图数据（主源 + 备用源）
+    // 加载地图数据（主源 + 备用源 + 内联）
     function loadMapData(url, isFallback = false) {
       return fetch(url)
         .then(res => {
@@ -2012,116 +2081,133 @@ function initChinaMap() {
         });
     }
     
-    // 先尝试主源，失败后尝试备用源
+    // 使用内联备用地图数据初始化
+    function initWithInlineMap() {
+      chinaMapChart.hideLoading();
+      echarts.registerMap('china', inlineChinaGeoJson);
+      renderStoreMarkers(inlineChinaGeoJson);
+    }
+    
+    // 渲染门店标记
+    function renderStoreMarkers(chinaJson) {
+      const flagship = storeData.filter(s => s.type === '旗舰');
+      const direct = storeData.filter(s => s.type === '直营');
+      const franchise = storeData.filter(s => s.type === '加盟');
+      
+      chinaMapChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(15,23,42,0.95)',
+          borderColor: 'rgba(124,58,237,0.5)',
+          borderWidth: 1,
+          textStyle: { color: '#E2E8F0', fontSize: 12 },
+          formatter: function(params) {
+            if (params.seriesType === 'effectScatter') {
+              const d = params.data;
+              return '<b>' + d.name + '</b><br/>' +
+                     '类型：' + d.storeType + '<br/>' +
+                     '月营收：¥' + d.value[2] + '万<br/>' +
+                     '评分：★ ' + d.rating + '<br/>' +
+                     '月订单：' + d.orders + '单';
+            }
+            return params.name;
+          }
+        },
+        geo: {
+          map: 'china',
+          roam: false,
+          zoom: 1.2,
+          center: [104.5, 35.5],
+          label: { show: false },
+          itemStyle: {
+            areaColor: 'rgba(30,27,75,0.6)',
+            borderColor: 'rgba(6,182,212,0.3)',
+            borderWidth: 0.8
+          },
+          emphasis: {
+            itemStyle: {
+              areaColor: 'rgba(124,58,237,0.3)',
+              borderColor: 'rgba(124,58,237,0.6)',
+              borderWidth: 1.5
+            },
+            label: { show: false }
+          }
+        },
+        series: [
+          {
+            name: '旗舰',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: flagship.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 18,
+            rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
+            itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 9, fontWeight: 500
+            }
+          },
+          {
+            name: '直营',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: direct.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 12,
+            rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
+            itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 8
+            }
+          },
+          {
+            name: '加盟',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: franchise.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 10,
+            rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
+            itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 8
+            }
+          }
+        ]
+      });
+    }
+    
+    // 先尝试主源，失败后尝试备用源，最后使用内联数据
     loadMapData(primarySource)
       .catch(() => {
         console.warn('主地图数据源加载失败，尝试备用源...');
         return loadMapData(fallbackSource, true);
       })
+      .catch(() => {
+        console.warn('备用地图数据源加载失败，使用内联备用数据...');
+        return null;
+      })
       .then(chinaJson => {
-        if (!chinaJson) throw new Error('所有地图数据源均加载失败');
-        
-        chinaMapChart.hideLoading();
-        echarts.registerMap('china', chinaJson);
-        
-        const flagship = storeData.filter(s => s.type === '旗舰');
-        const direct = storeData.filter(s => s.type === '直营');
-        const franchise = storeData.filter(s => s.type === '加盟');
-        
-        chinaMapChart.setOption({
-          tooltip: {
-            trigger: 'item',
-            backgroundColor: 'rgba(15,23,42,0.95)',
-            borderColor: 'rgba(124,58,237,0.5)',
-            borderWidth: 1,
-            textStyle: { color: '#E2E8F0', fontSize: 12 },
-            formatter: function(params) {
-              if (params.seriesType === 'effectScatter') {
-                const d = params.data;
-                return '<b>' + d.name + '</b><br/>' +
-                       '类型：' + d.storeType + '<br/>' +
-                       '月营收：¥' + d.value[2] + '万<br/>' +
-                       '评分：★ ' + d.rating + '<br/>' +
-                       '月订单：' + d.orders + '单';
-              }
-              return params.name;
-            }
-          },
-          geo: {
-            map: 'china',
-            roam: false,
-            zoom: 1.2,
-            center: [104.5, 35.5],
-            label: { show: false },
-            itemStyle: {
-              areaColor: 'rgba(30,27,75,0.6)',
-              borderColor: 'rgba(6,182,212,0.3)',
-              borderWidth: 0.8
-            },
-            emphasis: {
-              itemStyle: {
-                areaColor: 'rgba(124,58,237,0.3)',
-                borderColor: 'rgba(124,58,237,0.6)',
-                borderWidth: 1.5
-              },
-              label: { show: false }
-            }
-          },
-          series: [
-            {
-              name: '旗舰',
-              type: 'effectScatter',
-              coordinateSystem: 'geo',
-              data: flagship.map(s => ({
-                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-              })),
-              symbolSize: 18,
-              rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
-              itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
-              label: {
-                show: true, formatter: '{b}', position: 'right',
-                color: '#E2E8F0', fontSize: 9, fontWeight: 500
-              }
-            },
-            {
-              name: '直营',
-              type: 'effectScatter',
-              coordinateSystem: 'geo',
-              data: direct.map(s => ({
-                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-              })),
-              symbolSize: 12,
-              rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
-              itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
-              label: {
-                show: true, formatter: '{b}', position: 'right',
-                color: '#E2E8F0', fontSize: 8
-              }
-            },
-            {
-              name: '加盟',
-              type: 'effectScatter',
-              coordinateSystem: 'geo',
-              data: franchise.map(s => ({
-                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-              })),
-              symbolSize: 10,
-              rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
-              itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
-              label: {
-                show: true, formatter: '{b}', position: 'right',
-                color: '#E2E8F0', fontSize: 8
-              }
-            }
-          ]
-        });
+        if (chinaJson) {
+          chinaMapChart.hideLoading();
+          echarts.registerMap('china', chinaJson);
+          renderStoreMarkers(chinaJson);
+        } else {
+          // 使用内联备用地图
+          initWithInlineMap();
+        }
       })
       .catch(err => {
         console.error('地图数据加载失败:', err);
         chinaMapChart.hideLoading();
-        // 友好的降级提示
-        container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:14px;gap:8px;"><i data-lucide="map-pin-off" class="w-8 h-8"></i><span>地图数据加载失败</span><span style="font-size:12px;color:#64748B;">请检查网络连接后刷新重试</span></div>';
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        // 使用内联备用地图
+        initWithInlineMap();
       });
     
     window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
@@ -2272,6 +2358,8 @@ function initDataScreenV2() {
     initBadReviewCharts();
     initMemberCharts();
     initAIStatsChart();
+    initCompetitorRadarChart(); // 数据大屏竞品雷达图
+    initForecastChart(); // AI预测图
   }, 100);
   
   // 初始化Tab
