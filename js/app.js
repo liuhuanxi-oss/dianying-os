@@ -167,7 +167,106 @@ document.addEventListener('DOMContentLoaded', function() {
     item.addEventListener('click', () => switchPage(item.dataset.page));
   });
   mobileNavItems.forEach(item => {
-    item.addEventListener('click', () => switchPage(item.dataset.page));
+    item.addEventListener('click', () => {
+      if (item.dataset.page !== 'more') {
+        switchPage(item.dataset.page);
+      }
+    });
+  });
+
+  // ============================================
+  // Mobile Drawer Menu
+  // ============================================
+  const mobileMoreBtn = document.getElementById('mobileMoreBtn');
+  const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const mobileDrawerClose = document.getElementById('mobileDrawerClose');
+  const mobileDrawerSearch = document.getElementById('mobileDrawerSearch');
+  const mobileDrawerItems = document.querySelectorAll('.mobile-drawer-item');
+  const mobileDrawerGroups = document.querySelectorAll('.mobile-drawer-group');
+
+  function openDrawer() {
+    mobileDrawerOverlay?.classList.add('active');
+    mobileDrawer?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    // Re-initialize Lucide icons for drawer
+    setTimeout(() => lucide.createIcons(), 50);
+  }
+
+  function closeDrawer() {
+    mobileDrawerOverlay?.classList.remove('active');
+    mobileDrawer?.classList.remove('active');
+    document.body.style.overflow = '';
+    if (mobileDrawerSearch) {
+      mobileDrawerSearch.value = '';
+      filterDrawerItems('');
+    }
+  }
+
+  function filterDrawerItems(query) {
+    const q = query.toLowerCase().trim();
+    let visibleCount = 0;
+    
+    mobileDrawerGroups.forEach(group => {
+      const items = group.querySelectorAll('.mobile-drawer-item');
+      let groupVisibleCount = 0;
+      
+      items.forEach(item => {
+        const text = item.querySelector('span')?.textContent.toLowerCase() || '';
+        if (q === '' || text.includes(q)) {
+          item.classList.remove('hidden');
+          groupVisibleCount++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      
+      if (groupVisibleCount > 0) {
+        group.classList.remove('hidden', 'no-results');
+      } else {
+        group.classList.add('hidden');
+      }
+      visibleCount += groupVisibleCount;
+    });
+    
+    // Show no results message if needed
+    let noResultsGroup = document.querySelector('.mobile-drawer-group.no-results');
+    if (visibleCount === 0 && q !== '') {
+      if (!noResultsGroup) {
+        noResultsGroup = document.createElement('div');
+        noResultsGroup.className = 'mobile-drawer-group no-results';
+        noResultsGroup.innerHTML = '<div class="mobile-drawer-group-title">搜索结果</div><div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.9rem;">未找到匹配的功能</div>';
+        document.getElementById('mobileDrawerBody')?.appendChild(noResultsGroup);
+      }
+      noResultsGroup.classList.remove('hidden');
+    } else if (noResultsGroup) {
+      noResultsGroup.classList.add('hidden');
+    }
+  }
+
+  mobileMoreBtn?.addEventListener('click', openDrawer);
+  mobileDrawerOverlay?.addEventListener('click', closeDrawer);
+  mobileDrawerClose?.addEventListener('click', closeDrawer);
+  mobileDrawerSearch?.addEventListener('input', (e) => filterDrawerItems(e.target.value));
+
+  // Drawer item click - navigate and close
+  mobileDrawerItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      if (page) {
+        switchPage(page);
+        closeDrawer();
+        // Re-initialize icons after page switch
+        setTimeout(() => lucide.createIcons(), 50);
+      }
+    });
+  });
+
+  // Keyboard ESC to close drawer
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer?.classList.contains('active')) {
+      closeDrawer();
+    }
   });
 
   // ============================================

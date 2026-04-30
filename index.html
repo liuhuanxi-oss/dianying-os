@@ -6745,12 +6745,183 @@
           <span>AI付</span>
           <span class="mobile-nav-badge new">NEW</span>
         </div>
-        <div class="mobile-nav-item" data-page="knowledge">
-          <i data-lucide="book-open"></i>
-          <span>知识库</span>
+        <div class="mobile-nav-item" data-page="more" id="mobileMoreBtn">
+          <i data-lucide="grid-3x3"></i>
+          <span>更多</span>
         </div>
       </div>
     </nav>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-drawer-overlay" id="mobileDrawerOverlay"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+      <div class="mobile-drawer-header">
+        <h3>全部功能</h3>
+        <button class="mobile-drawer-close" id="mobileDrawerClose">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="mobile-drawer-search">
+        <i data-lucide="search"></i>
+        <input type="text" placeholder="搜索功能..." id="mobileDrawerSearch">
+      </div>
+      <div class="mobile-drawer-body" id="mobileDrawerBody">
+        <!-- 核心功能 -->
+        <div class="mobile-drawer-group">
+          <div class="mobile-drawer-group-title">核心功能</div>
+          <div class="mobile-drawer-grid">
+            <div class="mobile-drawer-item" data-page="overview">
+              <i data-lucide="layout-dashboard"></i>
+              <span>运营概览</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="chat">
+              <i data-lucide="message-square"></i>
+              <span>AI对话</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="data">
+              <i data-lucide="bar-chart-2"></i>
+              <span>数据报表</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="aipay">
+              <i data-lucide="scan-face"></i>
+              <span>AI付</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="knowledge">
+              <i data-lucide="book-open"></i>
+              <span>知识库</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="logs">
+              <i data-lucide="scroll-text"></i>
+              <span>决策日志</span>
+            </div>
+          </div>
+        </div>
+        <!-- 智能分析 -->
+        <div class="mobile-drawer-group">
+          <div class="mobile-drawer-group-title">智能分析</div>
+          <div class="mobile-drawer-grid">
+            <div class="mobile-drawer-item" data-page="health">
+              <i data-lucide="heart-pulse"></i>
+              <span>门店健康</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="calendar">
+              <i data-lucide="calendar-days"></i>
+              <span>运营日历</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="report">
+              <i data-lucide="file-bar-chart"></i>
+              <span>报表中心</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="roi">
+              <i data-lucide="calculator"></i>
+              <span>ROI计算</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="competitor">
+              <i data-lucide="target"></i>
+              <span>竞品监控</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="inventory">
+              <i data-lucide="package"></i>
+              <span>库存预警</span>
+            </div>
+          </div>
+        </div>
+        <!-- AI能力 -->
+        <div class="mobile-drawer-group">
+          <div class="mobile-drawer-group-title">AI能力</div>
+          <div class="mobile-drawer-grid">
+            <div class="mobile-drawer-item" data-page="creation">
+              <i data-lucide="sparkles"></i>
+              <span>AI内容创作</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="twin">
+              <i data-lucide="box"></i>
+              <span>门店数字孪生</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="location">
+              <i data-lucide="map-pin"></i>
+              <span>智能选址分析</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="journey">
+              <i data-lucide="git-branch"></i>
+              <span>顾客旅程地图</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="safety">
+              <i data-lucide="shield-check"></i>
+              <span>食品安全监控</span>
+            </div>
+          </div>
+        </div>
+        <!-- 运营管理 -->
+        <div class="mobile-drawer-group">
+          <div class="mobile-drawer-group-title">运营管理</div>
+          <div class="mobile-drawer-grid">
+            <div class="mobile-drawer-item" data-page="marketing">
+              <i data-lucide="megaphone"></i>
+              <span>营销工具</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="ticket">
+              <i data-lucide="ticket-check"></i>
+              <span>工单系统</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="security">
+              <i data-lucide="shield"></i>
+              <span>权限管理</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="employee">
+              <i data-lucide="users"></i>
+              <span>员工绩效</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="supply">
+              <i data-lucide="truck"></i>
+              <span>供应链管理</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="member">
+              <i data-lucide="crown"></i>
+              <span>会员运营</span>
+            </div>
+          </div>
+        </div>
+        <!-- 系统 -->
+        <div class="mobile-drawer-group">
+          <div class="mobile-drawer-group-title">系统</div>
+          <div class="mobile-drawer-grid">
+            <div class="mobile-drawer-item" data-page="platform">
+              <i data-lucide="layout-grid"></i>
+              <span>平台管理</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="sentiment">
+              <i data-lucide="message-circle-warning"></i>
+              <span>舆情监控</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="pricing">
+              <i data-lucide="badge-dollar-sign"></i>
+              <span>智能定价</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="changelog">
+              <i data-lucide="git-commit"></i>
+              <span>更新日志</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="alert">
+              <i data-lucide="bell-ring"></i>
+              <span>智能预警</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="inspection">
+              <i data-lucide="clipboard-check"></i>
+              <span>门店巡检</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="datalab">
+              <i data-lucide="flask-conical"></i>
+              <span>数据实验室</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="workflow">
+              <i data-lucide="workflow"></i>
+              <span>工作流</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <!-- AI Float Button -->
     <div class="ai-float">
