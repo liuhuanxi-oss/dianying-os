@@ -204,7 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
         case 'competitor':
           initCompetitorRadarChart();
           initMarketShareChart();
-          initSentimentTrendChart('compSentimentTrendChart');
+          // compSentimentTrendChart在review tab显示时初始化，避免display:none导致0尺寸
+          if (document.getElementById('compReview')?.classList.contains('active')) {
+            initSentimentTrendChart('compSentimentTrendChart');
+          }
           break;
         case 'health':
           initHealthRadarChart();
@@ -641,6 +644,12 @@ document.addEventListener('DOMContentLoaded', function() {
       competitorTabs.forEach(t => t.classList.toggle('active', t.dataset.compTab === targetTab));
       competitorPanels.forEach(p => p.classList.toggle('active', p.id === 'comp' + targetTab.charAt(0).toUpperCase() + targetTab.slice(1)));
       lucide.createIcons();
+      // 重新初始化口碑趋势图（修复display:none导致0尺寸问题）
+      if (targetTab === 'review') {
+        setTimeout(() => {
+          initSentimentTrendChart('compSentimentTrendChart');
+        }, 100);
+      }
     });
   });
 
@@ -1275,7 +1284,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function initCompetitorCharts() {
     initCompetitorRadarChart();
     initMarketShareChart();
-    initSentimentTrendChart('compSentimentTrendChart');
+    // compSentimentTrendChart在review tab显示时初始化
+    if (document.getElementById('compReview')?.classList.contains('active')) {
+      initSentimentTrendChart('compSentimentTrendChart');
+    }
   }
 
   // 竞品雷达图 - 多维度能力对比（竞品页使用）
