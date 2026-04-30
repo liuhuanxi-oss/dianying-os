@@ -1557,6 +1557,8 @@ input, textarea { font: inherit; }
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow-y: auto;
+  max-height: calc(100vh - 140px); /* 减去header和footer高度 */
 }
 .sidebar-nav-item {
   display: flex;
