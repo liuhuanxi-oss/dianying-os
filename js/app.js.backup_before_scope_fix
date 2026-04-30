@@ -62,8 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateThemeIcons();
   }
 
-  window.toggleTheme = toggleTheme;
-
   function updateThemeIcons() {
     const isDark = document.body.classList.contains('dark-mode');
     document.querySelectorAll('.moon-icon').forEach(el => el.classList.toggle('hidden', isDark));
@@ -191,8 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
       lucide.createIcons();
     }, 50);
   }
-
-  window.switchPage = switchPage;
   
   // 根据页面初始化对应的图表
   function initPageCharts(page) {
@@ -1271,6 +1267,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let competitorRadarChart = null;
   let marketShareChart = null;
+  let sentimentTrendChart = null;
 
   function initCompetitorCharts() {
     initCompetitorRadarChart();
@@ -1408,9 +1405,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  window.initDataScreenRadarChart = initDataScreenRadarChart;
-  window.dsScreenRadarChart = dsScreenRadarChart;
-
   // 市场份额环形图
   function initMarketShareChart() {
     const ctx = document.getElementById('marketShareChart');
@@ -1447,14 +1441,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 口碑趋势迷你折线图 - 支持指定canvas ID
-  const sentimentTrendCharts = {};
   function initSentimentTrendChart(canvasId) {
-    const targetId = canvasId || 'sentimentTrendChart';
-    const ctx = document.getElementById(targetId);
+    const ctx = document.getElementById(canvasId || 'sentimentTrendChart');
     if (!ctx || typeof Chart === 'undefined') return;
-    if (sentimentTrendCharts[targetId]) sentimentTrendCharts[targetId].destroy();
+    if (sentimentTrendChart) sentimentTrendChart.destroy();
 
-    sentimentTrendCharts[targetId] = new Chart(ctx, {
+    sentimentTrendChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
@@ -1702,8 +1694,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.head.appendChild(style);
     }
   }
-
-  window.initAidaily = initAidaily;
 
   console.log('店赢OS v10.0 - 新增4项系统功能初始化完成');
 });
@@ -4005,7 +3995,7 @@ console.log('店赢OS - 多门店切换功能已加载');
   // PAGE NAMES UPDATE
   // ============================================
   // 更新pageNames对象添加新页面
-  Object.assign(window.pageNames, {
+  Object.assign(pageNames, {
     'aidaily': 'AI洞察日报',
     'export': '数据导出'
   });

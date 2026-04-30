@@ -8586,6 +8586,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 }
 .review-trend-mini canvas {
   height: 50px;
+  width: 100% !important;
 }
 
 .review-competitors-grid {
