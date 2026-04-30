@@ -145,7 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
     changelog: '更新日志',
     alert: '智能预警',
     inspection: '门店巡检',
-    datalab: '数据实验室'
+    datalab: '数据实验室',
+    aidaily: 'AI洞察日报',
+    export: '数据导出'
   };
 
   function switchPage(page) {
