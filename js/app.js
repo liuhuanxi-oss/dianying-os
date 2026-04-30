@@ -862,6 +862,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (page === 'competitor') {
       setTimeout(initCompetitorCharts, 100);
     }
+    // AI洞察日报初始化
+    if (page === 'aidaily') {
+      setTimeout(initAidaily, 100);
+    }
   };
 
   // ============================================
@@ -1312,6 +1316,228 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
+  }
+
+  // ============================================
+  // INIT COMMAND PALETTE
+  // ============================================
+  function initCommandPalette() {
+    // 命令面板已经通过 DOMContentLoaded 事件初始化
+    // 此函数用于确保在页面切换时重新绑定事件
+    if (commandPaletteOverlay) {
+      // 绑定 Ctrl+K / Cmd+K 快捷键
+      document.removeEventListener('keydown', handleCommandPaletteKeydown);
+      document.addEventListener('keydown', handleCommandPaletteKeydown);
+    }
+  }
+
+  // 命令面板键盘事件处理
+  function handleCommandPaletteKeydown(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if (commandPaletteOverlay?.classList.contains('hidden')) {
+        openCommandPalette();
+      } else {
+        closeCommandPalette();
+      }
+    }
+
+    // 命令面板内键盘导航
+    if (commandPaletteOverlay && !commandPaletteOverlay.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        closeCommandPalette();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, currentResults.length - 1);
+        renderCommandPalette(commandPaletteInput?.value || '');
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+        renderCommandPalette(commandPaletteInput?.value || '');
+      } else if (e.key === 'Enter' && currentResults[selectedIndex]) {
+        e.preventDefault();
+        const item = currentResults[selectedIndex];
+        executeCommand(item.type, item.id);
+      }
+    }
+  }
+
+  // ============================================
+  // INIT AI DAILY (AI洞察日报)
+  // ============================================
+  function initAidaily() {
+    const aiDailySection = document.getElementById('sectionAidaily');
+    if (!aiDailySection) return;
+
+    const aiDailyDate = document.getElementById('aiDailyDate');
+    const aiDailyStatus = document.getElementById('aiDailyStatus');
+    const aiSummaryContent = aiDailySection.querySelector('.ai-summary-content');
+    const aiChangeCards = aiDailySection.querySelectorAll('.ai-change-card');
+    const aiActionItems = aiDailySection.querySelectorAll('.ai-action-item');
+    const aiHistoryItems = aiDailySection.querySelectorAll('.ai-history-item');
+    const aiExportBtn = document.getElementById('aiExportPdfBtn');
+
+    // 1. 日期显示（2026年当前日期）
+    if (aiDailyDate) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      aiDailyDate.textContent = `${year}年${month}月${day}日`;
+    }
+
+    // 2. AI生成状态动画
+    if (aiDailyStatus) {
+      // 模拟AI生成过程
+      const generatingStatus = aiDailyStatus.querySelector('.generating');
+      const readyStatus = aiDailyStatus.parentElement?.querySelector('.ready');
+      
+      if (generatingStatus) {
+        setTimeout(() => {
+          generatingStatus.classList.add('hidden');
+          if (readyStatus) {
+            readyStatus.classList.remove('hidden');
+          }
+        }, 2000);
+      }
+    }
+
+    // 3. 摘要内容打字机效果
+    if (aiSummaryContent) {
+      const originalText = aiSummaryContent.textContent || '';
+      aiSummaryContent.textContent = '';
+      aiSummaryContent.style.opacity = '1';
+      
+      let charIndex = 0;
+      function typeChar() {
+        if (charIndex < originalText.length) {
+          aiSummaryContent.textContent += originalText[charIndex];
+          charIndex++;
+          setTimeout(typeChar, 30 + Math.random() * 20);
+        }
+      }
+      
+      setTimeout(typeChar, 500);
+    }
+
+    // 4. 关键变化卡片动画
+    aiChangeCards.forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 300 + index * 150);
+    });
+
+    // 5. 行动建议优先级标签交互
+    aiActionItems.forEach(item => {
+      const priorityTag = item.querySelector('.priority-tag');
+      const actionBtn = item.querySelector('.ai-action-btn');
+      
+      if (priorityTag) {
+        priorityTag.addEventListener('mouseenter', () => {
+          priorityTag.style.transform = 'scale(1.1)';
+        });
+        priorityTag.addEventListener('mouseleave', () => {
+          priorityTag.style.transform = 'scale(1)';
+        });
+      }
+      
+      if (actionBtn) {
+        actionBtn.addEventListener('click', () => {
+          actionBtn.textContent = '已处理';
+          actionBtn.style.background = 'var(--success)';
+          actionBtn.style.color = 'white';
+          item.style.opacity = '0.6';
+        });
+      }
+    });
+
+    // 6. 历史日报列表展开/收起
+    aiHistoryItems.forEach(item => {
+      const expandIcon = item.querySelector('.ai-history-expand');
+      const detail = item.querySelector('.ai-history-detail');
+      
+      if (expandIcon && detail) {
+        expandIcon.style.cursor = 'pointer';
+        expandIcon.addEventListener('click', () => {
+          const isExpanded = item.classList.contains('expanded');
+          item.classList.toggle('expanded');
+          
+          if (!isExpanded) {
+            // 展开
+            detail.style.maxHeight = detail.scrollHeight + 'px';
+            detail.style.opacity = '1';
+            expandIcon.style.transform = 'rotate(180deg)';
+          } else {
+            // 收起
+            detail.style.maxHeight = '0';
+            detail.style.opacity = '0';
+            expandIcon.style.transform = 'rotate(0deg)';
+          }
+        });
+      }
+    });
+
+    // 7. 导出PDF按钮点击动画
+    if (aiExportBtn) {
+      aiExportBtn.addEventListener('click', () => {
+        aiExportBtn.classList.add('loading');
+        aiExportBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 导出中...';
+        lucide.createIcons();
+        
+        // 模拟导出过程
+        setTimeout(() => {
+          aiExportBtn.classList.remove('loading');
+          aiExportBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> 导出成功';
+          lucide.createIcons();
+          
+          setTimeout(() => {
+            aiExportBtn.innerHTML = '<i data-lucide="file-down" class="w-5 h-5"></i> 导出PDF报告';
+            lucide.createIcons();
+          }, 2000);
+        }, 1500);
+      });
+    }
+
+    // 添加CSS样式（如果还没有）
+    const style = document.createElement('style');
+    if (!document.getElementById('aidaily-animations')) {
+      style.id = 'aidaily-animations';
+      style.textContent = `
+        .ai-summary-content {
+          min-height: 60px;
+          line-height: 1.8;
+        }
+        .ai-history-detail {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease, opacity 0.3s ease;
+          opacity: 0;
+        }
+        .ai-history-item.expanded .ai-history-detail {
+          max-height: 100px;
+        }
+        .ai-history-expand {
+          transition: transform 0.3s ease;
+        }
+        .ai-export-btn.loading {
+          pointer-events: none;
+          opacity: 0.8;
+        }
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 
   console.log('店赢OS v10.0 - 新增4项系统功能初始化完成');
