@@ -113,9 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.sun-icon').forEach(el => el.classList.toggle('hidden', !isDark));
   }
 
-  // 从localStorage恢复主题
+  // 从localStorage恢复主题 — 但着陆页不应用dark-mode
+  // dark-mode只影响demo-page(仪表盘)，着陆页永远是深色
   if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark-mode');
+    // 只在用户已经在demo页面时才应用dark-mode
+    // 初始加载时着陆页可见，所以不应用
+    // document.body.classList.add('dark-mode');
     updateThemeIcons();
   }
 
@@ -144,6 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
     landingPage.classList.add('hidden');
     dataScreen?.classList.add('hidden');
     demoPage.classList.remove('hidden');
+    // 恢复用户之前的主题偏好
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
     window.scrollTo(0, 0);
     initDemo();
     lucide.createIcons();
@@ -152,6 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
   function showLanding() {
     demoPage.classList.add('hidden');
     landingPage.classList.remove('hidden');
+    // 着陆页永远是深色主题，移除dark-mode避免CSS冲突
+    document.body.classList.remove('dark-mode');
     window.scrollTo(0, 0);
   }
 

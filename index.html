@@ -20,6 +20,23 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.4/dist/driver.min.css">
+  <!-- Critical inline CSS: 确保CDN/style.css加载失败时着陆页仍可显示 -->
+  <style>
+    .hidden{display:none!important}
+    .landing-page{background:#08090a;color:#f7f8f8;min-height:100vh}
+    .landing-page .hero{min-height:auto;padding:100px 24px 60px;background:#08090a;display:flex;flex-direction:column;align-items:center;text-align:center}
+    .landing-page .hero-title{color:#fff;font-size:clamp(2.5rem,6vw,4rem);font-weight:800;line-height:1.1}
+    .landing-page .hero-subtitle{color:#a0a0a8;font-size:1.25rem}
+    .landing-page .hero-desc{color:#8b8e94;font-size:1.125rem;max-width:600px;line-height:1.7}
+    .landing-page .hero-badge{background:rgba(255,255,255,0.05);color:#8b8e94;padding:8px 16px;border-radius:100px;font-size:0.875rem}
+    .landing-page .gradient-text{color:#fff}
+    .landing-page .navbar{background:rgba(8,9,10,0.95);position:fixed;top:0;left:0;right:0;z-index:100}
+    .landing-page .btn-primary{background:#7C3AED;color:#fff;padding:12px 24px;border-radius:6px;border:none;cursor:pointer}
+    .landing-page .btn-secondary{background:rgba(255,255,255,0.08);color:#fff;padding:12px 24px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);cursor:pointer}
+    body.dark-mode .landing-page .hero{background:#08090a!important}
+    body.dark-mode .landing-page{background:#08090a;color:#f7f8f8}
+    .data-screen{min-height:100vh;background:#0A0E1A;color:#fff}
+  </style>
   <script>
     tailwind.config = {
       theme: {

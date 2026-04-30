@@ -11921,3 +11921,36 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   .landing-page .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .landing-page .industries-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
 }
+
+/* ============================================
+   DARK MODE LANDING PAGE OVERRIDE
+   着陆页永远是深色，dark-mode不影响
+   ============================================ */
+body.dark-mode .landing-page {
+  background: #08090a;
+  color: #f7f8f8;
+}
+body.dark-mode .landing-page .hero {
+  background: #08090a !important;
+}
+body.dark-mode .landing-page .navbar {
+  background: rgba(8,9,10,0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+body.dark-mode .landing-page .hero-title {
+  color: #fff;
+}
+body.dark-mode .landing-page .hero-subtitle {
+  color: #a0a0a8;
+}
+body.dark-mode .landing-page .hero-desc {
+  color: #8b8e94;
+}
+body.dark-mode .landing-page .hero-badge {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #8b8e94;
+}
+body.dark-mode .landing-page .gradient-text {
+  color: #fff;
+}
