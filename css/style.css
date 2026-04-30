@@ -4519,7 +4519,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 .inv-stat-trend { font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; }
 .inv-stat-trend.up { color: var(--danger); }
 .inv-stat-trend.down { color: var(--success); }
-.inv-stat-chart canvas { width: 100%; }
+.inv-stat-chart canvas { width: 100%; height: 60px; }
 
 /* ============================================
    COMPETITOR MODULE

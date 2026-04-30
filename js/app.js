@@ -9,6 +9,49 @@ let healthRadarChart = null;
 let reportTrendChart = null;
 let locationFlowChart = null;
 
+// 确保canvas有正确的尺寸（修复Chart.js在display:none容器中初始化时尺寸为0的问题）
+function ensureCanvasSize(canvas) {
+  if (!canvas) return canvas;
+  if (canvas.width === 0 || canvas.height === 0) {
+    // 尝试多种方法获取尺寸
+    const parent = canvas.parentElement;
+    let w = 0, h = 0;
+    
+    // 方法1：获取父元素的offsetWidth/offsetHeight
+    if (parent) {
+      w = parent.offsetWidth;
+      h = parent.offsetHeight;
+    }
+    
+    // 方法2：如果父元素尺寸为0，尝试向上遍历祖先元素
+    if (w === 0 || h === 0) {
+      let el = parent;
+      while (el && (w === 0 || h === 0)) {
+        if (el.offsetWidth > 0) w = el.offsetWidth;
+        if (el.offsetHeight > 0) h = el.offsetHeight;
+        el = el.parentElement;
+      }
+    }
+    
+    // 方法3：使用CSS样式中的宽度作为fallback
+    if (w === 0 || h === 0) {
+      const computed = window.getComputedStyle(canvas);
+      const matchW = computed.width.match(/(\d+)px/);
+      const matchH = computed.height.match(/(\d+)px/);
+      if (matchW) w = parseInt(matchW[1]);
+      if (matchH) h = parseInt(matchH[1]);
+    }
+    
+    // 方法4：使用默认值
+    w = w || 300;
+    h = h || 150;
+    
+    canvas.width = w;
+    canvas.height = h;
+  }
+  return canvas;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // 初始化Lucide图标
   if (typeof lucide !== 'undefined') {
@@ -295,6 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let visibleCount = 0;
     
     mobileDrawerGroups.forEach(group => {
+      if (!group) return;
       const items = group.querySelectorAll('.mobile-drawer-item');
       let groupVisibleCount = 0;
       
@@ -672,9 +716,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize Inventory Charts
   function initInventoryCharts() {
-    const costCtx = document.getElementById('costChart');
-    const lossCtx = document.getElementById('lossChart');
-    const turnoverCtx = document.getElementById('turnoverChart');
+    const costCtx = ensureCanvasSize(document.getElementById('costChart'));
+    const lossCtx = ensureCanvasSize(document.getElementById('lossChart'));
+    const turnoverCtx = ensureCanvasSize(document.getElementById('turnoverChart'));
     
     if (costCtx && typeof Chart !== 'undefined') {
       new Chart(costCtx, {
@@ -763,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize Health Radar Chart
   function initHealthRadarChart() {
-    const ctx = document.getElementById('healthRadarChart');
+    const ctx = ensureCanvasSize(document.getElementById('healthRadarChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (healthRadarChart) healthRadarChart.destroy();
 
@@ -811,7 +855,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize Report Trend Chart
   function initReportTrendChart() {
-    const ctx = document.getElementById('reportTrendChart');
+    const ctx = ensureCanvasSize(document.getElementById('reportTrendChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (reportTrendChart) reportTrendChart.destroy();
 
@@ -898,8 +942,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Update switchPage function to handle new pages
-  const originalSwitchPage = switchPage;
-  switchPage = function(page) {
+  const originalSwitchPage = window.switchPage;
+  window.switchPage = switchPage = function(page) {
     sidebarNavItems.forEach(item => {
       item.classList.toggle('active', item.dataset.page === page);
     });
@@ -913,55 +957,55 @@ document.addEventListener('DOMContentLoaded', function() {
       breadcrumbText.textContent = extendedPageNames[page] || '运营概览';
     }
     
-    // Initialize charts when entering specific pages
+    // Initialize charts when entering specific pages (delay increased for DOM render)
     if (page === 'inventory') {
-      setTimeout(initInventoryCharts, 100);
+      setTimeout(initInventoryCharts, 300);
     }
     if (page === 'health') {
-      setTimeout(initHealthRadarChart, 100);
+      setTimeout(initHealthRadarChart, 300);
     }
     if (page === 'report') {
-      setTimeout(initReportTrendChart, 100);
+      setTimeout(initReportTrendChart, 300);
     }
     if (page === 'location') {
-      setTimeout(initLocationFlowChart, 100);
+      setTimeout(initLocationFlowChart, 300);
     }
     if (page === 'journey') {
-      setTimeout(initJourneyInteractions, 100);
+      setTimeout(initJourneyInteractions, 300);
     }
     if (page === 'creation') {
-      setTimeout(initCreationInteractions, 100);
+      setTimeout(initCreationInteractions, 300);
     }
     // New pages initialization
     if (page === 'supply') {
-      setTimeout(initSupplyCostChart, 100);
+      setTimeout(initSupplyCostChart, 300);
     }
     if (page === 'member') {
-      setTimeout(initMemberRfmChart, 100);
+      setTimeout(initMemberRfmChart, 300);
     }
     if (page === 'sentiment') {
-      setTimeout(initSentimentCharts, 100);
+      setTimeout(initSentimentCharts, 300);
     }
     if (page === 'pricing') {
-      setTimeout(initElasticityChart, 100);
+      setTimeout(initElasticityChart, 300);
     }
     // New system pages initialization
     if (page === 'alert') {
-      setTimeout(initAlertTypeChart, 100);
+      setTimeout(initAlertTypeChart, 300);
     }
     if (page === 'inspection') {
-      setTimeout(initInspectionTrendChart, 100);
+      setTimeout(initInspectionTrendChart, 300);
     }
     if (page === 'datalab') {
-      setTimeout(initDatalabCompareChart, 100);
+      setTimeout(initDatalabCompareChart, 300);
     }
     // Competitor page initialization
     if (page === 'competitor') {
-      setTimeout(initCompetitorCharts, 100);
+      setTimeout(initCompetitorCharts, 300);
     }
     // AI洞察日报初始化
     if (page === 'aidaily') {
-      setTimeout(initAidaily, 100);
+      setTimeout(initAidaily, 300);
     }
   };
 
@@ -971,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Supply Chain Cost Chart
   function initSupplyCostChart() {
-    const ctx = document.getElementById('supplyCostChart');
+    const ctx = ensureCanvasSize(document.getElementById('supplyCostChart'));
     if (!ctx || typeof Chart === 'undefined') return;
 
     new Chart(ctx, {
@@ -1019,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Member RFM Pie Chart
   function initMemberRfmChart() {
-    const ctx = document.getElementById('memberRfmPieChart');
+    const ctx = ensureCanvasSize(document.getElementById('memberRfmPieChart'));
     if (!ctx || typeof Chart === 'undefined') return;
 
     new Chart(ctx, {
@@ -1044,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Sentiment Charts
   function initSentimentCharts() {
     // Sentiment Trend Chart
-    const trendCtx = document.getElementById('sentimentTrendChart');
+    const trendCtx = ensureCanvasSize(document.getElementById('sentimentTrendChart'));
     if (trendCtx && typeof Chart !== 'undefined') {
       new Chart(trendCtx, {
         type: 'line',
@@ -1091,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Sentiment Source Chart
-    const sourceCtx = document.getElementById('sentimentSourceChart');
+    const sourceCtx = ensureCanvasSize(document.getElementById('sentimentSourceChart'));
     if (sourceCtx && typeof Chart !== 'undefined') {
       new Chart(sourceCtx, {
         type: 'doughnut',
@@ -1115,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Elasticity Chart
   function initElasticityChart() {
-    const ctx = document.getElementById('elasticityChart');
+    const ctx = ensureCanvasSize(document.getElementById('elasticityChart'));
     if (!ctx || typeof Chart === 'undefined') return;
 
     new Chart(ctx, {
@@ -1169,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Alert Type Pie Chart
   let alertTypeChart = null;
   function initAlertTypeChart() {
-    const ctx = document.getElementById('alertTypeChart');
+    const ctx = ensureCanvasSize(document.getElementById('alertTypeChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (alertTypeChart) alertTypeChart.destroy();
 
@@ -1200,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inspection Trend Chart
   let inspectionTrendChart = null;
   function initInspectionTrendChart() {
-    const ctx = document.getElementById('inspectionTrendChart');
+    const ctx = ensureCanvasSize(document.getElementById('inspectionTrendChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (inspectionTrendChart) inspectionTrendChart.destroy();
 
@@ -1233,7 +1277,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Datalab Compare Chart
   let datalabCompareChart = null;
   function initDatalabCompareChart() {
-    const ctx = document.getElementById('datalabCompareChart');
+    const ctx = ensureCanvasSize(document.getElementById('datalabCompareChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (datalabCompareChart) datalabCompareChart.destroy();
 
@@ -1345,7 +1389,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // 竞品页面雷达图使用 compRadarChart
-    const dsCtx = document.getElementById('compRadarChart');
+    const dsCtx = ensureCanvasSize(document.getElementById('compRadarChart'));
     if (dsCtx && typeof Chart !== 'undefined') {
       if (compRadarChart) compRadarChart.destroy();
       compRadarChart = new Chart(dsCtx, {
@@ -1426,7 +1470,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 市场份额环形图
   function initMarketShareChart() {
-    const ctx = document.getElementById('marketShareChart');
+    const ctx = ensureCanvasSize(document.getElementById('marketShareChart'));
     if (!ctx || typeof Chart === 'undefined') return;
     if (marketShareChart) marketShareChart.destroy();
 
@@ -1463,21 +1507,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const sentimentTrendCharts = {};
   function initSentimentTrendChart(canvasId) {
     const targetId = canvasId || 'sentimentTrendChart';
-    const ctx = document.getElementById(targetId);
+    const ctx = ensureCanvasSize(document.getElementById(targetId));
     if (!ctx || typeof Chart === 'undefined') return;
-    
-    // Ensure canvas has dimensions (fix for hidden container)
-    if (ctx.clientWidth === 0 || ctx.clientHeight === 0) {
-      const parent = ctx.parentElement;
-      if (parent) {
-        ctx.width = parent.offsetWidth || 200;
-        ctx.height = parent.offsetHeight || 50;
-      } else {
-        ctx.width = 200;
-        ctx.height = 50;
-      }
-    }
-    
+
     if (sentimentTrendCharts[targetId]) sentimentTrendCharts[targetId].destroy();
 
     sentimentTrendCharts[targetId] = new Chart(ctx, {
@@ -2164,9 +2196,9 @@ function initChinaMap() {
     ];
     
     // 主数据源：阿里云 DataV GeoJSON
-    const primarySource = 'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json';
+    const primarySource = 'assets/data/china.json';
     // 备用数据源：unpkg CDN
-    const fallbackSource = 'https://unpkg.com/echarts@5.4.3/map/json/china.json';
+    const fallbackSource = 'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json';
     // 内联备用GeoJSON（简化版，只包含省份轮廓）
     const inlineChinaGeoJson = {
       "type": "FeatureCollection",
@@ -2293,32 +2325,37 @@ function initChinaMap() {
       });
     }
     
-    // 先尝试主源，失败后尝试备用源，最后使用内联数据
-    loadMapData(primarySource)
-      .catch(() => {
-        console.warn('主地图数据源加载失败，尝试备用源...');
-        return loadMapData(fallbackSource, true);
-      })
-      .catch(() => {
-        console.warn('备用地图数据源加载失败，使用内联备用数据...');
-        return null;
-      })
-      .then(chinaJson => {
-        if (chinaJson) {
+    // 优先使用内联GeoJSON（CHINA_GEO_JSON），最可靠
+    if (typeof CHINA_GEO_JSON !== 'undefined' && CHINA_GEO_JSON.features && CHINA_GEO_JSON.features.length > 10) {
+      chinaMapChart.hideLoading();
+      echarts.registerMap('china', CHINA_GEO_JSON);
+      renderStoreMarkers(CHINA_GEO_JSON);
+    } else {
+      // 降级：尝试从本地/远程加载
+      loadMapData(primarySource)
+        .catch(() => {
+          console.warn('本地地图数据加载失败，尝试远程源...');
+          return loadMapData(fallbackSource, true);
+        })
+        .catch(() => {
+          console.warn('远程地图数据也加载失败，使用简化内联数据...');
+          return null;
+        })
+        .then(chinaJson => {
+          if (chinaJson) {
+            chinaMapChart.hideLoading();
+            echarts.registerMap('china', chinaJson);
+            renderStoreMarkers(chinaJson);
+          } else {
+            initWithInlineMap();
+          }
+        })
+        .catch(err => {
+          console.error('地图数据加载失败:', err);
           chinaMapChart.hideLoading();
-          echarts.registerMap('china', chinaJson);
-          renderStoreMarkers(chinaJson);
-        } else {
-          // 使用内联备用地图
           initWithInlineMap();
-        }
-      })
-      .catch(err => {
-        console.error('地图数据加载失败:', err);
-        chinaMapChart.hideLoading();
-        // 使用内联备用地图
-        initWithInlineMap();
-      });
+        });
+    }
     
     window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
   } catch (err) {
@@ -2742,11 +2779,11 @@ function initKeyboardShortcuts() {
     const key = e.key.toLowerCase();
     
     switch(key) {
-      case '1': switchPage('overview'); break;
-      case '2': switchPage('chat'); break;
-      case '3': switchPage('data'); break;
-      case '4': switchPage('platform'); break;
-      case '5': switchPage('logs'); break;
+      case '1': window.switchPage('overview'); break;
+      case '2': window.switchPage('chat'); break;
+      case '3': window.switchPage('data'); break;
+      case '4': window.switchPage('platform'); break;
+      case '5': window.switchPage('logs'); break;
       case 'd': if (!e.ctrlKey && !e.metaKey) toggleTheme(); break;
       case 'f': if (!e.ctrlKey && !e.metaKey) toggleFullscreen(); break;
       case 'r': if (!e.ctrlKey && !e.metaKey) window.location.reload(); break;
@@ -3156,7 +3193,7 @@ function initDateRangePicker() {
 
 // Initialize Location Flow Chart
 function initLocationFlowChart() {
-  const ctx = document.getElementById('locationFlowChart');
+  const ctx = ensureCanvasSize(document.getElementById('locationFlowChart'));
   if (!ctx || typeof Chart === 'undefined') return;
   if (locationFlowChart) locationFlowChart.destroy();
 
@@ -3658,11 +3695,11 @@ console.log('店赢OS - 多门店切换功能已加载');
     closeCommandPalette();
     
     if (type === 'page') {
-      switchPage(id);
+      window.switchPage(id);
     } else if (type === 'action') {
       switch(id) {
         case 'export-report':
-          switchPage('export');
+          window.switchPage('export');
           break;
         case 'switch-store':
           document.getElementById('storeSelector')?.click();
@@ -4502,8 +4539,8 @@ function initExport() {
 // ============================================
 // 页面切换时初始化功能
 // ============================================
-const originalSwitchPage = switchPage;
-switchPage = function(page) {
+const originalSwitchPage = window.switchPage;
+window.switchPage = switchPage = function(page) {
   // 调用原始函数
   if (originalSwitchPage) {
     originalSwitchPage(page);
@@ -4983,8 +5020,8 @@ function initMissingButtonHandlers() {
 }
 
 // 在页面切换后重新初始化
-const originalSwitchPageV2 = switchPage;
-switchPage = function(page) {
+const originalSwitchPageV2 = window.switchPage;
+window.switchPage = switchPage = function(page) {
   if (typeof originalSwitchPageV2 === 'function') {
     originalSwitchPageV2(page);
   }
