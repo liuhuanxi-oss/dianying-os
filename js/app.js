@@ -1275,7 +1275,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSentimentTrendChart();
   }
 
-  // 竞品雷达图 - 多维度能力对比（同时初始化竞品分析页和大屏中的雷达图）
+  // 竞品雷达图 - 多维度能力对比
   let dsCompetitorRadarChart = null;
   
   function initCompetitorRadarChart() {
@@ -1328,18 +1328,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
     
-    // 初始化竞品分析页的雷达图
-    const ctx = document.getElementById('competitorRadarChart');
-    if (ctx && typeof Chart !== 'undefined') {
-      if (competitorRadarChart) competitorRadarChart.destroy();
-      competitorRadarChart = new Chart(ctx, {
-        type: 'radar',
-        data: radarData,
-        options: radarOptions
-      });
-    }
-    
-    // 初始化数据大屏的雷达图
+    // 初始化竞品页面和数据大屏的雷达图（共用的dsCompetitorRadarChart）
     const dsCtx = document.getElementById('dsCompetitorRadarChart');
     if (dsCtx && typeof Chart !== 'undefined') {
       if (dsCompetitorRadarChart) dsCompetitorRadarChart.destroy();
