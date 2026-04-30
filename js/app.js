@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         case 'competitor':
           initCompetitorRadarChart();
           initMarketShareChart();
-          initSentimentTrendChart();
+          initSentimentTrendChart('compSentimentTrendChart');
           break;
         case 'health':
           initHealthRadarChart();
@@ -1272,11 +1272,11 @@ document.addEventListener('DOMContentLoaded', function() {
   function initCompetitorCharts() {
     initCompetitorRadarChart();
     initMarketShareChart();
-    initSentimentTrendChart();
+    initSentimentTrendChart('compSentimentTrendChart');
   }
 
-  // 竞品雷达图 - 多维度能力对比
-  let dsCompetitorRadarChart = null;
+  // 竞品雷达图 - 多维度能力对比（竞品页使用）
+  let compRadarChart = null;
   
   function initCompetitorRadarChart() {
     const radarData = {
@@ -1328,11 +1328,76 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
     
-    // 初始化竞品页面和数据大屏的雷达图（共用的dsCompetitorRadarChart）
-    const dsCtx = document.getElementById('dsCompetitorRadarChart');
+    // 竞品页面雷达图使用 compRadarChart
+    const dsCtx = document.getElementById('compRadarChart');
     if (dsCtx && typeof Chart !== 'undefined') {
-      if (dsCompetitorRadarChart) dsCompetitorRadarChart.destroy();
-      dsCompetitorRadarChart = new Chart(dsCtx, {
+      if (compRadarChart) compRadarChart.destroy();
+      compRadarChart = new Chart(dsCtx, {
+        type: 'radar',
+        data: radarData,
+        options: radarOptions
+      });
+    }
+  }
+
+  // 数据大屏竞品雷达图
+  let dsScreenRadarChart = null;
+  
+  function initDataScreenRadarChart() {
+    const radarData = {
+      labels: ['口味', '服务', '环境', '性价比', '品牌力', '创新力'],
+      datasets: [{
+        label: '本店',
+        data: [78, 75, 82, 88, 65, 85],
+        borderColor: '#7C3AED',
+        backgroundColor: 'rgba(124, 58, 237, 0.25)',
+        borderWidth: 3,
+        pointBackgroundColor: '#7C3AED',
+        pointRadius: 4
+      }, {
+        label: '海底捞',
+        data: [82, 95, 88, 60, 92, 75],
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        borderWidth: 2,
+        pointBackgroundColor: '#F59E0B',
+        pointRadius: 3
+      }, {
+        label: '小龙坎',
+        data: [85, 78, 72, 80, 70, 72],
+        borderColor: '#06B6D4',
+        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+        borderWidth: 2,
+        pointBackgroundColor: '#06B6D4',
+        pointRadius: 3
+      }]
+    };
+    
+    const radarOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 20, display: false },
+          grid: { color: '#E2E8F0' },
+          pointLabels: {
+            font: { size: 11, weight: '500' },
+            color: '#64748B'
+          }
+        }
+      }
+    };
+    
+    // 数据大屏雷达图使用 dsScreenRadarChart
+    const dsCtx = document.getElementById('dsScreenRadarChart');
+    if (dsCtx && typeof Chart !== 'undefined') {
+      if (dsScreenRadarChart) dsScreenRadarChart.destroy();
+      dsScreenRadarChart = new Chart(dsCtx, {
         type: 'radar',
         data: radarData,
         options: radarOptions
@@ -1375,9 +1440,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 口碑趋势迷你折线图
-  function initSentimentTrendChart() {
-    const ctx = document.getElementById('sentimentTrendChart');
+  // 口碑趋势迷你折线图 - 支持指定canvas ID
+  function initSentimentTrendChart(canvasId) {
+    const ctx = document.getElementById(canvasId || 'sentimentTrendChart');
     if (!ctx || typeof Chart === 'undefined') return;
     if (sentimentTrendChart) sentimentTrendChart.destroy();
 
@@ -2367,7 +2432,7 @@ function initDataScreenV2() {
     initBadReviewCharts();
     initMemberCharts();
     initAIStatsChart();
-    initCompetitorRadarChart(); // 数据大屏竞品雷达图
+    initDataScreenRadarChart(); // 数据大屏竞品雷达图
     initForecastChart(); // AI预测图
   }, 100);
   
@@ -2861,7 +2926,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initKeyboardShortcuts();
     initTourGuide();
     initExportReport();
-    initCompetitorRadarChart();
+    initDataScreenRadarChart();
     initForecastChart();
     initDataComparison();
     initLogFilters();
