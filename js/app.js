@@ -1525,18 +1525,17 @@ function initRankingScroll() {
 // 5. 通知中心
 // ============================================
 function initNotificationCenter() {
-  const bellBtn = document.getElementById('notificationBell');
+  const bellBtn = document.getElementById('notificationBtn');
   const dropdown = document.getElementById('notificationDropdown');
   const markReadBtn = document.querySelector('.notification-mark-read');
   
   if (!bellBtn || !dropdown) return;
   
   const notifications = [
-    { type: 'warning', title: '差评预警', content: '望京店收到1条1星差评，请及时处理', time: '5分钟前', read: false },
-    { type: 'info', title: '流量异常', content: '三里屯店今日午高峰流量下降23%，建议检查', time: '15分钟前', read: false },
-    { type: 'success', title: '评分提升', content: '恭喜！您的好评率环比提升5.2%', time: '1小时前', read: true },
-    { type: 'warning', title: '订单异常', content: '西单店出现3笔疑似刷单，已标记审查', time: '2小时前', read: true },
-    { type: 'info', title: 'AI建议', content: '系统检测到工作日午高峰人手不足，建议调整排班', time: '3小时前', read: true }
+    { type: 'danger', title: '差评预警', content: '您有1条新差评待处理', time: '3分钟前', read: false },
+    { type: 'success', title: 'AI处理完成', content: 'AI已自动回复3条差评', time: '15分钟前', read: false },
+    { type: 'info', title: 'VIP到店', content: 'VIP客户王女士已到店', time: '30分钟前', read: true },
+    { type: 'warning', title: '营收达标', content: '今日营收已突破¥8,000', time: '1小时前', read: true }
   ];
   
   function renderNotifications() {
@@ -1545,22 +1544,20 @@ function initNotificationCenter() {
     
     list.innerHTML = notifications.map(n => 
       '<div class="notification-item ' + (n.read ? '' : 'unread') + '" data-type="' + n.type + '">' +
-        '<div class="notification-icon notification-icon-' + n.type + '">' +
-          '<i data-lucide="' + (n.type === 'warning' ? 'alert-triangle' : n.type === 'success' ? 'check-circle' : 'info') + '" class="w-4 h-4"></i>' +
+        '<div class="notification-icon ' + n.type + '">' +
+          '<i data-lucide="' + (n.type === 'danger' ? 'alert-circle' : n.type === 'success' ? 'check-circle' : n.type === 'warning' ? 'trending-up' : 'info') + '" class="w-4 h-4"></i>' +
         '</div>' +
         '<div class="notification-content">' +
-          '<div class="notification-title">' + n.title + '</div>' +
-          '<div class="notification-text">' + n.content + '</div>' +
+          '<div class="notification-text">' + n.title + '：' + n.content + '</div>' +
           '<div class="notification-time">' + n.time + '</div>' +
         '</div>' +
       '</div>'
     ).join('');
     
     const unreadCount = notifications.filter(n => !n.read).length;
-    const badge = bellBtn.querySelector('.notification-badge');
+    const badge = bellBtn.querySelector('.topbar-btn-badge');
     if (badge) {
       badge.textContent = unreadCount;
-      badge.style.display = unreadCount > 0 ? 'flex' : 'none';
     }
     
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1592,57 +1589,29 @@ function initNotificationCenter() {
 // ============================================
 function initBatchOperations() {
   const batchBtn = document.getElementById('batchActionBtn');
-  const modal = document.getElementById('batchModal');
-  const closeBtn = modal?.querySelector('.modal-close');
-  const operationBtns = document.querySelectorAll('.batch-operation-btn');
-  const executeBtn = document.getElementById('batchExecuteBtn');
+  const dropdown = document.getElementById('batchDropdown');
   
-  if (!batchBtn || !modal) return;
+  if (!batchBtn || !dropdown) return;
   
-  batchBtn.addEventListener('click', () => {
-    modal.classList.remove('hidden');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+  batchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('hidden');
   });
   
-  closeBtn?.addEventListener('click', () => {
-    modal.classList.add('hidden');
+  document.addEventListener('click', (e) => {
+    if (!batchBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
   });
   
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
-  });
-  
-  let selectedOperation = '';
+  const operationBtns = document.querySelectorAll('.batch-dropdown-item');
   operationBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      operationBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedOperation = btn.dataset.operation;
+      const action = btn.dataset.action;
+      console.log('执行批量操作:', action);
+      showToast('已执行批量操作：' + (action === 'reply' ? '批量回复差评' : action === 'price' ? '批量调价' : '批量同步'));
+      dropdown.classList.add('hidden');
     });
-  });
-  
-  executeBtn?.addEventListener('click', () => {
-    if (!selectedOperation) {
-      alert('请先选择操作类型');
-      return;
-    }
-    
-    const selectedItems = document.querySelectorAll('.store-checkbox:checked');
-    if (selectedItems.length === 0) {
-      alert('请至少选择一项');
-      return;
-    }
-    
-    executeBtn.disabled = true;
-    executeBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> 执行中...';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-    
-    setTimeout(() => {
-      executeBtn.disabled = false;
-      executeBtn.innerHTML = '确认执行';
-      modal.classList.add('hidden');
-      showToast('已成功对 ' + selectedItems.length + ' 项执行「' + getOperationName(selectedOperation) + '」');
-    }, 1500);
   });
 }
 
