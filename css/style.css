@@ -9565,6 +9565,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   font-family: 'SF Mono', 'Monaco', monospace;
   letter-spacing: 1px;
   margin-bottom: 4px;
+  perspective: 300px;
 }
 .flip-card-label {
   font-size: 0.8125rem;
@@ -9573,15 +9574,17 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 .flip-digit {
   display: inline-block;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 .flip-digit.flipping {
-  animation: flipDown 0.6s ease-in-out;
+  animation: flip3D 0.6s ease-in-out;
 }
-@keyframes flipDown {
-  0% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(-100%); opacity: 0; }
-  51% { transform: translateY(100%); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+@keyframes flip3D {
+  0% { transform: rotateX(0deg); opacity: 1; }
+  50% { transform: rotateX(-90deg); opacity: 0; }
+  51% { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: rotateX(0deg); opacity: 1; }
 }
 .realtime-indicator {
   display: flex;

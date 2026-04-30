@@ -1976,6 +1976,12 @@ function initDataScreenV2() {
   // 初始化Tab
   initDSTabs();
   
+  // 初始化升级功能
+  initFlipCards();
+  initChatEnhancements();
+  initStrategyExecute();
+  initHealthRoadmap();
+  
   // 初始化新闻滚动
   initNewsTicker();
   
