@@ -12561,3 +12561,230 @@ html {
     gap: 24px;
   }
 }
+
+/* ============================================
+   MOBILE RESPONSIVE - Full Adaptation
+   ============================================ */
+@media (max-width: 768px) {
+  /* Landing Page Hero */
+  .landing-page .hero {
+    min-height: auto;
+    padding: 80px 16px 40px;
+    position: relative;
+  }
+  .landing-page .hero::before {
+    width: 300px;
+    height: 300px;
+  }
+  .landing-page .hero::after {
+    width: 200px;
+    height: 200px;
+  }
+  .landing-page .hero-title {
+    font-size: 2rem;
+  }
+  .landing-page .hero-subtitle {
+    font-size: 1rem;
+  }
+  .landing-page .hero-desc {
+    font-size: 0.875rem;
+    margin-bottom: 24px;
+  }
+  .landing-page .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .landing-page .hero-buttons .btn-primary,
+  .landing-page .hero-buttons .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.9375rem;
+  }
+  .landing-page .hero-mockup {
+    margin-top: 16px;
+  }
+  .landing-page .mockup-dashboard {
+    height: 160px;
+  }
+  
+  /* Navbar */
+  .landing-page .navbar {
+    padding: 0 16px;
+  }
+  .landing-page .navbar-inner {
+    height: 56px;
+  }
+  
+  /* Industry Tabs */
+  .landing-page .industry-tabs-section {
+    padding: 24px 16px;
+  }
+  .landing-page .industry-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .landing-page .industry-tab {
+    flex: 1 0 auto;
+    font-size: 0.8125rem;
+    padding: 8px 12px;
+  }
+  .landing-page .showcase-stat-value {
+    font-size: 1.25rem;
+  }
+  
+  /* Client Logos */
+  .landing-page .client-logos-section {
+    padding: 32px 16px;
+  }
+  .landing-page .client-logos-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .landing-page .client-logo-placeholder {
+    width: 100px;
+    height: 40px;
+    font-size: 0.75rem;
+  }
+  
+  /* Demo Video */
+  .landing-page .demo-video-section {
+    padding: 40px 16px;
+  }
+  .landing-page .demo-video-title {
+    font-size: 1.25rem;
+  }
+  
+  /* Stats */
+  .landing-page .stats {
+    padding: 40px 16px;
+  }
+  .landing-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .landing-page .stat-number {
+    font-size: 1.5rem;
+  }
+  .landing-page .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  /* Industries */
+  .landing-page .industries {
+    padding: 40px 16px;
+  }
+  .landing-page .industries-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .landing-page .industry-item {
+    padding: 10px 14px;
+  }
+  .landing-page .industry-name {
+    font-size: 0.8125rem;
+  }
+  .landing-page .industry-count {
+    font-size: 0.6875rem;
+  }
+  
+  /* Features */
+  .landing-page .features {
+    padding: 48px 16px;
+  }
+  .landing-page .feature-card {
+    padding: 20px;
+  }
+  .landing-page .feature-title {
+    font-size: 0.9375rem;
+  }
+  .landing-page .feature-desc {
+    font-size: 0.8125rem;
+  }
+  .landing-page .ai-preview {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+  
+  /* Pricing */
+  .landing-page .pricing {
+    padding: 48px 16px;
+  }
+  .landing-page .pricing-card {
+    padding: 24px;
+  }
+  .landing-page .pricing-price {
+    font-size: 1.75rem;
+  }
+  
+  /* FAQ */
+  .landing-page .faq {
+    padding: 48px 16px;
+  }
+  .landing-page .faq-question {
+    font-size: 0.9375rem;
+    padding: 16px 0;
+  }
+  .landing-page .faq-answer p {
+    font-size: 0.875rem;
+    padding-bottom: 16px;
+  }
+  
+  /* CTA */
+  .landing-page .cta {
+    padding: 48px 16px;
+  }
+  .landing-page .cta-title {
+    font-size: 1.5rem;
+  }
+  
+  /* Footer */
+  .landing-page .footer {
+    padding: 32px 16px;
+  }
+  .landing-page .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  /* Section titles */
+  .landing-page .section-title {
+    font-size: 1.5rem;
+  }
+  .landing-page .section-subtitle {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-page .hero {
+    padding: 72px 12px 32px;
+  }
+  .landing-page .hero-title {
+    font-size: 1.75rem;
+  }
+  .landing-page .hero-subtitle {
+    font-size: 0.9375rem;
+  }
+  .landing-page .hero-desc {
+    font-size: 0.8125rem;
+  }
+  .landing-page .mockup-dashboard {
+    height: 140px;
+  }
+  .landing-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .landing-page .industries-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .landing-page .industry-item {
+    padding: 8px 10px;
+  }
+}
