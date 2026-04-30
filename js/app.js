@@ -1452,6 +1452,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const targetId = canvasId || 'sentimentTrendChart';
     const ctx = document.getElementById(targetId);
     if (!ctx || typeof Chart === 'undefined') return;
+    
+    // Ensure canvas has dimensions (fix for hidden container)
+    if (ctx.clientWidth === 0 || ctx.clientHeight === 0) {
+      const parent = ctx.parentElement;
+      if (parent) {
+        ctx.width = parent.offsetWidth || 200;
+        ctx.height = parent.offsetHeight || 50;
+      } else {
+        ctx.width = 200;
+        ctx.height = 50;
+      }
+    }
+    
     if (sentimentTrendCharts[targetId]) sentimentTrendCharts[targetId].destroy();
 
     sentimentTrendCharts[targetId] = new Chart(ctx, {
