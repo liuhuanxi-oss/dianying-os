@@ -300,35 +300,39 @@ document.addEventListener('DOMContentLoaded', function() {
   // Demo Charts
   // ============================================
   function initDemo() {
-    const ctx = document.getElementById('overviewChart');
-    if (!ctx || typeof Chart === 'undefined') return;
-    if (overviewChart) overviewChart.destroy();
+    try {
+      const ctx = document.getElementById('overviewChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (overviewChart) overviewChart.destroy();
 
-    overviewChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-        datasets: [{
-          data: [16500, 17200, 15800, 18900, 20100, 22500, 19800],
-          borderColor: '#7C3AED',
-          backgroundColor: 'rgba(124, 58, 237, 0.1)',
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#7C3AED',
-          pointRadius: 4,
-          pointHoverRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false }, ticks: { color: '#94A3B8' } },
-          y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => '¥' + (v/1000) + 'k' } }
+      overviewChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          datasets: [{
+            data: [16500, 17200, 15800, 18900, 20100, 22500, 19800],
+            borderColor: '#7C3AED',
+            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#7C3AED',
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#94A3B8' } },
+            y: { grid: { color: '#E2E8F0' }, ticks: { callback: v => '¥' + (v/1000) + 'k' } }
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      console.error('initDemo初始化失败:', err);
+    }
   }
 
   function initScreenChart() {
@@ -1947,128 +1951,163 @@ function initNewsTicker() {
 let chinaMapChart = null;
 
 function initChinaMap() {
-  const container = document.getElementById('chinaMapChart');
-  if (!container || typeof echarts === 'undefined') return;
-  
-  if (chinaMapChart) chinaMapChart.dispose();
-  chinaMapChart = echarts.init(container, null, { renderer: 'canvas' });
-  
-  const storeData = [
-    { name: '北京旗舰店', value: [116.46, 39.92, 28.6], rating: 4.9, orders: 1245, type: '旗舰' },
-    { name: '上海直营店', value: [121.48, 31.22, 22.4], rating: 4.8, orders: 986, type: '直营' },
-    { name: '广州直营店', value: [113.23, 23.16, 20.8], rating: 4.8, orders: 912, type: '直营' },
-    { name: '深圳加盟店', value: [114.07, 22.62, 18.2], rating: 4.7, orders: 824, type: '加盟' },
-    { name: '成都加盟店', value: [104.06, 30.67, 16.5], rating: 4.7, orders: 756, type: '加盟' },
-    { name: '杭州加盟店', value: [120.19, 30.26, 15.8], rating: 4.6, orders: 698, type: '加盟' },
-    { name: '武汉加盟店', value: [114.31, 30.52, 14.2], rating: 4.6, orders: 645, type: '加盟' },
-    { name: '南京加盟店', value: [118.78, 32.04, 12.6], rating: 4.5, orders: 578, type: '加盟' }
-  ];
-  
-  // 使用阿里云 DataV GeoJSON 异步加载中国地图
-  fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
-    .then(res => res.json())
-    .then(chinaJson => {
-      echarts.registerMap('china', chinaJson);
-      
-      const flagship = storeData.filter(s => s.type === '旗舰');
-      const direct = storeData.filter(s => s.type === '直营');
-      const franchise = storeData.filter(s => s.type === '加盟');
-      
-      chinaMapChart.setOption({
-        tooltip: {
-          trigger: 'item',
-          backgroundColor: 'rgba(15,23,42,0.95)',
-          borderColor: 'rgba(124,58,237,0.5)',
-          borderWidth: 1,
-          textStyle: { color: '#E2E8F0', fontSize: 12 },
-          formatter: function(params) {
-            if (params.seriesType === 'effectScatter') {
-              const d = params.data;
-              return '<b>' + d.name + '</b><br/>' +
-                     '类型：' + d.storeType + '<br/>' +
-                     '月营收：¥' + d.value[2] + '万<br/>' +
-                     '评分：★ ' + d.rating + '<br/>' +
-                     '月订单：' + d.orders + '单';
-            }
-            return params.name;
-          }
-        },
-        geo: {
-          map: 'china',
-          roam: false,
-          zoom: 1.2,
-          center: [104.5, 35.5],
-          label: { show: false },
-          itemStyle: {
-            areaColor: 'rgba(30,27,75,0.6)',
-            borderColor: 'rgba(6,182,212,0.3)',
-            borderWidth: 0.8
-          },
-          emphasis: {
-            itemStyle: {
-              areaColor: 'rgba(124,58,237,0.3)',
-              borderColor: 'rgba(124,58,237,0.6)',
-              borderWidth: 1.5
-            },
-            label: { show: false }
-          }
-        },
-        series: [
-          {
-            name: '旗舰',
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            data: flagship.map(s => ({
-              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-            })),
-            symbolSize: 18,
-            rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
-            itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
-            label: {
-              show: true, formatter: '{b}', position: 'right',
-              color: '#E2E8F0', fontSize: 9, fontWeight: 500
-            }
-          },
-          {
-            name: '直营',
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            data: direct.map(s => ({
-              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-            })),
-            symbolSize: 12,
-            rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
-            itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
-            label: {
-              show: true, formatter: '{b}', position: 'right',
-              color: '#E2E8F0', fontSize: 8
-            }
-          },
-          {
-            name: '加盟',
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            data: franchise.map(s => ({
-              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-            })),
-            symbolSize: 10,
-            rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
-            itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
-            label: {
-              show: true, formatter: '{b}', position: 'right',
-              color: '#E2E8F0', fontSize: 8
-            }
-          }
-        ]
-      });
-    })
-    .catch(err => {
-      console.error('地图数据加载失败:', err);
-      // 降级处理：显示错误提示
-      container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:14px;">地图数据加载中...</div>';
+  try {
+    const container = document.getElementById('chinaMapChart');
+    if (!container || typeof echarts === 'undefined') return;
+    
+    if (chinaMapChart) chinaMapChart.dispose();
+    chinaMapChart = echarts.init(container, null, { renderer: 'canvas' });
+    
+    // 显示加载动画
+    chinaMapChart.showLoading({
+      text: '地图加载中...',
+      color: '#7C3AED',
+      textColor: '#94A3B8',
+      maskColor: 'rgba(15, 23, 42, 0.8)',
+      zlevel: 0
     });
-  
-  window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
+    
+    const storeData = [
+      { name: '北京旗舰店', value: [116.46, 39.92, 28.6], rating: 4.9, orders: 1245, type: '旗舰' },
+      { name: '上海直营店', value: [121.48, 31.22, 22.4], rating: 4.8, orders: 986, type: '直营' },
+      { name: '广州直营店', value: [113.23, 23.16, 20.8], rating: 4.8, orders: 912, type: '直营' },
+      { name: '深圳加盟店', value: [114.07, 22.62, 18.2], rating: 4.7, orders: 824, type: '加盟' },
+      { name: '成都加盟店', value: [104.06, 30.67, 16.5], rating: 4.7, orders: 756, type: '加盟' },
+      { name: '杭州加盟店', value: [120.19, 30.26, 15.8], rating: 4.6, orders: 698, type: '加盟' },
+      { name: '武汉加盟店', value: [114.31, 30.52, 14.2], rating: 4.6, orders: 645, type: '加盟' },
+      { name: '南京加盟店', value: [118.78, 32.04, 12.6], rating: 4.5, orders: 578, type: '加盟' }
+    ];
+    
+    // 主数据源：阿里云 DataV GeoJSON
+    const primarySource = 'https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json';
+    // 备用数据源：unpkg CDN
+    const fallbackSource = 'https://unpkg.com/echarts@5.4.3/map/json/china.json';
+    
+    // 加载地图数据（主源 + 备用源）
+    function loadMapData(url, isFallback = false) {
+      return fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        });
+    }
+    
+    // 先尝试主源，失败后尝试备用源
+    loadMapData(primarySource)
+      .catch(() => {
+        console.warn('主地图数据源加载失败，尝试备用源...');
+        return loadMapData(fallbackSource, true);
+      })
+      .then(chinaJson => {
+        if (!chinaJson) throw new Error('所有地图数据源均加载失败');
+        
+        chinaMapChart.hideLoading();
+        echarts.registerMap('china', chinaJson);
+        
+        const flagship = storeData.filter(s => s.type === '旗舰');
+        const direct = storeData.filter(s => s.type === '直营');
+        const franchise = storeData.filter(s => s.type === '加盟');
+        
+        chinaMapChart.setOption({
+          tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(15,23,42,0.95)',
+            borderColor: 'rgba(124,58,237,0.5)',
+            borderWidth: 1,
+            textStyle: { color: '#E2E8F0', fontSize: 12 },
+            formatter: function(params) {
+              if (params.seriesType === 'effectScatter') {
+                const d = params.data;
+                return '<b>' + d.name + '</b><br/>' +
+                       '类型：' + d.storeType + '<br/>' +
+                       '月营收：¥' + d.value[2] + '万<br/>' +
+                       '评分：★ ' + d.rating + '<br/>' +
+                       '月订单：' + d.orders + '单';
+              }
+              return params.name;
+            }
+          },
+          geo: {
+            map: 'china',
+            roam: false,
+            zoom: 1.2,
+            center: [104.5, 35.5],
+            label: { show: false },
+            itemStyle: {
+              areaColor: 'rgba(30,27,75,0.6)',
+              borderColor: 'rgba(6,182,212,0.3)',
+              borderWidth: 0.8
+            },
+            emphasis: {
+              itemStyle: {
+                areaColor: 'rgba(124,58,237,0.3)',
+                borderColor: 'rgba(124,58,237,0.6)',
+                borderWidth: 1.5
+              },
+              label: { show: false }
+            }
+          },
+          series: [
+            {
+              name: '旗舰',
+              type: 'effectScatter',
+              coordinateSystem: 'geo',
+              data: flagship.map(s => ({
+                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+              })),
+              symbolSize: 18,
+              rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
+              itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
+              label: {
+                show: true, formatter: '{b}', position: 'right',
+                color: '#E2E8F0', fontSize: 9, fontWeight: 500
+              }
+            },
+            {
+              name: '直营',
+              type: 'effectScatter',
+              coordinateSystem: 'geo',
+              data: direct.map(s => ({
+                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+              })),
+              symbolSize: 12,
+              rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
+              itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
+              label: {
+                show: true, formatter: '{b}', position: 'right',
+                color: '#E2E8F0', fontSize: 8
+              }
+            },
+            {
+              name: '加盟',
+              type: 'effectScatter',
+              coordinateSystem: 'geo',
+              data: franchise.map(s => ({
+                name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+              })),
+              symbolSize: 10,
+              rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
+              itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
+              label: {
+                show: true, formatter: '{b}', position: 'right',
+                color: '#E2E8F0', fontSize: 8
+              }
+            }
+          ]
+        });
+      })
+      .catch(err => {
+        console.error('地图数据加载失败:', err);
+        chinaMapChart.hideLoading();
+        // 友好的降级提示
+        container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:14px;gap:8px;"><i data-lucide="map-pin-off" class="w-8 h-8"></i><span>地图数据加载失败</span><span style="font-size:12px;color:#64748B;">请检查网络连接后刷新重试</span></div>';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    
+    window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
+  } catch (err) {
+    console.error('initChinaMap初始化失败:', err);
+  }
 }
 
 
@@ -3221,69 +3260,77 @@ function switchStore(storeId) {
 
 // 初始化顶栏门店选择器
 function initStoreSelector() {
-  const storeSelector = document.getElementById('storeSelector');
-  const storeDropdown = document.getElementById('storeDropdown');
-  
-  if (!storeSelector || !storeDropdown) return;
-  
-  // 点击切换器展开/收起下拉菜单
-  storeSelector.addEventListener('click', (e) => {
-    e.stopPropagation();
-    storeSelector.classList.toggle('active');
-  });
-  
-  // 点击门店选项
-  const options = document.querySelectorAll('.store-option');
-  options.forEach(option => {
-    option.addEventListener('click', (e) => {
+  try {
+    const storeSelector = document.getElementById('storeSelector');
+    const storeDropdown = document.getElementById('storeDropdown');
+    
+    if (!storeSelector || !storeDropdown) return;
+    
+    // 点击切换器展开/收起下拉菜单
+    storeSelector.addEventListener('click', (e) => {
       e.stopPropagation();
-      const storeId = option.dataset.store;
-      switchStore(storeId);
-      storeSelector.classList.remove('active');
+      storeSelector.classList.toggle('active');
     });
-  });
-  
-  // 点击其他区域关闭下拉菜单
-  document.addEventListener('click', (e) => {
-    if (!storeSelector.contains(e.target)) {
-      storeSelector.classList.remove('active');
-    }
-  });
+    
+    // 点击门店选项
+    const options = document.querySelectorAll('.store-option');
+    options.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const storeId = option.dataset.store;
+        switchStore(storeId);
+        storeSelector.classList.remove('active');
+      });
+    });
+    
+    // 点击其他区域关闭下拉菜单
+    document.addEventListener('click', (e) => {
+      if (!storeSelector.contains(e.target)) {
+        storeSelector.classList.remove('active');
+      }
+    });
+  } catch (err) {
+    console.error('initStoreSelector初始化失败:', err);
+  }
 }
 
 // 初始化数据大屏门店选择同步
 function initDataScreenStoreSync() {
-  const dsStoreSelect = document.getElementById('storeSelect');
-  if (!dsStoreSelect) return;
-  
-  dsStoreSelect.addEventListener('change', () => {
-    const storeId = dsStoreSelect.value;
+  try {
+    const dsStoreSelect = document.getElementById('storeSelect');
+    if (!dsStoreSelect) return;
     
-    // 同步更新顶栏选择器
-    const storeSelector = document.getElementById('storeSelector');
-    const storeTag = document.getElementById('currentStoreTag');
-    const store = storeData[storeId];
-    
-    if (store && storeTag) {
-      storeTag.textContent = store.type + '店';
-      storeTag.className = 'store-tag';
-      if (store.type === '旗舰') {
-        storeTag.classList.add('tag-flagship');
-      } else if (store.type === '直营') {
-        storeTag.classList.add('tag-direct');
-      } else {
-        storeTag.classList.add('tag-franchise');
+    dsStoreSelect.addEventListener('change', () => {
+      const storeId = dsStoreSelect.value;
+      
+      // 同步更新顶栏选择器
+      const storeSelector = document.getElementById('storeSelector');
+      const storeTag = document.getElementById('currentStoreTag');
+      const store = storeData[storeId];
+      
+      if (store && storeTag) {
+        storeTag.textContent = store.type + '店';
+        storeTag.className = 'store-tag';
+        if (store.type === '旗舰') {
+          storeTag.classList.add('tag-flagship');
+        } else if (store.type === '直营') {
+          storeTag.classList.add('tag-direct');
+        } else {
+          storeTag.classList.add('tag-franchise');
+        }
       }
-    }
-    
-    // 更新下拉菜单选中状态
-    const options = document.querySelectorAll('.store-option');
-    options.forEach(opt => {
-      opt.classList.toggle('selected', opt.dataset.store === storeId);
+      
+      // 更新下拉菜单选中状态
+      const options = document.querySelectorAll('.store-option');
+      options.forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.store === storeId);
+      });
+      
+      console.log('数据大屏切换门店:', storeId);
     });
-    
-    console.log('数据大屏切换门店:', storeId);
-  });
+  } catch (err) {
+    console.error('initDataScreenStoreSync初始化失败:', err);
+  }
 }
 
 console.log('店赢OS v10 - 5项差异化功能初始化完成');
@@ -3816,143 +3863,151 @@ console.log('店赢OS - 多门店切换功能已加载');
 // 升级功能: 运营概览AI洞察卡
 // ============================================
 function initAIInsight() {
-  const insightCard = document.getElementById('aiInsightCard');
-  const insightContent = document.getElementById('aiInsightContent');
-  const insightRefresh = document.getElementById('aiInsightRefresh');
-  
-  if (!insightCard || !insightContent) return;
-  
-  // AI洞察内容模板
-  const insights = [
-    "今日营收¥12.8万，较昨日+12%。主要驱动：外卖订单增长18%，午市表现突出。建议：加大午市推广投入，晚市可考虑推出套餐提升客单价。",
-    "本周复购率提升5%，老客贡献占比达68%。VIP用户王女士已连续3周未到店，建议发送专属召回优惠。",
-    "差评处理及时率98%，平均响应时间2.8分钟。但「等位时间长」仍是主要差评原因，建议优化排队系统。",
-    "午市上座率较晚市低35%，存在提升空间。建议推出午市特惠套餐，预计增收¥3,200/天。",
-    "本周新客增长12%，主要来源抖音引流。建议加大短视频内容投放，保持流量增长势头。"
-  ];
-  
-  let currentInsight = 0;
-  let isTyping = false;
-  
-  // 打字机效果
-  function typeText(text, callback) {
-    const textEl = insightContent.querySelector('.ai-insight-text') || document.createElement('span');
-    textEl.className = 'ai-insight-text';
-    const cursor = insightContent.querySelector('.ai-insight-cursor');
+  try {
+    const insightCard = document.getElementById('aiInsightCard');
+    const insightContent = document.getElementById('aiInsightContent');
+    const insightRefresh = document.getElementById('aiInsightRefresh');
     
-    insightContent.innerHTML = '';
-    insightContent.appendChild(textEl);
-    insightContent.appendChild(cursor || createCursor());
+    if (!insightCard || !insightContent) return;
     
-    let index = 0;
-    isTyping = true;
+    // AI洞察内容模板
+    const insights = [
+      "今日营收¥12.8万，较昨日+12%。主要驱动：外卖订单增长18%，午市表现突出。建议：加大午市推广投入，晚市可考虑推出套餐提升客单价。",
+      "本周复购率提升5%，老客贡献占比达68%。VIP用户王女士已连续3周未到店，建议发送专属召回优惠。",
+      "差评处理及时率98%，平均响应时间2.8分钟。但「等位时间长」仍是主要差评原因，建议优化排队系统。",
+      "午市上座率较晚市低35%，存在提升空间。建议推出午市特惠套餐，预计增收¥3,200/天。",
+      "本周新客增长12%，主要来源抖音引流。建议加大短视频内容投放，保持流量增长势头。"
+    ];
     
-    function typeChar() {
-      if (index < text.length) {
-        textEl.textContent += text[index];
-        index++;
-        setTimeout(typeChar, 30 + Math.random() * 20);
-      } else {
-        isTyping = false;
-        if (callback) callback();
+    let currentInsight = 0;
+    let isTyping = false;
+    
+    // 打字机效果
+    function typeText(text, callback) {
+      const textEl = insightContent.querySelector('.ai-insight-text') || document.createElement('span');
+      textEl.className = 'ai-insight-text';
+      const cursor = insightContent.querySelector('.ai-insight-cursor');
+      
+      insightContent.innerHTML = '';
+      insightContent.appendChild(textEl);
+      insightContent.appendChild(cursor || createCursor());
+      
+      let index = 0;
+      isTyping = true;
+      
+      function typeChar() {
+        if (index < text.length) {
+          textEl.textContent += text[index];
+          index++;
+          setTimeout(typeChar, 30 + Math.random() * 20);
+        } else {
+          isTyping = false;
+          if (callback) callback();
+        }
       }
+      
+      typeChar();
     }
     
-    typeChar();
-  }
-  
-  function createCursor() {
-    const cursor = document.createElement('span');
-    cursor.className = 'ai-insight-cursor';
-    return cursor;
-  }
-  
-  // 刷新按钮
-  if (insightRefresh) {
-    insightRefresh.addEventListener('click', () => {
-      if (isTyping) return;
-      
-      insightRefresh.classList.add('loading');
-      
-      // 模拟加载
-      setTimeout(() => {
-        currentInsight = (currentInsight + 1) % insights.length;
-        typeText(insights[currentInsight]);
-        insightRefresh.classList.remove('loading');
-      }, 800);
+    function createCursor() {
+      const cursor = document.createElement('span');
+      cursor.className = 'ai-insight-cursor';
+      return cursor;
+    }
+    
+    // 刷新按钮
+    if (insightRefresh) {
+      insightRefresh.addEventListener('click', () => {
+        if (isTyping) return;
+        
+        insightRefresh.classList.add('loading');
+        
+        // 模拟加载
+        setTimeout(() => {
+          currentInsight = (currentInsight + 1) % insights.length;
+          typeText(insights[currentInsight]);
+          insightRefresh.classList.remove('loading');
+        }, 800);
+      });
+    }
+    
+    // 初始化显示
+    setTimeout(() => {
+      typeText(insights[currentInsight]);
+    }, 500);
+    
+    // 标签点击事件
+    const tags = insightCard.querySelectorAll('.ai-insight-tag');
+    tags.forEach((tag, index) => {
+      tag.addEventListener('click', () => {
+        const tagTypes = ['revenue', 'risk', 'suggest'];
+        const tagTexts = [
+          insights[currentInsight].match(/建议[^。]+/)?.[0] || insights[currentInsight],
+          "风险提示：" + (currentInsight === 2 ? "等位时间长是主要差评原因" : "暂无明显风险"),
+          "优化建议：" + insights[(currentInsight + 1) % insights.length].match(/建议[^。]+/)?.[0]
+        ];
+        typeText(tagTexts[index] || insights[currentInsight]);
+      });
     });
+  } catch (err) {
+    console.error('initAIInsight初始化失败:', err);
   }
-  
-  // 初始化显示
-  setTimeout(() => {
-    typeText(insights[currentInsight]);
-  }, 500);
-  
-  // 标签点击事件
-  const tags = insightCard.querySelectorAll('.ai-insight-tag');
-  tags.forEach((tag, index) => {
-    tag.addEventListener('click', () => {
-      const tagTypes = ['revenue', 'risk', 'suggest'];
-      const tagTexts = [
-        insights[currentInsight].match(/建议[^。]+/)?.[0] || insights[currentInsight],
-        "风险提示：" + (currentInsight === 2 ? "等位时间长是主要差评原因" : "暂无明显风险"),
-        "优化建议：" + insights[(currentInsight + 1) % insights.length].match(/建议[^。]+/)?.[0]
-      ];
-      typeText(tagTexts[index] || insights[currentInsight]);
-    });
-  });
 }
 
 // ============================================
 // 升级功能: AI对话模板和历史会话
 // ============================================
 function initChatEnhancements() {
-  // 模板按钮
-  const templateBtns = document.querySelectorAll('.chat-template-btn');
-  const chatInput = document.getElementById('chatInput');
-  
-  templateBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const template = btn.dataset.template;
-      if (chatInput && template) {
-        chatInput.value = template;
-        chatInput.focus();
+  try {
+    // 模板按钮
+    const templateBtns = document.querySelectorAll('.chat-template-btn');
+    const chatInput = document.getElementById('chatInput');
+    
+    templateBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const template = btn.dataset.template;
+        if (chatInput && template) {
+          chatInput.value = template;
+          chatInput.focus();
+          
+          // 添加视觉反馈
+          btn.style.background = 'var(--primary)';
+          btn.style.color = 'white';
+          setTimeout(() => {
+            btn.style.background = '';
+            btn.style.color = '';
+          }, 200);
+        }
+      });
+    });
+    
+    // 历史会话点击
+    const historyItems = document.querySelectorAll('.chat-history-item');
+    historyItems.forEach(item => {
+      item.addEventListener('click', () => {
+        historyItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
         
-        // 添加视觉反馈
-        btn.style.background = 'var(--primary)';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 200);
-      }
+        // 模拟切换会话
+        const sessionId = item.dataset.session;
+        console.log('切换到会话:', sessionId);
+      });
     });
-  });
-  
-  // 历史会话点击
-  const historyItems = document.querySelectorAll('.chat-history-item');
-  historyItems.forEach(item => {
-    item.addEventListener('click', () => {
-      historyItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      
-      // 模拟切换会话
-      const sessionId = item.dataset.session;
-      console.log('切换到会话:', sessionId);
-    });
-  });
-  
-  // 新对话按钮
-  const newBtn = document.getElementById('chatNewBtn');
-  if (newBtn) {
-    newBtn.addEventListener('click', () => {
-      if (chatInput) {
-        chatInput.value = '';
-        chatInput.focus();
-      }
-      historyItems.forEach(i => i.classList.remove('active'));
-      lucide.createIcons();
-    });
+    
+    // 新对话按钮
+    const newBtn = document.getElementById('chatNewBtn');
+    if (newBtn) {
+      newBtn.addEventListener('click', () => {
+        if (chatInput) {
+          chatInput.value = '';
+          chatInput.focus();
+        }
+        historyItems.forEach(i => i.classList.remove('active'));
+        lucide.createIcons();
+      });
+    }
+  } catch (err) {
+    console.error('initChatEnhancements初始化失败:', err);
   }
 }
 
@@ -3963,26 +4018,30 @@ let realtimeInterval = null;
 let lastUpdateTime = Date.now();
 
 function initFlipCards() {
-  const flipCards = document.querySelectorAll('.flip-card');
-  if (flipCards.length === 0) return;
-  
-  // 初始动画
-  flipCards.forEach((card, index) => {
-    setTimeout(() => {
-      animateFlip(card);
-    }, index * 200);
-  });
-  
-  // 实时数据更新
-  if (realtimeInterval) clearInterval(realtimeInterval);
-  
-  realtimeInterval = setInterval(() => {
-    updateRealtimeData();
-  }, 30000);
-  
-  // 更新时间显示
-  updateRealtimeTime();
-  setInterval(updateRealtimeTime, 1000);
+  try {
+    const flipCards = document.querySelectorAll('.flip-card');
+    if (flipCards.length === 0) return;
+    
+    // 初始动画
+    flipCards.forEach((card, index) => {
+      setTimeout(() => {
+        animateFlip(card);
+      }, index * 200);
+    });
+    
+    // 实时数据更新
+    if (realtimeInterval) clearInterval(realtimeInterval);
+    
+    realtimeInterval = setInterval(() => {
+      updateRealtimeData();
+    }, 30000);
+    
+    // 更新时间显示
+    updateRealtimeTime();
+    setInterval(updateRealtimeTime, 1000);
+  } catch (err) {
+    console.error('initFlipCards初始化失败:', err);
+  }
 }
 
 function animateFlip(card) {
@@ -4085,29 +4144,33 @@ function showToast(message) {
 // 升级功能: 门店健康改善路线图
 // ============================================
 function initHealthRoadmap() {
-  const executeBtns = document.querySelectorAll('.health-roadmap-execute');
-  let completedTasks = 0;
-  const totalTasks = 3;
-  
-  executeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (btn.classList.contains('executed')) return;
-      
-      btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 loading"></i> 执行中...';
-      lucide.createIcons();
-      
-      setTimeout(() => {
-        btn.classList.add('executed');
-        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已添加计划';
+  try {
+    const executeBtns = document.querySelectorAll('.health-roadmap-execute');
+    let completedTasks = 0;
+    const totalTasks = 3;
+    
+    executeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('executed')) return;
+        
+        btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 loading"></i> 执行中...';
         lucide.createIcons();
         
-        completedTasks++;
-        updateRoadmapProgress(completedTasks, totalTasks);
-        
-        showToast('改善计划已添加，将在指定时间自动执行');
-      }, 1500);
+        setTimeout(() => {
+          btn.classList.add('executed');
+          btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已添加计划';
+          lucide.createIcons();
+          
+          completedTasks++;
+          updateRoadmapProgress(completedTasks, totalTasks);
+          
+          showToast('改善计划已添加，将在指定时间自动执行');
+        }, 1500);
+      });
     });
-  });
+  } catch (err) {
+    console.error('initHealthRoadmap初始化失败:', err);
+  }
 }
 
 function updateRoadmapProgress(completed, total) {
@@ -4174,22 +4237,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 600);
 });
 
-// 添加动画样式
-const style = document.createElement('style');
-style.textContent = `
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes slideOut {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(100%); opacity: 0; }
-}
-.toast-notification i { animation: none; }
-.toast-notification i.loading {
-  animation: spin 1s linear infinite;
-}
-`;
-document.head.appendChild(style);
-
-console.log('店赢OS v10 - 5项差异化功能升级已加载');
+console.log('店赢OS v10 - 全面修复完成');
