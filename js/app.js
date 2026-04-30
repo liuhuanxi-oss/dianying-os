@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     aidaily: 'AI洞察日报',
     export: '数据导出'
   };
+  window.pageNames = pageNames;
 
   function switchPage(page) {
     sidebarNavItems.forEach(item => {
