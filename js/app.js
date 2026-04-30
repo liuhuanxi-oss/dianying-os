@@ -30,6 +30,26 @@ document.addEventListener('DOMContentLoaded', function() {
   revealElements.forEach(el => revealObserver.observe(el));
 
   // ============================================
+  // Navbar Scroll Effect (Glass Effect on Scroll)
+  // ============================================
+  const landingNavbar = document.querySelector('.landing-page .navbar');
+  let lastScrollY = 0;
+  
+  function handleNavbarScroll() {
+    const currentScrollY = window.scrollY;
+    if (landingNavbar) {
+      if (currentScrollY > 20) {
+        landingNavbar.classList.add('scrolled');
+      } else {
+        landingNavbar.classList.remove('scrolled');
+      }
+    }
+    lastScrollY = currentScrollY;
+  }
+  
+  window.addEventListener('scroll', handleNavbarScroll, { passive: true });
+
+  // ============================================
   // Theme Toggle
   // ============================================
   const themeToggle = document.getElementById('themeToggle');
