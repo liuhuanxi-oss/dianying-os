@@ -4030,7 +4030,7 @@ console.log('店赢OS - 多门店切换功能已加载');
   // PAGE NAMES UPDATE
   // ============================================
   // 更新pageNames对象添加新页面
-  Object.assign(window.pageNames, {
+  if (window.pageNames) Object.assign(window.pageNames, {
     'aidaily': 'AI洞察日报',
     'export': '数据导出'
   });
