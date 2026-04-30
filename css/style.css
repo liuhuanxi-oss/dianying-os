@@ -10237,7 +10237,7 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 /* ============================================
    AI INSIGHT DAILY (AI洞察日报)
    ============================================ */
-.ai-daily-header {
+.aidaily-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10248,13 +10248,13 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   margin-bottom: 24px;
 }
 
-.ai-daily-date {
+.aidaily-date {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.ai-daily-date-icon {
+.aidaily-date-icon {
   width: 48px;
   height: 48px;
   display: flex;
@@ -10264,17 +10264,17 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
   border-radius: var(--radius);
 }
 
-.ai-daily-date-label {
+.aidaily-date-label {
   font-size: 0.875rem;
   opacity: 0.8;
 }
 
-.ai-daily-date-value {
+.aidaily-date-value {
   font-size: 1.25rem;
   font-weight: 600;
 }
 
-.ai-daily-status {
+.aidaily-status {
   display: flex;
   align-items: center;
 }

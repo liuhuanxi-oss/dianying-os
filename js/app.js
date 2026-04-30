@@ -3062,7 +3062,7 @@ console.log('店赢OS - 多门店切换功能已加载');
       { id: 'overview', title: '运营概览', icon: 'layout-dashboard', desc: '查看门店整体运营数据' },
       { id: 'chat', title: 'AI对话', icon: 'message-square', desc: '与AI虚拟店长对话' },
       { id: 'data', title: '数据报表', icon: 'bar-chart-2', desc: '详细数据分析报表' },
-      { id: 'ai-daily', title: 'AI洞察日报', icon: 'sparkles', desc: '每日经营分析报告' },
+      { id: 'aidaily', title: 'AI洞察日报', icon: 'sparkles', desc: '每日经营分析报告' },
       { id: 'export', title: '数据导出', icon: 'download-cloud', desc: '导出数据报告' },
       { id: 'platform', title: '平台管理', icon: 'layout-grid', desc: '多平台账号管理' },
       { id: 'competitor', title: '竞品监控', icon: 'radar', desc: '竞品数据分析' },
@@ -3564,7 +3564,7 @@ console.log('店赢OS - 多门店切换功能已加载');
   // ============================================
   // 更新pageNames对象添加新页面
   Object.assign(pageNames, {
-    'ai-daily': 'AI洞察日报',
+    'aidaily': 'AI洞察日报',
     'export': '数据导出'
   });
 
