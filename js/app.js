@@ -120,7 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar: '运营日历',
     report: '报表中心',
     workflow: '工作流',
-    roi: 'ROI计算'
+    roi: 'ROI计算',
+    creation: 'AI内容创作',
+    twin: '门店数字孪生',
+    location: '智能选址分析',
+    journey: '顾客旅程地图',
+    safety: '食品安全监控'
   };
 
   function switchPage(page) {
@@ -540,12 +545,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Page name mapping for new pages
-  // Note: pageNames already includes all page mappings
   const extendedPageNames = { ...pageNames };
 
   // Chart instances for new pages
   let healthRadarChart = null;
   let reportTrendChart = null;
+  let locationFlowChart = null;
 
   // Initialize Health Radar Chart
   function initHealthRadarChart() {
@@ -708,6 +713,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (page === 'report') {
       setTimeout(initReportTrendChart, 100);
+    }
+    if (page === 'location') {
+      setTimeout(initLocationFlowChart, 100);
+    }
+    if (page === 'journey') {
+      setTimeout(initJourneyInteractions, 100);
+    }
+    if (page === 'creation') {
+      setTimeout(initCreationInteractions, 100);
     }
   };
 
@@ -2110,3 +2124,91 @@ function initDateRangePicker() {
     showToast('已更新数据范围');
   });
 }
+
+
+// ============================================
+// NEW FEATURES - v10 (5项差异化功能)
+// ============================================
+
+// Initialize Location Flow Chart
+function initLocationFlowChart() {
+  const ctx = document.getElementById('locationFlowChart');
+  if (!ctx || typeof Chart === 'undefined') return;
+  if (locationFlowChart) locationFlowChart.destroy();
+
+  locationFlowChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['7时', '9时', '11时', '13时', '15时', '17时', '19时', '21时', '23时'],
+      datasets: [{
+        label: '客流指数',
+        data: [20, 45, 85, 75, 40, 95, 120, 90, 35],
+        borderColor: '#7C3AED',
+        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointBackgroundColor: '#7C3AED',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { 
+          grid: { display: false },
+          ticks: { color: '#94A3B8', font: { size: 10 } }
+        },
+        y: { 
+          grid: { color: '#E2E8F0' },
+          ticks: { display: false },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// Initialize Journey Interactions
+function initJourneyInteractions() {
+  const journeyTabs = document.querySelectorAll('.journey-tab');
+  const journeyPanels = document.querySelectorAll('.journey-tab-panel');
+
+  journeyTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTab = tab.dataset.journeyTab;
+      journeyTabs.forEach(t => t.classList.toggle('active', t.dataset.journeyTab === targetTab));
+      journeyPanels.forEach(p => p.classList.toggle('active', p.id === 'journey' + targetTab.charAt(0).toUpperCase() + targetTab.slice(1)));
+    });
+  });
+}
+
+// Initialize Creation Interactions
+function initCreationInteractions() {
+  const creationToggleBtns = document.querySelectorAll('.creation-toggle-btn');
+  const creationTypeBtns = document.querySelectorAll('.creation-type-btn');
+  const creationGenerateBtn = document.getElementById('creationGenerateBtn');
+
+  creationToggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      creationToggleBtns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  creationTypeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      creationTypeBtns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  creationGenerateBtn?.addEventListener('click', () => {
+    const keyword = document.getElementById('creationKeyword')?.value;
+    if (keyword) {
+      alert('AI正在为您生成内容，请稍候...');
+    }
+  });
+}
+
+console.log('店赢OS v10 - 5项差异化功能初始化完成');

@@ -658,6 +658,29 @@
             <i data-lucide="calculator" class="w-5 h-5"></i>
             <span class="sidebar-nav-text">ROI</span>
           </div>
+          <div class="sidebar-nav-item" data-page="creation" data-step="18" data-title="AI内容创作">
+            <i data-lucide="pen-tool" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">创作</span>
+            <span class="sidebar-nav-badge ai">AI</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="twin" data-step="19" data-title="门店数字孪生">
+            <i data-lucide="box" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">孪生</span>
+            <span class="sidebar-nav-badge">NEW</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="location" data-step="20" data-title="智能选址分析">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">选址</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="journey" data-step="21" data-title="顾客旅程地图">
+            <i data-lucide="git-merge" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">旅程</span>
+          </div>
+          <div class="sidebar-nav-item" data-page="safety" data-step="22" data-title="食品安全监控">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">食安</span>
+            <span class="sidebar-nav-badge safe">SAFE</span>
+          </div>
         </nav>
         <div class="sidebar-footer">
           <div class="sidebar-nav-item" id="demoHomeBtn">
@@ -3331,6 +3354,950 @@
                     <i data-lucide="rocket" class="w-5 h-5"></i> 立即开通
                   </button>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- AI内容创作中心 Section -->
+          <section class="demo-section" id="sectionCreation">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="pen-tool" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">AI内容创作中心</h2>
+                <p class="section-header-new-desc">一键生成多平台营销内容，适配小红书/抖音/大众点评等</p>
+              </div>
+            </div>
+            <div class="creation-layout">
+              <!-- 创作配置区 -->
+              <div class="creation-config">
+                <div class="creation-config-card">
+                  <div class="creation-config-header">
+                    <span class="creation-config-title">内容创作配置</span>
+                    <span class="ai-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> AI智能生成</span>
+                  </div>
+                  <div class="creation-form">
+                    <div class="creation-form-group">
+                      <label class="creation-label">行业选择</label>
+                      <div class="creation-toggle-btns">
+                        <button class="creation-toggle-btn active" data-type="industry" data-value="catering">餐饮</button>
+                        <button class="creation-toggle-btn" data-type="industry" data-value="retail">零售</button>
+                        <button class="creation-toggle-btn" data-type="industry" data-value="entertainment">休娱</button>
+                      </div>
+                    </div>
+                    <div class="creation-form-group">
+                      <label class="creation-label">内容类型</label>
+                      <div class="creation-type-grid">
+                        <button class="creation-type-btn active" data-type="xiaohongshu">
+                          <i data-lucide="image" class="w-5 h-5"></i>
+                          <span>小红书笔记</span>
+                        </button>
+                        <button class="creation-type-btn" data-type="douyin">
+                          <i data-lucide="video" class="w-5 h-5"></i>
+                          <span>抖音脚本</span>
+                        </button>
+                        <button class="creation-type-btn" data-type="dianping">
+                          <i data-lucide="star" class="w-5 h-5"></i>
+                          <span>大众点评</span>
+                        </button>
+                        <button class="creation-type-btn" data-type="moments">
+                          <i data-lucide="image" class="w-5 h-5"></i>
+                          <span>朋友圈文案</span>
+                        </button>
+                        <button class="creation-type-btn" data-type="meituan">
+                          <i data-lucide="tag" class="w-5 h-5"></i>
+                          <span>美团活动</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="creation-form-group">
+                      <label class="creation-label">主题关键词</label>
+                      <input type="text" class="creation-input" id="creationKeyword" placeholder="例如：夏日新品推荐、会员日活动...">
+                    </div>
+                    <button class="creation-generate-btn" id="creationGenerateBtn">
+                      <i data-lucide="sparkles" class="w-5 h-5"></i>
+                      AI一键生成
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- 生成结果展示 -->
+              <div class="creation-result">
+                <div class="creation-result-header">
+                  <span class="creation-result-title">生成内容预览</span>
+                  <div class="creation-result-actions">
+                    <button class="creation-action-btn"><i data-lucide="copy" class="w-4 h-4"></i> 复制</button>
+                    <button class="creation-action-btn primary"><i data-lucide="send" class="w-4 h-4"></i> 发布</button>
+                  </div>
+                </div>
+                <div class="creation-result-content">
+                  <div class="creation-content-card">
+                    <div class="content-card-header">
+                      <span class="content-platform-tag xiaohongshu">小红书</span>
+                      <span class="content-status-tag published">已发布</span>
+                    </div>
+                    <div class="content-card-body">
+                      <div class="content-title">🔥这家火锅店绝了！人均80吃到扶墙出...</div>
+                      <div class="content-text typing-effect">
+                        姐妹们！这家火锅店真的太好吃了😭😭😭<br><br>
+                        📍位置：徐汇区老码头火锅旗舰店<br>
+                        💰人均：80元吃饱，120元吃好<br><br>
+                        推荐必点：<br>
+                        ✅ 招牌毛肚 - 脆嫩爽口<br>
+                        ✅ 手打虾滑 - Q弹鲜甜<br>
+                        ✅ 冰粉 - 解辣神器<br><br>
+                        #火锅 #上海探店 #周末吃什么 #美食推荐
+                      </div>
+                    </div>
+                    <div class="content-card-footer">
+                      <div class="content-stats">
+                        <span class="content-stat"><i data-lucide="eye" class="w-3 h-3"></i> 2.3万阅读</span>
+                        <span class="content-stat"><i data-lucide="heart" class="w-3 h-3"></i> 1,280 点赞</span>
+                        <span class="content-stat"><i data-lucide="message-circle" class="w-3 h-3"></i> 86 评论</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="creation-content-card">
+                    <div class="content-card-header">
+                      <span class="content-platform-tag douyin">抖音</span>
+                      <span class="content-status-tag draft">草稿</span>
+                    </div>
+                    <div class="content-card-body">
+                      <div class="content-title">短视频分镜脚本</div>
+                      <div class="content-script">
+                        <div class="script-item"><span class="script-time">0-3s</span><span class="script-scene">开场：门店全景+特写锅底翻滚</span></div>
+                        <div class="script-item"><span class="script-time">3-8s</span><span class="script-scene">台词："你知道吗？这家火锅人均才80"</span></div>
+                        <div class="script-item"><span class="script-time">8-15s</span><span class="script-scene">镜头：涮菜特写+顾客表情</span></div>
+                        <div class="script-item"><span class="script-time">15-20s</span><span class="script-scene">字幕：点击左下角查看优惠</span></div>
+                      </div>
+                    </div>
+                    <div class="content-card-footer">
+                      <div class="content-stats">
+                        <span class="content-stat"><i data-lucide="clock" class="w-3 h-3"></i> 预计时长 20s</span>
+                        <span class="content-stat"><i data-lucide="tag" class="w-3 h-3"></i> #火锅探店</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 历史内容列表 -->
+            <div class="creation-history">
+              <div class="creation-history-header">
+                <span class="creation-history-title">最近生成内容</span>
+                <button class="btn-secondary btn-sm"><i data-lucide="history" class="w-4 h-4"></i> 查看全部</button>
+              </div>
+              <div class="creation-history-list">
+                <div class="history-item">
+                  <span class="history-platform-tag xiaohongshu">小红书</span>
+                  <div class="history-info">
+                    <div class="history-title">周末聚餐好去处🔥</div>
+                    <div class="history-meta">2026-05-20 14:30 生成</div>
+                  </div>
+                  <span class="history-status published">已发布</span>
+                </div>
+                <div class="history-item">
+                  <span class="history-platform-tag douyin">抖音</span>
+                  <div class="history-info">
+                    <div class="history-title">新品上市宣传脚本</div>
+                    <div class="history-meta">2026-05-19 10:15 生成</div>
+                  </div>
+                  <span class="history-status pending">待审核</span>
+                </div>
+                <div class="history-item">
+                  <span class="history-platform-tag dianping">大众点评</span>
+                  <div class="history-info">
+                    <div class="history-title">母亲节特别推荐文案</div>
+                    <div class="history-meta">2026-05-18 16:45 生成</div>
+                  </div>
+                  <span class="history-status published">已发布</span>
+                </div>
+                <div class="history-item">
+                  <span class="history-platform-tag meituan">美团</span>
+                  <div class="history-info">
+                    <div class="history-title">618大促活动文案</div>
+                    <div class="history-meta">2026-05-17 09:20 生成</div>
+                  </div>
+                  <span class="history-status draft">草稿</span>
+                </div>
+                <div class="history-item">
+                  <span class="history-platform-tag moments">朋友圈</span>
+                  <div class="history-info">
+                    <div class="history-title">会员日活动预热</div>
+                    <div class="history-meta">2026-05-16 18:00 生成</div>
+                  </div>
+                  <span class="history-status published">已发布</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 门店数字孪生 Section -->
+          <section class="demo-section" id="sectionTwin">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="box" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">门店数字孪生</h2>
+                <p class="section-header-new-desc">实时还原门店运营状态，AI智能优化建议</p>
+              </div>
+            </div>
+            <div class="twin-layout">
+              <!-- 2D门店俯视图 -->
+              <div class="twin-map-container">
+                <div class="twin-map-header">
+                  <span class="twin-map-title">门店平面图</span>
+                  <span class="twin-map-status"><span class="status-dot alive"></span> 实时同步</span>
+                </div>
+                <div class="twin-map">
+                  <!-- 入口/等候区 -->
+                  <div class="twin-area entrance">
+                    <div class="area-label">入口等候区</div>
+                    <div class="waiting-count">5组等候</div>
+                  </div>
+                  <!-- 大厅区域 -->
+                  <div class="twin-area hall">
+                    <div class="area-label">大厅</div>
+                    <div class="hall-tables">
+                      <div class="table-item occupied" style="--table-id: 1;"><span class="table-label">1</span></div>
+                      <div class="table-item occupied" style="--table-id: 2;"><span class="table-label">2</span></div>
+                      <div class="table-item reserved" style="--table-id: 3;"><span class="table-label">3</span></div>
+                      <div class="table-item free" style="--table-id: 4;"><span class="table-label">4</span></div>
+                      <div class="table-item occupied" style="--table-id: 5;"><span class="table-label">5</span></div>
+                      <div class="table-item occupied" style="--table-id: 6;"><span class="table-label">6</span></div>
+                      <div class="table-item free" style="--table-id: 7;"><span class="table-label">7</span></div>
+                      <div class="table-item occupied" style="--table-id: 8;"><span class="table-label">8</span></div>
+                    </div>
+                  </div>
+                  <!-- 包间区域 -->
+                  <div class="twin-area private-rooms">
+                    <div class="area-label">包间</div>
+                    <div class="private-room room-a occupied">A</div>
+                    <div class="private-room room-b free">B</div>
+                    <div class="private-room room-c reserved">C</div>
+                  </div>
+                  <!-- 吧台区域 -->
+                  <div class="twin-area bar">
+                    <div class="area-label">吧台/收银</div>
+                  </div>
+                  <!-- 厨房区域 -->
+                  <div class="twin-area kitchen">
+                    <div class="area-label">厨房</div>
+                    <div class="kitchen-status">运行中</div>
+                  </div>
+                </div>
+                <div class="twin-legend">
+                  <span class="legend-item"><span class="legend-dot free"></span> 空闲</span>
+                  <span class="legend-item"><span class="legend-dot occupied"></span> 用餐中</span>
+                  <span class="legend-item"><span class="legend-dot reserved"></span> 已预约</span>
+                </div>
+              </div>
+              <!-- 实时状态面板 -->
+              <div class="twin-status-panel">
+                <div class="twin-status-card">
+                  <div class="twin-status-header">
+                    <span class="twin-status-title">实时状态</span>
+                    <span class="twin-update-time">更新时间: 18:30</span>
+                  </div>
+                  <div class="twin-metrics">
+                    <div class="twin-metric">
+                      <div class="twin-metric-label">当前上座率</div>
+                      <div class="twin-metric-value">72%</div>
+                      <div class="twin-metric-bar"><div class="twin-metric-bar-fill" style="width: 72%"></div></div>
+                    </div>
+                    <div class="twin-metric">
+                      <div class="twin-metric-label">等位人数</div>
+                      <div class="twin-metric-value">5 <span class="twin-metric-unit">组</span></div>
+                    </div>
+                    <div class="twin-metric">
+                      <div class="twin-metric-label">平均用餐时长</div>
+                      <div class="twin-metric-value">68 <span class="twin-metric-unit">分钟</span></div>
+                    </div>
+                    <div class="twin-metric">
+                      <div class="twin-metric-label">预估翻台率</div>
+                      <div class="twin-metric-value">2.3 <span class="twin-metric-unit">次/桌</span></div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 时段客流热力 -->
+                <div class="twin-heatmap-card">
+                  <div class="twin-heatmap-header">
+                    <span class="twin-heatmap-title">时段客流热力</span>
+                  </div>
+                  <div class="twin-heatmap-bars">
+                    <div class="heatmap-bar-group">
+                      <div class="heatmap-bar-container"><div class="heatmap-bar low"></div></div>
+                      <span class="heatmap-label">早市<br>7-11</span>
+                    </div>
+                    <div class="heatmap-bar-group">
+                      <div class="heatmap-bar-container"><div class="heatmap-bar high"></div></div>
+                      <span class="heatmap-label">午市<br>11-14</span>
+                    </div>
+                    <div class="heatmap-bar-group">
+                      <div class="heatmap-bar-container"><div class="heatmap-bar medium"></div></div>
+                      <span class="heatmap-label">下午<br>14-17</span>
+                    </div>
+                    <div class="heatmap-bar-group">
+                      <div class="heatmap-bar-container"><div class="heatmap-bar peak"></div></div>
+                      <span class="heatmap-label">晚市<br>17-21</span>
+                    </div>
+                    <div class="heatmap-bar-group">
+                      <div class="heatmap-bar-container"><div class="heatmap-bar low"></div></div>
+                      <span class="heatmap-label">夜宵<br>21-24</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- AI优化建议 -->
+                <div class="twin-ai-suggestions">
+                  <div class="twin-suggestions-header">
+                    <span class="twin-suggestions-title"><i data-lucide="sparkles" class="w-4 h-4"></i> AI优化建议</span>
+                  </div>
+                  <div class="twin-suggestion-item">
+                    <span class="suggestion-icon improvement"><i data-lucide="lightbulb" class="w-4 h-4"></i></span>
+                    <div class="suggestion-content">
+                      <div class="suggestion-text">建议将3号桌改为4人桌，提升翻台率15%</div>
+                    </div>
+                  </div>
+                  <div class="twin-suggestion-item">
+                    <span class="suggestion-icon suggestion"><i data-lucide="trending-up" class="w-4 h-4"></i></span>
+                    <div class="suggestion-content">
+                      <div class="suggestion-text">包间C可拆分为2个2人桌，午市利用率提升</div>
+                    </div>
+                  </div>
+                  <div class="twin-suggestion-item">
+                    <span class="suggestion-icon warning"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>
+                    <div class="suggestion-content">
+                      <div class="suggestion-text">等候区增加零食自助，减少等位流失率</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 智能选址分析 Section -->
+          <section class="demo-section" id="sectionLocation">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">智能选址分析</h2>
+                <p class="section-header-new-desc">AI大数据评估，科学的选址决策支持</p>
+              </div>
+            </div>
+            <div class="location-layout">
+              <!-- 商圈输入 -->
+              <div class="location-search-card">
+                <div class="location-search-header">
+                  <span class="location-search-title">目标商圈查询</span>
+                </div>
+                <div class="location-search-form">
+                  <div class="location-form-row">
+                    <div class="location-form-group">
+                      <label class="location-label">城市</label>
+                      <select class="location-select" id="locationCity">
+                        <option value="shanghai" selected>上海</option>
+                        <option value="beijing">北京</option>
+                        <option value="guangzhou">广州</option>
+                        <option value="shenzhen">深圳</option>
+                        <option value="hangzhou">杭州</option>
+                      </select>
+                    </div>
+                    <div class="location-form-group" style="flex: 2;">
+                      <label class="location-label">商圈名称</label>
+                      <input type="text" class="location-input" id="locationArea" value="上海徐家汇" placeholder="输入商圈名称">
+                    </div>
+                  </div>
+                  <button class="btn-primary location-search-btn" id="locationSearchBtn">
+                    <i data-lucide="search" class="w-4 h-4"></i> 开始分析
+                  </button>
+                </div>
+              </div>
+              <!-- 评估结果 -->
+              <div class="location-result-grid">
+                <!-- 综合评分 -->
+                <div class="location-score-card">
+                  <div class="location-score-header">
+                    <span class="location-score-title">综合评分</span>
+                    <span class="location-invest-grade">A级推荐</span>
+                  </div>
+                  <div class="location-score-circle">
+                    <div class="score-circle-value">86</div>
+                    <div class="score-circle-ring">
+                      <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="score-ring-bg"></circle>
+                        <circle cx="50" cy="50" r="45" class="score-ring-fill" style="stroke-dasharray: 283; stroke-dashoffset: 40;"></circle>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="location-score-dimensions">
+                    <div class="dimension-item">
+                      <span class="dimension-label">客流量</span>
+                      <div class="dimension-bar"><div class="dimension-bar-fill" style="width: 92%"></div></div>
+                      <span class="dimension-score">92</span>
+                    </div>
+                    <div class="dimension-item">
+                      <span class="dimension-label">竞争密度</span>
+                      <div class="dimension-bar"><div class="dimension-bar-fill warning" style="width: 65%"></div></div>
+                      <span class="dimension-score">65</span>
+                    </div>
+                    <div class="dimension-item">
+                      <span class="dimension-label">消费力</span>
+                      <div class="dimension-bar"><div class="dimension-bar-fill" style="width: 88%"></div></div>
+                      <span class="dimension-score">88</span>
+                    </div>
+                    <div class="dimension-item">
+                      <span class="dimension-label">租金性价比</span>
+                      <div class="dimension-bar"><div class="dimension-bar-fill warning" style="width: 72%"></div></div>
+                      <span class="dimension-score">72</span>
+                    </div>
+                    <div class="dimension-item">
+                      <span class="dimension-label">交通便利</span>
+                      <div class="dimension-bar"><div class="dimension-bar-fill" style="width: 90%"></div></div>
+                      <span class="dimension-score">90</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 竞品分布 -->
+                <div class="location-competitors-card">
+                  <div class="location-card-header">
+                    <span class="location-card-title">周边竞品分布</span>
+                    <span class="location-card-tag">3公里内</span>
+                  </div>
+                  <div class="competitor-list">
+                    <div class="competitor-item">
+                      <div class="competitor-info">
+                        <div class="competitor-name">海底捞火锅(徐汇店)</div>
+                        <div class="competitor-meta">
+                          <span class="competitor-distance">1.2km</span>
+                          <span class="competitor-rating">评分 4.7</span>
+                        </div>
+                      </div>
+                      <div class="competitor-revenue">月营收预估 ¥45万</div>
+                    </div>
+                    <div class="competitor-item">
+                      <div class="competitor-info">
+                        <div class="competitor-name">巴奴毛肚火锅(徐汇店)</div>
+                        <div class="competitor-meta">
+                          <span class="competitor-distance">1.8km</span>
+                          <span class="competitor-rating">评分 4.8</span>
+                        </div>
+                      </div>
+                      <div class="competitor-revenue">月营收预估 ¥38万</div>
+                    </div>
+                    <div class="competitor-item">
+                      <div class="competitor-info">
+                        <div class="competitor-name">呷哺呷哺小火锅(徐汇店)</div>
+                        <div class="competitor-meta">
+                          <span class="competitor-distance">2.5km</span>
+                          <span class="competitor-rating">评分 4.5</span>
+                        </div>
+                      </div>
+                      <div class="competitor-revenue">月营收预估 ¥22万</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 客流热力 -->
+                <div class="location-flow-card">
+                  <div class="location-card-header">
+                    <span class="location-card-title">客流热力时段</span>
+                  </div>
+                  <div class="location-flow-chart">
+                    <canvas id="locationFlowChart"></canvas>
+                  </div>
+                  <div class="location-flow-insight">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>晚市17-21点为客流高峰，建议错峰营业</span>
+                  </div>
+                </div>
+                <!-- 租金回报测算 -->
+                <div class="location-roi-card">
+                  <div class="location-card-header">
+                    <span class="location-card-title">租金回报测算</span>
+                  </div>
+                  <div class="location-roi-grid">
+                    <div class="roi-item">
+                      <span class="roi-label">预估月租金</span>
+                      <span class="roi-value">¥3.8万</span>
+                    </div>
+                    <div class="roi-item">
+                      <span class="roi-label">预估月营收</span>
+                      <span class="roi-value">¥15-22万</span>
+                    </div>
+                    <div class="roi-item">
+                      <span class="roi-label">回本周期</span>
+                      <span class="roi-value">8-12个月</span>
+                    </div>
+                    <div class="roi-item highlight">
+                      <span class="roi-label">投资评级</span>
+                      <span class="roi-value grade">A级推荐</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- AI综合建议 -->
+              <div class="location-ai-advice">
+                <div class="ai-advice-header">
+                  <span class="ai-advice-icon"><i data-lucide="sparkles" class="w-5 h-5"></i></span>
+                  <span class="ai-advice-title">AI综合建议</span>
+                </div>
+                <div class="ai-advice-content">
+                  <p>该商圈餐饮需求旺盛，但火锅品类竞争激烈。建议差异化定位为<strong>"一人食小火锅"</strong>，避开头部品牌正面竞争。</p>
+                  <div class="ai-advice-tags">
+                    <span class="advice-tag">差异化定位</span>
+                    <span class="advice-tag">避开头部竞争</span>
+                    <span class="advice-tag">一人食细分</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 顾客旅程地图 Section -->
+          <section class="demo-section" id="sectionJourney">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="git-merge" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">顾客旅程地图</h2>
+                <p class="section-header-new-desc">全链路洞察顾客行为，优化转化漏斗</p>
+              </div>
+            </div>
+            <div class="journey-layout">
+              <!-- 旅程阶段可视化 -->
+              <div class="journey-stages">
+                <div class="journey-stage-item" data-stage="aware">
+                  <div class="journey-stage-node">
+                    <div class="stage-icon"><i data-lucide="eye" class="w-5 h-5"></i></div>
+                    <div class="stage-name">认知</div>
+                    <div class="stage-conversion">100%</div>
+                  </div>
+                  <div class="journey-stage-arrow"></div>
+                </div>
+                <div class="journey-stage-item" data-stage="arrive">
+                  <div class="journey-stage-node">
+                    <div class="stage-icon"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+                    <div class="stage-name">到店</div>
+                    <div class="stage-conversion">35%</div>
+                  </div>
+                  <div class="journey-stage-arrow"></div>
+                </div>
+                <div class="journey-stage-item" data-stage="consume">
+                  <div class="journey-stage-node">
+                    <div class="stage-icon"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+                    <div class="stage-name">消费</div>
+                    <div class="stage-conversion">28%</div>
+                  </div>
+                  <div class="journey-stage-arrow"></div>
+                </div>
+                <div class="journey-stage-item" data-stage="review">
+                  <div class="journey-stage-node">
+                    <div class="stage-icon"><i data-lucide="star" class="w-5 h-5"></i></div>
+                    <div class="stage-name">评价</div>
+                    <div class="stage-conversion">22%</div>
+                  </div>
+                  <div class="journey-stage-arrow"></div>
+                </div>
+                <div class="journey-stage-item" data-stage="repurchase">
+                  <div class="journey-stage-node success">
+                    <div class="stage-icon"><i data-lucide="repeat" class="w-5 h-5"></i></div>
+                    <div class="stage-name">复购</div>
+                    <div class="stage-conversion">32%</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 阶段详情 -->
+              <div class="journey-details">
+                <div class="journey-detail-card">
+                  <div class="journey-detail-header">
+                    <span class="journey-detail-title">阶段详情</span>
+                    <div class="journey-tabs">
+                      <button class="journey-tab active" data-journey-tab="aware">认知</button>
+                      <button class="journey-tab" data-journey-tab="arrive">到店</button>
+                      <button class="journey-tab" data-journey-tab="consume">消费</button>
+                      <button class="journey-tab" data-journey-tab="review">评价</button>
+                      <button class="journey-tab" data-journey-tab="repurchase">复购</button>
+                    </div>
+                  </div>
+                  <div class="journey-detail-content">
+                    <div class="journey-tab-panel active" id="journeyAware">
+                      <div class="journey-metric-row">
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">认知人数</span>
+                          <span class="journey-metric-value">10,000</span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">转化到店</span>
+                          <span class="journey-metric-value">3,500</span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">转化率</span>
+                          <span class="journey-metric-value">35%</span>
+                        </div>
+                      </div>
+                      <div class="journey-channel-distribution">
+                        <div class="channel-distribution-title">来源渠道分布</div>
+                        <div class="channel-bars">
+                          <div class="channel-bar-item">
+                            <span class="channel-name">美团</span>
+                            <div class="channel-bar"><div class="channel-bar-fill" style="width: 45%"></div></div>
+                            <span class="channel-percent">45%</span>
+                          </div>
+                          <div class="channel-bar-item">
+                            <span class="channel-name">抖音</span>
+                            <div class="channel-bar"><div class="channel-bar-fill" style="width: 25%"></div></div>
+                            <span class="channel-percent">25%</span>
+                          </div>
+                          <div class="channel-bar-item">
+                            <span class="channel-name">小红书</span>
+                            <div class="channel-bar"><div class="channel-bar-fill" style="width: 20%"></div></div>
+                            <span class="channel-percent">20%</span>
+                          </div>
+                          <div class="channel-bar-item">
+                            <span class="channel-name">自然流量</span>
+                            <div class="channel-bar"><div class="channel-bar-fill" style="width: 10%"></div></div>
+                            <span class="channel-percent">10%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="journey-tab-panel" id="journeyArrive">
+                      <div class="journey-metric-row">
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">平均决策时长</span>
+                          <span class="journey-metric-value">3.2 <span class="journey-metric-unit">天</span></span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">流失率</span>
+                          <span class="journey-metric-value danger">18%</span>
+                        </div>
+                      </div>
+                      <div class="journey-insight">
+                        <div class="insight-title">关键影响因素</div>
+                        <div class="insight-list">
+                          <div class="insight-item"><span class="insight-rank">1</span>评分与口碑</div>
+                          <div class="insight-item"><span class="insight-rank">2</span>距离与交通</div>
+                          <div class="insight-item"><span class="insight-rank">3</span>团购优惠力度</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="journey-tab-panel" id="journeyConsume">
+                      <div class="journey-metric-row">
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">客单价</span>
+                          <span class="journey-metric-value">¥168</span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">平均用餐时长</span>
+                          <span class="journey-metric-value">68 <span class="journey-metric-unit">分钟</span></span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">人均</span>
+                          <span class="journey-metric-value">¥92</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="journey-tab-panel" id="journeyReview">
+                      <div class="journey-metric-row">
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">评价转化率</span>
+                          <span class="journey-metric-value">78%</span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">好评率</span>
+                          <span class="journey-metric-value success">92%</span>
+                        </div>
+                      </div>
+                      <div class="journey-bad-reasons">
+                        <div class="bad-reasons-title">差评主要原因TOP3</div>
+                        <div class="bad-reason-item">
+                          <span class="bad-reason-rank">1</span>
+                          <span class="bad-reason-text">等位时间过长 (45%)</span>
+                        </div>
+                        <div class="bad-reason-item">
+                          <span class="bad-reason-rank">2</span>
+                          <span class="bad-reason-text">服务态度不佳 (28%)</span>
+                        </div>
+                        <div class="bad-reason-item">
+                          <span class="bad-reason-rank">3</span>
+                          <span class="bad-reason-text">菜品分量少 (18%)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="journey-tab-panel" id="journeyRepurchase">
+                      <div class="journey-metric-row">
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">复购率</span>
+                          <span class="journey-metric-value">32%</span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">平均复购周期</span>
+                          <span class="journey-metric-value">18 <span class="journey-metric-unit">天</span></span>
+                        </div>
+                        <div class="journey-metric">
+                          <span class="journey-metric-label">行业均值</span>
+                          <span class="journey-metric-value">38%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 流失预警 -->
+              <div class="journey-churn-warning">
+                <div class="churn-warning-header">
+                  <span class="churn-warning-icon"><i data-lucide="alert-triangle" class="w-5 h-5"></i></span>
+                  <span class="churn-warning-title">流失预警</span>
+                </div>
+                <div class="churn-warning-content">
+                  <div class="churn-stage">
+                    <span class="churn-stage-label">到店→消费</span>
+                    <span class="churn-stage-rate danger">流失率最高 18%</span>
+                  </div>
+                  <div class="churn-reason">主要原因：到店后看到排队或等位，选择离开</div>
+                </div>
+              </div>
+              <!-- AI优化建议 -->
+              <div class="journey-ai-suggestions">
+                <div class="journey-suggestions-header">
+                  <span class="journey-suggestions-icon"><i data-lucide="sparkles" class="w-5 h-5"></i></span>
+                  <span class="journey-suggestions-title">AI旅程优化建议</span>
+                </div>
+                <div class="journey-suggestion-list">
+                  <div class="journey-suggestion-item">
+                    <span class="suggestion-priority high">高优</span>
+                    <div class="suggestion-text">认知→到店转化率偏低，建议加大抖音团购券投放</div>
+                  </div>
+                  <div class="journey-suggestion-item">
+                    <span class="suggestion-priority medium">中优</span>
+                    <div class="suggestion-text">消费→评价转化率78%，可在餐桌放扫码评价立减提示</div>
+                  </div>
+                  <div class="journey-suggestion-item">
+                    <span class="suggestion-priority high">高优</span>
+                    <div class="suggestion-text">复购率32%低于行业均值，建议启动VIP召回计划</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 食品安全合规监控 Section -->
+          <section class="demo-section" id="sectionSafety">
+            <div class="section-header-new">
+              <div class="section-header-new-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
+              <div>
+                <h2 class="section-header-new-title">食品安全合规监控</h2>
+                <p class="section-header-new-desc">食材溯源、保质期预警、卫生检查全链路管控</p>
+              </div>
+            </div>
+            <div class="safety-layout">
+              <!-- 安全合规总览 -->
+              <div class="safety-overview">
+                <div class="safety-score-card">
+                  <div class="safety-score-header">
+                    <span class="safety-score-title">综合合规评分</span>
+                  </div>
+                  <div class="safety-score-display">
+                    <div class="safety-score-value">94</div>
+                    <div class="safety-score-label">分</div>
+                    <div class="safety-score-grade">A级</div>
+                  </div>
+                </div>
+                <div class="safety-stats-row">
+                  <div class="safety-stat-item">
+                    <span class="safety-stat-value warning">2</span>
+                    <span class="safety-stat-label">待处理项</span>
+                  </div>
+                  <div class="safety-stat-item">
+                    <span class="safety-stat-label">上次检查</span>
+                    <span class="safety-stat-value">2026-04-25</span>
+                  </div>
+                  <div class="safety-stat-item">
+                    <span class="safety-stat-label">下次检查</span>
+                    <span class="safety-stat-value">2026-06-25</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 食材溯源追踪 -->
+              <div class="safety-trace-card">
+                <div class="safety-card-header">
+                  <span class="safety-card-title">食材溯源追踪</span>
+                  <button class="btn-secondary btn-sm"><i data-lucide="plus" class="w-4 h-4"></i> 入库</button>
+                </div>
+                <div class="safety-trace-table-wrapper">
+                  <table class="safety-trace-table">
+                    <thead>
+                      <tr>
+                        <th>品名</th>
+                        <th>供应商</th>
+                        <th>批次号</th>
+                        <th>入库时间</th>
+                        <th>保质期</th>
+                        <th>状态</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>鲜毛肚</td>
+                        <td>华润供应商A</td>
+                        <td>BT-20260515</td>
+                        <td>2026-05-15</td>
+                        <td>3天</td>
+                        <td><span class="status-tag warning">临期</span></td>
+                      </tr>
+                      <tr>
+                        <td>肥牛卷</td>
+                        <td>华润供应商A</td>
+                        <td>FN-20260518</td>
+                        <td>2026-05-18</td>
+                        <td>7天</td>
+                        <td><span class="status-tag warning">临期</span></td>
+                      </tr>
+                      <tr>
+                        <td>虾滑</td>
+                        <td>永辉供应商B</td>
+                        <td>FX-20260519</td>
+                        <td>2026-05-19</td>
+                        <td>5天</td>
+                        <td><span class="status-tag success">合规</span></td>
+                      </tr>
+                      <tr>
+                        <td>蔬菜拼盘</td>
+                        <td>光明农场</td>
+                        <td>SC-20260520</td>
+                        <td>2026-05-20</td>
+                        <td>2天</td>
+                        <td><span class="status-tag danger">紧急</span></td>
+                      </tr>
+                      <tr>
+                        <td>火锅底料</td>
+                        <td>四川老字号</td>
+                        <td>DL-20260510</td>
+                        <td>2026-05-10</td>
+                        <td>180天</td>
+                        <td><span class="status-tag success">合规</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- 保质期预警 -->
+              <div class="safety-expiry-card">
+                <div class="safety-card-header">
+                  <span class="safety-card-title">保质期预警</span>
+                </div>
+                <div class="expiry-warnings">
+                  <div class="expiry-warning-item danger">
+                    <div class="expiry-warning-icon"><i data-lucide="alert-octagon" class="w-5 h-5"></i></div>
+                    <div class="expiry-warning-content">
+                      <div class="expiry-warning-name">蔬菜拼盘</div>
+                      <div class="expiry-warning-info">
+                        <span class="expiry-days">剩余 2 天</span>
+                        <span class="expiry-action">建议今日优先使用或处理</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="expiry-warning-item warning">
+                    <div class="expiry-warning-icon"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                    <div class="expiry-warning-content">
+                      <div class="expiry-warning-name">鲜毛肚</div>
+                      <div class="expiry-warning-info">
+                        <span class="expiry-days">剩余 3 天</span>
+                        <span class="expiry-action">建议加快消耗或做促销</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="expiry-warning-item warning">
+                    <div class="expiry-warning-icon"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                    <div class="expiry-warning-content">
+                      <div class="expiry-warning-name">肥牛卷</div>
+                      <div class="expiry-warning-info">
+                        <span class="expiry-days">剩余 7 天</span>
+                        <span class="expiry-action">注意控制库存量</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="expiry-warning-item info">
+                    <div class="expiry-warning-icon"><i data-lucide="info" class="w-5 h-5"></i></div>
+                    <div class="expiry-warning-content">
+                      <div class="expiry-warning-name">虾滑</div>
+                      <div class="expiry-warning-info">
+                        <span class="expiry-days">剩余 5 天</span>
+                        <span class="expiry-action">正常预警关注</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 卫生检查清单 -->
+              <div class="safety-check-card">
+                <div class="safety-card-header">
+                  <span class="safety-card-title">卫生检查清单</span>
+                  <span class="safety-check-badge">2项待处理</span>
+                </div>
+                <div class="checklist-groups">
+                  <div class="checklist-group">
+                    <div class="checklist-group-title">日检项目</div>
+                    <div class="checklist-items">
+                      <label class="checklist-item"><input type="checkbox" checked><span>餐具消毒记录</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>后厨卫生清洁</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>食材储存温度</span></label>
+                      <label class="checklist-item danger"><input type="checkbox"><span>冷藏柜温度检测</span></label>
+                    </div>
+                  </div>
+                  <div class="checklist-group">
+                    <div class="checklist-group-title">周检项目</div>
+                    <div class="checklist-items">
+                      <label class="checklist-item"><input type="checkbox" checked><span>设备维护检查</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>库存盘点整理</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>消防设备检查</span></label>
+                      <label class="checklist-item danger"><input type="checkbox"><span>全员卫生培训</span></label>
+                    </div>
+                  </div>
+                  <div class="checklist-group">
+                    <div class="checklist-group-title">月检项目</div>
+                    <div class="checklist-items">
+                      <label class="checklist-item"><input type="checkbox" checked><span>专业消杀服务</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>供应商资质审核</span></label>
+                      <label class="checklist-item"><input type="checkbox" checked><span>证照有效期检查</span></label>
+                    </div>
+                  </div>
+                </div>
+                <div class="checklist-ai-tip">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  <span>AI提示：冷藏柜温度检测已超3天未记录，建议立即安排</span>
+                </div>
+              </div>
+              <!-- 合规培训 -->
+              <div class="safety-training-card">
+                <div class="safety-card-header">
+                  <span class="safety-card-title">合规培训</span>
+                </div>
+                <div class="training-stats">
+                  <div class="training-progress">
+                    <div class="training-progress-circle">
+                      <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="training-ring-bg"></circle>
+                        <circle cx="50" cy="50" r="45" class="training-ring-fill" style="stroke-dasharray: 283; stroke-dashoffset: 42;"></circle>
+                      </svg>
+                      <div class="training-progress-value">85%</div>
+                    </div>
+                    <div class="training-progress-label">员工培训完成率</div>
+                  </div>
+                  <div class="training-details">
+                    <div class="training-detail-item">
+                      <span class="training-detail-label">已完成培训</span>
+                      <span class="training-detail-value">17人</span>
+                    </div>
+                    <div class="training-detail-item">
+                      <span class="training-detail-label">待培训员工</span>
+                      <span class="training-detail-value danger">3人</span>
+                    </div>
+                    <div class="training-detail-item">
+                      <span class="training-detail-label">下次培训时间</span>
+                      <span class="training-detail-value">2026-05-05</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-secondary training-btn">
+                  <i data-lucide="users" class="w-4 h-4"></i> 查看培训详情
+                </button>
               </div>
             </div>
           </section>
