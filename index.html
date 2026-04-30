@@ -681,6 +681,14 @@
             <span class="sidebar-nav-text">食安</span>
             <span class="sidebar-nav-badge safe">SAFE</span>
           </div>
+          
+          <div class="sidebar-nav-divider"></div>
+          <div class="sidebar-nav-group-title">AI能力</div>
+          <div class="sidebar-nav-item" data-page="ai-daily" data-step="32" data-title="AI洞察日报">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">AI日报</span>
+            <span class="sidebar-nav-badge ai">AI</span>
+          </div>
           <div class="sidebar-nav-divider"></div>
           <div class="sidebar-nav-group-title">运营管理</div>
           <div class="sidebar-nav-item" data-page="employee" data-step="23" data-title="员工绩效">
@@ -705,6 +713,10 @@
           </div>
           <div class="sidebar-nav-divider"></div>
           <div class="sidebar-nav-group-title">系统</div>
+          <div class="sidebar-nav-item" data-page="export" data-step="33" data-title="数据导出">
+            <i data-lucide="download-cloud" class="w-5 h-5"></i>
+            <span class="sidebar-nav-text">数据导出</span>
+          </div>
           <div class="sidebar-nav-item" data-page="changelog" data-step="28" data-title="更新日志">
             <i data-lucide="git-branch" class="w-5 h-5"></i>
             <span class="sidebar-nav-text">更新日志</span>
@@ -907,6 +919,28 @@
               </div>
             </div>
             
+            
+            <!-- AI洞察卡片 -->
+            <div class="ai-insight-card" id="aiInsightCard">
+              <div class="ai-insight-header">
+                <div class="ai-insight-title">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  AI洞察分析
+                </div>
+                <button class="ai-insight-refresh" id="aiInsightRefresh" title="重新生成">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <div class="ai-insight-content" id="aiInsightContent">
+                <span class="ai-insight-text"></span><span class="ai-insight-cursor"></span>
+              </div>
+              <div class="ai-insight-tags">
+                <span class="ai-insight-tag revenue"><i data-lucide="trending-up" class="w-3 h-3"></i> 营收驱动</span>
+                <span class="ai-insight-tag risk"><i data-lucide="alert-triangle" class="w-3 h-3"></i> 风险提示</span>
+                <span class="ai-insight-tag suggest"><i data-lucide="lightbulb" class="w-3 h-3"></i> 优化建议</span>
+              </div>
+            </div>
+            
             <!-- Dashboard Grid -->
             <div class="dashboard-grid">
               <div class="dashboard-card">
@@ -1065,12 +1099,92 @@
                 </div>
                 <div class="chat-messages" id="chatMessages"></div>
                 <div class="chat-input-area">
+                  <div class="chat-voice-status" id="chatVoiceStatus">
+                    <span class="voice-status-dot"></span>
+                    <span class="voice-status-text">就绪</span>
+                  </div>
+                  <div class="chat-waveform hidden" id="chatWaveform">
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                    <div class="waveform-bar"></div>
+                  </div>
+                  <button class="chat-voice-btn" id="chatVoiceBtn" title="语音输入">
+                    <i data-lucide="mic" class="w-5 h-5"></i>
+                  </button>
                   <input type="text" class="chat-input" id="chatInput" placeholder="输入您的门店问题...">
+                  <button class="chat-tts-btn hidden" id="chatTtsBtn" title="语音播放">
+                    <i data-lucide="volume-2" class="w-5 h-5"></i>
+                  </button>
                   <button class="chat-send-btn" id="chatSendBtn">
                     <i data-lucide="send" class="w-5 h-5"></i>
                   </button>
                 </div>
               </div>
+              
+            <!-- Chat模板和历史会话侧边栏 -->
+            <div class="chat-sidebar-new">
+              <div class="chat-templates">
+                <div class="chat-templates-header">
+                  <span class="chat-templates-title">常用提问</span>
+                </div>
+                <button class="chat-template-btn" data-template="分析我店本周营收趋势">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i>
+                  分析我店本周营收趋势
+                </button>
+                <button class="chat-template-btn" data-template="给我一份抖音运营方案">
+                  <i data-lucide="video" class="w-4 h-4"></i>
+                  给我一份抖音运营方案
+                </button>
+                <button class="chat-template-btn" data-template="如何提升大众点评评分">
+                  <i data-lucide="star" class="w-4 h-4"></i>
+                  如何提升大众点评评分
+                </button>
+                <button class="chat-template-btn" data-template="对比竞品优劣势">
+                  <i data-lucide="git-compare" class="w-4 h-4"></i>
+                  对比竞品优劣势
+                </button>
+                <button class="chat-template-btn" data-template="生成本周运营报告">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                  生成本周运营报告
+                </button>
+              </div>
+              <div class="chat-history">
+                <div class="chat-history-header">
+                  <span class="chat-history-title">历史会话</span>
+                  <button class="chat-new-btn" id="chatNewBtn" title="新对话">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <div class="chat-history-item active" data-session="1">
+                  <div class="chat-history-item-title">分析本周营收趋势</div>
+                  <div class="chat-history-item-time">今天 14:30</div>
+                </div>
+                <div class="chat-history-item" data-session="2">
+                  <div class="chat-history-item-title">如何提升大众点评评分</div>
+                  <div class="chat-history-item-time">今天 10:15</div>
+                </div>
+                <div class="chat-history-item" data-session="3">
+                  <div class="chat-history-item-title">竞品对比分析</div>
+                  <div class="chat-history-item-time">昨天 16:45</div>
+                </div>
+                <div class="chat-history-item" data-session="4">
+                  <div class="chat-history-item-title">端午营销方案讨论</div>
+                  <div class="chat-history-item-time">05-18 09:20</div>
+                </div>
+                <div class="chat-history-item" data-session="5">
+                  <div class="chat-history-item-title">差评处理建议</div>
+                  <div class="chat-history-item-time">05-17 15:30</div>
+                </div>
+              </div>
+            </div>
+            
               <div class="chat-sidebar">
                 <div class="chat-sidebar-card">
                   <div class="chat-sidebar-title">当前数据</div>
@@ -1121,6 +1235,56 @@
                   <input type="date" class="date-input" id="dateStart"> -
                   <input type="date" class="date-input" id="dateEnd">
                 </div>
+            
+            <!-- 数据翻牌动画卡片 -->
+            <div class="realtime-indicator">
+              <span class="realtime-dot"></span>
+              <span>实时数据</span>
+              <span class="realtime-time" id="realtimeTime">30秒前更新</span>
+            </div>
+            <div class="data-stats-flip" id="dataStatsFlip">
+              <div class="flip-card">
+                <div class="flip-card-header">
+                  <div class="flip-card-icon"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+                  <div class="flip-card-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +12%</div>
+                </div>
+                <div class="flip-card-value" id="flipRevenue">¥12.8万</div>
+                <div class="flip-card-label">月营收</div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-header">
+                  <div class="flip-card-icon"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
+                  <div class="flip-card-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +8%</div>
+                </div>
+                <div class="flip-card-value" id="flipOrders">1,247</div>
+                <div class="flip-card-label">月订单</div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-header">
+                  <div class="flip-card-icon"><i data-lucide="star" class="w-5 h-5"></i></div>
+                  <div class="flip-card-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.3</div>
+                </div>
+                <div class="flip-card-value" id="flipRating">4.8</div>
+                <div class="flip-card-label">评分</div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-header">
+                  <div class="flip-card-icon"><i data-lucide="users" class="w-5 h-5"></i></div>
+                  <div class="flip-card-trend down"><i data-lucide="trending-down" class="w-3 h-3"></i> -3%</div>
+                </div>
+                <div class="flip-card-value" id="flipCustomers">892</div>
+                <div class="flip-card-label">新客户</div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-header">
+                  <div class="flip-card-icon"><i data-lucide="repeat" class="w-5 h-5"></i></div>
+                  <div class="flip-card-trend up"><i data-lucide="trending-up" class="w-3 h-3"></i> +5%</div>
+                </div>
+                <div class="flip-card-value" id="flipRepurchase">32%</div>
+                <div class="flip-card-label">复购率</div>
+              </div>
+            </div>
+            
               </div>
               <div class="data-toolbar-right">
                 <!-- Data Comparison Toggle -->
@@ -3261,6 +3425,77 @@
           </section>
 
           <!-- 门店健康评分 Section -->
+          
+            <!-- AI应对策略卡片 -->
+            <div class="ai-strategy-section">
+              <div class="ai-strategy-header">
+                <div class="ai-strategy-title">
+                  <i data-lucide="brain" class="w-5 h-5"></i>
+                  AI应对策略
+                </div>
+                <span class="ai-strategy-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> 自动生成</span>
+              </div>
+              <div class="ai-strategy-list">
+                <div class="ai-strategy-item">
+                  <div class="ai-strategy-trigger">
+                    <span class="ai-strategy-trigger-label">触发条件</span>
+                    <div class="ai-strategy-trigger-text">海底捞推出学生专享6.9折优惠</div>
+                  </div>
+                  <div class="ai-strategy-arrow">↓</div>
+                  <div class="ai-strategy-suggestion">
+                    <div class="ai-strategy-suggestion-icon"><i data-lucide="lightbulb" class="w-4 h-4"></i></div>
+                    <div class="ai-strategy-suggestion-text">建议推出差异化套餐，避免价格战。可推出"老客满200减30"专属优惠，对冲学生折扣影响，同时保护利润空间。</div>
+                  </div>
+                  <div class="ai-strategy-meta">
+                    <div class="ai-strategy-effects">
+                      <span class="ai-strategy-effect positive"><i data-lucide="trending-up" class="w-3 h-3"></i> 预期提升客流8%</span>
+                      <span class="ai-strategy-effect"><i data-lucide="shield" class="w-3 h-3"></i> 保护利润率</span>
+                    </div>
+                    <span class="ai-strategy-urgency high">紧急</span>
+                  </div>
+                  <button class="ai-strategy-execute"><i data-lucide="play" class="w-4 h-4"></i> 一键执行</button>
+                </div>
+                <div class="ai-strategy-item">
+                  <div class="ai-strategy-trigger">
+                    <span class="ai-strategy-trigger-label">触发条件</span>
+                    <div class="ai-strategy-trigger-text">小龙坎评分上升至4.6（+0.1）</div>
+                  </div>
+                  <div class="ai-strategy-arrow">↓</div>
+                  <div class="ai-strategy-suggestion">
+                    <div class="ai-strategy-suggestion-icon"><i data-lucide="target" class="w-4 h-4"></i></div>
+                    <div class="ai-strategy-suggestion-text">加大好评引导力度，建议每日主动联系消费顾客感谢好评。同时强化"服务极致"优势标签投放，保持评分领先。</div>
+                  </div>
+                  <div class="ai-strategy-meta">
+                    <div class="ai-strategy-effects">
+                      <span class="ai-strategy-effect positive"><i data-lucide="star" class="w-3 h-3"></i> 预期提升评分0.2</span>
+                      <span class="ai-strategy-effect"><i data-lucide="search" class="w-3 h-3"></i> 抢占搜索排名</span>
+                    </div>
+                    <span class="ai-strategy-urgency medium">中等</span>
+                  </div>
+                  <button class="ai-strategy-execute"><i data-lucide="play" class="w-4 h-4"></i> 一键执行</button>
+                </div>
+                <div class="ai-strategy-item">
+                  <div class="ai-strategy-trigger">
+                    <span class="ai-strategy-trigger-label">触发条件</span>
+                    <div class="ai-strategy-trigger-text">巴奴上线新功能"毛肚72h保鲜承诺"</div>
+                  </div>
+                  <div class="ai-strategy-arrow">↓</div>
+                  <div class="ai-strategy-suggestion">
+                    <div class="ai-strategy-suggestion-icon"><i data-lucide="eye" class="w-4 h-4"></i></div>
+                    <div class="ai-strategy-suggestion-text">关注用户反馈，评估是否跟进。可先推出"招牌菜品日日鲜"活动作为回应，强化本店的"新鲜"卖点。</div>
+                  </div>
+                  <div class="ai-strategy-meta">
+                    <div class="ai-strategy-effects">
+                      <span class="ai-strategy-effect positive"><i data-lucide="heart" class="w-3 h-3"></i> 提升用户好感</span>
+                      <span class="ai-strategy-effect"><i data-lucide="message-circle" class="w-3 h-3"></i> 差异化竞争</span>
+                    </div>
+                    <span class="ai-strategy-urgency low">建议</span>
+                  </div>
+                  <button class="ai-strategy-execute"><i data-lucide="play" class="w-4 h-4"></i> 一键执行</button>
+                </div>
+              </div>
+            </div>
+            
           <section class="demo-section" id="sectionHealth">
             <div class="section-header-new">
               <div class="section-header-new-icon"><i data-lucide="heart-pulse" class="w-5 h-5"></i></div>
@@ -3428,6 +3663,71 @@
               </div>
             </div>
           </section>
+            
+            <!-- 改善路线图 -->
+            <div class="health-roadmap">
+              <div class="health-roadmap-header">
+                <div class="health-roadmap-title">
+                  <i data-lucide="route" class="w-5 h-5"></i>
+                  改善路线图
+                </div>
+                <span class="ai-strategy-badge"><i data-lucide="sparkles" class="w-3 h-3"></i> AI优先级排序</span>
+              </div>
+              <div class="health-roadmap-list">
+                <div class="health-roadmap-item">
+                  <div class="health-roadmap-priority p0">
+                    <span class="health-roadmap-priority-label">优先级</span>
+                    <span class="health-roadmap-priority-text">P0</span>
+                  </div>
+                  <div class="health-roadmap-content">
+                    <div class="health-roadmap-action">优化差评回复率</div>
+                    <div class="health-roadmap-details">
+                      <span class="health-roadmap-detail expected"><i data-lucide="trending-up" class="w-3 h-3"></i> 预期提升评分0.3</span>
+                      <span class="health-roadmap-detail time"><i data-lucide="clock" class="w-3 h-3"></i> 预计3天见效</span>
+                    </div>
+                  </div>
+                  <button class="health-roadmap-execute" data-task="1"><i data-lucide="play" class="w-4 h-4"></i> 执行</button>
+                </div>
+                <div class="health-roadmap-item">
+                  <div class="health-roadmap-priority p1">
+                    <span class="health-roadmap-priority-label">优先级</span>
+                    <span class="health-roadmap-priority-text">P1</span>
+                  </div>
+                  <div class="health-roadmap-content">
+                    <div class="health-roadmap-action">增加午市推广投入</div>
+                    <div class="health-roadmap-details">
+                      <span class="health-roadmap-detail expected"><i data-lucide="wallet" class="w-3 h-3"></i> 预期提升营收15%</span>
+                      <span class="health-roadmap-detail time"><i data-lucide="clock" class="w-3 h-3"></i> 预计1周见效</span>
+                    </div>
+                  </div>
+                  <button class="health-roadmap-execute" data-task="2"><i data-lucide="play" class="w-4 h-4"></i> 执行</button>
+                </div>
+                <div class="health-roadmap-item">
+                  <div class="health-roadmap-priority p2">
+                    <span class="health-roadmap-priority-label">优先级</span>
+                    <span class="health-roadmap-priority-text">P2</span>
+                  </div>
+                  <div class="health-roadmap-content">
+                    <div class="health-roadmap-action">优化菜品结构</div>
+                    <div class="health-roadmap-details">
+                      <span class="health-roadmap-detail expected"><i data-lucide="wallet" class="w-3 h-3"></i> 预期提升客单价8%</span>
+                      <span class="health-roadmap-detail time"><i data-lucide="clock" class="w-3 h-3"></i> 预计2周见效</span>
+                    </div>
+                  </div>
+                  <button class="health-roadmap-execute" data-task="3"><i data-lucide="play" class="w-4 h-4"></i> 执行</button>
+                </div>
+              </div>
+              <div class="health-roadmap-progress">
+                <div class="health-roadmap-progress-header">
+                  <span class="health-roadmap-progress-title">改善进度</span>
+                  <span class="health-roadmap-progress-text">1/3 已完成</span>
+                </div>
+                <div class="health-roadmap-progress-bar">
+                  <div class="health-roadmap-progress-fill" style="width: 33%"></div>
+                </div>
+              </div>
+            </div>
+            
 
           <!-- 智能运营日历 Section -->
           <section class="demo-section" id="sectionCalendar">
@@ -6721,6 +7021,264 @@
             </div>
           </section>
 
+
+          <!-- AI洞察日报 Section -->
+          <section class="demo-section" id="sectionAIDaily">
+            <div class="ai-daily-header">
+              <div class="ai-daily-date">
+                <div class="ai-daily-date-icon"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                <div class="ai-daily-date-text">
+                  <span class="ai-daily-date-label">今日日期</span>
+                  <span class="ai-daily-date-value" id="aiDailyDate">2026年5月20日</span>
+                </div>
+              </div>
+              <div class="ai-daily-status">
+                <div class="ai-status-indicator generating" id="aiDailyStatus">
+                  <div class="ai-status-dot"></div>
+                  <span>AI生成中</span>
+                </div>
+                <div class="ai-status-indicator ready hidden">
+                  <div class="ai-status-dot ready"></div>
+                  <span>已生成</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-summary-card">
+              <div class="ai-summary-label">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                AI摘要
+              </div>
+              <div class="ai-summary-content">
+                今日门店运营良好，营收较昨日提升12%，差评已全部处理完毕，建议重点关注晚餐时段的翻台率优化。
+              </div>
+            </div>
+
+            <div class="ai-changes-grid">
+              <div class="ai-change-card up">
+                <div class="ai-change-icon"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
+                <div class="ai-change-content">
+                  <div class="ai-change-title">营收增长</div>
+                  <div class="ai-change-value">+12%</div>
+                  <div class="ai-change-impact positive">正向影响 +¥1,536</div>
+                </div>
+              </div>
+              <div class="ai-change-card up">
+                <div class="ai-change-icon"><i data-lucide="star" class="w-5 h-5"></i></div>
+                <div class="ai-change-content">
+                  <div class="ai-change-title">评分提升</div>
+                  <div class="ai-change-value">+0.3</div>
+                  <div class="ai-change-impact positive">正向影响 好评率+5%</div>
+                </div>
+              </div>
+              <div class="ai-change-card down">
+                <div class="ai-change-icon"><i data-lucide="users" class="w-5 h-5"></i></div>
+                <div class="ai-change-content">
+                  <div class="ai-change-title">客流下降</div>
+                  <div class="ai-change-value">-8%</div>
+                  <div class="ai-change-impact negative">负向影响 翻台率-0.5</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-actions-section">
+              <div class="ai-actions-header">
+                <i data-lucide="list-checks" class="w-5 h-5"></i>
+                <h3>AI行动建议</h3>
+              </div>
+              <div class="ai-actions-list">
+                <div class="ai-action-item priority-urgent">
+                  <div class="ai-action-priority"><span class="priority-tag urgent">立即</span></div>
+                  <div class="ai-action-content">
+                    <div class="ai-action-title">处理差评预警</div>
+                    <div class="ai-action-desc">大众点评有1条新差评（等位时间长），建议立即联系顾客</div>
+                  </div>
+                  <button class="ai-action-btn">处理</button>
+                </div>
+                <div class="ai-action-item priority-today">
+                  <div class="ai-action-priority"><span class="priority-tag today">今日</span></div>
+                  <div class="ai-action-content">
+                    <div class="ai-action-title">优化晚市排班</div>
+                    <div class="ai-action-desc">晚餐时段建议增加2名兼职员工，预计提升翻台率15%</div>
+                  </div>
+                  <button class="ai-action-btn">安排</button>
+                </div>
+                <div class="ai-action-item priority-week">
+                  <div class="ai-action-priority"><span class="priority-tag week">本周</span></div>
+                  <div class="ai-action-content">
+                    <div class="ai-action-title">策划周末促销</div>
+                    <div class="ai-action-desc">周末预计客流高峰，建议推出"家庭套餐"吸引更多家庭用户</div>
+                  </div>
+                  <button class="ai-action-btn">查看</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-history-section">
+              <div class="ai-history-header">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+                <h3>历史日报</h3>
+                <span class="ai-history-count">最近7天</span>
+              </div>
+              <div class="ai-history-list">
+                <div class="ai-history-item expanded">
+                  <div class="ai-history-date"><div class="ai-history-day">05-19</div><div class="ai-history-weekday">昨天</div></div>
+                  <div class="ai-history-preview">
+                    <div class="ai-history-summary">营收¥12,800，评分稳定在4.8</div>
+                    <div class="ai-history-expand"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
+                  </div>
+                  <div class="ai-history-detail">
+                    <div class="ai-history-metrics">
+                      <span><i data-lucide="wallet" class="w-3 h-3"></i> ¥12,800</span>
+                      <span><i data-lucide="shopping-cart" class="w-3 h-3"></i> 52单</span>
+                      <span><i data-lucide="star" class="w-3 h-3"></i> 4.8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-history-item">
+                  <div class="ai-history-date"><div class="ai-history-day">05-18</div><div class="ai-history-weekday">周日</div></div>
+                  <div class="ai-history-preview">
+                    <div class="ai-history-summary">周末营收创本月新高¥15,200</div>
+                    <div class="ai-history-expand"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
+                  </div>
+                </div>
+                <div class="ai-history-item">
+                  <div class="ai-history-date"><div class="ai-history-day">05-17</div><div class="ai-history-weekday">周六</div></div>
+                  <div class="ai-history-preview">
+                    <div class="ai-history-summary">营收¥14,500，VIP客户活跃度提升</div>
+                    <div class="ai-history-expand"><i data-lucide="chevron-down" class="w-4 h-4"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-export-section">
+              <button class="ai-export-btn" id="aiExportPdfBtn">
+                <i data-lucide="file-down" class="w-5 h-5"></i>
+                导出PDF报告
+              </button>
+            </div>
+          </section>
+
+          <!-- 数据导出中心 Section -->
+          <section class="demo-section" id="sectionExport">
+            <div class="export-header">
+              <div class="export-header-title">
+                <i data-lucide="download-cloud" class="w-6 h-6"></i>
+                <h2>数据导出中心</h2>
+              </div>
+              <p class="export-header-desc">灵活导出您需要的数据，支持多种格式和维度</p>
+            </div>
+
+            <div class="export-config-grid">
+              <div class="export-config-card">
+                <div class="export-config-title"><i data-lucide="file-type" class="w-5 h-5"></i>导出类型</div>
+                <div class="export-type-options">
+                  <label class="export-type-option selected">
+                    <input type="radio" name="exportType" value="pdf" checked>
+                    <div class="export-type-content"><i data-lucide="file-text" class="w-6 h-6"></i><span>PDF报告</span></div>
+                  </label>
+                  <label class="export-type-option">
+                    <input type="radio" name="exportType" value="excel">
+                    <div class="export-type-content"><i data-lucide="table" class="w-6 h-6"></i><span>Excel表格</span></div>
+                  </label>
+                  <label class="export-type-option">
+                    <input type="radio" name="exportType" value="image">
+                    <div class="export-type-content"><i data-lucide="image" class="w-6 h-6"></i><span>图片</span></div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="export-config-card">
+                <div class="export-config-title"><i data-lucide="calendar-range" class="w-5 h-5"></i>数据范围</div>
+                <div class="export-range-options">
+                  <button class="export-range-btn active" data-range="today">今日</button>
+                  <button class="export-range-btn" data-range="week">本周</button>
+                  <button class="export-range-btn" data-range="month">本月</button>
+                  <button class="export-range-btn" data-range="custom">自定义</button>
+                </div>
+                <div class="export-custom-range hidden" id="exportCustomRange">
+                  <input type="date" class="export-date-input" id="exportDateStart">
+                  <span>至</span>
+                  <input type="date" class="export-date-input" id="exportDateEnd">
+                </div>
+              </div>
+
+              <div class="export-config-card full-width">
+                <div class="export-config-title"><i data-lucide="layout-grid" class="w-5 h-5"></i>内容模块（可多选）</div>
+                <div class="export-modules-grid">
+                  <label class="export-module-item checked">
+                    <input type="checkbox" name="exportModule" value="overview" checked>
+                    <div class="export-module-content"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span>概览数据</span></div>
+                  </label>
+                  <label class="export-module-item checked">
+                    <input type="checkbox" name="exportModule" value="revenue" checked>
+                    <div class="export-module-content"><i data-lucide="trending-up" class="w-5 h-5"></i><span>营收分析</span></div>
+                  </label>
+                  <label class="export-module-item">
+                    <input type="checkbox" name="exportModule" value="competitor">
+                    <div class="export-module-content"><i data-lucide="radar" class="w-5 h-5"></i><span>竞品对比</span></div>
+                  </label>
+                  <label class="export-module-item checked">
+                    <input type="checkbox" name="exportModule" value="suggestions" checked>
+                    <div class="export-module-content"><i data-lucide="lightbulb" class="w-5 h-5"></i><span>运营建议</span></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="export-preview-card">
+              <div class="export-preview-header"><i data-lucide="eye" class="w-5 h-5"></i><span>导出预览</span></div>
+              <div class="export-preview-summary">
+                <div class="export-preview-item"><span class="preview-label">文件类型</span><span class="preview-value">PDF报告</span></div>
+                <div class="export-preview-item"><span class="preview-label">数据范围</span><span class="preview-value">2026年5月20日</span></div>
+                <div class="export-preview-item"><span class="preview-label">包含模块</span><span class="preview-value">概览数据、营收分析、运营建议</span></div>
+                <div class="export-preview-item"><span class="preview-label">预估页数</span><span class="preview-value">约3页</span></div>
+              </div>
+            </div>
+
+            <div class="export-actions">
+              <button class="export-main-btn" id="exportMainBtn">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                开始导出
+              </button>
+            </div>
+
+            <div class="export-progress-card hidden" id="exportProgressCard">
+              <div class="export-progress-header">
+                <i data-lucide="loader-2" class="w-5 h-5 export-spin"></i>
+                <span>正在导出...</span>
+              </div>
+              <div class="export-progress-bar-container">
+                <div class="export-progress-bar" id="exportProgressBar"></div>
+              </div>
+              <div class="export-progress-percent" id="exportProgressPercent">0%</div>
+            </div>
+
+            <div class="export-history-section">
+              <div class="export-history-header"><i data-lucide="history" class="w-5 h-5"></i><h3>导出历史</h3></div>
+              <div class="export-history-list">
+                <div class="export-history-item">
+                  <div class="export-history-icon pdf"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                  <div class="export-history-info">
+                    <div class="export-history-name">运营日报_20260519.pdf</div>
+                    <div class="export-history-meta"><span>PDF报告</span><span>•</span><span>2026年5月19日 18:30</span></div>
+                  </div>
+                  <button class="export-history-download"><i data-lucide="download" class="w-4 h-4"></i></button>
+                </div>
+                <div class="export-history-item">
+                  <div class="export-history-icon excel"><i data-lucide="table" class="w-5 h-5"></i></div>
+                  <div class="export-history-info">
+                    <div class="export-history-name">营收数据_5月.xlsx</div>
+                    <div class="export-history-meta"><span>Excel表格</span><span>•</span><span>2026年5月18日 10:15</span></div>
+                  </div>
+                  <button class="export-history-download"><i data-lucide="download" class="w-4 h-4"></i></button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
         </div>
       </main>
     </div>
@@ -6789,6 +7347,10 @@
             <div class="mobile-drawer-item" data-page="knowledge">
               <i data-lucide="book-open"></i>
               <span>知识库</span>
+            </div>
+            <div class="mobile-drawer-item" data-page="ai-daily">
+              <i data-lucide="sparkles"></i>
+              <span>AI日报</span>
             </div>
             <div class="mobile-drawer-item" data-page="logs">
               <i data-lucide="scroll-text"></i>
@@ -7869,5 +8431,154 @@
   </div>
 
   <script src="js/app.js"></script>
+
+  <!-- ==========================================
+       COMMAND PALETTE (⌘K)
+       ========================================== -->
+  <div class="command-palette-overlay hidden" id="commandPaletteOverlay">
+    <div class="command-palette" id="commandPalette">
+      <div class="command-palette-header">
+        <div class="command-palette-search">
+          <i data-lucide="search" class="w-5 h-5"></i>
+          <input type="text" class="command-palette-input" id="commandPaletteInput" placeholder="搜索功能、操作或数据...">
+          <kbd class="command-palette-kbd">ESC</kbd>
+        </div>
+      </div>
+      <div class="command-palette-body" id="commandPaletteBody">
+        <!-- 结果将动态生成 -->
+      </div>
+      <div class="command-palette-footer">
+        <div class="command-palette-hint">
+          <kbd>↑</kbd><kbd>↓</kbd> 选择
+          <kbd>↵</kbd> 执行
+          <kbd>ESC</kbd> 关闭
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       ONBOARDING WIZARD
+       ========================================== -->
+  <div class="onboarding-overlay hidden" id="onboardingOverlay">
+    <div class="onboarding-container" id="onboardingContainer">
+      <div class="onboarding-progress">
+        <div class="onboarding-progress-bar" id="onboardingProgressBar"></div>
+      </div>
+      <div class="onboarding-content" id="onboardingContent">
+        <!-- Step 1: Welcome -->
+        <div class="onboarding-step active" data-step="1">
+          <div class="onboarding-step-icon"><i data-lucide="sparkles" class="w-16 h-16"></i></div>
+          <h2 class="onboarding-step-title">欢迎使用店赢OS</h2>
+          <p class="onboarding-step-desc">让AI帮你管店，一个人运营无限门店</p>
+          <div class="onboarding-features-preview">
+            <div class="onboarding-feature-item"><i data-lucide="bot" class="w-5 h-5"></i><span>AI虚拟店长 7×24小时工作</span></div>
+            <div class="onboarding-feature-item"><i data-lucide="message-circle" class="w-5 h-5"></i><span>差评自动处理 响应&lt;3分钟</span></div>
+            <div class="onboarding-feature-item"><i data-lucide="trending-up" class="w-5 h-5"></i><span>动态定价 提升营收32%</span></div>
+          </div>
+        </div>
+        <!-- Step 2: Select Industry -->
+        <div class="onboarding-step" data-step="2">
+          <div class="onboarding-step-icon"><i data-lucide="building-2" class="w-16 h-16"></i></div>
+          <h2 class="onboarding-step-title">选择您的行业</h2>
+          <p class="onboarding-step-desc">我们将为您推荐最适合的功能</p>
+          <div class="onboarding-industry-grid">
+            <button class="onboarding-industry-btn" data-industry="catering">
+              <i data-lucide="utensils" class="w-8 h-8"></i>
+              <span>餐饮</span>
+            </button>
+            <button class="onboarding-industry-btn" data-industry="retail">
+              <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+              <span>零售</span>
+            </button>
+            <button class="onboarding-industry-btn" data-industry="entertainment">
+              <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+              <span>休娱</span>
+            </button>
+          </div>
+        </div>
+        <!-- Step 3: Select Metrics -->
+        <div class="onboarding-step" data-step="3">
+          <div class="onboarding-step-icon"><i data-lucide="bar-chart-3" class="w-16 h-16"></i></div>
+          <h2 class="onboarding-step-title">选择关注指标</h2>
+          <p class="onboarding-step-desc">我们会重点关注这些数据的变化</p>
+          <div class="onboarding-metrics-grid">
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="revenue" checked>
+              <span><i data-lucide="wallet" class="w-4 h-4"></i>营收</span>
+            </label>
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="rating" checked>
+              <span><i data-lucide="star" class="w-4 h-4"></i>评分</span>
+            </label>
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="orders">
+              <span><i data-lucide="shopping-cart" class="w-4 h-4"></i>订单</span>
+            </label>
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="review">
+              <span><i data-lucide="message-circle" class="w-4 h-4"></i>评价</span>
+            </label>
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="vip">
+              <span><i data-lucide="heart" class="w-4 h-4"></i>会员</span>
+            </label>
+            <label class="onboarding-metric-item">
+              <input type="checkbox" name="metric" value="inventory">
+              <span><i data-lucide="package" class="w-4 h-4"></i>库存</span>
+            </label>
+          </div>
+        </div>
+        <!-- Step 4: Feature Highlights -->
+        <div class="onboarding-step" data-step="4">
+          <div class="onboarding-step-icon"><i data-lucide="zap" class="w-16 h-16"></i></div>
+          <h2 class="onboarding-step-title">3大核心功能</h2>
+          <p class="onboarding-step-desc">这些功能将显著提升您的运营效率</p>
+          <div class="onboarding-highlights">
+            <div class="onboarding-highlight-card">
+              <div class="highlight-number">1</div>
+              <div class="highlight-content">
+                <h4>AI洞察日报</h4>
+                <p>每日自动生成经营分析，一句话读懂门店状态</p>
+              </div>
+            </div>
+            <div class="onboarding-highlight-card">
+              <div class="highlight-number">2</div>
+              <div class="highlight-content">
+                <h4>智能差评处理</h4>
+                <p>AI自动回复差评，转危为机，提升评分</p>
+              </div>
+            </div>
+            <div class="onboarding-highlight-card">
+              <div class="highlight-number">3</div>
+              <div class="highlight-content">
+                <h4>动态定价引擎</h4>
+                <p>根据市场情况自动优化价格，最大化收益</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Step 5: Complete -->
+        <div class="onboarding-step" data-step="5">
+          <div class="onboarding-step-icon success"><i data-lucide="check-circle" class="w-16 h-16"></i></div>
+          <h2 class="onboarding-step-title">准备就绪！</h2>
+          <p class="onboarding-step-desc">开始探索店赢OS的强大功能吧</p>
+          <button class="onboarding-start-btn" id="onboardingStartBtn">
+            <i data-lucide="rocket" class="w-5 h-5"></i>
+            开始使用
+          </button>
+        </div>
+      </div>
+      <div class="onboarding-footer">
+        <button class="onboarding-skip-btn" id="onboardingSkipBtn">跳过引导</button>
+        <button class="onboarding-next-btn" id="onboardingNextBtn">
+          下一步
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 </body>
 </html>

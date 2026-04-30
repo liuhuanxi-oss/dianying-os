@@ -3040,3 +3040,919 @@ function initDataScreenStoreSync() {
 
 console.log('店赢OS v10 - 5项差异化功能初始化完成');
 console.log('店赢OS - 多门店切换功能已加载');
+
+
+  // ============================================
+  // COMMAND PALETTE (⌘K)
+  // ============================================
+  const commandPaletteOverlay = document.getElementById('commandPaletteOverlay');
+  const commandPalette = document.getElementById('commandPalette');
+  const commandPaletteInput = document.getElementById('commandPaletteInput');
+  const commandPaletteBody = document.getElementById('commandPaletteBody');
+  
+  // 命令面板数据
+  const commandData = {
+    pages: [
+      { id: 'overview', title: '运营概览', icon: 'layout-dashboard', desc: '查看门店整体运营数据' },
+      { id: 'chat', title: 'AI对话', icon: 'message-square', desc: '与AI虚拟店长对话' },
+      { id: 'data', title: '数据报表', icon: 'bar-chart-2', desc: '详细数据分析报表' },
+      { id: 'ai-daily', title: 'AI洞察日报', icon: 'sparkles', desc: '每日经营分析报告' },
+      { id: 'export', title: '数据导出', icon: 'download-cloud', desc: '导出数据报告' },
+      { id: 'platform', title: '平台管理', icon: 'layout-grid', desc: '多平台账号管理' },
+      { id: 'competitor', title: '竞品监控', icon: 'radar', desc: '竞品数据分析' },
+      { id: 'health', title: '门店健康', icon: 'heart-pulse', desc: '门店健康度评估' },
+      { id: 'marketing', title: '营销工具', icon: 'ticket', desc: '营销活动管理' },
+      { id: 'member', title: '会员运营', icon: 'heart', desc: '会员数据分析' },
+    ],
+    actions: [
+      { id: 'export-report', title: '导出报告', icon: 'download', desc: '导出运营报告PDF', shortcut: '' },
+      { id: 'switch-store', title: '切换门店', icon: 'store', desc: '切换到其他门店', shortcut: '' },
+      { id: 'dark-mode', title: '切换深色模式', icon: 'moon', desc: '开启/关闭深色模式', shortcut: 'D' },
+      { id: 'refresh', title: '刷新数据', icon: 'refresh-cw', desc: '刷新当前页面数据', shortcut: 'R' },
+      { id: 'fullscreen', title: '全屏模式', icon: 'maximize', desc: '进入全屏显示', shortcut: 'F' },
+      { id: 'shortcuts', title: '快捷键帮助', icon: 'keyboard', desc: '查看所有快捷键', shortcut: '?' },
+    ],
+    metrics: [
+      { id: 'revenue', title: '月营收', icon: 'wallet', desc: '当前¥12.8万，较上月+12%' },
+      { id: 'orders', title: '月订单', icon: 'shopping-cart', desc: '当前1,247单，较上月+8%' },
+      { id: 'rating', title: '门店评分', icon: 'star', desc: '当前4.8分，较上月+0.3' },
+      { id: 'review', title: '差评数', icon: 'message-circle', desc: '当前0条待处理' },
+    ]
+  };
+
+  let selectedIndex = 0;
+  let currentResults = [];
+
+  function renderCommandPalette(filter = '') {
+    const filterLower = filter.toLowerCase();
+    
+    // 过滤数据
+    const filteredPages = commandData.pages.filter(p => 
+      p.title.toLowerCase().includes(filterLower) || 
+      p.desc.toLowerCase().includes(filterLower)
+    );
+    const filteredActions = commandData.actions.filter(a => 
+      a.title.toLowerCase().includes(filterLower) || 
+      a.desc.toLowerCase().includes(filterLower)
+    );
+    const filteredMetrics = commandData.metrics.filter(m => 
+      m.title.toLowerCase().includes(filterLower) || 
+      m.desc.toLowerCase().includes(filterLower)
+    );
+
+    currentResults = [...filteredPages.map(p => ({...p, type: 'page'})),
+                     ...filteredActions.map(a => ({...a, type: 'action'})),
+                     ...filteredMetrics.map(m => ({...m, type: 'metric'}))];
+
+    let html = '';
+
+    if (filteredPages.length > 0) {
+      html += '<div class="command-palette-section"><div class="command-palette-section-title">页面</div>';
+      filteredPages.forEach((item, index) => {
+        const iconIndex = index;
+        html += `<div class="command-palette-item${index === selectedIndex ? ' selected' : ''}" data-index="${index}" data-type="page" data-id="${item.id}">
+          <div class="command-palette-item-icon"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
+          <div class="command-palette-item-content">
+            <div class="command-palette-item-title">${item.title}</div>
+            <div class="command-palette-item-desc">${item.desc}</div>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    if (filteredActions.length > 0) {
+      html += '<div class="command-palette-section"><div class="command-palette-section-title">操作</div>';
+      const baseIndex = filteredPages.length;
+      filteredActions.forEach((item, i) => {
+        const index = baseIndex + i;
+        const shortcutHtml = item.shortcut ? `<div class="command-palette-item-shortcut"><kbd>${item.shortcut}</kbd></div>` : '';
+        html += `<div class="command-palette-item${index === selectedIndex ? ' selected' : ''}" data-index="${index}" data-type="action" data-id="${item.id}">
+          <div class="command-palette-item-icon"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
+          <div class="command-palette-item-content">
+            <div class="command-palette-item-title">${item.title}</div>
+            <div class="command-palette-item-desc">${item.desc}</div>
+          </div>
+          ${shortcutHtml}
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    if (filteredMetrics.length > 0) {
+      html += '<div class="command-palette-section"><div class="command-palette-section-title">数据指标</div>';
+      const baseIndex = filteredPages.length + filteredActions.length;
+      filteredMetrics.forEach((item, i) => {
+        const index = baseIndex + i;
+        html += `<div class="command-palette-item${index === selectedIndex ? ' selected' : ''}" data-index="${index}" data-type="metric" data-id="${item.id}">
+          <div class="command-palette-item-icon"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
+          <div class="command-palette-item-content">
+            <div class="command-palette-item-title">${item.title}</div>
+            <div class="command-palette-item-desc">${item.desc}</div>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    if (html === '') {
+      html = '<div style="padding: 40px; text-align: center; color: var(--text-muted);">未找到匹配结果</div>';
+    }
+
+    commandPaletteBody.innerHTML = html;
+    lucide.createIcons();
+    
+    // 绑定点击事件
+    commandPaletteBody.querySelectorAll('.command-palette-item').forEach(item => {
+      item.addEventListener('click', () => executeCommand(item.dataset.type, item.dataset.id));
+    });
+  }
+
+  function openCommandPalette() {
+    commandPaletteOverlay?.classList.remove('hidden');
+    commandPaletteInput?.focus();
+    renderCommandPalette();
+    selectedIndex = 0;
+  }
+
+  function closeCommandPalette() {
+    commandPaletteOverlay?.classList.add('hidden');
+    if (commandPaletteInput) commandPaletteInput.value = '';
+  }
+
+  function executeCommand(type, id) {
+    closeCommandPalette();
+    
+    if (type === 'page') {
+      switchPage(id);
+    } else if (type === 'action') {
+      switch(id) {
+        case 'export-report':
+          switchPage('export');
+          break;
+        case 'switch-store':
+          document.getElementById('storeSelector')?.click();
+          break;
+        case 'dark-mode':
+          toggleTheme();
+          break;
+        case 'refresh':
+          location.reload();
+          break;
+        case 'fullscreen':
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else {
+            document.documentElement.requestFullscreen();
+          }
+          break;
+        case 'shortcuts':
+          document.getElementById('shortcutsModal')?.classList.remove('hidden');
+          break;
+      }
+    }
+  }
+
+  // 监听Ctrl+K / Cmd+K
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      if (commandPaletteOverlay?.classList.contains('hidden')) {
+        openCommandPalette();
+      } else {
+        closeCommandPalette();
+      }
+    }
+    
+    // 命令面板内键盘导航
+    if (commandPaletteOverlay && !commandPaletteOverlay.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        closeCommandPalette();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, currentResults.length - 1);
+        renderCommandPalette(commandPaletteInput?.value || '');
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+        renderCommandPalette(commandPaletteInput?.value || '');
+      } else if (e.key === 'Enter' && currentResults[selectedIndex]) {
+        e.preventDefault();
+        const item = currentResults[selectedIndex];
+        executeCommand(item.type, item.id);
+      }
+    }
+  });
+
+  commandPaletteInput?.addEventListener('input', (e) => {
+    selectedIndex = 0;
+    renderCommandPalette(e.target.value);
+  });
+
+  commandPaletteOverlay?.addEventListener('click', (e) => {
+    if (e.target === commandPaletteOverlay) {
+      closeCommandPalette();
+    }
+  });
+
+  // ============================================
+  // VOICE INTERACTION (语音交互)
+  // ============================================
+  const chatVoiceBtn = document.getElementById('chatVoiceBtn');
+  const chatTtsBtn = document.getElementById('chatTtsBtn');
+  const chatWaveform = document.getElementById('chatWaveform');
+  const chatVoiceStatus = document.getElementById('chatVoiceStatus');
+  const chatInput = document.getElementById('chatInput');
+  
+  let isRecording = false;
+  let isPlaying = false;
+  let mediaRecorder = null;
+  let audioChunks = [];
+
+  function updateVoiceStatus(status) {
+    if (!chatVoiceStatus) return;
+    const dot = chatVoiceStatus.querySelector('.voice-status-dot');
+    const text = chatVoiceStatus.querySelector('.voice-status-text');
+    
+    const statusMap = {
+      ready: { color: 'var(--success)', text: '就绪' },
+      recording: { color: 'var(--danger)', text: '录音中' },
+      recognizing: { color: 'var(--warning)', text: '识别中' },
+      playing: { color: 'var(--accent)', text: '播放中' }
+    };
+    
+    const s = statusMap[status] || statusMap.ready;
+    if (dot) dot.style.background = s.color;
+    if (text) text.textContent = s.text;
+  }
+
+  function toggleRecording() {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      
+      mediaRecorder.ondataavailable = (e) => {
+        audioChunks.push(e.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach(track => track.stop());
+        // 模拟语音识别
+        updateVoiceStatus('recognizing');
+        setTimeout(() => {
+          if (chatInput) {
+            chatInput.value = '今天门店的营收情况怎么样？';
+          }
+          updateVoiceStatus('ready');
+          chatWaveform?.classList.add('hidden');
+          chatVoiceBtn?.classList.remove('recording');
+        }, 1500);
+      };
+      
+      mediaRecorder.start();
+      isRecording = true;
+      updateVoiceStatus('recording');
+      chatWaveform?.classList.remove('hidden');
+      chatVoiceBtn?.classList.add('recording');
+    } catch (err) {
+      console.log('语音功能需要麦克风权限');
+      // 模拟录音效果
+      isRecording = true;
+      updateVoiceStatus('recording');
+      chatWaveform?.classList.remove('hidden');
+      chatVoiceBtn?.classList.add('recording');
+      
+      setTimeout(() => {
+        stopRecording();
+      }, 3000);
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+    }
+    isRecording = false;
+  }
+
+  chatVoiceBtn?.addEventListener('click', toggleRecording);
+
+  // TTS功能
+  chatTtsBtn?.addEventListener('click', () => {
+    if (isPlaying) {
+      speechSynthesis.cancel();
+      isPlaying = false;
+      chatTtsBtn?.classList.remove('playing');
+      updateVoiceStatus('ready');
+    } else {
+      const text = '今日门店运营良好，营收较昨日提升12%，差评已全部处理完毕，建议重点关注晚餐时段的翻台率优化。';
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 1;
+      
+      utterance.onstart = () => {
+        isPlaying = true;
+        chatTtsBtn?.classList.add('playing');
+        updateVoiceStatus('playing');
+      };
+      
+      utterance.onend = () => {
+        isPlaying = false;
+        chatTtsBtn?.classList.remove('playing');
+        updateVoiceStatus('ready');
+      };
+      
+      speechSynthesis.speak(utterance);
+    }
+  });
+
+  // 显示TTS按钮当有AI回复时
+  const chatMessages = document.getElementById('chatMessages');
+  if (chatMessages) {
+    const observer = new MutationObserver(() => {
+      const aiMessages = chatMessages.querySelectorAll('.ai-message');
+      if (aiMessages.length > 0) {
+        chatTtsBtn?.classList.remove('hidden');
+      }
+    });
+    observer.observe(chatMessages, { childList: true });
+  }
+
+  // ============================================
+  // AI DAILY (AI洞察日报)
+  // ============================================
+  const aiDailyDate = document.getElementById('aiDailyDate');
+  const aiDailyStatus = document.getElementById('aiDailyStatus');
+  const aiExportPdfBtn = document.getElementById('aiExportPdfBtn');
+  
+  // 设置今日日期
+  if (aiDailyDate) {
+    const today = new Date();
+    aiDailyDate.textContent = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+  }
+  
+  // 模拟AI生成完成
+  setTimeout(() => {
+    if (aiDailyStatus) {
+      aiDailyStatus.classList.remove('generating');
+      aiDailyStatus.classList.add('hidden');
+      const readyIndicator = aiDailyStatus.parentElement?.querySelector('.ready');
+      if (readyIndicator) readyIndicator.classList.remove('hidden');
+    }
+  }, 2000);
+
+  // 历史日报展开/收起
+  document.querySelectorAll('.ai-history-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('expanded');
+    });
+  });
+
+  // 导出PDF
+  aiExportPdfBtn?.addEventListener('click', () => {
+    alert('正在生成PDF报告，请稍候...');
+    // 实际项目中这里会调用PDF生成库
+  });
+
+  // ============================================
+  // DATA EXPORT CENTER (数据导出中心)
+  // ============================================
+  const exportTypeOptions = document.querySelectorAll('.export-type-option');
+  const exportRangeBtns = document.querySelectorAll('.export-range-btn');
+  const exportModuleItems = document.querySelectorAll('.export-module-item');
+  const exportCustomRange = document.getElementById('exportCustomRange');
+  const exportMainBtn = document.getElementById('exportMainBtn');
+  const exportProgressCard = document.getElementById('exportProgressCard');
+  const exportProgressBar = document.getElementById('exportProgressBar');
+  const exportProgressPercent = document.getElementById('exportProgressPercent');
+  
+  // 导出类型选择
+  exportTypeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      exportTypeOptions.forEach(o => o.classList.remove('selected'));
+      option.classList.add('selected');
+    });
+  });
+  
+  // 数据范围选择
+  exportRangeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      exportRangeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (btn.dataset.range === 'custom') {
+        exportCustomRange?.classList.remove('hidden');
+      } else {
+        exportCustomRange?.classList.add('hidden');
+      }
+    });
+  });
+  
+  // 内容模块选择
+  exportModuleItems.forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+    });
+  });
+  
+  // 开始导出
+  exportMainBtn?.addEventListener('click', () => {
+    exportProgressCard?.classList.remove('hidden');
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        setTimeout(() => {
+          exportProgressCard?.classList.add('hidden');
+          alert('导出完成！文件已保存到下载目录。');
+        }, 500);
+      }
+      if (exportProgressBar) exportProgressBar.style.width = progress + '%';
+      if (exportProgressPercent) exportProgressPercent.textContent = Math.round(progress) + '%';
+    }, 300);
+  });
+
+  // ============================================
+  // ONBOARDING WIZARD (新手引导)
+  // ============================================
+  const onboardingOverlay = document.getElementById('onboardingOverlay');
+  const onboardingContainer = document.getElementById('onboardingContainer');
+  const onboardingContent = document.getElementById('onboardingContent');
+  const onboardingProgressBar = document.getElementById('onboardingProgressBar');
+  const onboardingNextBtn = document.getElementById('onboardingNextBtn');
+  const onboardingSkipBtn = document.getElementById('onboardingSkipBtn');
+  const onboardingStartBtn = document.getElementById('onboardingStartBtn');
+  const onboardingIndustryBtns = document.querySelectorAll('.onboarding-industry-btn');
+  
+  let currentStep = 1;
+  const totalSteps = 5;
+  let selectedIndustry = null;
+  
+  function updateOnboardingStep() {
+    const steps = onboardingContent.querySelectorAll('.onboarding-step');
+    steps.forEach(step => {
+      step.classList.toggle('active', parseInt(step.dataset.step) === currentStep);
+    });
+    
+    if (onboardingProgressBar) {
+      onboardingProgressBar.style.width = (currentStep / totalSteps * 100) + '%';
+    }
+    
+    if (onboardingNextBtn) {
+      onboardingNextBtn.innerHTML = currentStep === totalSteps - 1 
+        ? '完成 <i data-lucide="check" class="w-4 h-4"></i>' 
+        : '下一步 <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+      lucide.createIcons();
+    }
+  }
+  
+  function nextStep() {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      updateOnboardingStep();
+    }
+  }
+  
+  function closeOnboarding() {
+    onboardingOverlay?.classList.add('hidden');
+    localStorage.setItem('onboardingCompleted', 'true');
+  }
+  
+  // 行业选择
+  onboardingIndustryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      onboardingIndustryBtns.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedIndustry = btn.dataset.industry;
+    });
+  });
+  
+  onboardingNextBtn?.addEventListener('click', nextStep);
+  onboardingSkipBtn?.addEventListener('click', closeOnboarding);
+  onboardingStartBtn?.addEventListener('click', closeOnboarding);
+  
+  // 检查是否需要显示引导
+  if (!localStorage.getItem('onboardingCompleted')) {
+    setTimeout(() => {
+      onboardingOverlay?.classList.remove('hidden');
+      updateOnboardingStep();
+    }, 500);
+  }
+  
+  // 从设置中重新触发引导
+  const settingsBtn = document.querySelector('[data-page="changelog"]');
+  // 可以通过添加一个"重新开始引导"的按钮来触发
+  
+  // ============================================
+  // PAGE NAMES UPDATE
+  // ============================================
+  // 更新pageNames对象添加新页面
+  Object.assign(pageNames, {
+    'ai-daily': 'AI洞察日报',
+    'export': '数据导出'
+  });
+
+
+
+// ============================================
+// 升级功能: 运营概览AI洞察卡
+// ============================================
+function initAIInsight() {
+  const insightCard = document.getElementById('aiInsightCard');
+  const insightContent = document.getElementById('aiInsightContent');
+  const insightRefresh = document.getElementById('aiInsightRefresh');
+  
+  if (!insightCard || !insightContent) return;
+  
+  // AI洞察内容模板
+  const insights = [
+    "今日营收¥12.8万，较昨日+12%。主要驱动：外卖订单增长18%，午市表现突出。建议：加大午市推广投入，晚市可考虑推出套餐提升客单价。",
+    "本周复购率提升5%，老客贡献占比达68%。VIP用户王女士已连续3周未到店，建议发送专属召回优惠。",
+    "差评处理及时率98%，平均响应时间2.8分钟。但"等位时间长"仍是主要差评原因，建议优化排队系统。",
+    "午市上座率较晚市低35%，存在提升空间。建议推出午市特惠套餐，预计增收¥3,200/天。",
+    "本周新客增长12%，主要来源抖音引流。建议加大短视频内容投放，保持流量增长势头。"
+  ];
+  
+  let currentInsight = 0;
+  let isTyping = false;
+  
+  // 打字机效果
+  function typeText(text, callback) {
+    const textEl = insightContent.querySelector('.ai-insight-text') || document.createElement('span');
+    textEl.className = 'ai-insight-text';
+    const cursor = insightContent.querySelector('.ai-insight-cursor');
+    
+    insightContent.innerHTML = '';
+    insightContent.appendChild(textEl);
+    insightContent.appendChild(cursor || createCursor());
+    
+    let index = 0;
+    isTyping = true;
+    
+    function typeChar() {
+      if (index < text.length) {
+        textEl.textContent += text[index];
+        index++;
+        setTimeout(typeChar, 30 + Math.random() * 20);
+      } else {
+        isTyping = false;
+        if (callback) callback();
+      }
+    }
+    
+    typeChar();
+  }
+  
+  function createCursor() {
+    const cursor = document.createElement('span');
+    cursor.className = 'ai-insight-cursor';
+    return cursor;
+  }
+  
+  // 刷新按钮
+  if (insightRefresh) {
+    insightRefresh.addEventListener('click', () => {
+      if (isTyping) return;
+      
+      insightRefresh.classList.add('loading');
+      
+      // 模拟加载
+      setTimeout(() => {
+        currentInsight = (currentInsight + 1) % insights.length;
+        typeText(insights[currentInsight]);
+        insightRefresh.classList.remove('loading');
+      }, 800);
+    });
+  }
+  
+  // 初始化显示
+  setTimeout(() => {
+    typeText(insights[currentInsight]);
+  }, 500);
+  
+  // 标签点击事件
+  const tags = insightCard.querySelectorAll('.ai-insight-tag');
+  tags.forEach((tag, index) => {
+    tag.addEventListener('click', () => {
+      const tagTypes = ['revenue', 'risk', 'suggest'];
+      const tagTexts = [
+        insights[currentInsight].match(/建议[^。]+/)?.[0] || insights[currentInsight],
+        "风险提示：" + (currentInsight === 2 ? "等位时间长是主要差评原因" : "暂无明显风险"),
+        "优化建议：" + insights[(currentInsight + 1) % insights.length].match(/建议[^。]+/)?.[0]
+      ];
+      typeText(tagTexts[index] || insights[currentInsight]);
+    });
+  });
+}
+
+// ============================================
+// 升级功能: AI对话模板和历史会话
+// ============================================
+function initChatEnhancements() {
+  // 模板按钮
+  const templateBtns = document.querySelectorAll('.chat-template-btn');
+  const chatInput = document.getElementById('chatInput');
+  
+  templateBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const template = btn.dataset.template;
+      if (chatInput && template) {
+        chatInput.value = template;
+        chatInput.focus();
+        
+        // 添加视觉反馈
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 200);
+      }
+    });
+  });
+  
+  // 历史会话点击
+  const historyItems = document.querySelectorAll('.chat-history-item');
+  historyItems.forEach(item => {
+    item.addEventListener('click', () => {
+      historyItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      
+      // 模拟切换会话
+      const sessionId = item.dataset.session;
+      console.log('切换到会话:', sessionId);
+    });
+  });
+  
+  // 新对话按钮
+  const newBtn = document.getElementById('chatNewBtn');
+  if (newBtn) {
+    newBtn.addEventListener('click', () => {
+      if (chatInput) {
+        chatInput.value = '';
+        chatInput.focus();
+      }
+      historyItems.forEach(i => i.classList.remove('active'));
+      lucide.createIcons();
+    });
+  }
+}
+
+// ============================================
+// 升级功能: 数据翻牌动画
+// ============================================
+let realtimeInterval = null;
+let lastUpdateTime = Date.now();
+
+function initFlipCards() {
+  const flipCards = document.querySelectorAll('.flip-card');
+  if (flipCards.length === 0) return;
+  
+  // 初始动画
+  flipCards.forEach((card, index) => {
+    setTimeout(() => {
+      animateFlip(card);
+    }, index * 200);
+  });
+  
+  // 实时数据更新
+  if (realtimeInterval) clearInterval(realtimeInterval);
+  
+  realtimeInterval = setInterval(() => {
+    updateRealtimeData();
+  }, 30000);
+  
+  // 更新时间显示
+  updateRealtimeTime();
+  setInterval(updateRealtimeTime, 1000);
+}
+
+function animateFlip(card) {
+  const valueEl = card.querySelector('.flip-card-value');
+  if (!valueEl) return;
+  
+  // 添加翻转动画
+  valueEl.classList.add('flipping');
+  setTimeout(() => {
+    valueEl.classList.remove('flipping');
+  }, 600);
+}
+
+function updateRealtimeData() {
+  const flipRevenue = document.getElementById('flipRevenue');
+  const flipOrders = document.getElementById('flipOrders');
+  const flipRating = document.getElementById('flipRating');
+  
+  // 模拟数据微调
+  if (flipRevenue) {
+    const currentVal = parseFloat(flipRevenue.textContent.replace(/[^0-9.]/g, ''));
+    const newVal = currentVal + (Math.random() - 0.5) * 0.5;
+    flipRevenue.textContent = '¥' + newVal.toFixed(1) + '万';
+    animateFlip(flipRevenue.parentElement);
+  }
+  
+  if (flipOrders) {
+    const currentVal = parseInt(flipOrders.textContent.replace(/,/g, ''));
+    const newVal = currentVal + Math.floor(Math.random() * 5);
+    flipOrders.textContent = newVal.toLocaleString();
+    animateFlip(flipOrders.parentElement);
+  }
+  
+  if (flipRating) {
+    const currentVal = parseFloat(flipRating.textContent);
+    const newVal = (currentVal + (Math.random() - 0.3) * 0.01).toFixed(1);
+    flipRating.textContent = Math.min(5, Math.max(3, parseFloat(newVal))).toFixed(1);
+    animateFlip(flipRating.parentElement);
+  }
+  
+  lastUpdateTime = Date.now();
+}
+
+function updateRealtimeTime() {
+  const timeEl = document.getElementById('realtimeTime');
+  if (timeEl) {
+    const seconds = Math.floor((Date.now() - lastUpdateTime) / 1000);
+    if (seconds < 60) {
+      timeEl.textContent = seconds + '秒前更新';
+    } else {
+      timeEl.textContent = Math.floor(seconds / 60) + '分钟前更新';
+    }
+  }
+}
+
+// ============================================
+// 升级功能: 竞品AI策略一键执行
+// ============================================
+function initStrategyExecute() {
+  const executeBtns = document.querySelectorAll('.ai-strategy-execute');
+  
+  executeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('executing')) return;
+      
+      btn.classList.add('executing');
+      btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4"></i> 执行中...';
+      lucide.createIcons();
+      
+      // 模拟执行动画
+      setTimeout(() => {
+        btn.classList.remove('executing');
+        btn.classList.add('executed');
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已执行';
+        lucide.createIcons();
+        
+        // 显示执行结果提示
+        showToast('策略已加入执行队列，AI将在30分钟内逐步生效');
+      }, 2000);
+    });
+  });
+}
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i><span>' + message + '</span>';
+  toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--success);color:white;padding:12px 20px;border-radius:8px;display:flex;align-items:center;gap:8px;font-size:0.875rem;z-index:9999;animation:slideIn 0.3s ease';
+  
+  document.body.appendChild(toast);
+  lucide.createIcons();
+  
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ============================================
+// 升级功能: 门店健康改善路线图
+// ============================================
+function initHealthRoadmap() {
+  const executeBtns = document.querySelectorAll('.health-roadmap-execute');
+  let completedTasks = 0;
+  const totalTasks = 3;
+  
+  executeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('executed')) return;
+      
+      btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 loading"></i> 执行中...';
+      lucide.createIcons();
+      
+      setTimeout(() => {
+        btn.classList.add('executed');
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> 已添加计划';
+        lucide.createIcons();
+        
+        completedTasks++;
+        updateRoadmapProgress(completedTasks, totalTasks);
+        
+        showToast('改善计划已添加，将在指定时间自动执行');
+      }, 1500);
+    });
+  });
+}
+
+function updateRoadmapProgress(completed, total) {
+  const progressFill = document.querySelector('.health-roadmap-progress-fill');
+  const progressText = document.querySelector('.health-roadmap-progress-text');
+  
+  if (progressFill) {
+    const percentage = (completed / total) * 100;
+    progressFill.style.width = percentage + '%';
+  }
+  
+  if (progressText) {
+    progressText.textContent = completed + '/' + total + ' 已完成';
+  }
+}
+
+// ============================================
+// 页面切换时初始化功能
+// ============================================
+const originalSwitchPage = switchPage;
+switchPage = function(page) {
+  // 调用原始函数
+  if (originalSwitchPage) {
+    originalSwitchPage(page);
+  }
+  
+  // 根据页面初始化对应功能
+  setTimeout(() => {
+    switch (page) {
+      case 'overview':
+        initAIInsight();
+        break;
+      case 'chat':
+        initChatEnhancements();
+        break;
+      case 'data':
+        initFlipCards();
+        break;
+      case 'competitor':
+        initStrategyExecute();
+        break;
+      case 'health':
+        initHealthRoadmap();
+        break;
+    }
+  }, 100);
+};
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    // 检测当前页面并初始化
+    const activeSection = document.querySelector('.demo-section.active');
+    if (activeSection) {
+      const pageId = activeSection.id.replace('section', '').toLowerCase();
+      
+      switch (pageId) {
+        case 'overview':
+          initAIInsight();
+          break;
+        case 'chat':
+          initChatEnhancements();
+          break;
+        case 'data':
+          initFlipCards();
+          break;
+        case 'competitor':
+          initStrategyExecute();
+          break;
+        case 'health':
+          initHealthRoadmap();
+          break;
+      }
+    }
+  }, 300);
+});
+
+// 添加动画样式
+const style = document.createElement('style');
+style.textContent = `
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+.toast-notification i { animation: none; }
+.toast-notification i.loading {
+  animation: spin 1s linear infinite;
+}
+`;
+document.head.appendChild(style);
+
+console.log('店赢OS v10 - 5项差异化功能升级已加载');
