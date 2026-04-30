@@ -1945,6 +1945,7 @@ function initNewsTicker() {
 
 // 全国门店分布图（ECharts中国地图）
 let chinaMapChart = null;
+
 function initChinaMap() {
   const container = document.getElementById('chinaMapChart');
   if (!container || typeof echarts === 'undefined') return;
@@ -1959,104 +1960,117 @@ function initChinaMap() {
     { name: '深圳加盟店', value: [114.07, 22.62, 18.2], rating: 4.7, orders: 824, type: '加盟' },
     { name: '成都加盟店', value: [104.06, 30.67, 16.5], rating: 4.7, orders: 756, type: '加盟' },
     { name: '杭州加盟店', value: [120.19, 30.26, 15.8], rating: 4.6, orders: 698, type: '加盟' },
-    { name: '武汉直营店', value: [114.31, 30.52, 14.2], rating: 4.6, orders: 645, type: '直营' },
+    { name: '武汉加盟店', value: [114.31, 30.52, 14.2], rating: 4.6, orders: 645, type: '加盟' },
     { name: '南京加盟店', value: [118.78, 32.04, 12.6], rating: 4.5, orders: 578, type: '加盟' }
   ];
   
-  const flagship = storeData.filter(s => s.type === '旗舰');
-  const direct = storeData.filter(s => s.type === '直营');
-  const franchise = storeData.filter(s => s.type === '加盟');
-  
-  chinaMapChart.setOption({
-    tooltip: {
-      trigger: 'item',
-      backgroundColor: 'rgba(15,23,42,0.95)',
-      borderColor: 'rgba(124,58,237,0.5)',
-      borderWidth: 1,
-      textStyle: { color: '#E2E8F0', fontSize: 12 },
-      formatter: function(params) {
-        if (params.seriesType === 'effectScatter') {
-          const d = params.data;
-          return '<b>' + d.name + '</b><br/>' +
-                 '类型：' + d.storeType + '<br/>' +
-                 '月营收：¥' + d.value[2] + '万<br/>' +
-                 '评分：★ ' + d.rating + '<br/>' +
-                 '月订单：' + d.orders + '单';
-        }
-        return params.name;
-      }
-    },
-    geo: {
-      map: 'china',
-      roam: false,
-      zoom: 1.2,
-      center: [104.5, 35.5],
-      label: { show: false },
-      itemStyle: {
-        areaColor: 'rgba(30,27,75,0.6)',
-        borderColor: 'rgba(6,182,212,0.3)',
-        borderWidth: 0.8
-      },
-      emphasis: {
-        itemStyle: {
-          areaColor: 'rgba(124,58,237,0.3)',
-          borderColor: 'rgba(124,58,237,0.6)',
-          borderWidth: 1.5
+  // 使用阿里云 DataV GeoJSON 异步加载中国地图
+  fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+    .then(res => res.json())
+    .then(chinaJson => {
+      echarts.registerMap('china', chinaJson);
+      
+      const flagship = storeData.filter(s => s.type === '旗舰');
+      const direct = storeData.filter(s => s.type === '直营');
+      const franchise = storeData.filter(s => s.type === '加盟');
+      
+      chinaMapChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(15,23,42,0.95)',
+          borderColor: 'rgba(124,58,237,0.5)',
+          borderWidth: 1,
+          textStyle: { color: '#E2E8F0', fontSize: 12 },
+          formatter: function(params) {
+            if (params.seriesType === 'effectScatter') {
+              const d = params.data;
+              return '<b>' + d.name + '</b><br/>' +
+                     '类型：' + d.storeType + '<br/>' +
+                     '月营收：¥' + d.value[2] + '万<br/>' +
+                     '评分：★ ' + d.rating + '<br/>' +
+                     '月订单：' + d.orders + '单';
+            }
+            return params.name;
+          }
         },
-        label: { show: false }
-      }
-    },
-    series: [
-      {
-        name: '旗舰',
-        type: 'effectScatter',
-        coordinateSystem: 'geo',
-        data: flagship.map(s => ({
-          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-        })),
-        symbolSize: 18,
-        rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
-        itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
-        label: {
-          show: true, formatter: '{b}', position: 'right',
-          color: '#E2E8F0', fontSize: 9, fontWeight: 500
-        }
-      },
-      {
-        name: '直营',
-        type: 'effectScatter',
-        coordinateSystem: 'geo',
-        data: direct.map(s => ({
-          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-        })),
-        symbolSize: 12,
-        rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
-        itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
-        label: {
-          show: true, formatter: '{b}', position: 'right',
-          color: '#E2E8F0', fontSize: 8
-        }
-      },
-      {
-        name: '加盟',
-        type: 'effectScatter',
-        coordinateSystem: 'geo',
-        data: franchise.map(s => ({
-          name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
-        })),
-        symbolSize: 10,
-        rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
-        itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
-        label: {
-          show: true, formatter: '{b}', position: 'right',
-          color: '#E2E8F0', fontSize: 8
-        }
-      }
-    ]
-  });
+        geo: {
+          map: 'china',
+          roam: false,
+          zoom: 1.2,
+          center: [104.5, 35.5],
+          label: { show: false },
+          itemStyle: {
+            areaColor: 'rgba(30,27,75,0.6)',
+            borderColor: 'rgba(6,182,212,0.3)',
+            borderWidth: 0.8
+          },
+          emphasis: {
+            itemStyle: {
+              areaColor: 'rgba(124,58,237,0.3)',
+              borderColor: 'rgba(124,58,237,0.6)',
+              borderWidth: 1.5
+            },
+            label: { show: false }
+          }
+        },
+        series: [
+          {
+            name: '旗舰',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: flagship.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 18,
+            rippleEffect: { brushType: 'stroke', scale: 4, period: 3 },
+            itemStyle: { color: '#7C3AED', shadowBlur: 10, shadowColor: '#7C3AED' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 9, fontWeight: 500
+            }
+          },
+          {
+            name: '直营',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: direct.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 12,
+            rippleEffect: { brushType: 'stroke', scale: 3, period: 4 },
+            itemStyle: { color: '#06B6D4', shadowBlur: 8, shadowColor: '#06B6D4' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 8
+            }
+          },
+          {
+            name: '加盟',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: franchise.map(s => ({
+              name: s.name, value: s.value, rating: s.rating, orders: s.orders, storeType: s.type
+            })),
+            symbolSize: 10,
+            rippleEffect: { brushType: 'stroke', scale: 2.5, period: 5 },
+            itemStyle: { color: '#10B981', shadowBlur: 6, shadowColor: '#10B981' },
+            label: {
+              show: true, formatter: '{b}', position: 'right',
+              color: '#E2E8F0', fontSize: 8
+            }
+          }
+        ]
+      });
+    })
+    .catch(err => {
+      console.error('地图数据加载失败:', err);
+      // 降级处理：显示错误提示
+      container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:14px;">地图数据加载中...</div>';
+    });
   
   window.addEventListener('resize', () => { chinaMapChart && chinaMapChart.resize(); });
 }
+
 
 // 全屏切换
 function initFullscreenToggle() {
@@ -4154,21 +4168,10 @@ document.addEventListener('DOMContentLoaded', function() {
         case 'overview':
           initAIInsight();
           break;
-        case 'chat':
-          initChatEnhancements();
-          break;
-        case 'data':
-          initFlipCards();
-          break;
-        case 'competitor':
-          initStrategyExecute();
-          break;
-        case 'health':
-          initHealthRoadmap();
-          break;
+        // Other page-specific inits already called in DCL #1/DCL #2
       }
     }
-  }, 300);
+  }, 600);
 });
 
 // 添加动画样式
