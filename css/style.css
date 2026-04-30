@@ -8654,3 +8654,437 @@ body.dark-mode .modal-btn.cancel { background: #0F172A; color: #E2E8F0; }
 .competitor-tab:hover { color: var(--primary); background: var(--bg-tertiary); }
 .competitor-tab.active { background: var(--primary); color: white; }
 .competitor-tab i { font-size: 1rem; }
+
+/* ============================================
+   New Features: Changelog / Alert / Inspection / DataLab
+   ============================================ */
+
+/* Page Header */
+.section-header-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.section-header-new h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+}
+.section-header-new p {
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* Changelog Page */
+.changelog-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.changelog-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+}
+.changelog-stat-card .stat-num {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.changelog-stat-card .stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.changelog-timeline {
+  position: relative;
+  padding-left: 32px;
+}
+.changelog-timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.changelog-item {
+  position: relative;
+  padding-bottom: 28px;
+}
+.changelog-item::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--bg);
+}
+.changelog-item.critical::before { background: var(--danger); }
+.changelog-item.major::before { background: var(--warning); }
+.changelog-item.minor::before { background: var(--success); }
+.changelog-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.changelog-version .version-tag {
+  background: var(--primary);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.changelog-version .version-date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.changelog-content {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.changelog-content h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.changelog-change {
+  display: inline-block;
+  background: var(--bg-secondary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+  margin: 0 6px 6px 0;
+}
+.changelog-change.add::before { content: '➕ '; }
+.changelog-change.fix::before { content: '🔧 '; }
+.changelog-change.improve::before { content: '⚡ '; }
+
+/* Alert Center Page */
+.alert-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+.alert-main { display: flex; flex-direction: column; gap: 24px; }
+.alert-stream {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.alert-stream-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.alert-stream-header h3 { font-size: 15px; font-weight: 600; }
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FEE2E2;
+  color: var(--danger);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.live-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--danger);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.alert-stream-list { padding: 12px; max-height: 500px; overflow-y: auto; }
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+.alert-item:hover { background: var(--bg-secondary); }
+.alert-item.critical { background: #FEF2F2; }
+.alert-item.warning { background: #FFFBEB; }
+.alert-item.info { background: #F0FDF4; }
+.alert-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.alert-icon.critical { background: #FEE2E2; color: var(--danger); }
+.alert-icon.warning { background: #FEF3C7; color: var(--warning); }
+.alert-icon.info { background: #D1FAE5; color: var(--success); }
+.alert-body { flex: 1; min-width: 0; }
+.alert-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.alert-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 12px;
+}
+.alert-ai-suggest {
+  background: linear-gradient(135deg, #F3E8FF 0%, #E0F2FE 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.alert-ai-suggest h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.alert-suggest-item {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text);
+  border-left: 3px solid var(--primary);
+}
+.alert-sidebar { display: flex; flex-direction: column; gap: 16px; }
+.alert-summary-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.alert-summary-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.alert-chart-container { height: 200px; position: relative; }
+.alert-level-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.alert-level-item:last-child { border-bottom: none; }
+.alert-level-dot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.alert-level-dot .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.alert-level-dot .dot.critical { background: var(--danger); }
+.alert-level-dot .dot.warning { background: var(--warning); }
+.alert-level-dot .dot.info { background: var(--success); }
+
+/* Inspection Page */
+.inspection-layout { display: flex; flex-direction: column; gap: 24px; }
+.inspection-kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.kanban-column {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.kanban-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kanban-header h3 { font-size: 14px; font-weight: 600; }
+.kanban-count {
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.kanban-count.active { background: #FEF3C7; color: var(--warning); }
+.kanban-count.done { background: #D1FAE5; color: var(--success); }
+.kanban-cards { padding: 12px; }
+.kanban-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.kanban-card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.kanban-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.inspection-trend {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.inspection-trend h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.inspection-trend-chart { height: 250px; }
+
+/* DataLab Page */
+.datalab-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+}
+.datalab-sidebar {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  height: fit-content;
+}
+.datalab-sidebar h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.datalab-dim-group { margin-bottom: 20px; }
+.datalab-dim-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  display: block;
+}
+.datalab-dim-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 13px;
+  color: var(--text);
+}
+.datalab-dim-option:hover { background: var(--bg-secondary); }
+.datalab-dim-option input { accent-color: var(--primary); }
+.datalab-main { display: flex; flex-direction: column; gap: 20px; }
+.datalab-chart-area {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.datalab-chart-area h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.datalab-chart-container { height: 350px; }
+.datalab-insight {
+  background: linear-gradient(135deg, #F3E8FF 0%, #E0F2FE 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.datalab-insight h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.datalab-insight p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* Sidebar Nav Group Title */
+.sidebar-nav-group-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 16px 16px 8px;
+}
+
+/* Trend indicator */
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.trend.up { color: var(--success); }
+.trend.down { color: var(--danger); }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .changelog-stats { grid-template-columns: repeat(2, 1fr); }
+  .alert-layout { grid-template-columns: 1fr; }
+  .inspection-kanban { grid-template-columns: 1fr; }
+  .datalab-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .changelog-stats { grid-template-columns: 1fr; }
+  .kanban-column { min-height: auto; }
+}
