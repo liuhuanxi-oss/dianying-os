@@ -1,4 +1,6 @@
+README.md
 pyproject.toml
+setup.py
 dyos_platforms/__init__.py
 dyos_platforms/__main__.py
 dyos_platforms/cli.py
