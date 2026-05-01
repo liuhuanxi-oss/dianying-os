@@ -125,7 +125,8 @@ class AuthManager {
         const users = this.getMockUsers();
         const user = users[username];
 
-        if (user && user.password === password) {
+        // 演示环境：用户名正确即可，密码随意填写
+        if (user) {
           const loginData = {
             username: username,
             name: user.name,
@@ -133,12 +134,12 @@ class AuthManager {
             roleConfig: ROLE_CONFIG[user.role],
             loginTime: new Date().toISOString()
           };
-          
+
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(loginData));
           this.currentUser = loginData;
           resolve(loginData);
         } else {
-          reject(new Error('用户名或密码错误'));
+          reject(new Error('用户名不存在，请使用：admin / operator / owner'));
         }
       }, 800);
     });

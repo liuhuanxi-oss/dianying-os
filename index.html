@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta name="theme-color" content="#0F172A">
   <title>店赢OS - AI驱动的多门店管理平台</title>
   <meta name="description" content="店赢OS是一款AI驱动的多门店管理平台，支持餐饮、零售、娱乐等多个行业，一套系统统一管理8大平台。">
   <meta property="og:title" content="店赢OS - AI驱动的多门店管理平台">
@@ -14,1386 +14,377 @@
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/saas-style.css">
   <link rel="stylesheet" href="css/landing-mobile.css">
-  <style>
-    :root {
-      --primary: #5e6ad2;
-      --primary-light: #8b92e3;
-      --accent: #00b8cc;
-      --success: #10b981;
-      --bg: #0a0a0f;
-      --bg-card: #141420;
-      --bg-card-hover: #1a1a28;
-      --text: #ffffff;
-      --text-secondary: #a0a0b0;
-      --text-muted: #6b6b7b;
-    }
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    
-    /* Landing Page Container */
-    .landing-page {
-      min-height: 100vh;
-      background: var(--bg);
-    }
-    
-    /* Navbar */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(10, 10, 15, 0.9);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .navbar-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .navbar-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .navbar-logo img {
-      width: 36px;
-      height: 36px;
-    }
-    
-    .navbar-logo span {
-      font-size: 1.25rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .navbar-links {
-      display: flex;
-      gap: 32px;
-    }
-    
-    .navbar-links a {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    
-    .navbar-links a:hover {
-      color: var(--text);
-    }
-    
-    .navbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    /* Buttons */
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white;
-      padding: 10px 24px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(94, 106, 210, 0.4);
-    }
-    
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-      padding: 10px 24px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    /* Hero Section */
-    .hero {
-      padding: 140px 24px 80px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 800px;
-      height: 600px;
-      background: radial-gradient(ellipse, rgba(94, 106, 210, 0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      background: rgba(94, 106, 210, 0.1);
-      border: 1px solid rgba(94, 106, 210, 0.2);
-      border-radius: 100px;
-      font-size: 0.85rem;
-      color: var(--primary-light);
-      margin-bottom: 24px;
-      animation: fadeInUp 0.6s ease;
-    }
-    
-    .hero-title {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      animation: fadeInUp 0.6s ease 0.1s both;
-    }
-    
-    .gradient-text {
-      background: linear-gradient(135deg, #fff 0%, var(--primary-light) 50%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .hero-subtitle {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      animation: fadeInUp 0.6s ease 0.2s both;
-    }
-    
-    .hero-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      animation: fadeInUp 0.6s ease 0.3s both;
-    }
-    
-    /* Hero Stats */
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-top: 60px;
-      animation: fadeInUp 0.6s ease 0.4s both;
-    }
-    
-    .hero-stat {
-      text-align: center;
-    }
-    
-    .hero-stat-value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .hero-stat-label {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    
-    /* Metrics Section */
-    .metrics-section {
-      padding: 80px 24px;
-      background: var(--bg);
-    }
-    
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .metric-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    
-    .metric-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--primary);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-    
-    .metric-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 12px;
-      color: white;
-    }
-    
-    .metric-value {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-    
-    .metric-label {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-    }
-    
-    /* Features Section */
-    .features-section {
-      padding: 100px 24px;
-      background: var(--bg);
-    }
-    
-    .section-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    
-    .section-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-    
-    .section-subtitle {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 32px;
-      transition: all 0.3s;
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(94, 106, 210, 0.3);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-    
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 14px;
-      color: white;
-      margin-bottom: 20px;
-    }
-    
-    .feature-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    
-    .feature-desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-    
-    /* Platform Section */
-    .platform-section {
-      padding: 80px 24px;
-      background: var(--bg);
-    }
-    
-    .platform-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    
-    .platform-logo {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
-    }
-    
-    .platform-logo:hover {
-      border-color: var(--primary);
-      transform: scale(1.05);
-    }
-    
-    .platform-logo img {
-      max-width: 100px;
-      height: 40px;
-      object-fit: contain;
-      filter: grayscale(100%) brightness(2);
-      opacity: 0.7;
-      transition: all 0.3s;
-    }
-    
-    .platform-logo:hover img {
-      filter: grayscale(0%) brightness(1);
-      opacity: 1;
-    }
-    
-    /* Architecture Section */
-    .architecture-section {
-      padding: 100px 24px;
-      background: var(--bg);
-    }
-    
-    .architecture-diagram {
-      max-width: 900px;
-      margin: 0 auto;
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 20px;
-      padding: 40px;
-    }
-    
-    .arch-flow {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .arch-step {
-      flex: 1;
-      text-align: center;
-      padding: 24px;
-      background: rgba(94, 106, 210, 0.1);
-      border-radius: 12px;
-      position: relative;
-    }
-    
-    .arch-step-number {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    
-    .arch-step-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    
-    .arch-arrow {
-      width: 40px;
-      color: var(--text-muted);
-    }
-    
-    /* Pricing Section */
-    .pricing-section {
-      padding: 100px 24px;
-      background: var(--bg);
-    }
-    
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    
-    .pricing-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 20px;
-      padding: 32px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    
-    .pricing-card:hover {
-      transform: translateY(-4px);
-    }
-    
-    .pricing-card.featured {
-      border-color: var(--primary);
-      background: linear-gradient(180deg, rgba(94,106,210,0.1) 0%, var(--bg-card) 100%);
-      position: relative;
-    }
-    
-    .pricing-card.featured::before {
-      content: '最受欢迎';
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      padding: 4px 16px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    
-    .pricing-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    
-    .pricing-price {
-      font-size: 3rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    
-    .pricing-price span {
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--text-muted);
-    }
-    
-    .pricing-desc {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      margin-bottom: 24px;
-    }
-    
-    .pricing-features {
-      list-style: none;
-      margin: 24px 0;
-      text-align: left;
-    }
-    
-    .pricing-features li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 0;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-    
-    .pricing-features li i {
-      color: var(--success);
-    }
-    
-    /* CTA Section */
-    .cta-section {
-      padding: 100px 24px;
-      background: linear-gradient(135deg, rgba(94,106,210,0.2) 0%, rgba(0,184,204,0.1) 100%);
-      text-align: center;
-    }
-    
-    .cta-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-    
-    .cta-desc {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-    
-    .cta-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-    }
-    
-    /* Footer */
-    .footer {
-      padding: 80px 24px 40px;
-      background: var(--bg);
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    .footer-main {
-      display: grid;
-      grid-template-columns: 2fr repeat(3, 1fr);
-      gap: 48px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .footer-brand {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    
-    .footer-logo img {
-      width: 32px;
-      height: 32px;
-    }
-    
-    .footer-logo span {
-      font-size: 1.125rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .footer-desc {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-    
-    .footer-column-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: var(--text);
-    }
-    
-    .footer-column ul {
-      list-style: none;
-    }
-    
-    .footer-column ul li {
-      margin-bottom: 12px;
-    }
-    
-    .footer-column ul li a {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      transition: color 0.2s;
-    }
-    
-    .footer-column ul li a:hover {
-      color: var(--text);
-    }
-    
-    .footer-bottom {
-      max-width: 1200px;
-      margin: 48px auto 0;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .footer-copyright {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-    
-    .footer-social {
-      display: flex;
-      gap: 16px;
-    }
-    
-    .social-link {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-card);
-      border-radius: 8px;
-      color: var(--text-muted);
-      transition: all 0.2s;
-    }
-    
-    .social-link:hover {
-      background: var(--primary);
-      color: white;
-    }
-    
-    /* Mobile Menu */
-    .mobile-menu-btn {
-      display: none;
-      width: 44px;
-      height: 44px;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      color: var(--text);
-      cursor: pointer;
-    }
-    
-    .mobile-menu-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 99;
-    }
-    
-    .mobile-menu-overlay.active {
-      display: block;
-    }
-    
-    .mobile-menu-panel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 300px;
-      max-width: 85vw;
-      background: var(--bg-sidebar, var(--bg-card));
-      z-index: 100;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      padding: 24px;
-      overflow-y: auto;
-    }
-    
-    .mobile-menu-panel.active {
-      transform: translateX(0);
-    }
-    
-    .mobile-menu-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .mobile-menu-close {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-      border-radius: 8px;
-      color: var(--text);
-      cursor: pointer;
-    }
-    
-    .mobile-menu-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    
-    .mobile-menu-link {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      color: var(--text-secondary);
-      font-size: 1rem;
-      border-radius: 10px;
-      transition: all 0.2s;
-    }
-    
-    .mobile-menu-link:hover,
-    .mobile-menu-link.active {
-      background: var(--bg);
-      color: var(--text);
-    }
-    
-    .mobile-menu-actions {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .mobile-menu-actions .btn {
-      width: 100%;
-      justify-content: center;
-    }
-    
-    /* Animation */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .mobile-menu-btn {
-        display: flex;
-      }
-      
-      .navbar-links {
-        display: none;
-      }
-      
-      .navbar-actions {
-        display: none;
-      }
-      
-      .hero {
-        padding: 100px 16px 60px;
-      }
-      
-      .hero-stats {
-        flex-wrap: wrap;
-        gap: 24px;
-      }
-      
-      .hero-stat {
-        flex: 1 1 40%;
-      }
-      
-      .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      
-      .features-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      
-      .platform-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-      }
-      
-      .pricing-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
-      }
-      
-      .footer-main {
-        grid-template-columns: 1fr;
-        gap: 32px;
-        text-align: center;
-      }
-      
-      .footer-logo {
-        justify-content: center;
-      }
-      
-      .footer-bottom {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .hero-title {
-        font-size: 2rem;
-      }
-      
-      .hero-buttons {
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .hero-buttons .btn {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .hero-stats {
-        flex-direction: column;
-        gap: 16px;
-      }
-      
-      .platform-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .cta-buttons {
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .cta-buttons .btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/mobile-responsive.css">
 </head>
 <body>
-  <div class="landing-page">
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="navbar-inner">
-        <a href="#" class="navbar-logo">
-          <img src="assets/logo.svg" alt="店赢OS">
-          <span>店赢OS</span>
-        </a>
-        <div class="navbar-links">
-          <a href="#features">核心功能</a>
-          <a href="#architecture">技术架构</a>
-          <a href="#pricing">价格方案</a>
+  <!-- 背景网格 -->
+  <div class="bg-grid"></div>
+  <div class="bg-gradient"></div>
+
+  <!-- 导航栏 -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="navbar-logo">
+        <div class="navbar-logo-icon">
+          <i data-lucide="store"></i>
         </div>
-        <div class="navbar-actions">
-          <a href="admin.html" class="btn-secondary">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-            平台管理
-          </a>
-          <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">
-            <i data-lucide="rocket" class="w-4 h-4"></i>
-            立即试用
-          </button>
-        </div>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单">
-          <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
-      </div>
-    </nav>
-    
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-    
-    <!-- Mobile Menu Panel -->
-    <div class="mobile-menu-panel" id="mobileMenuPanel">
-      <div class="mobile-menu-header">
-        <a href="#" class="navbar-logo">
-          <img src="assets/logo.svg" alt="店赢OS">
-          <span>店赢OS</span>
-        </a>
-        <button class="mobile-menu-close" id="mobileMenuClose" aria-label="关闭菜单">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      <nav class="mobile-menu-nav">
-        <a href="#features" class="mobile-menu-link">
-          <i data-lucide="zap" class="w-5 h-5"></i>
-          核心功能
-        </a>
-        <a href="#architecture" class="mobile-menu-link">
-          <i data-lucide="layers" class="w-5 h-5"></i>
-          技术架构
-        </a>
-        <a href="#pricing" class="mobile-menu-link">
-          <i data-lucide="credit-card" class="w-5 h-5"></i>
-          价格方案
-        </a>
-        <a href="admin.html" class="mobile-menu-link">
-          <i data-lucide="settings" class="w-5 h-5"></i>
-          平台管理
-        </a>
-        <a href="cli-demo.html" class="mobile-menu-link">
-          <i data-lucide="terminal" class="w-5 h-5"></i>
-          CLI终端
-        </a>
-      </nav>
-      <div class="mobile-menu-actions">
-        <button class="btn-primary" onclick="closeMobileMenu(); document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">
-          <i data-lucide="rocket" class="w-4 h-4"></i>
-          立即试用
-        </button>
-        <a href="admin.html" class="btn-secondary">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-          进入管理后台
+        <span class="gradient-text">店赢OS</span>
+      </a>
+      <div class="navbar-links">
+        <a href="#features">核心功能</a>
+        <a href="#platforms">支持平台</a>
+        <a href="#pricing">价格方案</a>
+        <a href="admin.html">管理后台</a>
+        <a href="login.html" class="btn-glow" style="padding: 10px 20px; font-size: 0.9rem;">
+          立即体验
         </a>
       </div>
     </div>
+  </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
       <div class="hero-badge">
-        <i data-lucide="sparkles" class="w-4 h-4"></i>
-        AI驱动 · 多门店管理
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+        <span>全新 2.0 版本发布 · AI 全面升级</span>
       </div>
       <h1 class="hero-title">
-        <span class="gradient-text">一套系统</span><br>
-        统一管理8大平台
+        <span>AI透视门店运营</span>
+        <span class="gradient-text">驱动流量 · 星级 · 营收</span>
+        <span>全面增长</span>
       </h1>
       <p class="hero-subtitle">
-        店赢OS是新一代AI驱动的多门店管理平台，支持美团、抖音、小红书等8大平台统一运营，
-        <br>AI智能分析、支付分账自动化，让门店经营效率提升300%
+        基于Multi-Agent架构的新一代智能门店运营系统，一个人就能轻松运营庞大的连锁品牌。8大平台统一管理，让实体店全面提升。
       </p>
-      <div class="hero-buttons">
-        <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">
-          <i data-lucide="rocket" class="w-5 h-5"></i>
-          立即免费试用
-        </button>
-        <a href="cli-demo.html" class="btn-secondary">
-          <i data-lucide="terminal" class="w-5 h-5"></i>
-          CLI终端体验
+      <div class="hero-cta">
+        <a href="login.html" class="btn-glow">
+          免费开始体验
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px; margin-left: 8px;"></i>
+        </a>
+        <a href="ai-demo.html" class="btn-outline">
+          <i data-lucide="play-circle" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+          观看AI演示
         </a>
       </div>
-      
-      <!-- Animated Stats -->
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-value" data-count="12856">0</div>
-          <div class="hero-stat-label">入驻商家</div>
+          <div class="hero-stat-value">10,000+</div>
+          <div class="hero-stat-label">门店信赖</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" data-count="326">0</div>
-          <div class="hero-stat-label">城市覆盖</div>
+          <div class="hero-stat-value">50万+</div>
+          <div class="hero-stat-label">差评处理</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" data-count="8">0</div>
-          <div class="hero-stat-label">接入平台</div>
+          <div class="hero-stat-value">32%</div>
+          <div class="hero-stat-label">平均营收提升</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-value" data-count="99.9">0</div>
-          <div class="hero-stat-label">服务可用性%</div>
+          <div class="hero-stat-value">4.9</div>
+          <div class="hero-stat-label">平台评分</div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Metrics Section -->
-    <section class="metrics-section">
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-icon">
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="section-header">
+      <div class="section-badge">核心功能</div>
+      <h2 class="section-title">一个人运营无限门店的<span class="gradient-text">AI超级能力</span></h2>
+      <p class="section-subtitle">基于多智能体协同工作，覆盖从线索识别到方案生成、服务交付、持续优化的完整运营链路</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="bot"></i>
+        </div>
+        <h3 class="feature-title">AI虚拟店长</h3>
+        <p class="feature-desc">多智能体协同工作，7×24小时自主决策，一个人就能管理上百家门店</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="message-square-reply"></i>
+        </div>
+        <h3 class="feature-title">差评自动处理</h3>
+        <p class="feature-desc">智能识别差评情绪，自动生成回复方案，持续追踪转化，差评转机</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="trending-up"></i>
+        </div>
+        <h3 class="feature-title">动态定价策略</h3>
+        <p class="feature-desc">综合天气、时段、竞品、节假日多维度分析，AI自动优化定价</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="repeat"></i>
+        </div>
+        <h3 class="feature-title">跨店知识迁移</h3>
+        <p class="feature-desc">一家店的成功运营经验，AI自动复制到所有门店，经验快速复用</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="layers"></i>
+        </div>
+        <h3 class="feature-title">8大平台统一管理</h3>
+        <p class="feature-desc">美团、点评、饿了么、抖音、小红书、视频号、高德、口碑一站式管理</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="bar-chart-2"></i>
+        </div>
+        <h3 class="feature-title">数据洞察日报</h3>
+        <p class="feature-desc">每日自动生成运营摘要，关键变化预警，AI智能建议，行动导向</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms Section -->
+  <section class="section platform-section" id="platforms">
+    <div class="section-header">
+      <div class="section-badge">全平台覆盖</div>
+      <h2 class="section-title">一套系统<span class="gradient-text">8大主流平台</span>统一管理</h2>
+      <p class="section-subtitle">无需在多个平台间切换，一站式管理所有渠道，效率提升10倍</p>
+    </div>
+    <div class="platform-grid">
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="utensils"></i>
+        </div>
+        <div class="platform-name">美团</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="star"></i>
+        </div>
+        <div class="platform-name">大众点评</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <div class="platform-name">饿了么</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="video"></i>
+        </div>
+        <div class="platform-name">抖音</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="book-open"></i>
+        </div>
+        <div class="platform-name">小红书</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="message-circle"></i>
+        </div>
+        <div class="platform-name">视频号</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="map-pin"></i>
+        </div>
+        <div class="platform-name">高德</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="wallet"></i>
+        </div>
+        <div class="platform-name">口碑</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section" id="pricing">
+    <div class="section-header">
+      <div class="section-badge">价格方案</div>
+      <h2 class="section-title">简单透明的<span class="gradient-text">定价方案</span></h2>
+      <p class="section-subtitle">从单店到连锁品牌，都能找到最适合的方案</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3 class="pricing-name">免费版</h3>
+        <div class="pricing-price">¥0<span>/月</span></div>
+        <p class="pricing-desc">适合单店起步，基础功能免费使用</p>
+        <ul class="pricing-features">
+          <li>最多管理3家门店</li>
+          <li>基础数据统计</li>
+          <li>基础差评提醒</li>
+          <li>社区支持</li>
+        </ul>
+        <button class="btn-outline" style="width: 100%;">
+          免费开始
+        </button>
+      </div>
+      <div class="pricing-card featured">
+        <h3 class="pricing-name">专业版</h3>
+        <div class="pricing-price">¥299<span>/月</span></div>
+        <p class="pricing-desc">适合成长型门店，解锁全部AI能力</p>
+        <ul class="pricing-features">
+          <li>最多管理20家门店</li>
+          <li>AI智能分析报告</li>
+          <li>差评自动回复</li>
+          <li>动态定价策略</li>
+          <li>优先客服支持</li>
+        </ul>
+        <button class="btn-glow" style="width: 100%;">
+          立即订阅
+        </button>
+      </div>
+      <div class="pricing-card">
+        <h3 class="pricing-name">企业版</h3>
+        <div class="pricing-price">定制</div>
+        <p class="pricing-desc">适合连锁品牌，定制化服务</p>
+        <ul class="pricing-features">
+          <li>无限门店数量</li>
+          <li>私有化部署</li>
+          <li>定制化开发</li>
+          <li>专属客户经理</li>
+          <li>一对一培训服务</li>
+        </ul>
+        <button class="btn-outline" style="width: 100%;">
+          联系我们
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <h2 class="cta-title">准备好让AI帮你运营了吗？</h2>
+      <p class="cta-subtitle">立即开始，让AI帮你运营门店，解放双手，专注增长</p>
+      <a href="login.html" class="cta-btn">
+        免费开始体验
+        <i data-lucide="arrow-right" style="width: 18px; height: 18px; margin-left: 8px; vertical-align: middle;"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">
             <i data-lucide="store"></i>
           </div>
-          <div class="metric-value">12,856+</div>
-          <div class="metric-label">入驻商家</div>
+          <span class="gradient-text">店赢OS</span>
         </div>
-        <div class="metric-card">
-          <div class="metric-icon">
-            <i data-lucide="map-pin"></i>
-          </div>
-          <div class="metric-value">326</div>
-          <div class="metric-label">覆盖城市</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">
-            <i data-lucide="trending-up"></i>
-          </div>
-          <div class="metric-value">¥5.8亿</div>
-          <div class="metric-label">月GMV</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-icon">
-            <i data-lucide="zap"></i>
-          </div>
-          <div class="metric-value">99.9%</div>
-          <div class="metric-label">服务可用性</div>
-        </div>
+        <p class="footer-desc">
+          AI驱动的多门店管理平台，让一个人运营无限门店成为可能。
+        </p>
       </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-      <div class="section-header">
-        <h2 class="section-title">为什么选择店赢OS</h2>
-        <p class="section-subtitle">一站式解决方案，让您的多门店管理更简单、更高效</p>
+      <div class="footer-column">
+        <h4>产品</h4>
+        <ul>
+          <li><a href="admin.html">管理后台</a></li>
+          <li><a href="ai-demo.html">AI演示</a></li>
+          <li><a href="dashboard.html">数据大屏</a></li>
+          <li><a href="architecture.html">技术架构</a></li>
+        </ul>
       </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="layers"></i>
-          </div>
-          <h3 class="feature-title">多平台统一管理</h3>
-          <p class="feature-desc">一套系统管理美团、抖音、小红书、大众点评等8大平台，告别多系统切换的繁琐，数据集中分析决策更高效</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="brain"></i>
-          </div>
-          <h3 class="feature-title">AI智能分析</h3>
-          <p class="feature-desc">基于AI大模型的数据分析能力，自动生成经营洞察报告，预测趋势、优化库存、提升客单价，让数据驱动决策</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="credit-card"></i>
-          </div>
-          <h3 class="feature-title">支付分账自动化</h3>
-          <p class="feature-desc">多渠道支付统一接入，智能分账结算，支持多级分润、实时到账，降低财务人力成本80%以上</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="message-square"></i>
-          </div>
-          <h3 class="feature-title">AI客服助手</h3>
-          <p class="feature-desc">24小时AI客服自动回复，智能处理常见问题，提升响应速度300%，释放人工客服压力</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="bar-chart-2"></i>
-          </div>
-          <h3 class="feature-title">经营数据大屏</h3>
-          <p class="feature-desc">实时可视化数据大屏，多维度数据展示，经营状况一目了然，支持移动端随时查看</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i data-lucide="shield-check"></i>
-          </div>
-          <h3 class="feature-title">安全合规</h3>
-          <p class="feature-desc">企业级安全架构，数据加密传输，支持私有化部署，满足金融级安全合规要求</p>
-        </div>
+      <div class="footer-column">
+        <h4>解决方案</h4>
+        <ul>
+          <li><a href="#">餐饮行业</a></li>
+          <li><a href="#">零售行业</a></li>
+          <li><a href="#">休娱行业</a></li>
+          <li><a href="#">加油站</a></li>
+        </ul>
       </div>
-    </section>
-
-    <!-- Platform Section -->
-    <section class="platform-section">
-      <div class="section-header">
-        <h2 class="section-title">支持8大主流平台</h2>
-        <p class="section-subtitle">一键接入，零成本迁移，数据自动同步</p>
+      <div class="footer-column">
+        <h4>资源</h4>
+        <ul>
+          <li><a href="#">帮助中心</a></li>
+          <li><a href="#">开发文档</a></li>
+          <li><a href="cli-demo.html">CLI工具</a></li>
+          <li><a href="#">API文档</a></li>
+        </ul>
       </div>
-      <div class="platform-grid">
-        <div class="platform-logo">
-          <img src="https://lf3-cdn-tos.bytescm.com/obj/static/ies/douyin_falcon/web/assets/logo_douyin.o.svg" alt="抖音">
-        </div>
-        <div class="platform-logo">
-          <img src="https://lf3-cdn-tos.bytescm.com/obj/static/ies/xiaohongshu/web/node_modules/@huizhi-official/assert/static/img/logo-red.svg" alt="小红书">
-        </div>
-        <div class="platform-logo">
-          <img src="https://www.meituan.com/favicon.ico" alt="美团">
-        </div>
-        <div class="platform-logo">
-          <img src="https://www.dianping.com/favicon.ico" alt="大众点评">
-        </div>
-        <div class="platform-logo">
-          <img src="https://render.alipay.com/p/410027/ele_vue/static/img/logo.svg" alt="支付宝">
-        </div>
-        <div class="platform-logo">
-          <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信">
-        </div>
-        <div class="platform-logo">
-          <img src="https://www.ele.me/favicon.ico" alt="饿了么">
-        </div>
-        <div class="platform-logo">
-          <img src="https://haokan.baidu.com/favicon.ico" alt="百度">
-        </div>
+      <div class="footer-column">
+        <h4>公司</h4>
+        <ul>
+          <li><a href="#">关于我们</a></li>
+          <li><a href="#">加入我们</a></li>
+          <li><a href="#">联系方式</a></li>
+          <li><a href="#">隐私政策</a></li>
+        </ul>
       </div>
-    </section>
-
-    <!-- Architecture Section -->
-    <section class="architecture-section" id="architecture">
-      <div class="section-header">
-        <h2 class="section-title">技术架构</h2>
-        <p class="section-subtitle">基于云原生架构，高可用、高性能、易扩展</p>
-      </div>
-      <div class="architecture-diagram">
-        <div class="arch-flow">
-          <div class="arch-step">
-            <div class="arch-step-number">1</div>
-            <div class="arch-step-title">商家端应用</div>
-          </div>
-          <div class="arch-arrow">
-            <i data-lucide="arrow-right"></i>
-          </div>
-          <div class="arch-step">
-            <div class="arch-step-number">2</div>
-            <div class="arch-step-title">API网关</div>
-          </div>
-          <div class="arch-arrow">
-            <i data-lucide="arrow-right"></i>
-          </div>
-          <div class="arch-step">
-            <div class="arch-step-number">3</div>
-            <div class="arch-step-title">业务服务</div>
-          </div>
-          <div class="arch-arrow">
-            <i data-lucide="arrow-right"></i>
-          </div>
-          <div class="arch-step">
-            <div class="arch-step-number">4</div>
-            <div class="arch-step-title">数据平台</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="pricing-section" id="pricing">
-      <div class="section-header">
-        <h2 class="section-title">价格方案</h2>
-        <p class="section-subtitle">灵活定价，按需选择，支持随时升级</p>
-      </div>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-name">免费版</div>
-          <div class="pricing-price">¥0<span>/月</span></div>
-          <p class="pricing-desc">适合个人创业者</p>
-          <ul class="pricing-features">
-            <li><i data-lucide="check" class="w-4 h-4"></i> 1个门店</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 基础数据分析</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 平台接入（限1个）</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 社区支持</li>
-          </ul>
-          <button class="btn-secondary" style="width:100%">免费使用</button>
-        </div>
-        <div class="pricing-card featured">
-          <div class="pricing-name">专业版</div>
-          <div class="pricing-price">¥999<span>/月</span></div>
-          <p class="pricing-desc">适合成长型门店</p>
-          <ul class="pricing-features">
-            <li><i data-lucide="check" class="w-4 h-4"></i> 5个门店</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> AI智能分析</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 全平台接入</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 支付分账</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 优先级支持</li>
-          </ul>
-          <button class="btn-primary" style="width:100%">立即开通</button>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-name">旗舰版</div>
-          <div class="pricing-price">¥2999<span>/月</span></div>
-          <p class="pricing-desc">适合连锁品牌</p>
-          <ul class="pricing-features">
-            <li><i data-lucide="check" class="w-4 h-4"></i> 无限门店</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 高级AI功能</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 私有化部署</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> SLA保障</li>
-            <li><i data-lucide="check" class="w-4 h-4"></i> 专属客服</li>
-          </ul>
-          <button class="btn-secondary" style="width:100%">联系我们</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <h2 class="cta-title">立即开始您的数字化之旅</h2>
-      <p class="cta-desc">14天免费试用，无需信用卡，随时升级或取消</p>
-      <div class="cta-buttons">
-        <button class="btn-primary btn-lg" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">
-          <i data-lucide="rocket" class="w-5 h-5"></i>
-          立即免费试用
-        </button>
-        <a href="admin.html" class="btn-secondary btn-lg">
-          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-          进入管理后台
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 店赢OS. 保留所有权利。</p>
+      <div style="display: flex; gap: 16px;">
+        <a href="#" style="color: var(--text-muted);">
+          <i data-lucide="github" style="width: 20px; height: 20px;"></i>
+        </a>
+        <a href="#" style="color: var(--text-muted);">
+          <i data-lucide="twitter" style="width: 20px; height: 20px;"></i>
         </a>
       </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-main">
-        <div class="footer-brand">
-          <div class="footer-logo">
-            <img src="assets/logo.svg" alt="店赢OS">
-            <span>店赢OS</span>
-          </div>
-          <p class="footer-desc">
-            店赢OS是新一代AI驱动的多门店管理平台，帮助商家实现多平台统一运营，降低运营成本，提升经营效率。
-          </p>
-        </div>
-        <div class="footer-column">
-          <h4 class="footer-column-title">产品</h4>
-          <ul>
-            <li><a href="#features">核心功能</a></li>
-            <li><a href="#architecture">技术架构</a></li>
-            <li><a href="#pricing">价格方案</a></li>
-            <li><a href="cli-demo.html">CLI终端</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4 class="footer-column-title">资源</h4>
-          <ul>
-            <li><a href="#">帮助中心</a></li>
-            <li><a href="#">开发文档</a></li>
-            <li><a href="#">API接口</a></li>
-            <li><a href="#">视频教程</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4 class="footer-column-title">关于我们</h4>
-          <ul>
-            <li><a href="#">公司简介</a></li>
-            <li><a href="#">联系方式</a></li>
-            <li><a href="#">隐私政策</a></li>
-            <li><a href="#">服务条款</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p class="footer-copyright">© 2024 店赢OS. All rights reserved.</p>
-        <div class="footer-social">
-          <a href="#" class="social-link" aria-label="微信">
-            <i data-lucide="message-circle" class="w-5 h-5"></i>
-          </a>
-          <a href="#" class="social-link" aria-label="微博">
-            <i data-lucide="at-sign" class="w-5 h-5"></i>
-          </a>
-          <a href="#" class="social-link" aria-label="邮箱">
-            <i data-lucide="mail" class="w-5 h-5"></i>
-          </a>
-        </div>
-      </div>
-    </footer>
-  </div>
+    </div>
+    </div>
+  </footer>
 
   <script>
-    // Mobile Menu Functionality
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenuClose = document.getElementById('mobileMenuClose');
-    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-    const mobileMenuPanel = document.getElementById('mobileMenuPanel');
-    
-    function openMobileMenu() {
-      mobileMenuOverlay.classList.add('active');
-      mobileMenuPanel.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closeMobileMenu() {
-      mobileMenuOverlay.classList.remove('active');
-      mobileMenuPanel.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    mobileMenuBtn?.addEventListener('click', openMobileMenu);
-    mobileMenuClose?.addEventListener('click', closeMobileMenu);
-    mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
-    
-    // Close mobile menu when clicking on links
-    document.querySelectorAll('.mobile-menu-link').forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
-    });
-    
-    // Number counter animation
-    function animateCounter(element, target, duration = 2000) {
-      const start = 0;
-      const startTime = performance.now();
-      
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        const current = start + (target - start) * easeOut;
-        
-        if (target % 1 !== 0) {
-          element.textContent = current.toFixed(1);
+    // 初始化图标
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+
+      // 导航栏滚动效果
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
         } else {
-          element.textContent = Math.floor(current).toLocaleString();
-        }
-        
-        if (progress < 1) {
-          requestAnimationFrame(update);
-        }
-      }
-      
-      requestAnimationFrame(update);
-    }
-    
-    // Intersection Observer for counter animation
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const counters = entry.target.querySelectorAll('[data-count]');
-          counters.forEach(counter => {
-            const target = parseFloat(counter.dataset.count);
-            animateCounter(counter, target);
-          });
-          observer.unobserve(entry.target);
+          navbar.classList.remove('scrolled');
         }
       });
-    }, { threshold: 0.5 });
-    
-    const heroStats = document.querySelector('.hero-stats');
-    if (heroStats) {
-      observer.observe(heroStats);
-    }
-    
-    // Initialize icons
-    setTimeout(() => {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }, 100);
+
+      // 平滑滚动到锚点
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // 元素进入视口动画
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.feature-card, .platform-item, .pricing-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+      });
+    });
   </script>
 </body>
 </html>
