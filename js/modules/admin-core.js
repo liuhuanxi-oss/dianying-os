@@ -397,11 +397,21 @@ const Pagination = {
 // ============================================
 // 侧边栏渲染
 // ============================================
+function getActiveMenuConfig() {
+  // 如果Auth可用且已登录，返回过滤后的菜单
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    return Auth.getFilteredMenuConfig();
+  }
+  // 否则返回原始完整菜单
+  return menuConfig;
+}
+
 function renderSidebar() {
   const nav = document.getElementById('sidebarNav');
   if (!nav) return;
   let html = '';
-  menuConfig.forEach(section => {
+  const activeMenu = getActiveMenuConfig();
+  activeMenu.forEach(section => {
     html += `<div class="nav-section"><div class="nav-section-title">${section.section}</div>`;
     section.items.forEach(item => {
       html += `<div class="nav-item ${App.currentPage === item.id ? 'active' : ''}" data-page="${item.id}" onclick="navigateTo('${item.id}')"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
@@ -432,7 +442,8 @@ function updateBreadcrumb(pageId) {
   const breadcrumb = document.getElementById('breadcrumb');
   if (!breadcrumb) return;
   let sectionName = '', pageName = '';
-  for (const section of menuConfig) {
+  const activeMenu = getActiveMenuConfig();
+  for (const section of activeMenu) {
     const item = section.items.find(i => i.id === pageId);
     if (item) { sectionName = section.section; pageName = item.name; break; }
   }
@@ -593,7 +604,8 @@ function initGlobalSearch() {
   
   // Build search index from menu config
   searchResults = [];
-  menuConfig.forEach(section => {
+  const activeMenu = getActiveMenuConfig();
+  activeMenu.forEach(section => {
     section.items.forEach(item => {
       searchResults.push({
         id: item.id,

@@ -2,10 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>店赢OS - 平台管理后台</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="css/mobile-responsive.css">
   <style>
     /* Global Search Modal (Ctrl+K) */
     .global-search-modal {
@@ -541,7 +537,54 @@
     </div>
   </div>
   
-  <!-- Load admin core module first -->
+  <!-- Load auth module first for permission check -->
+  <script src="js/auth.js"></script>
+  
+  <!-- Load admin core module -->
   <script src="js/modules/admin-core.js"></script>
+  
+  <!-- Permission check and user info update -->
+  <script>
+    // 等待页面加载后执行权限检查
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延迟执行确保DOM已完全加载
+      setTimeout(function() {
+        // 检查登录状态
+        if (typeof Auth !== 'undefined') {
+          if (!Auth.isLoggedIn()) {
+            // 未登录，跳转到登录页
+            window.location.href = 'login.html';
+            return;
+          }
+          
+          // 更新当前用户信息到侧边栏
+          const user = Auth.getCurrentUser();
+          if (user) {
+            // 更新侧边栏用户信息
+            const adminName = document.querySelector('.admin-name');
+            const adminRole = document.querySelector('.admin-role');
+            
+            if (adminName) adminName.textContent = user.name;
+            if (adminRole) adminRole.textContent = user.roleConfig.displayName;
+            
+            // 更新用户角色颜色
+            const adminAvatar = document.querySelector('.admin-avatar');
+            if (adminAvatar) {
+              adminAvatar.style.background = user.roleConfig.color + '20';
+              adminAvatar.style.color = user.roleConfig.color;
+            }
+          }
+          
+          // 过滤菜单权限
+          if (typeof menuConfig !== 'undefined') {
+            window.menuConfig = menuConfig; // 保存原始配置
+            const filteredMenu = Auth.getFilteredMenuConfig();
+            // 替换全局menuConfig
+            window.menuConfig = filteredMenu;
+          }
+        }
+      }, 100);
+    });
+  </script>
 </body>
 </html>
