@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - AI透视门店运营</title>
+  <link rel="stylesheet" href="css/ai-demo.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* 额外样式覆盖 */
+    .welcome-card .preset-questions {
+      margin-top: 20px;
+    }
+    
+    .analysis-intro {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(94, 106, 210, 0.1), rgba(0, 184, 204, 0.05));
+      border-left: 3px solid var(--accent-primary);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    
+    .insight-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--accent-secondary);
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .insight-tag svg {
+      width: 12px;
+      height: 12px;
+    }
+    
+    .chart-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .chart-tab {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .chart-tab:hover {
+      color: var(--text-secondary);
+    }
+    
+    .chart-tab.active {
+      background: var(--accent-primary);
+      color: white;
+    }
+    
+    .mini-chart {
+      height: 120px;
+      margin-top: 12px;
+    }
+    
+    .trend-list {
+      margin-top: 12px;
+    }
+    
+    .trend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .trend-item:last-child {
+      border-bottom: none;
+    }
+    
+    .trend-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .trend-item-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .trend-item-icon svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent-secondary);
+    }
+    
+    .trend-item-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .trend-item-store {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .trend-item-right {
+      text-align: right;
+    }
+    
+    .trend-item-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    
+    .trend-item-change {
+      font-size: 0.7rem;
+      color: var(--accent-success);
+    }
+    
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .comparison-item {
+      background: var(--bg-secondary);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    
+    .comparison-item .industry {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    
+    .comparison-item .revenue {
+      font-size: 1.2rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent-primary);
+    }
+    
+    .comparison-item .growth {
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    
+    .comparison-item .growth.up { color: var(--accent-success); }
+    .comparison-item .growth.down { color: var(--accent-danger); }
+    
+    /* API状态指示器 */
+    .api-status {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      z-index: 10;
+    }
+    
+    .api-status .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-warning);
+    }
+    
+    .api-status.online .status-dot {
+      background: var(--accent-success);
+      box-shadow: 0 0 6px var(--accent-success);
+    }
+    
+    .api-status.offline .status-dot {
+      background: var(--accent-danger);
+    }
+    
+    /* 渠道选择器 */
+    .provider-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-left: 12px;
+      border: 1px solid transparent;
+    }
+    
+    .provider-selector:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-primary);
+    }
+    
+    .provider-selector .provider-icon {
+      font-size: 1rem;
+    }
+    
+    .provider-selector .provider-name {
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .provider-selector .configured-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-danger);
+    }
+    
+    .provider-selector .configured-dot.online {
+      background: var(--accent-success);
+    }
+    
+    /* 渠道选择弹窗 */
+    .provider-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .provider-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .provider-modal-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .provider-modal.active .provider-modal-content {
+      transform: scale(1);
+    }
+    
+    .provider-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .provider-modal-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    
+    .provider-modal-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    
+    .provider-modal-close:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .provider-modal-body {
+      padding: 16px 20px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    
+    .provider-card {
+      padding: 14px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      position: relative;
+    }
+    
+    .provider-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    
+    .provider-card.selected {
+      border-color: var(--accent-primary);
+      background: rgba(94, 106, 210, 0.1);
+    }
+    
+    .provider-card .provider-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .provider-card .provider-icon-large {
+      font-size: 1.5rem;
+    }
+    
+    .provider-card .provider-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .provider-card .provider-name-text {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .provider-card .provider-name-en {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    
+    .provider-card .provider-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .provider-card .status-dot-large {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-danger);
+    }
+    
+    .provider-card .status-dot-large.online {
+      background: var(--accent-success);
+    }
+    
+    .provider-card .provider-model {
+      font-size: 0.7rem;
+      color: var(--accent-secondary);
+      padding: 4px 8px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      margin-top: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .provider-card .current-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--accent-primary);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="ai-demo-container">
+    <!-- 左侧对话区域 -->
+    <section class="chat-section">
+      <header class="chat-header" style="position: relative;">
+        <div class="api-status offline" id="apiStatus">
+          <span class="status-dot"></span>
+          <span class="status-text">离线模式</span>
+        </div>
+        <div class="chat-title">
+          <div class="chat-title-icon">
+            <i data-lucide="brain-circuit"></i>
+          </div>
+          <div>
+            <h1>AI运营顾问</h1>
+            <p>店赢OS智能分析引擎</p>
+          </div>
+        </div>
+        <div class="role-switcher">
+          <button class="role-btn active" data-role="owner">门店老板</button>
+          <button class="role-btn" data-role="manager">区域运营</button>
+          <button class="role-btn" data-role="admin">平台管理员</button>
+        </div>
+        <button class="provider-selector" id="providerSelector" title="切换AI渠道">
+          <span class="provider-icon" id="currentProviderIcon">🔥</span>
+          <span class="provider-name" id="currentProviderName">火山方舟</span>
+          <span class="configured-dot" id="currentProviderDot"></span>
+        </button>
+      </header>
+      
+      <div class="chat-messages" id="chatMessages">
+        <!-- 欢迎卡片 -->
+        <div class="welcome-card" id="welcomeCard">
+          <div class="welcome-icon">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <h2>欢迎使用店赢OS AI透视</h2>
+          <p>基于全量门店数据的智能运营分析助手</p>
+          <div class="preset-questions">
+            <button class="preset-btn" data-question="帮我分析本月流水下降原因">
+              <i data-lucide="trending-down"></i>
+              流水下降分析
+            </button>
+            <button class="preset-btn" data-question="哪些门店评分下滑最多">
+              <i data-lucide="star"></i>
+              评分下滑门店
+            </button>
+            <button class="preset-btn" data-question="推荐下月营销策略">
+              <i data-lucide="target"></i>
+              营销策略推荐
+            </button>
+            <button class="preset-btn" data-question="对比各行业营收表现">
+              <i data-lucide="bar-chart-3"></i>
+              行业对比分析
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-area">
+        <div class="input-wrapper">
+          <textarea 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="输入您的问题，AI将为您提供运营洞察..."
+            rows="1"
+          ></textarea>
+          <button class="send-btn" id="sendBtn">
+            <i data-lucide="send"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 渠道选择弹窗 -->
+    <div class="provider-modal" id="providerModal">
+      <div class="provider-modal-content">
+        <div class="provider-modal-header">
+          <h3>🔄 切换AI渠道</h3>
+          <div class="provider-modal-close" id="closeProviderModal">
+            <i data-lucide="x"></i>
+          </div>
+        </div>
+        <div class="provider-modal-body">
+          <div class="provider-grid" id="providerGrid">
+            <!-- 动态生成 -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 右侧数据面板 -->
+    <aside class="data-panel">
+      <header class="panel-header">
+        <div class="panel-title">
+          <i data-lucide="activity"></i>
+          <span>实时数据面板</span>
+          <div class="live-indicator">
+            <span class="live-dot"></span>
+            <span>实时</span>
+          </div>
+        </div>
+        <div class="panel-tabs">
+          <button class="panel-tab active" data-tab="overview">概览</button>
+          <button class="panel-tab" data-tab="revenue">营收</button>
+          <button class="panel-tab" data-tab="rating">评分</button>
+        </div>
+      </header>
+      
+      <div class="panel-content" id="panelContent">
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState">
+          <i data-lucide="bar-chart-2"></i>
+          <p>向AI顾问提问，获取实时数据分析</p>
+        </div>
+        
+        <!-- 概览数据 -->
+        <div id="overviewPanel" style="display: none;">
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="package"></i>
+                今日关键指标
+              </div>
+              <span class="data-card-badge">更新于 14:32</span>
+            </div>
+            <div class="data-grid">
+              <div class="data-grid-item">
+                <div class="value" style="color: var(--accent-primary);">¥287,432</div>
+                <div class="label">今日营收</div>
+                <div class="change up"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +12.3%</div>
+              </div>
+              <div class="data-grid-item">
+                <div class="value" style="color: var(--accent-secondary);">1,247</div>
+                <div class="label">订单数量</div>
+                <div class="change up"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +8.6%</div>
+              </div>
+              <div class="data-grid-item">
+                <div class="value" style="color: var(--accent-success);">4.72</div>
+                <div class="label">平均评分</div>
+                <div class="change down"><i data-lucide="trending-down" style="width:12px;height:12px;"></i> -0.05</div>
+              </div>
+              <div class="data-grid-item">
+                <div class="value">386</div>
+                <div class="label">活跃门店</div>
+                <div class="change up"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +15</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="line-chart"></i>
+                30天营收趋势
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="revenueTrendChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="alert-triangle"></i>
+                预警信息
+              </div>
+            </div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-icon danger">
+                  <i data-lucide="alert-circle"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="title">天河城店流水下滑严重</div>
+                  <div class="desc">近7天下滑23.5%，需关注</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon warning">
+                  <i data-lucide="star"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="title">3家门店评分低于4.0</div>
+                  <div class="desc">可能影响平台推荐排名</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon info">
+                  <i data-lucide="clock"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="title">高峰时段出餐延迟</div>
+                  <div class="desc">11:30-13:00平均延迟8分钟</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 营收详细 -->
+        <div id="revenuePanel" style="display: none;">
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="pie-chart"></i>
+                行业分布
+              </div>
+            </div>
+            <div class="chart-wrapper" style="height: 200px;">
+              <canvas id="industryPieChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="store"></i>
+                门店营收排行 TOP5
+              </div>
+            </div>
+            <div class="progress-list">
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">珠江新城旗舰店</span>
+                  <span class="progress-value">¥45.2万</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">天河城店</span>
+                  <span class="progress-value">¥38.6万</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 85%;"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">北京路步行街店</span>
+                  <span class="progress-value">¥32.1万</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 71%;"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">上下九店</span>
+                  <span class="progress-value">¥28.9万</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 64%;"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-header">
+                  <span class="progress-label">白云万达店</span>
+                  <span class="progress-value">¥25.4万</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 56%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 评分详情 -->
+        <div id="ratingPanel" style="display: none;">
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="star"></i>
+                评分分布
+              </div>
+            </div>
+            <div class="chart-wrapper" style="height: 160px;">
+              <canvas id="ratingDistChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="trending-down"></i>
+                评分下滑门店
+              </div>
+            </div>
+            <div class="trend-list">
+              <div class="trend-item">
+                <div class="trend-item-left">
+                  <div class="trend-item-icon"><i data-lucide="utensils"></i></div>
+                  <div>
+                    <div class="trend-item-name">天河城店</div>
+                    <div class="trend-item-store">天河区</div>
+                  </div>
+                </div>
+                <div class="trend-item-right">
+                  <div class="trend-item-value" style="color: var(--accent-danger);">3.82</div>
+                  <div class="trend-item-change">↓ 0.35</div>
+                </div>
+              </div>
+              <div class="trend-item">
+                <div class="trend-item-left">
+                  <div class="trend-item-icon"><i data-lucide="coffee"></i></div>
+                  <div>
+                    <div class="trend-item-name">白云万达店</div>
+                    <div class="trend-item-store">白云区</div>
+                  </div>
+                </div>
+                <div class="trend-item-right">
+                  <div class="trend-item-value" style="color: var(--accent-danger);">3.91</div>
+                  <div class="trend-item-change">↓ 0.28</div>
+                </div>
+              </div>
+              <div class="trend-item">
+                <div class="trend-item-left">
+                  <div class="trend-item-icon"><i data-lucide="cake"></i></div>
+                  <div>
+                    <div class="trend-item-name">番禺广场店</div>
+                    <div class="trend-item-store">番禺区</div>
+                  </div>
+                </div>
+                <div class="trend-item-right">
+                  <div class="trend-item-value" style="color: var(--accent-warning);">3.97</div>
+                  <div class="trend-item-change">↓ 0.15</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-card-header">
+              <div class="data-card-title">
+                <i data-lucide="message-circle"></i>
+                差评关键词
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="complaintWordChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // 初始化Lucide图标
+    lucide.createIcons();
+    
+    // 全局变量
+    let currentRole = 'owner';
+    let currentTab = 'overview';
+    let charts = {};
+    
+    // 角色配置
+    const roleConfig = {
+      owner: {
+        name: '门店老板',
+        focus: '单店经营分析与优化',
+        metrics: ['流水', '订单', '评分', '成本']
+      },
+      manager: {
+        name: '区域运营',
+        focus: '多店对比与区域策略',
+        metrics: ['区域流水', '门店排名', '市占率', '竞品分析']
+      },
+      admin: {
+        name: '平台管理员',
+        focus: '全平台健康度与运营策略',
+        metrics: ['GMV', '门店数', '用户活跃', '行业趋势']
+      }
+    };
+    
+    // AI回复模板
+    const aiResponses = {
+      '流水下降': {
+        title: '📊 本月流水下降原因分析',
+        intro: '根据您门店的历史数据对比分析，本月流水下降主要受以下因素影响：',
+        metrics: [
+          { label: '本月流水', value: '¥287,432', change: '-12.3%', type: 'negative' },
+          { label: '上月流水', value: '¥328,156', change: null, type: 'neutral' },
+          { label: '日均订单', value: '1,247单', change: '-8.6%', type: 'negative' },
+          { label: '客单价', value: '¥230.5', change: '-3.2%', type: 'negative' }
+        ],
+        reasons: [
+          { icon: 'clock', title: '午高峰出餐延迟', desc: '11:30-13:00平均出餐时间增加5分钟，导致客诉增加' },
+          { icon: 'star', title: '评分下滑影响流量', desc: '评分从4.8降至4.5，平台推荐权重下降约15%' },
+          { icon: 'calendar', title: '工作日客流下降', desc: '周三、周四客流明显低于平均水平' }
+        ],
+        suggestions: [
+          { level: 'high', title: '优化午高峰流程', desc: '增加预制菜比例，目标将出餐时间压缩至8分钟内' },
+          { level: 'high', title: '重点提升服务评分', desc: '针对差评关键词定向培训，目标本月评分回升至4.7+' },
+          { level: 'medium', title: '推出周三特惠活动', desc: '参考历史数据，周三优惠可提升客流约20%' }
+        ]
+      },
+      '评分下滑': {
+        title: '⭐ 门店评分下滑分析报告',
+        intro: '系统检测到以下门店评分出现明显下滑，建议优先关注：',
+        metrics: [
+          { label: '平台平均分', value: '4.72', change: '-0.05', type: 'neutral' },
+          { label: '4分以下门店', value: '3家', change: '+2', type: 'negative' },
+          { label: '差评数量', value: '156条', change: '+23%', type: 'negative' },
+          { label: '响应率', value: '82%', change: '-8%', type: 'neutral' }
+        ],
+        table: {
+          headers: ['门店名称', '当前评分', '变化', '主要问题'],
+          rows: [
+            ['天河城店', '3.82', '<span class="trend-down">↓0.35</span>', '出餐慢、服务态度'],
+            ['白云万达店', '3.91', '<span class="trend-down">↓0.28</span>', '菜品凉了、包装破损'],
+            ['番禺广场店', '3.97', '<span class="trend-down">↓0.15</span>', '等位时间长']
+          ]
+        },
+        suggestions: [
+          { level: 'high', title: '天河城店专项整改', desc: '立即安排店长培训，优化后厨动线' },
+          { level: 'medium', title: '差评回访机制', desc: '所有差评24小时内回访，平均响应率提升至95%+' },
+          { level: 'low', title: '好评激励机制', desc: '设置好评返券活动，目标好评率提升10%' }
+        ]
+      },
+      '营销策略': {
+        title: '🎯 下月营销策略推荐',
+        intro: '基于门店历史数据与行业趋势，为您制定以下营销策略：',
+        metrics: [
+          { label: '建议活动预算', value: '¥28,000', change: null, type: 'neutral' },
+          { label: '预期提升', value: '+18%', change: null, type: 'positive' },
+          { label: 'ROI预估', value: '3.2x', change: null, type: 'positive' }
+        ],
+        strategies: [
+          { icon: 'gift', title: '新客首单立减', desc: '针对30天内未消费用户发放¥15新人券，预计拉新120+单' },
+          { icon: 'repeat', title: '周三会员日', desc: '会员周三享8.5折，历史数据验证可提升当日流水25%' },
+          { icon: 'package', title: '套餐组合优惠', desc: '推出午市套餐（主菜+饮品），提升客单价约¥18' },
+          { icon: 'share', title: '裂变分享得券', desc: '老客分享给新客，双方各得¥10优惠券' }
+        ],
+        timeline: [
+          { week: '第一周', action: '启动新客立减活动，同步推送短信通知' },
+          { week: '第二周', action: '周三会员日正式上线，配合社群推广' },
+          { week: '第三周', action: '根据数据反馈调整优惠力度' },
+          { week: '第四周', action: '活动复盘，制定下月策略' }
+        ]
+      },
+      '行业对比': {
+        title: '📈 各行业营收对比分析',
+        intro: '基于平台全量数据，各行业表现如下：',
+        comparison: [
+          { industry: '快餐简餐', revenue: '¥1,245万', growth: '+15.2%', trend: 'up' },
+          { industry: '茶饮咖啡', revenue: '¥892万', growth: '+22.8%', trend: 'up' },
+          { industry: '火锅烤肉', revenue: '¥756万', growth: '+8.5%', trend: 'up' },
+          { industry: '烘焙甜品', revenue: '¥423万', growth: '-3.2%', trend: 'down' },
+          { industry: '中餐正餐', revenue: '¥1,567万', growth: '+5.1%', trend: 'up' }
+        ],
+        insights: [
+          { icon: 'trending-up', color: 'var(--accent-success)', text: '茶饮行业增速最快，年轻人消费力强劲' },
+          { icon: 'users', color: 'var(--accent-primary)', text: '快餐简餐基盘最大，但增长趋于平稳' },
+          { icon: 'alert-triangle', color: 'var(--accent-warning)', text: '烘焙甜品连续2个月下滑，建议谨慎扩张' }
+        ],
+        recommendations: [
+          { level: 'high', title: '茶饮赛道机会大', desc: '建议新增茶饮品类或联名合作' },
+          { level: 'medium', title: '快餐优化空间', desc: '可借鉴茶饮的爆品运营策略' },
+          { level: 'low', title: '正餐稳健经营', desc: '维持现有投入，注重品质稳定性' }
+        ]
+      }
+    };
+    
+    // 初始化图表
+    function initCharts() {
+      // 营收趋势图
+      const revenueCtx = document.getElementById('revenueTrendChart');
+      if (revenueCtx) {
+        charts.revenueTrend = new Chart(revenueCtx, {
+          type: 'line',
+          data: {
+            labels: Array.from({length: 30}, (_, i) => `Day ${i + 1}`),
+            datasets: [{
+              label: '日营收',
+              data: generateRevenueData(),
+              borderColor: '#5e6ad2',
+              backgroundColor: 'rgba(94, 106, 210, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 0,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { display: false },
+              y: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#606070', font: { size: 10 } }
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: 'index'
+            }
+          }
+        });
+      }
+      
+      // 行业饼图
+      const industryCtx = document.getElementById('industryPieChart');
+      if (industryCtx) {
+        charts.industryPie = new Chart(industryCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['快餐简餐', '中餐正餐', '茶饮咖啡', '火锅烤肉', '其他'],
+            datasets: [{
+              data: [35, 28, 18, 12, 7],
+              backgroundColor: [
+                '#5e6ad2',
+                '#00b8cc',
+                '#10b981',
+                '#f59e0b',
+                '#9090a0'
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  color: '#9090a0',
+                  font: { size: 11 },
+                  padding: 12
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // 评分分布图
+      const ratingCtx = document.getElementById('ratingDistChart');
+      if (ratingCtx) {
+        charts.ratingDist = new Chart(ratingCtx, {
+          type: 'bar',
+          data: {
+            labels: ['5.0', '4.5-4.9', '4.0-4.4', '3.5-3.9', '3.0以下'],
+            datasets: [{
+              label: '门店数',
+              data: [156, 198, 42, 8, 3],
+              backgroundColor: [
+                '#10b981',
+                '#00b8cc',
+                '#5e6ad2',
+                '#f59e0b',
+                '#ef4444'
+              ],
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: '#606070', font: { size: 10 } }
+              },
+              y: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#606070', font: { size: 10 } }
+              }
+            }
+          }
+        });
+      }
+      
+      // 差评词云替代 - 横向柱状图
+      const complaintCtx = document.getElementById('complaintWordChart');
+      if (complaintCtx) {
+        charts.complaint = new Chart(complaintCtx, {
+          type: 'bar',
+          data: {
+            labels: ['出餐慢', '服务差', '菜品凉', '等太久', '包装破'],
+            datasets: [{
+              data: [45, 32, 28, 22, 18],
+              backgroundColor: '#ef4444',
+              borderRadius: 4
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#606070', font: { size: 10 } }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { color: '#9090a0', font: { size: 11 } }
+              }
+            }
+          }
+        });
+      }
+    }
+    
+    // 生成模拟营收数据
+    function generateRevenueData() {
+      const data = [];
+      let base = 280000;
+      for (let i = 0; i < 30; i++) {
+        const variance = (Math.random() - 0.5) * 40000;
+        const weekend = (i % 7 === 5 || i % 7 === 6) ? 1.3 : 1;
+        data.push(Math.round((base + variance) * weekend));
+        base = base * 0.998; // 轻微下降趋势
+      }
+      return data;
+    }
+    
+    // 获取匹配的AI响应
+    function getAIResponse(question) {
+      const q = question.toLowerCase();
+      if (q.includes('流水') || q.includes('下降') || q.includes('下滑') || q.includes('下降原因')) {
+        return aiResponses['流水下降'];
+      } else if (q.includes('评分') || q.includes('星级') || q.includes('下滑最多')) {
+        return aiResponses['评分下滑'];
+      } else if (q.includes('营销') || q.includes('策略') || q.includes('推广') || q.includes('活动')) {
+        return aiResponses['营销策略'];
+      } else if (q.includes('对比') || q.includes('行业') || q.includes('表现')) {
+        return aiResponses['行业对比'];
+      }
+      // 默认返回流水分析
+      return aiResponses['流水下降'];
+    }
+    
+    // 创建用户消息
+    function createUserMessage(text) {
+      const div = document.createElement('div');
+      div.className = 'user-message';
+      div.innerHTML = `<div class="user-message-bubble">${text}</div>`;
+      return div;
+    }
+    
+    // 创建AI思考过程
+    function createThinkingElement() {
+      const div = document.createElement('div');
+      div.className = 'ai-message';
+      div.innerHTML = `
+        <div class="ai-avatar"><i data-lucide="bot"></i></div>
+        <div class="ai-message-content">
+          <div class="ai-bubble">
+            <div class="ai-thinking">
+              <div class="thinking-step">
+                <div class="thinking-icon searching"><i data-lucide="search" style="width:16px;height:16px;"></i></div>
+                <span>正在检索相关数据...</span>
+                <div class="thinking-dots"><span></span><span></span><span></span></div>
+              </div>
+              <div class="thinking-step">
+                <div class="thinking-icon analyzing"><i data-lucide="bar-chart-2" style="width:16px;height:16px;"></i></div>
+                <span>正在分析趋势与关联...</span>
+                <div class="thinking-dots"><span></span><span></span><span></span></div>
+              </div>
+              <div class="thinking-step">
+                <div class="thinking-icon analyzing"><i data-lucide="cpu" style="width:16px;height:16px;"></i></div>
+                <span>正在生成运营洞察...</span>
+                <div class="thinking-dots"><span></span><span></span><span></span></div>
+              </div>
+              <div class="thinking-step">
+                <div class="thinking-icon generating"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></div>
+                <span>正在构建建议方案...</span>
+                <div class="thinking-dots"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons({ nodes: div.querySelectorAll('[data-lucide]') });
+      return div;
+    }
+    
+    // 创建AI回复
+    function createAIResponse(response, role) {
+      const div = document.createElement('div');
+      div.className = 'ai-message';
+      
+      let content = `<div class="ai-bubble">`;
+      
+      // 洞察标签
+      content += `<div style="margin-bottom: 12px;">`;
+      roleConfig[role].metrics.forEach(m => {
+        content += `<span class="insight-tag"><i data-lucide="target"></i>${m}</span>`;
+      });
+      content += `</div>`;
+      
+      // 标题
+      content += `<h3 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--text-primary);">${response.title}</h3>`;
+      
+      // 引言
+      if (response.intro) {
+        content += `<div class="analysis-intro">${response.intro}</div>`;
+      }
+      
+      // 关键指标
+      if (response.metrics) {
+        content += `<div class="metrics-grid">`;
+        response.metrics.forEach(m => {
+          content += `
+            <div class="metric-item">
+              <div class="metric-value ${m.type}">${m.value}</div>
+              <div class="metric-label">${m.label}</div>
+              ${m.change ? `<div class="metric-change ${m.type === 'positive' ? 'up' : m.type === 'negative' ? 'down' : ''}">${m.change}</div>` : ''}
+            </div>
+          `;
+        });
+        content += `</div>`;
+      }
+      
+      // 表格
+      if (response.table) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="table"></i>详细数据</div>
+          <div class="analysis-card-content">
+            <table class="data-table">
+              <thead><tr>${response.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+              <tbody>
+                ${response.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+      }
+      
+      // 原因列表
+      if (response.reasons) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="alert-circle"></i>问题定位</div>
+          <div class="analysis-card-content">
+            <div class="trend-list">
+              ${response.reasons.map(r => `
+                <div class="trend-item">
+                  <div class="trend-item-left">
+                    <div class="trend-item-icon"><i data-lucide="${r.icon}"></i></div>
+                    <div>
+                      <div class="trend-item-name">${r.title}</div>
+                      <div class="trend-item-store">${r.desc}</div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>`;
+      }
+      
+      // 行业对比
+      if (response.comparison) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="bar-chart"></i>各行业表现</div>
+          <div class="analysis-card-content">
+            <div class="comparison-grid">
+              ${response.comparison.map(c => `
+                <div class="comparison-item">
+                  <div class="industry">${c.industry}</div>
+                  <div class="revenue">${c.revenue}</div>
+                  <div class="growth ${c.trend}">${c.growth}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>`;
+      }
+      
+      // 策略建议
+      if (response.strategies) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="target"></i>推荐策略</div>
+          <div class="analysis-card-content">
+            ${response.strategies.map(s => `
+              <div class="recommendation-item">
+                <div class="recommendation-icon medium"><i data-lucide="${s.icon}"></i></div>
+                <div class="recommendation-content">
+                  <h4>${s.title}</h4>
+                  <p>${s.desc}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      }
+      
+      // 时间线
+      if (response.timeline) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="calendar"></i>执行计划</div>
+          <div class="analysis-card-content">
+            ${response.timeline.map(t => `
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--accent-secondary); font-weight: 500; min-width: 60px;">${t.week}</span>
+                <span style="color: var(--text-secondary);">${t.action}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      }
+      
+      // 洞察要点
+      if (response.insights) {
+        content += `<div style="margin-top: 16px;">
+          ${response.insights.map(i => `
+            <div style="display: flex; align-items: center; gap: 8px; padding: 8px 0; color: var(--text-secondary);">
+              <i data-lucide="${i.icon}" style="width: 16px; height: 16px; color: ${i.color};"></i>
+              <span>${i.text}</span>
+            </div>
+          `).join('')}
+        </div>`;
+      }
+      
+      // 建议列表
+      if (response.suggestions) {
+        content += `<div class="analysis-card" style="margin-top: 16px;">
+          <div class="analysis-card-header"><i data-lucide="lightbulb"></i>行动建议</div>
+          <div class="analysis-card-content">
+            <ul class="recommendation-list">
+              ${response.suggestions.map(s => `
+                <li class="recommendation-item">
+                  <div class="recommendation-icon ${s.level}"><i data-lucide="${s.level === 'high' ? 'alert-circle' : s.level === 'medium' ? 'minus-circle' : 'check-circle'}"></i></div>
+                  <div class="recommendation-content">
+                    <h4>${s.title}</h4>
+                    <p>${s.desc}</p>
+                  </div>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>`;
+      }
+      
+      // 行动按钮
+      content += `<div class="action-buttons">
+        <button class="action-btn primary"><i data-lucide="download"></i>导出报告</button>
+        <button class="action-btn secondary"><i data-lucide="refresh-cw"></i>重新分析</button>
+      </div>`;
+      
+      content += `</div>`;
+      div.innerHTML = `<div class="ai-avatar"><i data-lucide="bot"></i></div><div class="ai-message-content">${content}</div>`;
+      lucide.createIcons({ nodes: div.querySelectorAll('[data-lucide]') });
+      return div;
+    }
+    
+    // 处理用户提问
+    async function handleQuestion(question) {
+      const chatMessages = document.getElementById('chatMessages');
+      const welcomeCard = document.getElementById('welcomeCard');
+      const emptyState = document.getElementById('emptyState');
+      
+      // 隐藏欢迎卡片和空状态
+      if (welcomeCard) welcomeCard.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'none';
+      
+      // 显示概览面板
+      showPanel('overview');
+      
+      // 添加用户消息
+      chatMessages.appendChild(createUserMessage(question));
+      
+      // 显示AI思考过程
+      const thinkingEl = createThinkingElement();
+      chatMessages.appendChild(thinkingEl);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      try {
+        // 调用后端API
+        const response = await callAIApi(question, currentRole);
+        
+        // 移除思考过程，创建回复
+        thinkingEl.remove();
+        const aiResponse = createStreamingResponse(response.response, currentRole);
+        chatMessages.appendChild(aiResponse);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } catch (error) {
+        console.error('API调用失败，启用Mock模式:', error);
+        // API调用失败，使用Mock模式
+        thinkingEl.remove();
+        const mockResponse = getAIResponse(question);
+        const aiResponse = createAIResponse(mockResponse, currentRole);
+        chatMessages.appendChild(aiResponse);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // 更新右侧图表
+      updateChartsForResponse(question);
+    }
+    
+    // 调用AI API
+    async function callAIApi(message, role) {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message,
+          role: role,
+          context: []
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API错误: ${response.status}`);
+      }
+      
+      return await response.json();
+    }
+    
+    // 创建流式显示的AI回复
+    function createStreamingResponse(text, role) {
+      const div = document.createElement('div');
+      div.className = 'ai-message';
+      div.innerHTML = `
+        <div class="ai-avatar"><i data-lucide="bot"></i></div>
+        <div class="ai-message-content">
+          <div class="ai-bubble">
+            <div style="margin-bottom: 12px;">
+              ${roleConfig[role].metrics.map(m => `<span class="insight-tag"><i data-lucide="target"></i>${m}</span>`).join('')}
+            </div>
+            <div class="response-text" style="white-space: pre-wrap; line-height: 1.7;"></div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons({ nodes: div.querySelectorAll('[data-lucide]') });
+      
+      // 流式显示文本
+      const textEl = div.querySelector('.response-text');
+      typeWriter(textEl, text);
+      
+      return div;
+    }
+    
+    // 打字机效果
+    function typeWriter(element, text, speed = 20) {
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          // 滚动到底部
+          element.closest('.chat-messages').scrollTop = element.closest('.chat-messages').scrollHeight;
+          setTimeout(type, speed);
+        }
+      }
+      type();
+    }
+    
+    // 检查API状态
+    async function checkApiStatus() {
+      const statusEl = document.getElementById('apiStatus');
+      const providerIcon = document.getElementById('currentProviderIcon');
+      const providerName = document.getElementById('currentProviderName');
+      const providerDot = document.getElementById('currentProviderDot');
+      
+      try {
+        const response = await fetch('/api/ai/status');
+        if (response.ok) {
+          const data = await response.json();
+          // 更新渠道选择器
+          if (data.provider_name) {
+            providerName.textContent = data.provider_name;
+          }
+          if (data.status === 'online') {
+            statusEl.className = 'api-status online';
+            statusEl.innerHTML = `<span class="status-dot"></span><span class="status-text">AI已连接</span>`;
+            providerDot.className = 'configured-dot online';
+          } else {
+            statusEl.className = 'api-status offline';
+            statusEl.innerHTML = `<span class="status-dot"></span><span class="status-text">离线模式</span>`;
+            providerDot.className = 'configured-dot';
+          }
+        }
+      } catch (e) {
+        console.log('API服务不可用，使用Mock模式');
+        statusEl.className = 'api-status offline';
+        statusEl.innerHTML = `<span class="status-dot"></span><span class="status-text">离线模式</span>`;
+        providerDot.className = 'configured-dot';
+      }
+    }
+    
+    // 加载渠道列表
+    async function loadProviders() {
+      try {
+        const response = await fetch('/api/ai/providers');
+        if (response.ok) {
+          const data = await response.json();
+          renderProviderGrid(data.providers, data.current_provider);
+        }
+      } catch (e) {
+        console.error('加载渠道列表失败:', e);
+      }
+    }
+    
+    // 渲染渠道网格
+    function renderProviderGrid(providers, currentProvider) {
+      const grid = document.getElementById('providerGrid');
+      grid.innerHTML = providers.map(p => `
+        <div class="provider-card ${p.is_current ? 'selected' : ''}" data-provider="${p.id}" onclick="switchProvider('${p.id}')">
+          ${p.is_current ? '<span class="current-badge">当前</span>' : ''}
+          <div class="provider-top">
+            <span class="provider-icon-large">${p.icon}</span>
+            <div class="provider-info">
+              <div class="provider-name-text">${p.name}</div>
+              <div class="provider-name-en">${p.name_en}</div>
+            </div>
+          </div>
+          <div class="provider-status">
+            <span class="status-dot-large ${p.configured ? 'online' : ''}"></span>
+            <span>${p.configured ? '已配置' : '未配置'}</span>
+          </div>
+          <div class="provider-model" title="${p.current_model}">${p.current_model}</div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+    
+    // 切换渠道
+    async function switchProvider(providerId) {
+      try {
+        const response = await fetch('/api/ai/provider/switch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provider: providerId })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // 更新UI
+          document.getElementById('currentProviderIcon').textContent = data.provider === 'ark' ? '🔥' : 
+            document.getElementById('currentProviderIcon').textContent;
+          document.getElementById('currentProviderName').textContent = data.provider_name;
+          document.getElementById('currentProviderDot').className = data.configured ? 'configured-dot online' : 'configured-dot';
+          
+          // 重新检查状态
+          await checkApiStatus();
+          await loadProviders();
+          
+          // 关闭弹窗
+          closeProviderModal();
+          
+          console.log('已切换到:', data.provider_name);
+        }
+      } catch (e) {
+        console.error('切换渠道失败:', e);
+      }
+    }
+    
+    // 打开渠道弹窗
+    function openProviderModal() {
+      loadProviders();
+      document.getElementById('providerModal').classList.add('active');
+    }
+    
+    // 关闭渠道弹窗
+    function closeProviderModal() {
+      document.getElementById('providerModal').classList.remove('active');
+    }
+    
+    // 根据问题类型更新图表
+    function updateChartsForResponse(question) {
+      const q = question.toLowerCase();
+      
+      if (q.includes('流水') || q.includes('下降')) {
+        showPanel('revenue');
+        if (charts.revenueTrend) {
+          charts.revenueTrend.data.datasets[0].data = generateRevenueData();
+          charts.revenueTrend.update('active');
+        }
+      } else if (q.includes('评分')) {
+        showPanel('rating');
+        if (charts.ratingDist) {
+          charts.ratingDist.data.datasets[0].data = [156, 198, 42, 8, 3].map(() => Math.floor(Math.random() * 100) + 50);
+          charts.ratingDist.update('active');
+        }
+      } else if (q.includes('行业') || q.includes('对比')) {
+        showPanel('revenue');
+        if (charts.industryPie) {
+          charts.industryPie.data.datasets[0].data = [35, 28, 18, 12, 7].map(v => v + Math.floor(Math.random() * 10) - 5);
+          charts.industryPie.update('active');
+        }
+      } else if (q.includes('营销') || q.includes('策略')) {
+        showPanel('overview');
+      }
+    }
+    
+    // 显示面板
+    function showPanel(tab) {
+      currentTab = tab;
+      
+      // 更新标签
+      document.querySelectorAll('.panel-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.tab === tab);
+      });
+      
+      // 显示对应内容
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('overviewPanel').style.display = tab === 'overview' ? 'block' : 'none';
+      document.getElementById('revenuePanel').style.display = tab === 'revenue' ? 'block' : 'none';
+      document.getElementById('ratingPanel').style.display = tab === 'rating' ? 'block' : 'none';
+    }
+    
+    // 切换角色
+    function switchRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.role === role);
+      });
+    }
+    
+    // 事件监听
+    document.addEventListener('DOMContentLoaded', () => {
+      // 检查API状态
+      checkApiStatus();
+      
+      // 初始化图表
+      initCharts();
+      
+      // 预设问题按钮
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          handleQuestion(btn.dataset.question);
+        });
+      });
+      
+      // 角色切换
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchRole(btn.dataset.role);
+        });
+      });
+      
+      // 面板标签
+      document.querySelectorAll('.panel-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          showPanel(tab.dataset.tab);
+        });
+      });
+      
+      // 发送按钮
+      const sendBtn = document.getElementById('sendBtn');
+      const chatInput = document.getElementById('chatInput');
+      
+      sendBtn.addEventListener('click', () => {
+        const question = chatInput.value.trim();
+        if (question) {
+          handleQuestion(question);
+          chatInput.value = '';
+        }
+      });
+      
+      // 输入框回车发送
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          const question = chatInput.value.trim();
+          if (question) {
+            handleQuestion(question);
+            chatInput.value = '';
+          }
+        }
+      });
+      
+      // 自动调整输入框高度
+      chatInput.addEventListener('input', () => {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+      });
+      
+      // 行动按钮事件代理
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.action-btn')) {
+          const btn = e.target.closest('.action-btn');
+          if (btn.classList.contains('primary')) {
+            alert('报告生成中，请稍候...');
+          } else if (btn.classList.contains('secondary')) {
+            const lastQuestion = document.querySelector('.user-message:last-child .user-message-bubble');
+            if (lastQuestion) {
+              handleQuestion(lastQuestion.textContent);
+            }
+          }
+        }
+      });
+      
+      // 渠道选择器点击
+      document.getElementById('providerSelector').addEventListener('click', openProviderModal);
+      
+      // 关闭渠道弹窗
+      document.getElementById('closeProviderModal').addEventListener('click', closeProviderModal);
+      
+      // 点击弹窗背景关闭
+      document.getElementById('providerModal').addEventListener('click', (e) => {
+        if (e.target.id === 'providerModal') {
+          closeProviderModal();
+        }
+      });
+      
+      // ESC键关闭弹窗
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeProviderModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

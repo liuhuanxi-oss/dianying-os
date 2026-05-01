@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - 平台管理后台</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <!-- 管理后台主容器 -->
+  <div class="admin-container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <img src="assets/logo.svg" alt="店赢OS">
+          <span class="sidebar-title">平台管理</span>
+        </a>
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-back-link">
+        <a href="index.html" class="back-link">
+          <i data-lucide="arrow-left"></i>
+          <span>返回商家端</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- 侧边栏菜单将由JS动态生成 -->
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="admin-user">
+          <div class="admin-avatar">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div class="admin-info">
+            <span class="admin-name">超级管理员</span>
+            <span class="admin-role">平台运营中心</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 顶部导航 -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item">首页</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="搜索功能..." id="globalSearch">
+          </div>
+          <button class="topbar-btn" title="消息">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="topbar-btn" title="帮助">
+            <i data-lucide="help-circle"></i>
+          </button>
+        </div>
+      </header>
+      
+      <!-- 内容区域 -->
+      <div class="content-area" id="contentArea">
+        <!-- 动态加载的页面内容 -->
+      </div>
+    </main>
+  </div>
+  
+  <!-- 通用弹窗容器 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container" id="modalContainer">
+      <!-- 动态加载的弹窗内容 -->
+    </div>
+  </div>
+  
+  <!-- Toast通知容器 -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <!-- 确认弹窗 -->
+  <div class="confirm-dialog" id="confirmDialog">
+    <div class="confirm-content">
+      <div class="confirm-icon">
+        <i data-lucide="alert-triangle"></i>
+      </div>
+      <h3 class="confirm-title" id="confirmTitle">确认操作</h3>
+      <p class="confirm-message" id="confirmMessage">确定要执行此操作吗？</p>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="confirmCancel">取消</button>
+        <button class="btn-danger" id="confirmOk">确定</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/admin.js"></script>
+</body>
+</html>

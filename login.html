@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 店赢OS</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-card">
+      <!-- 左侧品牌展示区 -->
+      <div class="login-brand">
+        <div class="brand-logo">
+          <img src="assets/logo.svg" alt="店赢OS">
+        </div>
+        <h1 class="brand-title">
+          <span>店赢OS</span>
+        </h1>
+        <p class="brand-slogan">
+          AI透视门店运营<br>
+          驱动流量·星级·营收全面增长
+        </p>
+        
+        <div class="brand-features">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i data-lucide="brain"></i>
+            </div>
+            <span>智能数据分析</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i data-lucide="star"></i>
+            </div>
+            <span>星级提升方案</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i data-lucide="trending-up"></i>
+            </div>
+            <span>营收增长引擎</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右侧登录表单 -->
+      <div class="login-form-panel">
+        <div class="form-header">
+          <h2 class="form-title">欢迎回来</h2>
+          <p class="form-subtitle">登录到店赢OS管理后台</p>
+        </div>
+        
+        <!-- 错误提示容器 -->
+        <div id="errorContainer"></div>
+        
+        <!-- 登录表单 -->
+        <form id="loginForm" autocomplete="off">
+          <div class="form-group">
+            <label class="form-label">用户名</label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="username" 
+                class="form-input" 
+                placeholder="请输入用户名"
+                autocomplete="username"
+                required
+              >
+              <i data-lucide="user"></i>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="password" 
+                class="form-input" 
+                placeholder="请输入密码"
+                autocomplete="current-password"
+                required
+              >
+              <i data-lucide="lock"></i>
+              <button type="button" class="password-toggle" id="passwordToggle" aria-label="切换密码可见性">
+                <i data-lucide="eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-login">
+            登 录
+          </button>
+        </form>
+        
+        <div class="form-divider">
+          <span>或者</span>
+        </div>
+        
+        <!-- 快速角色体验 -->
+        <div class="quick-roles">
+          <p class="quick-roles-label">快速体验（演示环境）</p>
+          <div class="role-buttons">
+            <button class="role-btn admin" data-role="admin" type="button">
+              <div class="role-icon">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <div class="role-name">平台管理员</div>
+              <div class="role-desc">全部54个功能</div>
+            </button>
+            
+            <button class="role-btn operator" data-role="operator" type="button">
+              <div class="role-icon">
+                <i data-lucide="map-pin"></i>
+              </div>
+              <div class="role-name">区域运营</div>
+              <div class="role-desc">约35个功能</div>
+            </button>
+            
+            <button class="role-btn owner" data-role="owner" type="button">
+              <div class="role-icon">
+                <i data-lucide="store"></i>
+              </div>
+              <div class="role-name">门店老板</div>
+              <div class="role-desc">约15个功能</div>
+            </button>
+          </div>
+        </div>
+        
+        <div class="login-footer">
+          <p>演示账号：admin / operator / owner</p>
+          <p style="margin-top: 4px;">密码随意填写或使用快速体验</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 引入认证模块 -->
+  <script src="js/auth.js"></script>
+  
+  <script>
+    // 初始化Lucide图标
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      
+      // 自动聚焦用户名输入框
+      const usernameInput = document.getElementById('username');
+      if (usernameInput) {
+        setTimeout(() => usernameInput.focus(), 300);
+      }
+    });
+  </script>
+</body>
+</html>

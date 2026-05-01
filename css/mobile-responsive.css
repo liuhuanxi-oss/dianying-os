@@ -1,0 +1,1320 @@
+/**
+ * 店赢OS - 全端响应式适配
+ * 断点规范：
+ * - PC端: > 1024px
+ * - 平板端: 769px - 1024px (iPad/iPad Pro)
+ * - 手机端: ≤ 768px (iPhone/Android)
+ *   - 小屏: ≤ 375px
+ *   - 大屏: > 375px
+ */
+
+/* ============================================
+   Base Mobile Reset
+   ============================================ */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 防止横向溢出 */
+  body,
+  .admin-container,
+  .main-content,
+  .content-area {
+    overflow-x: hidden;
+  }
+}
+
+/* ============================================
+   Mobile Menu Button
+   ============================================ */
+.mobile-menu-toggle {
+  display: none !important;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:active {
+  background: var(--bg-card);
+}
+
+.mobile-menu-toggle i {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   Mobile Sidebar Overlay
+   ============================================ */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.mobile-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ============================================
+   Mobile Sidebar
+   ============================================ */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .sidebar.collapsed {
+    width: 280px;
+    max-width: 85vw;
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.collapsed.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-header {
+    padding: 16px;
+  }
+  
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .nav-item {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .nav-section-title {
+    padding: 8px 16px;
+    font-size: 0.65rem;
+  }
+}
+
+/* ============================================
+   Mobile Main Content
+   ============================================ */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0 !important;
+    padding-bottom: 80px;
+  }
+  
+  .topbar {
+    padding: 0 16px;
+    height: 56px;
+  }
+  
+  .topbar-left {
+    gap: 12px;
+  }
+  
+  .topbar-right {
+    gap: 8px;
+  }
+  
+  .topbar-search {
+    display: none !important;
+  }
+  
+  .topbar-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .breadcrumb {
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+  
+  .breadcrumb-separator {
+    font-size: 0.7rem;
+  }
+  
+  .content-area {
+    padding: 16px;
+  }
+}
+
+/* ============================================
+   Mobile Bottom Navigation
+   ============================================ */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-sidebar);
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: block;
+  }
+}
+
+.mobile-bottom-nav-items {
+  display: flex;
+  justify-content: space-around;
+}
+
+.mobile-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  min-width: 60px;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  border: none;
+  background: transparent;
+}
+
+.mobile-bottom-nav-item.active {
+  color: var(--primary-light);
+}
+
+.mobile-bottom-nav-item i {
+  width: 22px;
+  height: 22px;
+}
+
+/* ============================================
+   Mobile Page Header
+   ============================================ */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .page-title {
+    font-size: 1.25rem;
+  }
+  
+  .page-subtitle {
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+  
+  .page-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .page-actions .btn {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Stats Cards - 2 Column Grid
+   ============================================ */
+@media (max-width: 768px) {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-label {
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .stat-change {
+    font-size: 0.65rem;
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-label {
+    font-size: 0.65rem;
+  }
+  
+  .stat-value {
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================
+   Mobile Charts - Full Width, Reduced Height
+   ============================================ */
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  .chart-container {
+    width: 100% !important;
+    height: 200px !important;
+    min-height: 180px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .card-header {
+    margin-bottom: 12px;
+  }
+  
+  .card-title {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-container {
+    height: 180px !important;
+    min-height: 160px;
+  }
+}
+
+/* ============================================
+   Mobile Tables - Horizontal Scroll
+   ============================================ */
+@media (max-width: 768px) {
+  .table-wrapper,
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  
+  .table {
+    min-width: 700px;
+    font-size: 0.8rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 10px 8px;
+    white-space: nowrap;
+  }
+  
+  .table th {
+    font-size: 0.7rem;
+    position: sticky;
+    top: 0;
+    background: var(--bg-card);
+    z-index: 1;
+  }
+  
+  /* 隐藏不重要的列 */
+  .table .hide-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    min-width: 600px;
+    font-size: 0.75rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px 6px;
+  }
+}
+
+/* ============================================
+   Mobile Grid Layouts
+   ============================================ */
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ============================================
+   Mobile Filter Bar
+   ============================================ */
+@media (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+    margin: 0 -16px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .filter-group {
+    flex-wrap: wrap;
+  }
+  
+  .filter-label {
+    width: 100%;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+  
+  .filter-select {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .filter-actions {
+    margin-left: 0;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .filter-actions .btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================
+   Mobile Forms - Full Width
+   ============================================ */
+@media (max-width: 768px) {
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Modal / Dialog
+   ============================================ */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+  
+  .modal-container {
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0;
+    animation: slideUp 0.3s ease;
+  }
+  
+  .modal-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .modal-title {
+    font-size: 1rem;
+  }
+  
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .modal-body {
+    padding: 16px;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+  }
+  
+  .modal-footer {
+    padding: 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Mobile Global Search (Ctrl+K)
+   ============================================ */
+@media (max-width: 768px) {
+  .global-search-modal {
+    padding: 0;
+    align-items: stretch;
+  }
+  
+  .global-search-modal.active {
+    display: flex;
+  }
+  
+  .global-search-container {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .global-search-input-wrapper {
+    padding: 16px;
+  }
+  
+  .global-search-input {
+    font-size: 1rem;
+    padding: 12px 0;
+  }
+  
+  .global-search-hint {
+    display: none;
+  }
+  
+  .global-search-results {
+    flex: 1;
+    overflow-y: auto;
+    max-height: none;
+  }
+  
+  .global-search-section {
+    padding: 12px 16px 8px;
+    font-size: 0.65rem;
+  }
+  
+  .global-search-item {
+    padding: 12px 16px;
+  }
+  
+  .global-search-item-title {
+    font-size: 0.9rem;
+  }
+  
+  .global-search-item-path {
+    font-size: 0.75rem;
+  }
+  
+  .global-search-footer {
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Pagination
+   ============================================ */
+@media (max-width: 768px) {
+  .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .pagination-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+  
+  .pagination-info {
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+}
+
+/* ============================================
+   Mobile Cards - Enhanced Touch
+   ============================================ */
+@media (max-width: 768px) {
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .card-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .card-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Buttons - Touch Friendly
+   ============================================ */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    border-radius: 8px;
+  }
+  
+  .btn-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .btn-sm {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .btn-lg {
+    min-height: 52px;
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+  
+  /* 全宽按钮 */
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Status Badges & Tags
+   ============================================ */
+@media (max-width: 768px) {
+  .status-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+  
+  .tag {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+  
+  .level-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+  
+  .permission-tag {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+  }
+}
+
+/* ============================================
+   Mobile Toast Notifications
+   ============================================ */
+@media (max-width: 768px) {
+  .toast-container {
+    top: auto;
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+  }
+  
+  .toast {
+    width: 100%;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+}
+
+/* ============================================
+   Mobile Empty States
+   ============================================ */
+@media (max-width: 768px) {
+  .empty-state {
+    padding: 40px 20px;
+  }
+  
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+  
+  .empty-state-title {
+    font-size: 1rem;
+  }
+  
+  .empty-state-description {
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================
+   Mobile Confirm Dialog
+   ============================================ */
+@media (max-width: 768px) {
+  .confirm-dialog {
+    width: calc(100% - 32px);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .confirm-content {
+    padding: 24px;
+  }
+  
+  .confirm-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  
+  .confirm-title {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .confirm-message {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  .confirm-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .confirm-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   Mobile Dropdown
+   ============================================ */
+@media (max-width: 768px) {
+  .dropdown-menu {
+    position: fixed;
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    border-radius: 12px;
+    padding: 8px;
+  }
+  
+  .dropdown-item {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+}
+
+/* ============================================
+   Mobile Progress Bars
+   ============================================ */
+@media (max-width: 768px) {
+  .progress-bar {
+    height: 6px;
+    border-radius: 3px;
+  }
+  
+  .progress-label {
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+}
+
+/* ============================================
+   Mobile Timeline
+   ============================================ */
+@media (max-width: 768px) {
+  .timeline {
+    padding-left: 24px;
+  }
+  
+  .timeline::before {
+    left: 4px;
+  }
+  
+  .timeline-dot {
+    left: -20px;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .timeline-content {
+    padding: 12px;
+  }
+  
+  .timeline-title {
+    font-size: 0.85rem;
+  }
+  
+  .timeline-description {
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================
+   Mobile Price Cards
+   ============================================ */
+@media (max-width: 768px) {
+  .price-card {
+    padding: 24px 16px;
+  }
+  
+  .price-amount {
+    font-size: 2rem;
+  }
+  
+  .price-features li {
+    font-size: 0.8rem;
+    padding: 6px 0;
+  }
+  
+  .pricing-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .pricing-grid .price-card {
+    min-width: 280px;
+    scroll-snap-align: center;
+  }
+}
+
+/* ============================================
+   Mobile Matrix Table
+   ============================================ */
+@media (max-width: 768px) {
+  .matrix-table {
+    font-size: 0.75rem;
+  }
+  
+  .matrix-table th,
+  .matrix-table td {
+    padding: 8px 6px;
+  }
+  
+  .matrix-checkbox {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ============================================
+   Mobile Search Input (Sidebar)
+   ============================================ */
+@media (max-width: 768px) {
+  .sidebar-search {
+    padding: 12px;
+  }
+  
+  .sidebar-search-input {
+    padding: 10px 12px 10px 36px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================
+   Mobile Admin User (Sidebar Footer)
+   ============================================ */
+@media (max-width: 768px) {
+  .admin-user {
+    padding: 10px;
+  }
+  
+  .admin-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  
+  .admin-name {
+    font-size: 0.85rem;
+  }
+  
+  .admin-role {
+    font-size: 0.7rem;
+  }
+}
+
+/* ============================================
+   Utility Classes for Mobile
+   ============================================ */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .show-mobile {
+    display: block !important;
+  }
+  
+  .text-center-mobile {
+    text-align: center;
+  }
+  
+  .w-full-mobile {
+    width: 100%;
+  }
+  
+  .mb-0-mobile {
+    margin-bottom: 0;
+  }
+}
+
+/* ============================================
+   Fix for input focus on mobile
+   ============================================ */
+@media (max-width: 768px) {
+  input:focus,
+  select:focus,
+  textarea:focus {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* 确保 fixed 定位元素不会被键盘遮挡 */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .main-content {
+    padding-top: 56px;
+  }
+}
+
+/* ============================================
+   Landscape mode on mobile
+   ============================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    padding: 80px 24px 40px;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ============================================
+   Tablet Responsive (769px - 1024px)
+   ============================================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Sidebar Adjustments */
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar-logo h2 {
+    font-size: 1.1rem;
+  }
+
+  .nav-item {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .nav-item i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-group-title {
+    font-size: 0.7rem;
+    padding: 8px 14px;
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-left: 200px;
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  /* Stats Grid - 3 columns */
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  /* Charts Grid */
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .chart-card {
+    padding: 16px;
+  }
+
+  .chart-container {
+    height: 280px;
+  }
+
+  /* Data Tables */
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .filter-group {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 180px;
+  }
+
+  /* Forms */
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+  }
+
+  .card-header {
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  /* Tabs */
+  .tabs-nav {
+    gap: 20px;
+  }
+
+  .tab-item {
+    padding: 10px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Modals */
+  .modal-content {
+    width: calc(100% - 80px);
+    max-width: 650px;
+    max-height: calc(100vh - 100px);
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    padding: 16px 20px;
+  }
+
+  /* Global Search */
+  .global-search-modal {
+    width: calc(100% - 80px);
+    max-width: 600px;
+    top: 12%;
+  }
+
+  .search-results {
+    max-height: 350px;
+  }
+
+  /* Pagination */
+  .pagination {
+    gap: 6px;
+  }
+
+  .page-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    min-height: 38px;
+  }
+
+  .btn-lg {
+    min-height: 46px;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+
+  /* Badges & Tags */
+  .status-badge,
+  .tag,
+  .level-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  /* Bottom Navigation - Hidden on tablet */
+  .bottom-nav {
+    display: none !important;
+  }
+
+  /* Utility Classes for Tablet */
+  .hide-tablet {
+    display: none !important;
+  }
+
+  .show-tablet {
+    display: block !important;
+  }
+
+  /* Toast Position */
+  .toast-container {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  /* Confirm Dialog */
+  .confirm-dialog {
+    width: calc(100% - 80px);
+    max-width: 400px;
+  }
+
+  /* Dropdown Menu */
+  .dropdown-menu {
+    max-width: 240px;
+  }
+
+  /* Timeline */
+  .timeline {
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    left: 6px;
+  }
+
+  .timeline-dot {
+    left: -24px;
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Pricing Grid - 2 columns on tablet */
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  /* Matrix Table */
+  .matrix-table th,
+  .matrix-table td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  /* Sidebar Search */
+  .sidebar-search {
+    padding: 14px;
+  }
+
+  .sidebar-search-input {
+    padding: 9px 12px 9px 34px;
+    font-size: 0.85rem;
+  }
+
+  /* Admin User Footer */
+  .admin-user {
+    padding: 12px 14px;
+  }
+
+  .admin-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 0.9rem;
+  }
+
+  .admin-name {
+    font-size: 0.9rem;
+  }
+
+  .admin-role {
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,2 @@
+[console_scripts]
+dyos-platform = dyos_platforms.cli:main

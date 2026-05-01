@@ -1,0 +1,68 @@
+name: ✨ 功能建议
+description: 提出新功能或改进建议
+title: '[FEATURE] '
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ 功能建议
+
+        感谢您提出建议！请详细描述您的需求，帮助我们更好地理解您的场景。
+        
+        **💡 如果这是一个核心功能，请先在Discussion中讨论。**
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 需求描述
+      description: 请简要描述您希望添加的功能
+      placeholder: 例如：添加一个...功能，可以帮助用户...
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: 🎯 使用场景
+      description: 这个功能在什么场景下会用到？
+      placeholder: |
+        作为一名[角色]，我希望[功能]，以便[收益]。
+        例如：作为一个运营人员，我希望看到数据统计面板，以便了解Bot使用情况。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 💡 期望效果
+      description: 您期望这个功能实现后是什么样子？
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 替代方案
+      description: 您考虑过其他实现方式吗？（可选）
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 📎 额外信息
+      description: 参考链接、示意图等（可选）
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 📜 确认
+      options:
+        - label: 我确认这是一个新功能请求，不是bug报告
+          required: true
+        - label: 我愿意参与功能设计讨论
+          required: false

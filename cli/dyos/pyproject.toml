@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools-scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dyos"
+version = "1.0.0"
+description = "店赢OS CLI - AI门店运营SaaS平台管理工具"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "店赢OS团队", email = "support@dianying-os.com"}
+]
+keywords = ["店赢OS", "dianying", "CLI", "SaaS", "门店运营"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.28.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+]
+
+[project.scripts]
+dyos = "dyos.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/liuhuanxi-oss/dianying-os"
+Documentation = "https://github.com/liuhuanxi-oss/dianying-os#readme"
+Repository = "https://github.com/liuhuanxi-oss/dianying-os"
+Issues = "https://github.com/liuhuanxi-oss/dianying-os/issues"
+
+[tool.setuptools]
+packages = ["dyos", "dyos.core", "dyos.utils"]
+
+[tool.setuptools.package-data]
+dyos = ["pyproject.toml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
