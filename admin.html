@@ -12,6 +12,93 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <link rel="stylesheet" href="css/admin.css">
+  <style>
+    /* Toast动画样式 */
+    .toast-container {position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;}
+    .toast {display: flex; align-items: center; gap: 10px; padding: 12px 20px; background: #141420; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); color: #fff; font-size: 14px; opacity: 0; transform: translateX(100%); transition: all 0.3s ease;}
+    .toast.show {opacity: 1; transform: translateX(0);}
+    .toast-success {border-left: 4px solid #10b981;}
+    .toast-error {border-left: 4px solid #ef4444;}
+    .toast-info {border-left: 4px solid #5e6ad2;}
+    .toast i {width: 20px; height: 20px;}
+    .toast-success i {color: #10b981;}
+    .toast-error i {color: #ef4444;}
+    .toast-info i {color: #5e6ad2;}
+    
+    /* Loading样式 */
+    .loading-container {display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; color: #888;}
+    .loading-spinner {width: 40px; height: 40px; border: 3px solid #333; border-top-color: #5e6ad2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;}
+    @keyframes spin {to {transform: rotate(360deg);}}
+    
+    /* 分页样式 */
+    .pagination {display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px;}
+    .pagination-btn {padding: 8px 16px; background: #1a1a28; border: 1px solid #333; border-radius: 6px; color: #fff; cursor: pointer; transition: all 0.2s;}
+    .pagination-btn:hover:not(:disabled) {background: #2a2a40; border-color: #5e6ad2;}
+    .pagination-btn.active {background: #5e6ad2; border-color: #5e6ad2;}
+    .pagination-btn:disabled {opacity: 0.5; cursor: not-allowed;}
+    .pagination-ellipsis {color: #666; padding: 0 8px;}
+    
+    /* 确认弹窗增强 */
+    .confirm-dialog {display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9998; align-items: center; justify-content: center;}
+    .confirm-dialog.show {display: flex;}
+    .confirm-content {background: #141420; border-radius: 12px; padding: 24px; max-width: 400px; width: 90%; text-align: center;}
+    .confirm-icon {width: 48px; height: 48px; margin: 0 auto 16px; color: #f59e0b;}
+    .confirm-title {font-size: 18px; font-weight: 600; margin-bottom: 8px;}
+    .confirm-message {color: #888; margin-bottom: 24px;}
+    .confirm-actions {display: flex; gap: 12px; justify-content: center;}
+    .btn {padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s;}
+    .btn-primary {background: #5e6ad2; color: #fff;}
+    .btn-primary:hover {background: #4a57b8;}
+    .btn-secondary {background: #333; color: #fff;}
+    .btn-secondary:hover {background: #444;}
+    .btn-danger {background: #dc2626; color: #fff;}
+    .btn-danger:hover {background: #b91c1c;}
+    .btn-ghost {background: transparent; color: #888; padding: 6px;}
+    .btn-ghost:hover {color: #fff;}
+    .btn-ghost.text-danger:hover {color: #ef4444;}
+    .btn-sm {padding: 6px 12px; font-size: 12px;}
+    .btn i {width: 16px; height: 16px;}
+    .btn-sm i {width: 14px; height: 14px;}
+    
+    /* 弹窗增强 */
+    .modal-container {max-height: 90vh; overflow-y: auto;}
+    .modal-header {display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #333;}
+    .modal-title {font-size: 18px; font-weight: 600;}
+    .modal-close {background: none; border: none; color: #888; cursor: pointer; padding: 4px;}
+    .modal-close:hover {color: #fff;}
+    .modal-body {padding: 24px;}
+    .modal-footer {display: flex; justify-content: flex-end; gap: 12px; padding: 20px 24px; border-top: 1px solid #333;}
+    
+    /* 表单样式 */
+    .form-group {margin-bottom: 16px;}
+    .form-label {display: block; margin-bottom: 6px; font-size: 14px; color: #888;}
+    .form-input, .form-select {width: 100%; padding: 10px 12px; background: #0a0a0f; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;}
+    .form-input:focus, .form-select:focus {outline: none; border-color: #5e6ad2;}
+    .form-input::placeholder {color: #555;}
+    
+    /* 详情页样式 */
+    .detail-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;}
+    .detail-item {display: flex; flex-direction: column; gap: 4px;}
+    .detail-label {font-size: 12px; color: #888;}
+    .detail-value {font-size: 14px;}
+    
+    /* API状态指示器 */
+    .api-status {position: fixed; bottom: 20px; right: 20px; padding: 6px 12px; background: #1a1a28; border-radius: 20px; font-size: 12px; display: flex; align-items: center; gap: 6px; z-index: 100;}
+    .api-status-dot {width: 8px; height: 8px; border-radius: 50%;}
+    .api-status-dot.mock {background: #f59e0b;}
+    .api-status-dot.connected {background: #10b981;}
+    .api-status-dot.connecting {background: #3b82f6; animation: pulse 1.5s infinite;}
+    @keyframes pulse {0%, 100% {opacity: 1;} 50% {opacity: 0.5;}}
+    
+    /* Badge样式 */
+    .badge {display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;}
+    .badge-success {background: rgba(16, 185, 129, 0.2); color: #10b981;}
+    .badge-warning {background: rgba(245, 158, 11, 0.2); color: #f59e0b;}
+    .badge-danger {background: rgba(239, 68, 68, 0.2); color: #ef4444;}
+    .badge-gray {background: rgba(156, 163, 175, 0.2); color: #9ca3af;}
+    .badge-primary {background: rgba(94, 106, 210, 0.2); color: #5e6ad2;}
+    .badge-info {background: rgba(59, 130, 246, 0.2); color: #3b82f6;}
+  </style>
 </head>
 <body>
   <!-- 管理后台主容器 -->
@@ -86,6 +173,12 @@
     </main>
   </div>
   
+  <!-- API状态指示器 -->
+  <div class="api-status" id="apiStatus">
+    <span class="api-status-dot mock"></span>
+    <span id="apiStatusText">Mock数据模式</span>
+  </div>
+  
   <!-- 通用弹窗容器 -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal-container" id="modalContainer">
@@ -111,6 +204,8 @@
     </div>
   </div>
   
+  <!-- 脚本顺序重要: admin-api.js 必须在 admin.js 之前加载 -->
+  <script src="js/admin-api.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

@@ -3889,9 +3889,93 @@ function renderNotificationsPage(container) {
 }
 
 // ============================================
+// UI工具函数
+// ============================================
+const UI = {
+  // 显示loading
+  showLoading(container) {
+    if (container) {
+      container.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>加载中...</p></div>';
+    }
+  },
+  
+  // Toast提示
+  toast(message, type = 'info') {
+    const container = document.getElementById('toastContainer') || document.body;
+    const icons = {success: 'check-circle', error: 'x-circle', info: 'info'};
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.innerHTML = '<i data-lucide="' + icons[type] + '"></i><span>' + message + '</span>';
+    container.appendChild(toast);
+    lucide.createIcons({nodes: [toast.querySelector('i')]});
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  },
+  
+  success(message) { this.toast(message, 'success'); },
+  error(message) { this.toast(message, 'error'); },
+  info(message) { this.toast(message, 'info'); },
+  
+  // 确认对话框
+  confirm(title, message) {
+    return new Promise((resolve) => {
+      const dialog = document.getElementById('confirmDialog');
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      dialog.classList.add('show');
+      
+      const cleanup = () => {
+        dialog.classList.remove('show');
+        document.getElementById('confirmOk').removeEventListener('click', onOk);
+        document.getElementById('confirmCancel').removeEventListener('click', onCancel);
+      };
+      const onOk = () => { cleanup(); resolve(true); };
+      const onCancel = () => { cleanup(); resolve(false); };
+      document.getElementById('confirmOk').addEventListener('click', onOk);
+      document.getElementById('confirmCancel').addEventListener('click', onCancel);
+    });
+  }
+};
+window.UI = UI;
+
+// ============================================
+// API状态管理
+// ============================================
+async function initAPI() {
+  const statusDot = document.querySelector('.api-status-dot');
+  const statusText = document.getElementById('apiStatusText');
+  
+  if (statusDot) statusDot.className = 'api-status-dot connecting';
+  if (statusText) statusText.textContent = '检测API...';
+  
+  try {
+    const response = await fetch('/api/', {method: 'GET', signal: AbortSignal.timeout(3000)});
+    if (response.ok) {
+      App.useAPI = true;
+      App.APIReady = true;
+      if (statusDot) statusDot.className = 'api-status-dot connected';
+      if (statusText) statusText.textContent = 'API已连接';
+      console.log('店赢OS: 已连接FastAPI后端');
+    } else {
+      throw new Error('API响应异常');
+    }
+  } catch (e) {
+    App.useAPI = false;
+    App.APIReady = false;
+    if (statusDot) statusDot.className = 'api-status-dot mock';
+    if (statusText) statusText.textContent = 'Mock数据模式';
+    console.log('店赢OS: API不可用，使用Mock数据');
+  }
+}
+
+// ============================================
 // 初始化
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // 初始化Lucide图标
   lucide.createIcons();
   
@@ -3909,6 +3993,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('mobileMenuToggle')?.addEventListener('click', function() {
     document.getElementById('sidebar').classList.toggle('mobile-open');
   });
+  
+  // 异步检测API可用性
+  initAPI();
   
   // 加载默认页面
   navigateTo('overview');
