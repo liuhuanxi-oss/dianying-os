@@ -12,6 +12,341 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <link rel="stylesheet" href="css/admin.css">
+  <style>
+    /* Global Search Modal (Ctrl+K) */
+    .global-search-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 100px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+    
+    .global-search-modal.active {
+      display: flex;
+    }
+    
+    .global-search-container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .global-search-input-wrapper {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .global-search-input-wrapper i {
+      color: var(--text-muted);
+      margin-right: 12px;
+    }
+    
+    .global-search-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+    
+    .global-search-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .global-search-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    
+    .global-search-results {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .global-search-section {
+      padding: 12px 20px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .global-search-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    
+    .global-search-item:hover,
+    .global-search-item.selected {
+      background: var(--bg-card-hover);
+    }
+    
+    .global-search-item i {
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+    }
+    
+    .global-search-item-content {
+      flex: 1;
+    }
+    
+    .global-search-item-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .global-search-item-path {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .global-search-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .global-search-footer kbd {
+      padding: 2px 6px;
+      background: var(--bg);
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    
+    /* Sidebar Search */
+    .sidebar-search {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .sidebar-search-input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    
+    .sidebar-search-input:focus {
+      border-color: var(--primary);
+    }
+    
+    .sidebar-search-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .sidebar-search-wrapper {
+      position: relative;
+    }
+    
+    .sidebar-search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* Mobile Bottom Nav */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border);
+      padding: 8px 0;
+      z-index: 100;
+    }
+    
+    .mobile-bottom-nav-items {
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    .mobile-bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .mobile-bottom-nav-item.active {
+      color: var(--primary-light);
+    }
+    
+    .mobile-bottom-nav-item i {
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* Mobile Overlay */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 99;
+    }
+    
+    .mobile-overlay.active {
+      display: block;
+    }
+    
+    /* Page Transition */
+    .page-content {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Stat Card Animation */
+    .stat-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .stat-value {
+      transition: all 0.3s;
+    }
+    
+    /* Sortable Table Headers */
+    .table th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .table th.sortable:hover {
+      color: var(--primary-light);
+    }
+    
+    .table th.sortable .sort-icon {
+      display: inline-block;
+      margin-left: 4px;
+      opacity: 0.5;
+    }
+    
+    .table th.sortable.asc .sort-icon,
+    .table th.sortable.desc .sort-icon {
+      opacity: 1;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding-bottom: 80px;
+      }
+      
+      .mobile-menu-toggle {
+        display: flex !important;
+      }
+      
+      .mobile-bottom-nav {
+        display: block;
+      }
+      
+      .topbar-search {
+        display: none;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      
+      .charts-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .table-container {
+        overflow-x: auto;
+      }
+      
+      .table {
+        min-width: 800px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .topbar {
+        padding: 0 16px;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .page-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- 管理后台主容器 -->
@@ -28,10 +363,18 @@
         </button>
       </div>
       
+      <!-- Sidebar Search -->
+      <div class="sidebar-search">
+        <div class="sidebar-search-wrapper">
+          <i data-lucide="search"></i>
+          <input type="text" class="sidebar-search-input" placeholder="搜索功能..." id="sidebarSearch">
+        </div>
+      </div>
+      
       <div class="sidebar-back-link">
         <a href="index.html" class="back-link">
           <i data-lucide="arrow-left"></i>
-          <span>返回商家端</span>
+          <span>返回落地页</span>
         </a>
       </div>
       
@@ -52,6 +395,9 @@
       </div>
     </aside>
     
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
     <!-- 主内容区 -->
     <main class="main-content">
       <!-- 顶部导航 -->
@@ -65,9 +411,13 @@
           </div>
         </div>
         <div class="topbar-right">
-          <div class="topbar-search">
+          <button class="topbar-search-btn" id="globalSearchBtn" title="全局搜索 (Ctrl+K)">
+            <i data-lucide="search"></i>
+          </button>
+          <div class="topbar-search" id="topbarSearchWrapper">
             <i data-lucide="search"></i>
             <input type="text" placeholder="搜索功能..." id="globalSearch">
+            <span class="search-hint">Ctrl+K</span>
           </div>
           <button class="topbar-btn" title="消息">
             <i data-lucide="bell"></i>
@@ -84,6 +434,82 @@
         <!-- 动态加载的页面内容 -->
       </div>
     </main>
+    
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="mobile-bottom-nav-items">
+        <div class="mobile-bottom-nav-item active" data-page="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>首页</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="merchants">
+          <i data-lucide="store"></i>
+          <span>商家</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="revenue">
+          <i data-lucide="wallet"></i>
+          <span>财务</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="settings">
+          <i data-lucide="settings"></i>
+          <span>设置</span>
+        </div>
+      </div>
+    </nav>
+  </div>
+  
+  <!-- Global Search Modal -->
+  <div class="global-search-modal" id="globalSearchModal">
+    <div class="global-search-container">
+      <div class="global-search-input-wrapper">
+        <i data-lucide="search"></i>
+        <input type="text" class="global-search-input" placeholder="搜索功能、商家、操作..." id="searchInput" autocomplete="off">
+        <span class="global-search-hint">ESC 关闭</span>
+      </div>
+      <div class="global-search-results" id="searchResults">
+        <div class="global-search-section">快速跳转</div>
+        <div class="global-search-item" data-page="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <div class="global-search-item-content">
+            <div class="global-search-item-title">平台总览</div>
+            <div class="global-search-item-path">首页 / 数据洞察</div>
+          </div>
+        </div>
+        <div class="global-search-item" data-page="merchants">
+          <i data-lucide="store"></i>
+          <div class="global-search-item-content">
+            <div class="global-search-item-title">商家列表</div>
+            <div class="global-search-item-path">商家管理</div>
+          </div>
+        </div>
+        <div class="global-search-item" data-page="transactions">
+          <i data-lucide="repeat"></i>
+          <div class="global-search-item-content">
+            <div class="global-search-item-title">交易流水</div>
+            <div class="global-search-item-path">支付交易</div>
+          </div>
+        </div>
+        <div class="global-search-item" data-page="revenue">
+          <i data-lucide="pie-chart"></i>
+          <div class="global-search-item-content">
+            <div class="global-search-item-title">收入总览</div>
+            <div class="global-search-item-path">财务中心</div>
+          </div>
+        </div>
+        <div class="global-search-item" data-page="tickets">
+          <i data-lucide="ticket"></i>
+          <div class="global-search-item-content">
+            <div class="global-search-item-title">工单系统</div>
+            <div class="global-search-item-path">客服支持</div>
+          </div>
+        </div>
+      </div>
+      <div class="global-search-footer">
+        <span><kbd>↑↓</kbd> 选择</span>
+        <span><kbd>Enter</kbd> 跳转</span>
+        <span><kbd>ESC</kbd> 关闭</span>
+      </div>
+    </div>
   </div>
   
   <!-- 通用弹窗容器 -->
@@ -111,6 +537,7 @@
     </div>
   </div>
   
-  <script src="js/admin.js"></script>
+  <!-- Load admin core module first -->
+  <script src="js/modules/admin-core.js"></script>
 </body>
 </html>

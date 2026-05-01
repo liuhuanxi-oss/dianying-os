@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - CLI终端演示</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-terminal: #0d0d14;
+      --bg-card: #141420;
+      --primary: #5e6ad2;
+      --accent: #00b8cc;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --text: #ffffff;
+      --text-secondary: #a0a0b0;
+      --text-muted: #6b6b7b;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --yellow: #fbbf24;
+      --red: #f87171;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .back-btn:hover {
+      color: var(--text);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo img {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .logo span {
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: 40px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    
+    .page-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+    
+    /* Terminal Tabs */
+    .terminal-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .terminal-tab {
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .terminal-tab:hover {
+      border-color: rgba(255,255,255,0.1);
+      color: var(--text);
+    }
+    
+    .terminal-tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-color: transparent;
+    }
+    
+    .terminal-tab i {
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* Terminal Container */
+    .terminal-container {
+      background: var(--bg-terminal);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    
+    /* Terminal Header */
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .terminal-dots {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .terminal-dot.red { background: #ff5f56; }
+    .terminal-dot.yellow { background: #ffbd2e; }
+    .terminal-dot.green { background: #27ca40; }
+    
+    .terminal-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .terminal-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .terminal-action {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .terminal-action:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    
+    /* Terminal Body */
+    .terminal-body {
+      padding: 20px;
+      height: 500px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+    
+    .terminal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .terminal-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .terminal-body::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+    }
+    
+    /* Command Line */
+    .cmd-line {
+      margin-bottom: 8px;
+    }
+    
+    .cmd-prompt {
+      color: var(--green);
+    }
+    
+    .cmd-path {
+      color: var(--blue);
+    }
+    
+    .cmd-text {
+      color: var(--text);
+    }
+    
+    .cmd-text .highlight {
+      color: var(--yellow);
+    }
+    
+    /* Output */
+    .output {
+      padding: 12px 0 20px 0;
+      color: var(--text-secondary);
+    }
+    
+    .output-line {
+      margin-bottom: 4px;
+    }
+    
+    .output-line.success {
+      color: var(--success);
+    }
+    
+    .output-line.error {
+      color: var(--red);
+    }
+    
+    .output-line.info {
+      color: var(--blue);
+    }
+    
+    .output-line .label {
+      color: var(--text-muted);
+      margin-right: 8px;
+    }
+    
+    .output-line .value {
+      color: var(--text);
+    }
+    
+    .output-line .value.highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    /* JSON Output */
+    .json-output {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+    
+    .json-key {
+      color: var(--blue);
+    }
+    
+    .json-string {
+      color: var(--green);
+    }
+    
+    .json-number {
+      color: var(--yellow);
+    }
+    
+    .json-boolean {
+      color: var(--accent);
+    }
+    
+    /* Table Output */
+    .table-output {
+      margin: 12px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .table-header {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: rgba(94, 106, 210, 0.1);
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    
+    .table-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 16px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.85rem;
+    }
+    
+    .table-row:hover {
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .table-row .status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .table-row .status.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+    
+    .table-row .status.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    
+    /* Cursor Blink */
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--green);
+      margin-left: 4px;
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* Features Section */
+    .features {
+      margin-top: 60px;
+    }
+    
+    .features-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: white;
+    }
+    
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .terminal-body {
+        height: 400px;
+        font-size: 0.8rem;
+      }
+      
+      .table-header,
+      .table-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .table-header div:nth-child(n+3),
+      .table-row span:nth-child(n+3) {
+        display: none;
+      }
+      
+      .terminal-tabs {
+        flex-wrap: wrap;
+      }
+      
+      .terminal-tab {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        返回官网
+      </a>
+      <div class="logo">
+        <img src="assets/logo.svg" alt="店赢OS">
+        <span>店赢OS</span>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main">
+    <h1 class="page-title">CLI-Anything 终端</h1>
+    <p class="page-subtitle">体验店赢OS开发者友好的命令行工具，一行命令完成复杂操作</p>
+    
+    <!-- Terminal Tabs -->
+    <div class="terminal-tabs">
+      <button class="terminal-tab active" data-terminal="merchant">
+        <i data-lucide="store"></i>
+        dyos merchant
+      </button>
+      <button class="terminal-tab" data-terminal="payment">
+        <i data-lucide="credit-card"></i>
+        dyos-payment
+      </button>
+      <button class="terminal-tab" data-terminal="platform">
+        <i data-lucide="layers"></i>
+        dyos-platform
+      </button>
+    </div>
+    
+    <!-- Terminal -->
+    <div class="terminal-container">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+        </div>
+        <span class="terminal-title" id="terminalTitle">dyos merchant list</span>
+        <div class="terminal-actions">
+          <div class="terminal-action" title="Copy">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+          </div>
+        </div>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+    
+    <!-- Features -->
+    <div class="features">
+      <h2 class="features-title">核心功能</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="terminal"></i>
+          </div>
+          <h4 class="feature-title">商家管理</h4>
+          <p class="feature-desc">一键创建、更新、查询商家信息，支持批量操作</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="credit-card"></i>
+          </div>
+          <h4 class="feature-title">支付签约</h4>
+          <p class="feature-desc">自动化支付渠道签约流程，支持测试环境模拟</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="refresh-cw"></i>
+          </div>
+          <h4 class="feature-title">数据同步</h4>
+          <p class="feature-desc">跨平台数据实时同步，支持增量更新和全量拉取</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="bar-chart"></i>
+          </div>
+          <h4 class="feature-title">数据统计</h4>
+          <p class="feature-desc">导出各类经营数据报表，支持JSON/CSV格式</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
+    
+    // Terminal content for each command
+    const terminalContent = {
+      merchant: {
+        title: 'dyos merchant list --industry 餐饮 --json',
+        lines: [
+          {
+            cmd: true,
+            text: '<span class="cmd-prompt">$</span> <span class="cmd-text">dyos merchant list --industry 餐饮 --json</span>'
+          },
+          {
+            output: true,
+            type: 'progress',
+            text: '正在查询餐饮行业商家...'
+          },
+          {
+            output: true,
+            type: 'json',
+            text: `{
+  <span class="json-key">"total"</span>: <span class="json-number">5</span>,
+  <span class="json-key">"merchants"</span>: [
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"mer_001"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"北京湘菜馆"</span>,
+      <span class="json-key">"industry"</span>: <span class="json-string">"餐饮"</span>,
+      <span class="json-key">"status"</span>: <span class="json-boolean">true</span>,
+      <span class="json-key">"gmv"</span>: <span class="json-number">1285000</span>,
+      <span class="json-key">"rating"</span>: <span class="json-number">4.8</span>
+    },
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"mer_002"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"上海小笼包"</span>,
+      <span class="json-key">"industry"</span>: <span class="json-string">"餐饮"</span>,
+      <span class="json-key">"status"</span>: <span class="json-boolean">true</span>,
+      <span class="json-key">"gmv"</span>: <span class="json-number">856000</span>,
+      <span class="json-key">"rating"</span>: <span class="json-number">4.6</span>
+    },
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"mer_003"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"广州茶餐厅"</span>,
+      <span class="json-key">"industry"</span>: <span class="json-string">"餐饮"</span>,
+      <span class="json-key">"status"</span>: <span class="json-boolean">true</span>,
+      <span class="json-key">"gmv"</span>: <span class="json-number">320000</span>,
+      <span class="json-key">"rating"</span>: <span class="json-number">4.3</span>
+    },
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"mer_004"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"深圳火锅店"</span>,
+      <span class="json-key">"industry"</span>: <span class="json-string">"餐饮"</span>,
+      <span class="json-key">"status"</span>: <span class="json-boolean">true</span>,
+      <span class="json-key">"gmv"</span>: <span class="json-number">2150000</span>,
+      <span class="json-key">"rating"</span>: <span class="json-number">4.9</span>
+    },
+    {
+      <span class="json-key">"id"</span>: <span class="json-string">"mer_005"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"成都串串香"</span>,
+      <span class="json-key">"industry"</span>: <span class="json-string">"餐饮"</span>,
+      <span class="json-key">"status"</span>: <span class="json-boolean">true</span>,
+      <span class="json-key">"gmv"</span>: <span class="json-number">680000</span>,
+      <span class="json-key">"rating"</span>: <span class="json-number">4.5</span>
+    }
+  ]
+}`
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '✓ 查询成功，返回 5 条记录'
+          }
+        ]
+      },
+      payment: {
+        title: 'dyos-payment sign-test',
+        lines: [
+          {
+            cmd: true,
+            text: '<span class="cmd-prompt">$</span> <span class="cmd-text">dyos-payment sign-test</span>'
+          },
+          {
+            output: true,
+            type: 'progress',
+            text: '启动支付签约测试环境...'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '正在模拟微信支付签约流程...'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '正在模拟支付宝签约流程...'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '正在模拟银联支付签约流程...'
+          },
+          {
+            output: true,
+            type: 'table',
+            text: `<div class="table-output">
+  <div class="table-header">
+    <div>渠道</div>
+    <div>状态</div>
+    <div>响应时间</div>
+    <div>结果</div>
+  </div>
+  <div class="table-row">
+    <span>微信支付</span>
+    <span class="status active">已签约</span>
+    <span>128ms</span>
+    <span>success</span>
+  </div>
+  <div class="table-row">
+    <span>支付宝</span>
+    <span class="status active">已签约</span>
+    <span>95ms</span>
+    <span>success</span>
+  </div>
+  <div class="table-row">
+    <span>银联支付</span>
+    <span class="status pending">测试中</span>
+    <span>203ms</span>
+    <span>pending</span>
+  </div>
+</div>`
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '✓ 测试环境签约成功 (2/3)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '使用 --prod 参数切换到生产环境'
+          }
+        ]
+      },
+      platform: {
+        title: 'dyos-platform all shop-sync --from dyos',
+        lines: [
+          {
+            cmd: true,
+            text: '<span class="cmd-prompt">$</span> <span class="cmd-text">dyos-platform all shop-sync --from dyos</span>'
+          },
+          {
+            output: true,
+            type: 'progress',
+            text: '正在同步店铺数据...'
+          },
+          {
+            output: true,
+            type: 'progress-bar',
+            text: ''
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[1/8]</span> <span class="value">同步美团平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[1/8]</span> <span class="value highlight">美团</span> 同步完成 (156家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[2/8]</span> <span class="value">同步抖音平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[2/8]</span> <span class="value highlight">抖音</span> 同步完成 (89家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[3/8]</span> <span class="value">同步小红书平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[3/8]</span> <span class="value highlight">小红书</span> 同步完成 (234家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[4/8]</span> <span class="value">同步大众点评平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[4/8]</span> <span class="value highlight">大众点评</span> 同步完成 (178家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[5/8]</span> <span class="value">同步口碑平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[5/8]</span> <span class="value highlight">口碑</span> 同步完成 (45家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[6/8]</span> <span class="value">同步饿了么平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[6/8]</span> <span class="value highlight">饿了么</span> 同步完成 (67家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[7/8]</span> <span class="value">同步快手平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[7/8]</span> <span class="value highlight">快手</span> 同步完成 (23家)'
+          },
+          {
+            output: true,
+            type: 'info',
+            text: '<span class="label">[8/8]</span> <span class="value">同步视频号平台...</span>'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '<span class="label">[8/8]</span> <span class="value highlight">视频号</span> 同步完成 (12家)'
+          },
+          {
+            output: true,
+            type: 'success',
+            text: ''
+          },
+          {
+            output: true,
+            type: 'json',
+            text: `{
+  <span class="json-key">"status"</span>: <span class="json-string">"completed"</span>,
+  <span class="json-key">"total_shops"</span>: <span class="json-number">804</span>,
+  <span class="json-key">"synced"</span>: <span class="json-number">804</span>,
+  <span class="json-key">"failed"</span>: <span class="json-number">0</span>,
+  <span class="json-key">"duration"</span>: <span class="json-string">"2.3s"</span>
+}`
+          },
+          {
+            output: true,
+            type: 'success',
+            text: '✓ 全平台数据同步完成'
+          }
+        ]
+      }
+    };
+    
+    // Terminal tabs functionality
+    const tabs = document.querySelectorAll('.terminal-tab');
+    const terminalBody = document.getElementById('terminalBody');
+    const terminalTitle = document.getElementById('terminalTitle');
+    
+    let currentTerminal = 'merchant';
+    let typingIndex = 0;
+    let currentLineIndex = 0;
+    let isTyping = false;
+    
+    function renderTerminal(type) {
+      const content = terminalContent[type];
+      terminalTitle.textContent = content.title;
+      terminalBody.innerHTML = '';
+      typingIndex = 0;
+      currentLineIndex = 0;
+      
+      // Start typing animation
+      typeContent(content.lines);
+    }
+    
+    function typeContent(lines) {
+      if (currentLineIndex >= lines.length) {
+        // Add blinking cursor at the end
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        terminalBody.appendChild(cursor);
+        isTyping = false;
+        return;
+      }
+      
+      isTyping = true;
+      const line = lines[currentLineIndex];
+      
+      if (line.cmd) {
+        // Command line - type it out
+        const cmdLine = document.createElement('div');
+        cmdLine.className = 'cmd-line';
+        terminalBody.appendChild(cmdLine);
+        typeText(cmdLine, line.text, 0, () => {
+          currentLineIndex++;
+          setTimeout(() => typeContent(lines), 300);
+        });
+      } else if (line.output) {
+        // Output line
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        
+        if (line.type === 'progress-bar') {
+          const progressBar = document.createElement('div');
+          progressBar.className = 'progress-bar';
+          const fill = document.createElement('div');
+          fill.className = 'progress-fill';
+          fill.id = 'progressFill';
+          progressBar.appendChild(fill);
+          outputDiv.appendChild(progressBar);
+          terminalBody.appendChild(outputDiv);
+          
+          // Animate progress bar
+          let progress = 0;
+          const fillEl = document.getElementById('progressFill');
+          const interval = setInterval(() => {
+            progress += 5;
+            if (progress > 100) {
+              clearInterval(interval);
+              currentLineIndex++;
+              setTimeout(() => typeContent(lines), 200);
+            } else {
+              fillEl.style.width = progress + '%';
+            }
+          }, 50);
+        } else {
+          outputDiv.innerHTML = line.text;
+          terminalBody.appendChild(outputDiv);
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          currentLineIndex++;
+          setTimeout(() => typeContent(lines), line.type === 'info' ? 400 : 200);
+        }
+      }
+    }
+    
+    function typeText(element, text, index, callback) {
+      if (index < text.length) {
+        element.innerHTML = text.substring(0, index + 1);
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        setTimeout(() => typeText(element, text, index + 1, callback), 15);
+      } else {
+        callback();
+      }
+    }
+    
+    // Tab click handler
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentTerminal = tab.dataset.terminal;
+        renderTerminal(currentTerminal);
+      });
+    });
+    
+    // Initial render
+    renderTerminal('merchant');
+    
+    // Re-initialize icons
+    setTimeout(() => lucide.createIcons(), 100);
+  </script>
+</body>
+</html>
