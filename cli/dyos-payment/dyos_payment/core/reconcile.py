@@ -12,6 +12,21 @@ from ..client import TianqueClient, get_client
 class ReconcileAPI:
     """对账API"""
     
+    # API路径映射
+    API_PATHS = {
+        "download_file": "/reconcile/downloadFile",  # 对账文件获取
+    }
+    
+    # 账单类型映射
+    BILL_TYPES = {
+        "01": "码交易对账文件",
+        "02": "结算对账文件",
+        "03": "分账对账文件",
+        "04": "转账对账文件",
+        "05": "硬件交易对账文件",
+        "06": "微校对账文件",
+    }
+    
     def __init__(self, client: Optional[TianqueClient] = None):
         self.client = client or get_client()
     
@@ -45,9 +60,11 @@ class ReconcileAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/reconcile/downloadFile", req_data)
+        return self.client.post(self.API_PATHS["download_file"], req_data)
     
     def download_trade_bill(
         self,

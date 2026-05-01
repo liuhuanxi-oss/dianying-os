@@ -12,6 +12,12 @@ from ..client import TianqueClient, get_client
 class SettleAPI:
     """结算API"""
     
+    # API路径映射
+    API_PATHS = {
+        "settle_query": "/query/settleQuery",  # 结算查询
+        "settle_detail": "/query/settleDetailQuery",  # 结算明细查询
+    }
+    
     def __init__(self, client: Optional[TianqueClient] = None):
         self.client = client or get_client()
     
@@ -52,9 +58,11 @@ class SettleAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/query/settleQuery", req_data)
+        return self.client.post(self.API_PATHS["settle_query"], req_data)
     
     def query_by_merchant(
         self,
@@ -119,9 +127,11 @@ class SettleAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/query/settleDetailQuery", req_data)
+        return self.client.post(self.API_PATHS["settle_detail"], req_data)
 
 
 # 便捷函数

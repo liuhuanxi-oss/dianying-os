@@ -3,6 +3,8 @@
 """
 店赢OS天阙支付CLI工具 - 商户管理模块
 商户入驻、入网查询、图片上传等功能
+
+API文档: https://paas.tianquetech.com/docs/#/api/shrz
 """
 import json
 import base64
@@ -13,6 +15,16 @@ from ..client import TianqueClient, get_client
 
 class MerchantAPI:
     """商户管理API"""
+    
+    # API路径映射(根据天阙开放平台文档)
+    API_PATHS = {
+        "income": "/merchant/income",  # 商户入驻
+        "income_query": "/merchant/incomeQuery",  # 商户入驻结果查询
+        "update": "/merchant/updateMerchantInfo",  # 商户入驻修改
+        "upload": "/merchant/uploadPicture",  # 图片上传(注意：此接口无需加签验签)
+        "merchant_info": "/merchant/merchantInfoQuery",  # 商户信息查询
+        "audit_status": "/merchant/auditStatusQuery",  # 查询商户审核状态
+    }
     
     def __init__(self, client: Optional[TianqueClient] = None):
         self.client = client or get_client()
@@ -105,9 +117,12 @@ class MerchantAPI:
         # 添加可选参数
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                # 转换下划线为驼峰
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/merchant/income", req_data)
+        return self.client.post(self.API_PATHS["income"], req_data)
     
     def query(self, mno: str = None, req_id: str = None) -> Dict[str, Any]:
         """
@@ -126,7 +141,7 @@ class MerchantAPI:
         if req_id:
             req_data["reqId"] = req_id
         
-        return self.client.post("/merchant/incomeQuery", req_data)
+        return self.client.post(self.API_PATHS["income_query"], req_data)
     
     def modify(
         self,
@@ -164,9 +179,11 @@ class MerchantAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/merchant/incomeModify", req_data)
+        return self.client.post(self.API_PATHS["update"], req_data)
     
     def upload_image(
         self,
@@ -176,6 +193,8 @@ class MerchantAPI:
     ) -> Dict[str, Any]:
         """
         图片上传
+        
+        注意：此接口无需加签验签，无需通用报文
         
         Args:
             file_path: 图片文件路径
@@ -200,7 +219,22 @@ class MerchantAPI:
             "imageData": image_data
         }
         
-        return self.client.post("/file/upload", req_data)
+        # 注意：图片上传接口不需要签名
+        # 直接调用client的post方法，但跳过签名
+        import requests
+        from urllib.parse import urljoin
+        
+        url = urljoin(self.client.base_url, self.API_PATHS["upload"])
+        headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            "User-Agent": "DYOS-Payment-CLI/1.0"
+        }
+        
+        try:
+            response = requests.post(url, json=req_data, headers=headers, timeout=30)
+            return response.json()
+        except Exception as e:
+            return {"code": "NETWORK_ERROR", "msg": str(e)}
     
     def query_merchant_info(self, mno: str) -> Dict[str, Any]:
         """
@@ -213,7 +247,7 @@ class MerchantAPI:
             API响应结果
         """
         req_data = {"mno": mno}
-        return self.client.post("/merchant/merchantInfoQuery", req_data)
+        return self.client.post(self.API_PATHS["merchant_info"], req_data)
     
     def query_audit_status(self, mno: str) -> Dict[str, Any]:
         """
@@ -226,7 +260,7 @@ class MerchantAPI:
             API响应结果
         """
         req_data = {"mno": mno}
-        return self.client.post("/merchant/auditStatusQuery", req_data)
+        return self.client.post(self.API_PATHS["audit_status"], req_data)
 
 
 # 便捷函数
