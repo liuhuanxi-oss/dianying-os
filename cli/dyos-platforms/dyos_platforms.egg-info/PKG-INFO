@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: dyos-platforms
+Version: 0.1.0
+Summary: 店赢OS - 8大本地生活平台统一CLI工具
+Author-email: 店赢OS Team <team@dianyingos.com>
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: click>=8.0.0
+Requires-Dist: requests>=2.28.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: tabulate>=0.9.0
+Requires-Dist: python-dateutil>=2.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
