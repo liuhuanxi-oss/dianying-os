@@ -3,6 +3,8 @@
 """
 店赢OS天阙支付CLI工具 - CLI主文件
 基于Click框架的命令行接口
+
+支持真实API联调和Mock模式
 """
 import os
 import sys
@@ -12,7 +14,7 @@ from typing import Optional
 
 from .config import get_config, init_config, switch_env
 from .crypto import RSACrypto, test_sign
-from .client import get_client, create_client
+from .client import TianqueClient, get_client, create_client
 from .core import (
     MerchantAPI,
     PaymentAPI,
@@ -32,7 +34,27 @@ def global_options(f):
     f = click.option('--env', type=click.Choice(['test', 'prod']), help='切换环境')(f)
     f = click.option('--org-id', help='机构号')(f)
     f = click.option('--timeout', type=int, help='请求超时时间(秒)')(f)
+    f = click.option('--mock', is_flag=True, help='使用Mock数据进行测试')(f)
     return f
+
+
+# ============================================
+# 获取带Mock支持的客户端
+# ============================================
+def get_api_client(use_mock: bool = False, **kwargs) -> TianqueClient:
+    """获取API客户端，支持Mock模式"""
+    config = get_config()
+    
+    # 如果环境变量设置了MOCK模式，也启用mock
+    if os.environ.get('DYOS_PAYMENT_MOCK') == '1':
+        use_mock = True
+    
+    return TianqueClient(
+        org_id=kwargs.get('org_id') or config.org_id,
+        base_url=kwargs.get('base_url') or config.base_url,
+        timeout=kwargs.get('timeout') or config.timeout,
+        use_mock=use_mock
+    )
 
 
 # ============================================
@@ -47,6 +69,16 @@ def cli():
     AI-First Payment CLI for Tianque (SuixingPay) Open Platform
     
     文档: https://github.com/liuhuanxi-oss/dianying-os
+    
+    示例:
+        # 使用Mock数据测试
+        dyos-payment --mock merchant query --mno ***REDACTED_MERCHANT_NO***
+        
+        # 使用真实API联调
+        dyos-payment merchant query --mno ***REDACTED_MERCHANT_NO***
+        
+        # 切换到生产环境
+        dyos-payment env-switch prod
     """
     pass
 
@@ -84,13 +116,15 @@ def merchant_group():
 def merchant_apply(**kwargs):
     """商户入驻申请"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     # 构建参数
     req_data = {k: v for k, v in kwargs.items() if v is not None}
     
     try:
-        api = MerchantAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = MerchantAPI(client=client)
         result = api.apply(**req_data)
         
         if json_output:
@@ -98,6 +132,8 @@ def merchant_apply(**kwargs):
         else:
             code = result.get('code', result.get('bizCode', ''))
             msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"商户入驻申请结果")
             if code == '0000':
                 click.echo(click.style(f"✓ 商户入驻成功", fg='green'))
                 resp_data = result.get('respData', {})
@@ -119,15 +155,19 @@ def merchant_apply(**kwargs):
 def merchant_query(**kwargs):
     """商户入驻结果查询"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = MerchantAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = MerchantAPI(client=client)
         result = api.query(**{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
             click.echo(formatter.format_json(result))
         else:
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"商户查询结果")
             click.echo(formatter.format(result))
     except Exception as e:
         if json_output:
@@ -146,10 +186,12 @@ def merchant_query(**kwargs):
 def merchant_modify(**kwargs):
     """商户入驻修改"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = MerchantAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = MerchantAPI(client=client)
         mno = kwargs.pop('mno')
         result = api.modify(mno, **kwargs)
         
@@ -176,10 +218,12 @@ def merchant_modify(**kwargs):
 def merchant_upload_image(**kwargs):
     """图片上传"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = MerchantAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = MerchantAPI(client=client)
         result = api.upload_image(**kwargs)
         
         if json_output:
@@ -222,28 +266,70 @@ def trade_group():
 def trade_create(**kwargs):
     """创建支付订单(主扫)"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = PaymentAPI()
-        result = api.create_scan_pay(**kwargs)
+        client = get_api_client(use_mock=use_mock)
+        api = PaymentAPI(client=client)
+        result = api.create_scan_pay(**{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
             click.echo(formatter.format_json(result))
         else:
             code = result.get('code', result.get('bizCode', ''))
             msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"创建支付订单结果")
             if code == '0000':
                 click.echo(click.style(f"✓ 支付订单创建成功", fg='green'))
                 resp_data = result.get('respData', {})
                 if resp_data:
                     click.echo(f"订单号: {resp_data.get('ordNo', 'N/A')}")
-                    click.echo(f"天阙订单号: {resp_data.get('uuid', 'N/A')}")
-                    pay_url = resp_data.get('payUrl', '')
-                    if pay_url:
-                        click.echo(f"收款链接: {pay_url}")
+                    click.echo(f"收款URL: {resp_data.get('payUrl', 'N/A')}")
             else:
                 click.echo(click.style(f"✗ 创建失败: {code} - {msg}", fg='red'))
+    except Exception as e:
+        if json_output:
+            click.echo(formatter.format_json({"code": "ERROR", "msg": str(e)}))
+        else:
+            click.echo(click.style(f"✗ 错误: {e}", fg='red'))
+
+
+@trade_group.command('scan')
+@click.option('--auth-code', 'auth_code', required=True, help='授权码/付款码(必填)')
+@click.option('--amount', 'amt', required=True, help='订单金额(元)(必填)')
+@click.option('--subject', default='订单支付', help='订单标题')
+@click.option('--pay-type', 'pay_type', help='支付渠道: WECHAT/ALIPAY/UNIONPAY')
+@click.option('--mer-no', 'mno', help='商户编号')
+@click.option('--trade-no', 'ord_no', help='商户订单号')
+@click.option('--trm-ip', default='127.0.0.1', help='交易终端IP')
+@global_options
+def trade_scan(**kwargs):
+    """被扫支付(B扫C)"""
+    json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
+    formatter = OutputFormatter(json_output=json_output)
+    
+    try:
+        client = get_api_client(use_mock=use_mock)
+        api = PaymentAPI(client=client)
+        result = api.reverse_scan(**{k: v for k, v in kwargs.items() if v is not None})
+        
+        if json_output:
+            click.echo(formatter.format_json(result))
+        else:
+            code = result.get('code', result.get('bizCode', ''))
+            msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"被扫支付结果")
+            if code == '0000':
+                click.echo(click.style(f"✓ 支付成功", fg='green'))
+                resp_data = result.get('respData', {})
+                if resp_data:
+                    click.echo(f"订单号: {resp_data.get('ordNo', 'N/A')}")
+            else:
+                click.echo(click.style(f"✗ 支付失败: {code} - {msg}", fg='red'))
     except Exception as e:
         if json_output:
             click.echo(formatter.format_json({"code": "ERROR", "msg": str(e)}))
@@ -259,15 +345,19 @@ def trade_create(**kwargs):
 def trade_query(**kwargs):
     """支付结果查询"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = PaymentAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = PaymentAPI(client=client)
         result = api.query(**{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
             click.echo(formatter.format_json(result))
         else:
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"交易查询结果")
             click.echo(formatter.format(result))
     except Exception as e:
         if json_output:
@@ -286,10 +376,12 @@ def trade_query(**kwargs):
 def trade_refund(**kwargs):
     """申请退款"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = PaymentAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = PaymentAPI(client=client)
         req_data = {k: v for k, v in kwargs.items() if v is not None}
         result = api.refund(**req_data)
         
@@ -298,6 +390,8 @@ def trade_refund(**kwargs):
         else:
             code = result.get('code', result.get('bizCode', ''))
             msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"退款申请结果")
             if code == '0000':
                 click.echo(click.style(f"✓ 退款申请成功", fg='green'))
             else:
@@ -317,10 +411,12 @@ def trade_refund(**kwargs):
 def trade_close(**kwargs):
     """关闭订单"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = PaymentAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = PaymentAPI(client=client)
         result = api.close(**{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
@@ -358,10 +454,12 @@ def split_group():
 def split_apply(**kwargs):
     """分账申请"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = SplitAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = SplitAPI(client=client)
         ord_no = kwargs.pop('ord_no')
         ratio = kwargs.pop('ratio', None)
         ledger_rule_str = kwargs.pop('ledger_rule', None)
@@ -391,6 +489,8 @@ def split_apply(**kwargs):
         else:
             code = result.get('code', result.get('bizCode', ''))
             msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"分账申请结果")
             if code == '0000':
                 click.echo(click.style(f"✓ 分账申请成功", fg='green'))
             else:
@@ -409,16 +509,20 @@ def split_apply(**kwargs):
 def split_query(**kwargs):
     """分账结果查询"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = SplitAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = SplitAPI(client=client)
         split_no = kwargs.pop('split_no', None)
         result = api.query_split(split_no=split_no, **{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
             click.echo(formatter.format_json(result))
         else:
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"分账查询结果")
             click.echo(formatter.format(result))
     except Exception as e:
         if json_output:
@@ -445,15 +549,19 @@ def settle_group():
 def settle_query(**kwargs):
     """结算查询"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = SettleAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = SettleAPI(client=client)
         result = api.query_by_merchant(**{k: v for k, v in kwargs.items() if v is not None})
         
         if json_output:
             click.echo(formatter.format_json(result))
         else:
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"结算查询结果")
             click.echo(formatter.format(result))
     except Exception as e:
         if json_output:
@@ -478,10 +586,12 @@ def reconcile_group():
 def reconcile_download(**kwargs):
     """下载对账文件"""
     json_output = kwargs.pop('json_output', False)
+    use_mock = kwargs.pop('mock', False)
     formatter = OutputFormatter(json_output=json_output)
     
     try:
-        api = ReconcileAPI()
+        client = get_api_client(use_mock=use_mock)
+        api = ReconcileAPI(client=client)
         date = kwargs.pop('date').replace('-', '').replace('/', '')
         result = api.download(bill_date=date, **kwargs)
         
@@ -490,6 +600,8 @@ def reconcile_download(**kwargs):
         else:
             code = result.get('code', result.get('bizCode', ''))
             msg = result.get('msg', result.get('bizMsg', ''))
+            if result.get('_mock'):
+                click.echo(click.style(f"[MOCK] ", fg='yellow') + f"对账文件获取结果")
             if code == '0000':
                 click.echo(click.style(f"✓ 对账文件获取成功", fg='green'))
                 resp_data = result.get('respData', {})
@@ -508,8 +620,10 @@ def reconcile_download(**kwargs):
 # 工具命令
 # ============================================
 @cli.command('sign-test')
-def sign_test():
+@global_options
+def sign_test(**kwargs):
     """测试签名是否正确"""
+    use_mock = kwargs.pop('mock', False)
     config = get_config()
     crypto = RSACrypto(
         private_key_pem=config.private_key,

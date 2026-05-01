@@ -14,6 +14,14 @@ from ..client import TianqueClient, get_client
 class SplitAPI:
     """分账API"""
     
+    # API路径映射
+    API_PATHS = {
+        "launch_ledger": "/query/ledger/launchLedger",  # 分账申请
+        "query_ledger": "/query/ledger/queryLedger",  # 分账结果查询
+        "sign_agreement": "/query/ledger/signAgreement",  # 分账协议签署
+        "query_agreement": "/query/ledger/querySignAgreement",  # 分账协议签署结果查询
+    }
+    
     def __init__(self, client: Optional[TianqueClient] = None):
         self.client = client or get_client()
     
@@ -55,9 +63,11 @@ class SplitAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/query/ledger/launchLedger", req_data)
+        return self.client.post(self.API_PATHS["launch_ledger"], req_data)
     
     def apply_split(
         self,
@@ -125,7 +135,7 @@ class SplitAPI:
         if uuid:
             req_data["uuid"] = uuid
         
-        return self.client.post("/query/ledger/queryLedger", req_data)
+        return self.client.post(self.API_PATHS["query_ledger"], req_data)
     
     def query_split(
         self,
@@ -164,7 +174,7 @@ class SplitAPI:
             "signType": sign_type
         }
         
-        return self.client.post("/query/ledger/signAgreement", req_data)
+        return self.client.post(self.API_PATHS["sign_agreement"], req_data)
     
     def query_agreement(
         self,
@@ -180,7 +190,7 @@ class SplitAPI:
             API响应结果
         """
         req_data = {"mno": mno}
-        return self.client.post("/query/ledger/querySignAgreement", req_data)
+        return self.client.post(self.API_PATHS["query_agreement"], req_data)
 
 
 # 便捷函数

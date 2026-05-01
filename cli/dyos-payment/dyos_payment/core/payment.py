@@ -3,8 +3,11 @@
 """
 店赢OS天阙支付CLI工具 - 支付交易模块
 主扫、被扫、查询、退款、关单等功能
+
+API文档: https://paas.tianquetech.com/docs/#/product/shjj
 """
 import uuid
+import time
 from typing import Optional, Dict, Any, List
 
 from ..client import TianqueClient, get_client
@@ -12,6 +15,17 @@ from ..client import TianqueClient, get_client
 
 class PaymentAPI:
     """支付交易API"""
+    
+    # API路径映射
+    API_PATHS = {
+        "active_scan": "/order/activePlusScan",  # 主扫支付(统一下单)
+        "reverse_scan": "/order/reverseScan",  # 被扫支付(B扫C)
+        "trade_query": "/query/tradeQuery",  # 支付结果查询
+        "refund": "/order/refund",  # 申请退款
+        "refund_query": "/query/refundQuery",  # 退款结果查询
+        "close": "/order/close",  # 关闭订单
+        "fee_query": "/query/feeQuery",  # 手续费查询
+    }
     
     def __init__(self, client: Optional[TianqueClient] = None):
         self.client = client or get_client()
@@ -44,6 +58,7 @@ class PaymentAPI:
             API响应结果，包含payUrl用于生成二维码
         """
         # 使用测试商户号或配置
+        config = self.client.base_url
         mno = mno or self.client.org_id
         
         req_data = {
@@ -62,9 +77,11 @@ class PaymentAPI:
         # 添加可选参数
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/order/activePlusScan", req_data)
+        return self.client.post(self.API_PATHS["active_scan"], req_data)
     
     def create_scan_pay_v2(
         self,
@@ -78,9 +95,6 @@ class PaymentAPI:
     ) -> Dict[str, Any]:
         """
         主扫支付(统一下单) v2版本别名
-        
-        Args:
-            同create_scan_pay
         """
         return self.create_scan_pay(mno=mno, ord_no=ord_no, amt=amt, subject=subject, pay_type=pay_type, trm_ip=trm_ip, **kwargs)
     
@@ -128,9 +142,11 @@ class PaymentAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/order/reverseScan", req_data)
+        return self.client.post(self.API_PATHS["reverse_scan"], req_data)
     
     def query(
         self,
@@ -157,7 +173,7 @@ class PaymentAPI:
         if uuid:
             req_data["uuid"] = uuid
         
-        return self.client.post("/query/tradeQuery", req_data)
+        return self.client.post(self.API_PATHS["trade_query"], req_data)
     
     def refund(
         self,
@@ -197,9 +213,11 @@ class PaymentAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/order/refund", req_data)
+        return self.client.post(self.API_PATHS["refund"], req_data)
     
     def refund_query(
         self,
@@ -230,9 +248,11 @@ class PaymentAPI:
         
         for key, value in kwargs.items():
             if value is not None and key not in req_data:
-                req_data[key] = value
+                camel_key = ''.join(word.title() if i else word for i, word in enumerate(key.split('_')))
+                camel_key = camel_key[0].lower() + camel_key[1:] if len(camel_key) > 1 else camel_key.lower()
+                req_data[camel_key] = value
         
-        return self.client.post("/query/refundQuery", req_data)
+        return self.client.post(self.API_PATHS["refund_query"], req_data)
     
     def close(
         self,
@@ -259,7 +279,7 @@ class PaymentAPI:
         if uuid:
             req_data["uuid"] = uuid
         
-        return self.client.post("/order/close", req_data)
+        return self.client.post(self.API_PATHS["close"], req_data)
     
     def query_fee(
         self,
@@ -282,11 +302,10 @@ class PaymentAPI:
         if uuid:
             req_data["uuid"] = uuid
         
-        return self.client.post("/query/feeQuery", req_data)
+        return self.client.post(self.API_PATHS["fee_query"], req_data)
     
     def _generate_ord_no(self) -> str:
         """生成商户订单号"""
-        import time
         return f"T{int(time.time()*1000)}"
 
 

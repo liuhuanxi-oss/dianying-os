@@ -650,3 +650,216 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ==================== 平台配置命令组 ====================
+
+@cli.group("config")
+def config_group():
+    """平台配置管理 - 设置/查看API凭证"""
+    pass
+
+
+@config_group.command("status")
+@click.option("--json", "json_output", is_flag=True, help="输出JSON格式")
+def config_status(json_output):
+    """查看所有平台配置状态"""
+    from dyos_platforms.config import get_all_platforms_status, USE_MOCK, REAL_API_SUPPORTED
+    
+    platforms = get_all_platforms_status()
+    
+    if json_output:
+        import json
+        click.echo(json.dumps({
+            "use_mock": USE_MOCK,
+            "platforms": platforms
+        }, ensure_ascii=False, indent=2))
+    else:
+        skin = REPLSkin()
+        
+        click.echo("\n📊 店赢OS 平台配置状态\n")
+        click.echo(f"当前模式: {'🟡 Mock模式' if USE_MOCK else '🟢 真实API模式'}\n")
+        
+        # 表格头部
+        click.echo(f"{'平台':<16} {'状态':<12} {'真实API':<10} {'认证方式':<20}")
+        click.echo("-" * 60)
+        
+        for p in platforms:
+            status_icon = "🟢 已配置" if p["configured"] else "🔴 未配置"
+            real_api_icon = "✅ 支持" if p["real_api_supported"] and p["configured"] else "⏳ 待配置" if p["real_api_supported"] else "❌ 不适用"
+            click.echo(f"{p['name']:<16} {status_icon:<12} {real_api_icon:<10} {p['auth_type']:<20}")
+        
+        click.echo("\n💡 提示: 真实API模式需要先配置各平台的API凭证")
+        click.echo("   文档: https://github.com/liuhuanxi-oss/dianying-os/blob/main/cli/dyos-platforms/PLATFORMS_GUIDE.md")
+
+
+@config_group.command("set")
+@click.argument("platform")
+@click.option("--app-id", help="App ID (美团/微信)")
+@click.option("--app-secret", help="App Secret")
+@click.option("--app-key", help="App Key (饿了么)")
+@click.option("--client-key", help="Client Key (抖音)")
+@click.option("--client-id", help="Client ID (小红书)")
+@click.option("--key", help="API Key (高德/百度)")
+@click.option("--ak", help="Access Key (百度)")
+@click.option("--private-key", help="私钥 (支付宝)")
+@click.option("--public-key", help="公钥 (支付宝)")
+def config_set(platform, app_id, app_secret, app_key, client_key, client_id, key, ak, private_key, public_key):
+    """设置平台凭证"""
+    from dyos_platforms.config import PLATFORM_CONFIG, set_platform_credential, SUPPORTED_PLATFORMS
+    
+    if platform not in SUPPORTED_PLATFORMS:
+        click.echo(f"❌ 不支持的平台: {platform}")
+        click.echo(f"支持的平台: {', '.join(SUPPORTED_PLATFORMS)}")
+        return
+    
+    credential = {}
+    config = PLATFORM_CONFIG[platform]
+    
+    # 根据平台类型收集凭证
+    if app_id:
+        credential["app_id"] = app_id
+    if app_secret:
+        credential["app_secret"] = app_secret
+    if app_key:
+        credential["app_key"] = app_key
+    if client_key:
+        credential["client_key"] = client_key
+    if client_id:
+        credential["client_id"] = client_id
+    if key:
+        credential["key"] = key
+    if ak:
+        credential["ak"] = ak
+    if private_key:
+        credential["private_key"] = private_key
+    if public_key:
+        credential["public_key"] = public_key
+    
+    if not credential:
+        click.echo(f"❌ 未提供任何凭证参数")
+        click.echo(f"\n{config['name']} 需要以下凭证:")
+        for k, v in config.get("required_credential", {}).items():
+            click.echo(f"  --{k}: {v}")
+        return
+    
+    set_platform_credential(platform, credential)
+    click.echo(f"✅ {config['name']} 凭证已保存")
+    
+    # 提示是否可以切换到真实API
+    if platform in ["amap", "baidu"]:
+        click.echo(f"\n🎉 {config['name']} 已支持真实API调用!")
+        click.echo("   设置 DYOS_USE_MOCK=false 可切换到真实API模式")
+
+
+@config_group.command("get")
+@click.argument("platform")
+def config_get(platform):
+    """查看平台凭证(脱敏)"""
+    from dyos_platforms.config import get_platform_credential, PLATFORM_CONFIG
+    
+    if platform not in PLATFORM_CONFIG:
+        click.echo(f"❌ 不支持的平台: {platform}")
+        return
+    
+    cred = get_platform_credential(platform)
+    
+    if not cred:
+        click.echo(f"🔴 {PLATFORM_CONFIG[platform]['name']} 尚未配置凭证")
+        click.echo("   使用 dyos-platform config set <平台> --<参数> 来配置")
+    else:
+        click.echo(f"🟢 {PLATFORM_CONFIG[platform]['name']} 凭证:")
+        for k, v in cred.items():
+            # 脱敏显示
+            if len(v) > 8:
+                display = v[:4] + "****" + v[-4:]
+            else:
+                display = "****"
+            click.echo(f"   {k}: {display}")
+
+
+@config_group.command("clear")
+@click.argument("platform")
+@click.option("--yes", is_flag=True, help="跳过确认")
+def config_clear(platform, yes):
+    """清除平台凭证"""
+    from dyos_platforms.config import set_platform_credential, PLATFORM_CONFIG, load_credentials
+    
+    if platform not in PLATFORM_CONFIG:
+        click.echo(f"❌ 不支持的平台: {platform}")
+        return
+    
+    if not yes:
+        if not click.confirm(f"确定要清除 {PLATFORM_CONFIG[platform]['name']} 的凭证吗?"):
+            click.echo("已取消")
+            return
+    
+    set_platform_credential(platform, {})
+    click.echo(f"✅ {PLATFORM_CONFIG[platform]['name']} 凭证已清除")
+
+
+# ==================== 测试命令 ====================
+
+@cli.command("test")
+@click.argument("platform")
+@click.option("--json", "json_output", is_flag=True, help="输出JSON格式")
+def test_platform(platform, json_output):
+    """测试平台API连通性"""
+    from dyos_platforms.config import PLATFORM_CONFIG, is_platform_configured
+    
+    if platform not in PLATFORM_CONFIG:
+        click.echo(f"❌ 不支持的平台: {platform}")
+        return
+    
+    config = PLATFORM_CONFIG[platform]
+    
+    if platform not in ["amap", "baidu"]:
+        click.echo(f"⚠️  {config['name']} 真实API尚未实现，当前使用Mock模式")
+        return
+    
+    if not is_platform_configured(platform):
+        click.echo(f"❌ {config['name']} 尚未配置凭证")
+        click.echo("   使用 dyos-platform config set <平台> --<参数> 来配置")
+        return
+    
+    # 测试API调用
+    cli_instance = get_platform_cli(platform, json_output)
+    cli_instance.use_mock = False
+    
+    try:
+        if platform == "amap":
+            result = cli_instance.poi_search(keyword="餐厅", city="上海")
+        elif platform == "baidu":
+            result = cli_instance.poi_search(keyword="餐厅", city="上海")
+        
+        if result.get("code") == 0:
+            click.echo(f"✅ {config['name']} API连接成功!")
+            if not json_output:
+                click.echo(f"   获取到 {len(result.get('data', []))} 条数据")
+        else:
+            click.echo(f"❌ {config['name']} API返回错误")
+            click.echo(f"   {result.get('message', 'Unknown error')}")
+    except Exception as e:
+        click.echo(f"❌ {config['name']} API调用失败")
+        click.echo(f"   错误: {str(e)}")
+
+
+# ==================== Mock切换命令 ====================
+
+@cli.command("mode")
+@click.option("--mock/--real", default=None, help="切换Mock/真实模式")
+def switch_mode(mock):
+    """切换Mock/真实API模式"""
+    import os
+    
+    if mock is None:
+        current = os.getenv("DYOS_USE_MOCK", "true").lower() == "true"
+        click.echo(f"当前模式: {'🟡 Mock模式' if current else '🟢 真实API模式'}")
+        click.echo("\n使用 --mock 或 --real 切换模式")
+        return
+    
+    if mock:
+        os.environ["DYOS_USE_MOCK"] = "true"
+        click.echo("✅ 已切换到 Mock 模式")
+    else:
+        os.environ["DYOS_USE_MOCK"] = "false"
+        click.echo("✅ 已切换到 真实API 模式")

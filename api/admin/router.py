@@ -6,6 +6,7 @@ from . import (
     merchants, agents, sales, finance, content, analytics,
     payment, customer, channel, support, product, security, settings
 )
+from . import payment_routes
 
 router = APIRouter(prefix="/admin", tags=["管理后台"])
 
@@ -16,6 +17,7 @@ router.include_router(finance.router, prefix="/finance", tags=["财务中心"])
 router.include_router(content.router, prefix="/content", tags=["内容运营"])
 router.include_router(analytics.router, prefix="/analytics", tags=["数据洞察"])
 router.include_router(payment.router, prefix="/payment", tags=["支付交易"])
+router.include_router(payment_routes.router, prefix="/payment-tianque", tags=["天阙支付"])
 router.include_router(customer.router, prefix="/customer", tags=["客户成功"])
 router.include_router(channel.router, prefix="/channel", tags=["渠道增长"])
 router.include_router(support.router, prefix="/support", tags=["客服支持"])

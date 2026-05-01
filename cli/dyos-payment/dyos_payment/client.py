@@ -4,6 +4,7 @@
 店赢OS天阙支付CLI工具 - API客户端
 封装HTTP请求、签名、响应处理等功能
 """
+import os
 import time
 import uuid
 import json
@@ -19,6 +20,11 @@ from .config import get_config
 class TianqueClient:
     """天阙API HTTP客户端"""
     
+    # 测试环境
+    TEST_BASE_URL = "https://openapi-test.suixingpay.com"
+    # 生产环境
+    PROD_BASE_URL = "https://openapi.tianquetech.com"
+    
     def __init__(
         self,
         org_id: Optional[str] = None,
@@ -26,7 +32,8 @@ class TianqueClient:
         suixingpay_public_key: Optional[str] = None,
         base_url: Optional[str] = None,
         timeout: int = 30,
-        retry_times: int = 3
+        retry_times: int = 3,
+        use_mock: bool = False
     ):
         """
         初始化API客户端
@@ -38,13 +45,22 @@ class TianqueClient:
             base_url: API基础URL
             timeout: 请求超时时间(秒)
             retry_times: 重试次数
+            use_mock: 是否使用Mock模式
         """
         config = get_config()
         
         self.org_id = org_id or config.org_id
-        self.base_url = base_url or config.base_url
         self.timeout = timeout
         self.retry_times = retry_times
+        self.use_mock = use_mock
+        
+        # 确定base_url
+        if base_url:
+            self.base_url = base_url
+        elif config.base_url:
+            self.base_url = config.base_url
+        else:
+            self.base_url = self.TEST_BASE_URL
         
         # 初始化加密工具
         self.crypto = RSACrypto(
@@ -52,6 +68,122 @@ class TianqueClient:
             suixingpay_public_key_pem=suixingpay_public_key or config.suixingpay_public_key,
             algorithm=config.sign_algorithm
         )
+        
+        # Mock数据
+        self._mock_responses = self._init_mock_responses()
+    
+    def _init_mock_responses(self) -> Dict[str, Any]:
+        """初始化Mock响应数据"""
+        return {
+            "merchant_income": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "mno": f"399{int(time.time()) % 100000000:08d}",
+                    "auditStatus": "03",
+                    "auditMsg": "入驻成功"
+                }
+            },
+            "merchant_incomeQuery": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "mno": "***REDACTED_MERCHANT_NO***",
+                    "auditStatus": "03",
+                    "auditMsg": "审核通过",
+                    "merName": "测试商户",
+                    "mecDisNm": "测试店铺",
+                    "mblNo": "13800138000"
+                }
+            },
+            "activePlusScan": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "uuid": str(uuid.uuid4()).replace('-', '')[:32],
+                    "ordNo": f"T{int(time.time()*1000)}",
+                    "payUrl": "https://qr.alipay.com/xxx",
+                    "expireTime": "300"
+                }
+            },
+            "tradeQuery": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "uuid": str(uuid.uuid4()).replace('-', '')[:32],
+                    "ordNo": "T1234567890",
+                    "status": "01",
+                    "amt": "0.01",
+                    "payType": "WECHAT",
+                    "payTime": time.strftime("%Y%m%d%H%M%S")
+                }
+            },
+            "refund": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "refundUuid": str(uuid.uuid4()).replace('-', '')[:32],
+                    "refundStatus": "01",
+                    "refundAmt": "0.01"
+                }
+            },
+            "settleQuery": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "settleList": [
+                        {
+                            "settleDate": "20240501",
+                            "settleAmt": "1000.00",
+                            "status": "01"
+                        }
+                    ],
+                    "totalCount": 1
+                }
+            },
+            "downloadFile": {
+                "code": "0000",
+                "msg": "交易成功",
+                "reqId": str(uuid.uuid4()).replace('-', '')[:32],
+                "respData": {
+                    "fileUrl": "https://osscdn.suixingpay.com/reconcile/20240501.csv",
+                    "fileName": "reconcile_20240501.csv"
+                }
+            }
+        }
+    
+    def _get_mock_response(self, uri: str, data: Dict = None) -> Dict[str, Any]:
+        """获取Mock响应"""
+        # 根据URI映射到mock key
+        uri_to_mock = {
+            "/merchant/income": "merchant_income",
+            "/merchant/incomeQuery": "merchant_incomeQuery",
+            "/order/activePlusScan": "activePlusScan",
+            "/query/tradeQuery": "tradeQuery",
+            "/order/refund": "refund",
+            "/query/settleQuery": "settleQuery",
+            "/reconcile/downloadFile": "downloadFile",
+        }
+        
+        mock_key = uri_to_mock.get(uri, "merchant_incomeQuery")
+        mock_resp = self._mock_responses.get(mock_key, {}).copy()
+        
+        # 动态填充数据
+        if data and "respData" in mock_resp:
+            if "ordNo" in data:
+                mock_resp["respData"]["ordNo"] = data["ordNo"]
+            if "amt" in data:
+                mock_resp["respData"]["amt"] = data["amt"]
+            if "mno" in data:
+                mock_resp["respData"]["mno"] = data["mno"]
+        
+        return mock_resp
     
     def _generate_req_id(self) -> str:
         """生成请求ID"""
@@ -184,6 +316,12 @@ class TianqueClient:
         Returns:
             响应数据
         """
+        # Mock模式
+        if self.use_mock:
+            mock_resp = self._get_mock_response(uri, data)
+            mock_resp["_mock"] = True
+            return mock_resp
+        
         url = urljoin(self.base_url, uri)
         
         # 构建请求
@@ -257,21 +395,23 @@ class TianqueClient:
 
 
 # 便捷函数
-def get_client() -> TianqueClient:
+def get_client(use_mock: bool = False) -> TianqueClient:
     """获取API客户端实例"""
-    return TianqueClient()
+    return TianqueClient(use_mock=use_mock)
 
 
 def create_client(
     org_id: Optional[str] = None,
     private_key: Optional[str] = None,
     suixingpay_public_key: Optional[str] = None,
-    base_url: Optional[str] = None
+    base_url: Optional[str] = None,
+    use_mock: bool = False
 ) -> TianqueClient:
     """创建API客户端"""
     return TianqueClient(
         org_id=org_id,
         private_key=private_key,
         suixingpay_public_key=suixingpay_public_key,
-        base_url=base_url
+        base_url=base_url,
+        use_mock=use_mock
     )
