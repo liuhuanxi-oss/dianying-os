@@ -489,12 +489,36 @@ function renderSidebar() {
 // 路由和导航
 // ============================================
 function navigateTo(pageId, params = {}) {
-  App.currentPage = pageId;
-  updateSidebarActiveState(pageId);
-  updateBreadcrumb(pageId);
-  renderPage(pageId, params);
-  window.scrollTo(0, 0);
-  DOM.get('sidebar')?.classList.remove('mobile-open');
+  if (App.currentPage === pageId) return;
+
+  const mainContent = DOM.get('mainContent');
+
+  // Fade out current content
+  if (mainContent) {
+    mainContent.style.opacity = '0';
+    mainContent.style.transform = 'translateY(10px)';
+  }
+
+  setTimeout(() => {
+    App.currentPage = pageId;
+    updateSidebarActiveState(pageId);
+    updateBreadcrumb(pageId);
+    renderPage(pageId, params);
+    window.scrollTo(0, 0);
+    DOM.get('sidebar')?.classList.remove('mobile-open');
+
+    // Add animation class to new content
+    if (mainContent) {
+      mainContent.classList.add('page-content');
+      mainContent.style.opacity = '';
+      mainContent.style.transform = '';
+    }
+
+    // Re-render icons
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      setTimeout(() => lucide.createIcons(), 50);
+    }
+  }, 150);
 }
 
 // ============================================

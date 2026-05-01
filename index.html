@@ -43,7 +43,68 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    
+
+    /* Global Loading Screen */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 24px;
+      animation: logoPulse 2s ease-in-out infinite;
+    }
+
+    .loading-progress {
+      width: 200px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      animation: progressBar 2s ease-out forwards;
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    @keyframes progressBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
     /* Landing Page Container */
     .landing-page {
       min-height: 100vh;
@@ -387,28 +448,40 @@
       border-radius: 12px;
       padding: 20px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 10px;
       transition: all 0.3s;
     }
-    
+
     .platform-logo:hover {
       border-color: var(--primary);
-      transform: scale(1.05);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(94, 106, 210, 0.2);
     }
-    
-    .platform-logo img {
-      max-width: 100px;
+
+    .platform-logo svg {
+      width: 40px;
       height: 40px;
-      object-fit: contain;
-      filter: grayscale(100%) brightness(2);
-      opacity: 0.7;
+      opacity: 0.8;
       transition: all 0.3s;
     }
-    
-    .platform-logo:hover img {
-      filter: grayscale(0%) brightness(1);
+
+    .platform-logo:hover svg {
       opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .platform-logo span {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .platform-logo:hover span {
+      color: var(--text);
     }
     
     /* Architecture Section */
@@ -913,6 +986,25 @@
   </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <svg class="loading-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="80" height="80" fill="#0a0a0f"/>
+      <circle cx="40" cy="40" r="30" fill="url(#loadingGradient)" opacity="0.9"/>
+      <path d="M25 40L35 50L55 30" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="loadingGradient" x1="0" y1="0" x2="80" y2="80">
+          <stop stop-color="#5e6ad2"/>
+          <stop offset="1" stop-color="#00b8cc"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="loading-progress">
+      <div class="loading-progress-bar"></div>
+    </div>
+    <div class="loading-text">店赢OS 正在启动...</div>
+  </div>
+
   <div class="landing-page">
     <!-- Navbar -->
     <nav class="navbar">
@@ -1130,28 +1222,66 @@
       </div>
       <div class="platform-grid">
         <div class="platform-logo">
-          <img src="https://lf3-cdn-tos.bytescm.com/obj/static/ies/douyin_falcon/web/assets/logo_douyin.o.svg" alt="抖音">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#000"/>
+            <path d="M35 15.5C35 20.1944 31.1944 24 26.5 24C24.912 24 23.5 22.588 23.5 21C23.5 19.412 24.912 18 26.5 18C27.8807 18 29 16.8807 29 15.5C29 14.1193 27.8807 13 26.5 13C22.9101 13 20 15.9101 20 19.5C20 25.8513 25.1487 31 31.5 31C38.8513 31 44 25.8513 44 19.5C44 13.1487 38.8513 8 32.5 8C26.1487 8 21 13.1487 21 19.5" fill="#25F4EE"/>
+            <path d="M13.5 15C13.5 10.5817 17.0817 7 21.5 7C25.9183 7 29.5 10.5817 29.5 15C29.5 19.4183 25.9183 23 21.5 23C17.0817 23 13.5 19.4183 13.5 15Z" fill="#FE2C55"/>
+          </svg>
+          <span>抖音</span>
         </div>
         <div class="platform-logo">
-          <img src="https://lf3-cdn-tos.bytescm.com/obj/static/ies/xiaohongshu/web/node_modules/@huizhi-official/assert/static/img/logo-red.svg" alt="小红书">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#FE2C55"/>
+            <path d="M24 12C17.3726 12 12 17.3726 12 24C12 30.6274 17.3726 36 24 36C30.6274 36 36 30.6274 36 24C36 17.3726 30.6274 12 24 12ZM24 32C19.5817 32 16 28.4183 16 24C16 19.5817 19.5817 16 24 16C28.4183 16 32 19.5817 32 24C32 28.4183 28.4183 32 24 32Z" fill="white"/>
+            <circle cx="24" cy="24" r="4" fill="white"/>
+          </svg>
+          <span>小红书</span>
         </div>
         <div class="platform-logo">
-          <img src="https://www.meituan.com/favicon.ico" alt="美团">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#FFD101"/>
+            <path d="M14 20H34V28H14V20Z" fill="white"/>
+            <text x="24" y="25.5" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">美团</text>
+          </svg>
+          <span>美团</span>
         </div>
         <div class="platform-logo">
-          <img src="https://www.dianping.com/favicon.ico" alt="大众点评">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#FF6600"/>
+            <path d="M18 24C18 20.6863 20.6863 18 24 18C27.3137 18 30 20.6863 30 24C30 27.3137 27.3137 30 24 30C20.6863 30 18 27.3137 18 24Z" fill="white"/>
+            <text x="24" y="27" text-anchor="middle" fill="#FF6600" font-size="6" font-weight="bold">DP</text>
+          </svg>
+          <span>大众点评</span>
         </div>
         <div class="platform-logo">
-          <img src="https://render.alipay.com/p/410027/ele_vue/static/img/logo.svg" alt="支付宝">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#1677FF"/>
+            <path d="M18 18H30V30H18V18Z" fill="white"/>
+            <text x="24" y="26" text-anchor="middle" fill="#1677FF" font-size="7" font-weight="bold">支付宝</text>
+          </svg>
+          <span>支付宝</span>
         </div>
         <div class="platform-logo">
-          <img src="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico" alt="微信">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#07C160"/>
+            <path d="M30 18C30 18 34 22 34 26C34 30 30 30 30 30H26V26H30V22H26V18H30ZM18 18V22H22V22H18V26H22V30H18C18 30 14 30 14 26C14 22 18 18 18 18Z" fill="white"/>
+          </svg>
+          <span>微信</span>
         </div>
         <div class="platform-logo">
-          <img src="https://www.ele.me/favicon.ico" alt="饿了么">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#00A0FF"/>
+            <path d="M16 20L24 16L32 20V28L24 32L16 28V20Z" fill="white"/>
+          </svg>
+          <span>饿了么</span>
         </div>
         <div class="platform-logo">
-          <img src="https://haokan.baidu.com/favicon.ico" alt="百度">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="24" fill="#2932E1"/>
+            <path d="M18 24C18 20.6863 20.6863 18 24 18C27.3137 18 30 20.6863 30 24C30 27.3137 27.3137 30 24 30C20.6863 30 18 27.3137 18 24Z" fill="white"/>
+            <text x="24" y="27" text-anchor="middle" fill="#2932E1" font-size="7" font-weight="bold">百度</text>
+          </svg>
+          <span>百度</span>
         </div>
       </div>
     </section>
@@ -1394,6 +1524,15 @@
         lucide.createIcons();
       }
     }, 100);
+
+    // Hide loading screen
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => loadingScreen.remove(), 500);
+      }
+    }, 2200);
   </script>
 </body>
 </html>
