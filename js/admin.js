@@ -3328,7 +3328,7 @@ function renderHealthScorePage(container) {
   setTimeout(() => {
     new Chart(document.getElementById('healthDistChart'), {
       type: 'bar',
-      data: { labels: ['0-20', '21-40', '41-60', '61-80', '81-100'], datasets: [{ label: '商家数', data: [2, 5, 8, 25, 35], backgroundColor: '#ef4444,#f59e0b,#6b6b7b,#10b981,#10b981'] }] },
+      data: { labels: ['0-20', '21-40', '41-60', '61-80', '81-100'], datasets: [{ label: '商家数', data: [2, 5, 8, 25, 35], backgroundColor: ['#ef4444', '#f59e0b', '#6b6b7b', '#10b981', '#10b981'] }] },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
   }, 100);
