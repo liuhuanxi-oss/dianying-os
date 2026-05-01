@@ -72,10 +72,10 @@ def cli():
     
     示例:
         # 使用Mock数据测试
-        dyos-payment --mock merchant query --mno ***REDACTED_MERCHANT_NO***
+        dyos-payment --mock merchant query --mno YOUR_MERCHANT_NO
         
         # 使用真实API联调
-        dyos-payment merchant query --mno ***REDACTED_MERCHANT_NO***
+        dyos-payment merchant query --mno YOUR_MERCHANT_NO
         
         # 切换到生产环境
         dyos-payment env-switch prod
@@ -630,7 +630,7 @@ def sign_test(**kwargs):
         algorithm=config.sign_algorithm
     )
     
-    test_data = "orgId=***REDACTED_ORG_ID***&reqId=test123&timestamp=1234567890"
+    test_data = "orgId=YOUR_ORG_ID&reqId=test123&timestamp=1234567890"
     
     try:
         signature = crypto.sign(test_data)

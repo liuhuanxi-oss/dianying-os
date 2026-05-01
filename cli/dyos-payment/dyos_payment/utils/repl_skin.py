@@ -141,7 +141,7 @@ class REPLSkin(cmd.Cmd):
 
 示例:
   merchant apply --name "测试商户" --mobile 13800138000
-  merchant query --mno ***REDACTED_MERCHANT_NO***
+  merchant query --mno YOUR_MERCHANT_NO
   merchant upload --file ./license.jpg --type license
             """,
             'trade': """
@@ -226,7 +226,7 @@ class REPLSkin(cmd.Cmd):
             algorithm=config.sign_algorithm
         )
         
-        test_data = "orgId=***REDACTED_ORG_ID***&reqId=test123&timestamp=1234567890"
+        test_data = "orgId=YOUR_ORG_ID&reqId=test123&timestamp=1234567890"
         
         try:
             signature = crypto.sign(test_data)

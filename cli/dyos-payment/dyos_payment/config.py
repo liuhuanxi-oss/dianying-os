@@ -50,13 +50,13 @@ class Config:
     def _get_default_config(self) -> Dict[str, Any]:
         """获取默认配置"""
         return {
-            "org_id": "***REDACTED_ORG_ID***",
+            "org_id": os.environ.get("TIANQUE_ORG_ID", ""),
             "private_key": "",
             "public_key": "",
             "suixingpay_public_key": "",
             "sign_algorithm": "SHA1withRSA",
             "env": "prod",
-            "test_merchant_no": "***REDACTED_MERCHANT_NO***",
+            "test_merchant_no": os.environ.get("TIANQUE_MERCHANT_NO", ""),
             "timeout": 30,
             "retry_times": 3
         }
@@ -87,7 +87,7 @@ class Config:
     @property
     def org_id(self) -> str:
         """获取机构号"""
-        return self.get("org_id", "***REDACTED_ORG_ID***")
+        return self.get("org_id", os.environ.get("TIANQUE_ORG_ID", ""))
     
     @org_id.setter
     def org_id(self, value: str):
@@ -144,7 +144,7 @@ class Config:
     @property
     def test_merchant_no(self) -> str:
         """获取测试商户号"""
-        return self.get("test_merchant_no", "***REDACTED_MERCHANT_NO***")
+        return self.get("test_merchant_no", os.environ.get("TIANQUE_MERCHANT_NO", ""))
     
     @test_merchant_no.setter
     def test_merchant_no(self, value: str):

@@ -32,12 +32,12 @@ router = APIRouter(prefix="/payment", tags=["天阙支付"])
 def load_tianque_config():
     """从环境变量或配置文件加载天阙配置"""
     return {
-        "org_id": os.environ.get("TIANQUE_ORG_ID", "***REDACTED_ORG_ID***"),
+        "org_id": os.environ.get("TIANQUE_ORG_ID", "YOUR_ORG_ID"),
         "private_key": os.environ.get("TIANQUE_PRIVATE_KEY", ""),
         "suixingpay_public_key": os.environ.get("TIANQUE_PUBLIC_KEY", ""),
         "sign_algorithm": os.environ.get("TIANQUE_SIGN_ALGORITHM", "SHA1withRSA"),
         "base_url": os.environ.get("TIANQUE_BASE_URL", "https://openapi.tianquetech.com"),
-        "test_merchant_no": os.environ.get("TIANQUE_TEST_MNO", "***REDACTED_MERCHANT_NO***"),
+        "test_merchant_no": os.environ.get("TIANQUE_TEST_MNO", "YOUR_MERCHANT_NO"),
     }
 
 
@@ -197,7 +197,7 @@ def generate_mock_response(api_name: str, data: Dict = None) -> Dict:
             "msg": "交易成功",
             "reqId": str(uuid.uuid4()).replace('-', '')[:32],
             "respData": {
-                "mno": data.get("mno", "***REDACTED_MERCHANT_NO***") if data else "***REDACTED_MERCHANT_NO***",
+                "mno": data.get("mno", "YOUR_MERCHANT_NO") if data else "YOUR_MERCHANT_NO",
                 "auditStatus": "03",
                 "auditMsg": "审核通过",
                 "merName": "测试商户",

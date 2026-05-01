@@ -90,7 +90,7 @@ class TianqueClient:
                 "msg": "交易成功",
                 "reqId": str(uuid.uuid4()).replace('-', '')[:32],
                 "respData": {
-                    "mno": "***REDACTED_MERCHANT_NO***",
+                    "mno": "YOUR_MERCHANT_NO",
                     "auditStatus": "03",
                     "auditMsg": "审核通过",
                     "merName": "测试商户",
