@@ -60,7 +60,7 @@ class TianqueClient:
         elif config.base_url:
             self.base_url = config.base_url
         else:
-            self.base_url = self.TEST_BASE_URL
+            self.base_url = "https://openapi.tianquetech.com"
         
         # 初始化加密工具
         self.crypto = RSACrypto(

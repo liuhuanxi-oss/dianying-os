@@ -55,7 +55,7 @@ class Config:
             "public_key": "",
             "suixingpay_public_key": "",
             "sign_algorithm": "SHA1withRSA",
-            "env": "test",
+            "env": "prod",
             "test_merchant_no": "***REDACTED_MERCHANT_NO***",
             "timeout": 30,
             "retry_times": 3
@@ -128,7 +128,7 @@ class Config:
     @property
     def env(self) -> str:
         """获取当前环境"""
-        return self.get("env", "test")
+        return self.get("env", "prod")
     
     @env.setter
     def env(self, value: str):

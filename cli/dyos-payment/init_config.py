@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     "public_key": "***REDACTED_PUBLIC_KEY***",
     "suixingpay_public_key": "***REDACTED_SP_PUBLIC_KEY***",
     "sign_algorithm": "SHA1withRSA",
-    "env": "test",
+    "env": "prod",
     "test_merchant_no": "***REDACTED_MERCHANT_NO***",
     "timeout": 30,
     "retry_times": 3

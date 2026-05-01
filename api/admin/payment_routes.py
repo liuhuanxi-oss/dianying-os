@@ -5,7 +5,7 @@
 对接天阙开放平台API，为前端管理后台提供支付能力
 
 API文档: https://paas.tianquetech.com/docs/
-测试环境: https://openapi-test.suixingpay.com
+生产环境: https://openapi.tianquetech.com
 生产环境: https://openapi.tianquetech.com
 """
 import os
@@ -36,7 +36,7 @@ def load_tianque_config():
         "private_key": os.environ.get("TIANQUE_PRIVATE_KEY", ""),
         "suixingpay_public_key": os.environ.get("TIANQUE_PUBLIC_KEY", ""),
         "sign_algorithm": os.environ.get("TIANQUE_SIGN_ALGORITHM", "SHA1withRSA"),
-        "base_url": os.environ.get("TIANQUE_BASE_URL", "https://openapi-test.suixingpay.com"),
+        "base_url": os.environ.get("TIANQUE_BASE_URL", "https://openapi.tianquetech.com"),
         "test_merchant_no": os.environ.get("TIANQUE_TEST_MNO", "***REDACTED_MERCHANT_NO***"),
     }
 
