@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools-scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dyos-payment"
+version = "1.0.0"
+description = "店赢OS天阙支付CLI工具 - Agent-First支付能力封装"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "DianYing OS Team", email = "liuhuanxi@outlook.com"}
+]
+keywords = ["payment", "tianque", "suixingpay", "cli", "agent", "dyos"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.25.0",
+    "cryptography>=3.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.9",
+    "mypy>=0.910",
+]
+
+[project.scripts]
+dyos-payment = "dyos_payment.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/liuhuanxi-oss/dianying-os"
+Documentation = "https://github.com/liuhuanxi-oss/dianying-os/tree/main/cli/dyos-payment"
+Repository = "https://github.com/liuhuanxi-oss/dianying-os"
+Issues = "https://github.com/liuhuanxi-oss/dianying-os/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dyos_payment*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
