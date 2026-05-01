@@ -32,3 +32,12 @@ npm-debug.log*
 
 # Optional eslint cache
 .eslintcache
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated posters
+api/public/posters/*.png
+

@@ -11954,3 +11954,378 @@ body.dark-mode .landing-page .hero-badge {
 body.dark-mode .landing-page .gradient-text {
   color: #fff;
 }
+
+/* ============================================
+   AI海报生成器样式
+   ============================================ */
+.poster-generator-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 20px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.poster-generator-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.poster-generator-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.poster-generator-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.poster-generator-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 表单样式 */
+.poster-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poster-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.poster-form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.poster-form-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.poster-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 主题选择按钮 */
+.poster-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.poster-theme-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.poster-theme-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.poster-theme-btn.active {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: #7C3AED;
+  color: #fff;
+}
+
+.poster-theme-btn i {
+  color: #A855F7;
+}
+
+.poster-theme-btn.active i {
+  color: #A855F7;
+}
+
+/* 风格选择按钮 */
+.poster-style-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.poster-style-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.poster-style-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.poster-style-btn.active {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: #7C3AED;
+  color: #fff;
+}
+
+.style-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* 输入框 */
+.poster-input {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.poster-input:focus {
+  outline: none;
+  border-color: #7C3AED;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.poster-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 生成按钮 */
+.poster-generate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.poster-generate-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+}
+
+.poster-generate-btn:active {
+  transform: translateY(0);
+}
+
+.poster-generate-btn.generating {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.poster-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.poster-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: poster-spin 0.8s linear infinite;
+}
+
+@keyframes poster-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 预览区域 */
+.poster-preview-area {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.poster-preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.poster-preview-empty i {
+  opacity: 0.5;
+}
+
+.poster-preview-result {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.poster-preview-result img {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.poster-preview-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.poster-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.poster-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.poster-action-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.poster-action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+}
+
+/* 示例海报提示 */
+.poster-preview-demo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.poster-preview-demo img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  opacity: 0.7;
+}
+
+.poster-demo-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  color: #FFC107;
+  font-size: 13px;
+}
+
+/* 线上提示 */
+.poster-online-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 8px;
+  color: #FFC107;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .poster-theme-grid,
+  .poster-style-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .poster-form-row {
+    flex-direction: column;
+  }
+  
+  .poster-generator-card {
+    padding: 16px;
+  }
+}
+
+/* 移动端优化 */
+@media (max-width: 480px) {
+  .poster-theme-grid,
+  .poster-style-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .poster-theme-btn span,
+  .poster-style-btn span {
+    display: none;
+  }
+  
+  .poster-theme-btn,
+  .poster-style-btn {
+    padding: 10px;
+  }
+}

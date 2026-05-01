@@ -1756,6 +1756,195 @@ function initOnboarding() {
 // ============================================
 // Missing Button Handlers
 // ============================================
+
+// ============================================
+// 海报生成器功能
+// ============================================
+let posterApiBase = 'http://localhost:8080';
+let currentPosterUrl = null;
+let isPosterGenerating = false;
+
+// 初始化海报生成器
+function initPosterGenerator() {
+  const generateBtn = document.getElementById('posterGenerateBtn');
+  const downloadBtn = document.getElementById('posterDownloadBtn');
+  const regenerateBtn = document.getElementById('posterRegenerateBtn');
+  
+  if (!generateBtn) return;
+  
+  // 主题选择
+  document.querySelectorAll('.poster-theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.poster-theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  
+  // 风格选择
+  document.querySelectorAll('.poster-style-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.poster-style-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  
+  // 生成按钮
+  generateBtn.addEventListener('click', generatePoster);
+  
+  // 下载按钮
+  downloadBtn?.addEventListener('click', downloadPoster);
+  
+  // 重新生成按钮
+  regenerateBtn?.addEventListener('click', generatePoster);
+  
+  // 检测API服务是否可用
+  checkPosterApiAvailability();
+}
+
+// 检测API服务是否可用
+async function checkPosterApiAvailability() {
+  const previewEmpty = document.getElementById('posterPreviewEmpty');
+  const previewDemo = document.getElementById('posterPreviewDemo');
+  const onlineTip = document.getElementById('posterOnlineTip');
+  
+  try {
+    const response = await fetch(`${posterApiBase}/api/health`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(2000)
+    });
+    
+    if (response.ok) {
+      // API可用，显示空状态提示
+      if (previewEmpty) previewEmpty.classList.remove('hidden');
+    }
+  } catch (e) {
+    // API不可用，显示线上提示
+    if (previewEmpty) previewEmpty.classList.add('hidden');
+    if (previewDemo) previewDemo.classList.remove('hidden');
+    if (onlineTip) onlineTip.classList.remove('hidden');
+  }
+}
+
+// 生成海报
+async function generatePoster() {
+  if (isPosterGenerating) return;
+  
+  const generateBtn = document.getElementById('posterGenerateBtn');
+  const previewEmpty = document.getElementById('posterPreviewEmpty');
+  const previewResult = document.getElementById('posterPreviewResult');
+  const previewImg = document.getElementById('posterPreviewImg');
+  
+  // 获取表单数据
+  const theme = document.querySelector('.poster-theme-btn.active')?.dataset.theme || '520情人节';
+  const style = document.querySelector('.poster-style-btn.active')?.dataset.style || 'romantic';
+  const storeName = document.getElementById('posterStoreName')?.value || '店赢OS';
+  const title = document.getElementById('posterTitle')?.value || '限时特惠';
+  const subtitle = document.getElementById('posterSubtitle')?.value || '全场8折';
+  
+  // 显示loading状态
+  isPosterGenerating = true;
+  generateBtn.classList.add('generating');
+  const loadingEl = generateBtn.querySelector('.poster-loading');
+  const btnText = generateBtn.querySelector('span');
+  if (loadingEl) loadingEl.classList.remove('hidden');
+  if (btnText) btnText.textContent = '生成中...';
+  
+  // 隐藏空状态
+  if (previewEmpty) previewEmpty.classList.add('hidden');
+  
+  try {
+    // 尝试调用本地API
+    const response = await fetch(`${posterApiBase}/api/generate-poster`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        theme: theme,
+        title: title,
+        subtitle: subtitle,
+        style: style,
+        store_name: storeName
+      }),
+      signal: AbortSignal.timeout(15000)
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.url) {
+        currentPosterUrl = data.url;
+        const fullUrl = `${posterApiBase}${data.url}`;
+        if (previewImg) {
+          previewImg.src = fullUrl;
+          previewImg.onload = () => {
+            if (previewResult) previewResult.classList.remove('hidden');
+            showToast('海报生成成功！');
+          };
+          previewImg.onerror = () => {
+            showToast('海报加载失败，请重试');
+            isPosterGenerating = false;
+            resetGenerateBtn();
+          };
+        }
+      }
+    } else {
+      throw new Error('API响应失败');
+    }
+  } catch (e) {
+    // API不可用，显示示例
+    showPosterDemo();
+    showToast('本地服务未启动，已显示示例海报', 3000);
+  }
+  
+  isPosterGenerating = false;
+  resetGenerateBtn();
+}
+
+// 重置生成按钮
+function resetGenerateBtn() {
+  const generateBtn = document.getElementById('posterGenerateBtn');
+  if (!generateBtn) return;
+  
+  generateBtn.classList.remove('generating');
+  const loadingEl = generateBtn.querySelector('.poster-loading');
+  const btnText = generateBtn.querySelector('span');
+  if (loadingEl) loadingEl.classList.add('hidden');
+  if (btnText) btnText.textContent = '生成海报';
+}
+
+// 显示示例海报
+function showPosterDemo() {
+  const previewDemo = document.getElementById('posterPreviewDemo');
+  const previewEmpty = document.getElementById('posterPreviewEmpty');
+  const previewResult = document.getElementById('posterPreviewResult');
+  
+  if (previewEmpty) previewEmpty.classList.add('hidden');
+  if (previewResult) previewResult.classList.add('hidden');
+  if (previewDemo) previewDemo.classList.remove('hidden');
+}
+
+// 下载海报
+async function downloadPoster() {
+  if (!currentPosterUrl) {
+    showToast('请先生成海报');
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${posterApiBase}${currentPosterUrl}`);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `海报_${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('海报下载成功！');
+  } catch (e) {
+    showToast('下载失败，请重试');
+  }
+}
+
 function initMissingButtonHandlers() {
   try {
     const bindBtn = (id, msg) => {
@@ -1836,6 +2025,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 新手引导
   initOnboarding();
+
+  // 海报生成器
+  initPosterGenerator();
 
   // 缺失按钮
   initMissingButtonHandlers();
