@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>店赢OS 运营监控中心</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/map/js/china.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -519,9 +520,41 @@
         .counting {
             display: inline-block;
         }
+
+        .back-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-home-btn:hover {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 106, 210, 0.3);
+        }
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-home-btn">
+        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+        返回首页
+    </a>
     <div class="loading-overlay hidden" id="loadingOverlay">
         <div class="loader"></div>
     </div>
@@ -1088,6 +1121,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loadingOverlay').classList.add('hidden');
+                lucide.createIcons();
                 initCounting();
                 initTradeFlow();
                 initInsightCarousel();

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>店赢OS - AI透视门店运营</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <link rel="stylesheet" href="css/ai-demo.css">
   <link rel="stylesheet" href="css/mobile-responsive.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -168,9 +169,40 @@
     
     .comparison-item .growth.up { color: var(--accent-success); }
     .comparison-item .growth.down { color: var(--accent-danger); }
+
+    .back-home-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .back-home-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
+  <a href="index.html" class="back-home-btn">
+    <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+    返回首页
+  </a>
   <div class="ai-demo-container">
     <!-- 左侧对话区域 -->
     <section class="chat-section">
