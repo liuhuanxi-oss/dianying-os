@@ -1030,6 +1030,540 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ==================== 赛博朋克霓虹灯效果 ==================== */
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00ff88, 0 0 30px #00ff88; }
+            50% { text-shadow: 0 0 10px #fff, 0 0 20px #00ff88, 0 0 30px #00ff88, 0 0 40px #00ff88; }
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        .cyber-text { animation: neonPulse 2s ease-in-out infinite; color: #00ff88; }
+        .glitch-effect:hover { animation: glitch 0.3s ease-in-out; }
+        
+        /* ==================== WAIC比赛杀招功能样式 ==================== */
+        
+        /* 对战擂台样式 - 红蓝对抗 */
+        .battle-arena {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .battle-arena::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff4444 0%, #ffffff 50%, #4444ff 100%);
+        }
+        .battle-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .battle-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff4444, #ffffff, #4444ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .battle-teams {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .team-human {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 2px solid #ff4444;
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .team-ai {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+            border: 2px solid #4444ff;
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .team-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .team-human .team-icon { background: #ff4444; }
+        .team-ai .team-icon { background: #4444ff; }
+        .team-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .team-human .team-name { color: #ff4444; }
+        .team-ai .team-name { color: #4444ff; }
+        .team-score {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .team-human .team-score { color: #ff4444; }
+        .team-ai .team-score { color: #4444ff; }
+        .battle-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .battle-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+        .battle-scenario-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .battle-start-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff4444 0%, #4444ff 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .battle-start-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5), 0 0 20px rgba(68, 68, 255, 0.5);
+        }
+        .battle-result {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .result-winner { color: #00ff88; }
+        .result-loser { color: #ff4444; }
+        .result-tie { color: #fbbf24; }
+        .battle-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .metric-item {
+            text-align: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        .metric-label { font-size: 12px; color: rgba(255, 255, 255, 0.7); margin-bottom: 4px; }
+        .metric-value { font-size: 20px; font-weight: 700; }
+        .metric-human { color: #ff4444; }
+        .metric-ai { color: #4444ff; }
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .history-winner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .history-win-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .history-win-badge.human { background: #ff4444; color: white; }
+        .history-win-badge.ai { background: #4444ff; color: white; }
+        
+        /* 时间加速器样式 - 赛博朋克 */
+        .time-machine {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a0a2e 50%, #0a1a2e 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .time-machine::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(0, 136, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .time-header {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .time-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
+        }
+        .time-display {
+            font-size: 72px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        .time-ratio {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .time-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .time-btn {
+            padding: 12px 24px;
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .time-btn:hover, .time-btn.active {
+            background: #00ff88;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        .time-btn.pause { border-color: #fbbf24; color: #fbbf24; }
+        .time-btn.pause:hover, .time-btn.pause.active { background: #fbbf24; color: #0a0a0a; }
+        .time-btn.reset { border-color: #ef4444; color: #ef4444; }
+        .time-btn.reset:hover { background: #ef4444; color: white; }
+        .time-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .time-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .time-stat-icon { font-size: 24px; margin-bottom: 8px; }
+        .time-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 4px;
+        }
+        .time-stat-label { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+        .time-timeline {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+        }
+        .timeline-events {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .timeline-event {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #00ff88;
+        }
+        .timeline-event.warning { border-left-color: #fbbf24; }
+        .timeline-event.danger { border-left-color: #ef4444; }
+        .timeline-event.ai { border-left-color: #3b82f6; }
+        .event-time { font-size: 12px; color: rgba(255, 255, 255, 0.5); min-width: 60px; }
+        .event-content { flex: 1; }
+        .event-title { font-size: 13px; font-weight: 500; color: white; margin-bottom: 4px; }
+        .event-desc { font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+        
+        /* Mock控制台样式 */
+        .mock-console {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            min-height: 500px;
+        }
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .mock-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        .mock-master-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mock-master-switch label {
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+        }
+        .mock-toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+        .mock-toggle input { opacity: 0; width: 0; height: 0; }
+        .mock-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #3d3d5c;
+            border-radius: 32px;
+            transition: all 0.3s ease;
+        }
+        .mock-slider::before {
+            content: '';
+            position: absolute;
+            height: 26px;
+            width: 26px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .mock-toggle input:checked + .mock-slider { background: #10B981; }
+        .mock-toggle input:checked + .mock-slider::before { transform: translateX(28px); }
+        .mock-mode-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .mock-mode-badge.mock { background: #10B981; color: white; }
+        .mock-mode-badge.real { background: #3B82F6; color: white; }
+        .mock-sections {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        .mock-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .mock-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mock-section h4 .icon { font-size: 18px; }
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .scenario-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .scenario-btn:hover { border-color: #6366F1; }
+        .scenario-btn.active {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: #6366F1;
+        }
+        .scenario-icon { font-size: 24px; margin-bottom: 8px; }
+        .density-slider {
+            width: 100%;
+            margin: 16px 0;
+        }
+        .density-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .event-toggles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .event-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .event-toggle input { display: none; }
+        .event-toggle .check {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .event-toggle input:checked + .check {
+            background: #EF4444;
+            border-color: #EF4444;
+        }
+        .event-toggle input:checked + .check::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            opacity: 0;
+        }
+        .event-toggle input:checked + .check::after { opacity: 1; }
+        .event-toggle span { font-size: 13px; color: white; }
+        .mock-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .mock-action-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .mock-action-btn.reset {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #EF4444;
+            color: #EF4444;
+        }
+        .mock-action-btn.reset:hover { background: #EF4444; color: white; }
+        .mock-action-btn.apply {
+            background: #10B981;
+            border: none;
+            color: white;
+        }
+        .mock-action-btn.apply:hover { background: #059669; }
+        .mock-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+        }
+        .mock-status-dot {
+            width: 12px;
+            height: 12px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .mock-status-text { font-size: 13px; color: #10B981; }
+        
+        /* 响应式适配 */
+        @media (max-width: 1024px) {
+            .battle-teams { grid-template-columns: 1fr; }
+            .time-stats { grid-template-columns: repeat(2, 1fr); }
+            .mock-sections { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .battle-header h3, .time-header h3 { font-size: 18px; }
+            .time-display { font-size: 48px; }
+        }
     </style>
 </head>
 <body>
@@ -1144,6 +1678,34 @@
             <div class="nav-item" onclick="switchModule('marketing')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg><span>AI内容创作</span></div>
             <div class="nav-item" onclick="switchModule('insight')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg><span>AI洞察日报</span></div>
             <div class="nav-item" onclick="switchModule('campaigns')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg><span>营销工具</span></div>
+            
+            <!-- CLI执行层 -->
+            <div class="nav-item" onclick="switchModule('cli-hub')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span>CLI执行中心</span></div>
+            <div class="nav-item" onclick="switchModule('ai-autopilot')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg><span>AI自动驾驶</span></div>
+            <div class="nav-item" onclick="switchModule('audit-trail')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg><span>AI决策审计</span></div>
+
+            <!-- ====== WAIC比赛演示 ====== -->
+            <div style="padding:16px 20px 8px;font-size:11px;color:#fbbf24;letter-spacing:1px;">🏆 比赛演示</div>
+            <div class="nav-item" onclick="switchModule('battle-arena')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>对战擂台</span>
+            </div>
+            <div class="nav-item" onclick="switchModule('time-machine')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>时间加速</span>
+            </div>
+            <div class="nav-item" onclick="switchModule('mock-control')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span>Mock控制</span>
+            </div>
         </nav>
     </aside>
 
@@ -3879,6 +4441,788 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CLI执行中心模块 ==================== -->
+        <div id="module-cli-hub" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🖥️ CLI执行中心</h2>
+                    <p>AI决策通过命令行驱动8大平台执行</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="showToast('info', '命令队列已刷新')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        刷新队列
+                    </button>
+                    <button class="btn btn-danger" onclick="showToast('warning', '已停止所有执行')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
+                        紧急停止
+                    </button>
+                </div>
+            </div>
+
+            <!-- 执行统计 -->
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>队列中命令</h3>
+                        <div class="stat-icon green">📋</div>
+                    </div>
+                    <div class="stat-value">12</div>
+                    <span class="stat-trend neutral">待执行</span>
+                </div>
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <h3>今日执行</h3>
+                        <div class="stat-icon blue">✓</div>
+                    </div>
+                    <div class="stat-value">248</div>
+                    <span class="stat-trend up">↑ 35%</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>成功率</h3>
+                        <div class="stat-icon green">🎯</div>
+                    </div>
+                    <div class="stat-value">96.8%</div>
+                    <span class="stat-trend up">↑ 2.3%</span>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <h3>平均耗时</h3>
+                        <div class="stat-icon yellow">⏱️</div>
+                    </div>
+                    <div class="stat-value">1.2<span style="font-size:14px">秒</span></div>
+                    <span class="stat-trend neutral">单命令</span>
+                </div>
+            </div>
+
+            <!-- 执行预览面板 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>⚡ 执行预览</h3>
+                    <span class="tag tag-warning">3条待确认</span>
+                </div>
+                <div class="card-body">
+                    <div class="cli-preview-box" style="background: #1E1E2E; border-radius: 12px; padding: 20px; font-family: 'Monaco', 'Menlo', monospace; font-size: 13px;">
+                        <div style="color: #6B7280; margin-bottom: 12px; font-size: 11px;">// AI决策预览 - 确认后执行</div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: #F59E0B;">$</span>
+                            <span style="color: #10B981;">dyos meituan review --reply "感谢您的反馈..."</span>
+                            <span style="color: #6B7280;"> # 差评回复</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: #F59E0B;">$</span>
+                            <span style="color: #10B981;">dyos eleme product --update-price --id 12345 --price 28.8</span>
+                            <span style="color: #6B7280;"> # 价格调整</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: #F59E0B;">$</span>
+                            <span style="color: #10B981;">dyos douyin content --publish --type video --title "新品上市"</span>
+                            <span style="color: #6B7280;"> # 内容发布</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button class="btn btn-success" onclick="showToast('success', '已执行3条命令')">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            确认执行
+                        </button>
+                        <button class="btn btn-outline" onclick="showToast('info', '已取消')">取消</button>
+                        <button class="btn btn-outline" onclick="showToast('info', '已修改')">修改命令</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 执行日志 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📜 执行日志</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <select class="form-input" style="width: auto; padding: 6px 12px;">
+                            <option>全部平台</option>
+                            <option>美团</option>
+                            <option>饿了么</option>
+                            <option>抖音</option>
+                        </select>
+                        <select class="form-input" style="width: auto; padding: 6px 12px;">
+                            <option>全部状态</option>
+                            <option>成功</option>
+                            <option>失败</option>
+                            <option>进行中</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <div class="cli-log-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); gap: 12px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></span>
+                        <span style="font-family: monospace; color: var(--primary); font-size: 12px;">dyos meituan review --reply</span>
+                        <span class="tag tag-success" style="margin-left: auto;">成功</span>
+                        <span style="color: var(--text-muted); font-size: 11px;">2分钟前</span>
+                    </div>
+                    <div class="cli-log-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); gap: 12px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--success);"></span>
+                        <span style="font-family: monospace; color: var(--primary); font-size: 12px;">dyos eleme product --update-price</span>
+                        <span class="tag tag-success" style="margin-left: auto;">成功</span>
+                        <span style="color: var(--text-muted); font-size: 11px;">5分钟前</span>
+                    </div>
+                    <div class="cli-log-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); gap: 12px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--warning);"></span>
+                        <span style="font-family: monospace; color: var(--primary); font-size: 12px;">dyos douyin content --publish</span>
+                        <span class="tag tag-warning" style="margin-left: auto;">进行中</span>
+                        <span style="color: var(--text-muted); font-size: 11px;">进行中</span>
+                    </div>
+                    <div class="cli-log-item" style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); gap: 12px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--danger);"></span>
+                        <span style="font-family: monospace; color: var(--primary); font-size: 12px;">dyos dianping review --analyze</span>
+                        <span class="tag tag-danger" style="margin-left: auto;">失败</span>
+                        <span style="color: var(--text-muted); font-size: 11px;">10分钟前</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8大平台连接状态 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🌐 8大平台连接状态</h3>
+                    <span class="tag tag-success">全部在线</span>
+                </div>
+                <div class="card-body">
+                    <div class="platform-grid">
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #FFD100;">🍔</div>
+                                <div class="platform-info"><h4>美团</h4><span>meituan.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos meituan --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #00B5E2;">🛵</div>
+                                <div class="platform-info"><h4>饿了么</h4><span>ele.me</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos eleme --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #000; color: white;">📱</div>
+                                <div class="platform-info"><h4>抖音</h4><span>douyin.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos douyin --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #FF6633;">⭐</div>
+                                <div class="platform-info"><h4>大众点评</h4><span>dianping.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos dianping --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #FF5000;">💎</div>
+                                <div class="platform-info"><h4>口碑</h4><span>koubei.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos koubei --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #00B900;">🗺️</div>
+                                <div class="platform-info"><h4>高德</h4><span>amap.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos amap --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #2932E1;">🔍</div>
+                                <div class="platform-info"><h4>百度</h4><span>baidu.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos baidu --status</div>
+                        </div>
+                        <div class="platform-card">
+                            <div class="platform-card-header">
+                                <div class="platform-logo" style="background: #FF2442;">📕</div>
+                                <div class="platform-info"><h4>小红书</h4><span>xiaohongshu.com</span></div>
+                                <div class="platform-status status-connected"></div>
+                            </div>
+                            <div style="font-family: monospace; font-size: 11px; color: var(--text-secondary);">$ dyos xiaohongshu --status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLI命令参考 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📖 CLI命令参考</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; gap: 12px;">
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos meituan review --reply "感谢您的反馈..."</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">美团差评自动回复</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos eleme product --update-price --id 12345 --price 28.8</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">饿了么产品价格调整</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos douyin content --publish --type video --title "新品上市"</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">抖音内容发布</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos dianping review --analyze --date 2024-01-15</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">大众点评评价分析</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos koubei campaign --create --type discount --value 20</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">口碑营销活动创建</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos amap location --update --lat 22.54 --lng 113.95</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">高德位置信息更新</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos baidu seo --optimize --keywords "火锅,深圳"</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">百度SEO优化</div>
+                        </div>
+                        <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
+                            <span style="color: #F59E0B; font-family: monospace;">$</span>
+                            <span style="color: #10B981; font-family: monospace;">dyos xiaohongshu note --publish --title "探店分享"</span>
+                            <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">小红书笔记发布</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== AI自动驾驶模块 ==================== -->
+        <div id="module-ai-autopilot" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🚀 AI自动驾驶</h2>
+                    <p>开启后AI将自动处理差评、调整价格、发布内容</p>
+                </div>
+                <div class="page-actions">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-weight: 600; color: var(--text-secondary);">自动驾驶模式</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autopilotToggle" onchange="toggleAutopilot(this)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span id="autopilotStatus" class="tag tag-danger">已关闭</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="manualOverride()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        人工接管
+                    </button>
+                </div>
+            </div>
+
+            <!-- 自动驾驶统计 -->
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>今日自动处理</h3>
+                        <div class="stat-icon green">✓</div>
+                    </div>
+                    <div class="stat-value">156</div>
+                    <span class="stat-trend up">↑ 45%</span>
+                </div>
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <h3>节省时间</h3>
+                        <div class="stat-icon blue">⏱️</div>
+                    </div>
+                    <div class="stat-value">12.5<span style="font-size:14px">小时</span></div>
+                    <span class="stat-trend neutral">本月累计</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>准确率</h3>
+                        <div class="stat-icon green">🎯</div>
+                    </div>
+                    <div class="stat-value">94.6%</div>
+                    <span class="stat-trend up">↑ 3.2%</span>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <h3>人工接管次数</h3>
+                        <div class="stat-icon yellow">⚠️</div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <span class="stat-trend neutral">本月</span>
+                </div>
+            </div>
+
+            <!-- 自动驾驶控制面板 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🎛️ 自动驾驶控制面板</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-review">
+                            <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">差评自动回复</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">AI自动分析差评并生成最优回复</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" checked onchange="toggleAutopilotFeature('review')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--success);">● 已启用</span>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-pricing">
+                            <div style="font-size: 48px; margin-bottom: 12px;">💰</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">智能价格调整</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">根据天气、竞争自动调价</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" checked onchange="toggleAutopilotFeature('pricing')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--success);">● 已启用</span>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-content">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📝</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">自动内容发布</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">定时发布推广内容到各平台</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" onchange="toggleAutopilotFeature('content')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--text-muted);">○ 已关闭</span>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-inventory">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📦</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">库存智能预警</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">自动监控库存并补货提醒</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" checked onchange="toggleAutopilotFeature('inventory')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--success);">● 已启用</span>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-campaign">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🎯</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">营销活动自动</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">自动创建和优化营销活动</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" onchange="toggleAutopilotFeature('campaign')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--text-muted);">○ 已关闭</span>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-service">
+                            <div style="font-size: 48px; margin-bottom: 12px;">🤖</div>
+                            <h4 style="font-size: 16px; margin-bottom: 8px;">智能客服</h4>
+                            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">24小时自动回复客户咨询</p>
+                            <label class="toggle-switch" style="margin: 0 auto;">
+                                <input type="checkbox" checked onchange="toggleAutopilotFeature('service')">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <div style="margin-top: 12px; font-size: 12px;">
+                                <span style="color: var(--success);">● 已启用</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 当前自动执行任务 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📋 当前自动执行任务</h3>
+                    <span class="tag tag-info">4项进行中</span>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">💬</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 14px;">差评回复 - 美团店铺</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">自动生成3条回复，等待审核</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="agent-progress" style="width: 80px;"><div class="agent-progress-fill" style="width: 60%;"></div></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">60%</span>
+                                <button class="btn btn-outline btn-sm" onclick="showToast('info', '已接管')">接管</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; padding: 16px; background: #EEF2FF; border: 1px solid #A5B4FC; border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">💰</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 14px;">价格调整 - 饿了么平台</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">根据竞争分析，建议调低5%</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="agent-progress" style="width: 80px;"><div class="agent-progress-fill" style="width: 30%;"></div></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">30%</span>
+                                <button class="btn btn-outline btn-sm" onclick="showToast('info', '已接管')">接管</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">📦</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 14px;">库存预警 - 雪花牛肉</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">库存低于阈值，已发送补货提醒</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="agent-progress" style="width: 80px;"><div class="agent-progress-fill" style="width: 100%;"></div></div>
+                                <span style="font-size: 12px; color: var(--success);">完成</span>
+                                <span class="tag tag-success">已处理</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; padding: 16px; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 10px;">
+                            <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">🤖</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 14px;">智能客服 - 客户咨询回复</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">新咨询: "营业时间到几点?"</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="agent-progress" style="width: 80px;"><div class="agent-progress-fill" style="width: 85%;"></div></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">85%</span>
+                                <button class="btn btn-outline btn-sm" onclick="showToast('info', '已接管')">接管</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 效率提升图表 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📊 效率提升对比</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;">
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">15分钟</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">差评回复耗时</div>
+                            <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 85%</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">3分钟</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">价格调整耗时</div>
+                            <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 92%</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">5分钟</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">内容发布耗时</div>
+                            <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 88%</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">24小时</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">客服响应时间</div>
+                            <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↑ 全天候服务</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== AI决策审计模块 ==================== -->
+        <div id="module-audit-trail" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>📋 AI决策审计</h2>
+                    <p>记录每个AI决策的全过程，支持回滚与复盘</p>
+                </div>
+                <div class="page-actions">
+                    <select class="form-input" style="width: auto; padding: 8px 12px;">
+                        <option>全部类型</option>
+                        <option>差评处理</option>
+                        <option>价格调整</option>
+                        <option>内容发布</option>
+                    </select>
+                    <select class="form-input" style="width: auto; padding: 8px 12px;">
+                        <option>全部时间</option>
+                        <option>今天</option>
+                        <option>本周</option>
+                        <option>本月</option>
+                    </select>
+                    <button class="btn btn-outline" onclick="exportAuditLog()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        导出审计日志
+                    </button>
+                </div>
+            </div>
+
+            <!-- 审计统计 -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <h3>今日决策</h3>
+                        <div class="stat-icon blue">🤖</div>
+                    </div>
+                    <div class="stat-value">248</div>
+                    <span class="stat-trend up">↑ 35%</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>执行成功</h3>
+                        <div class="stat-icon green">✓</div>
+                    </div>
+                    <div class="stat-value">239</div>
+                    <span class="stat-trend up">96.4%</span>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <h3>人工干预</h3>
+                        <div class="stat-icon yellow">⚠️</div>
+                    </div>
+                    <div class="stat-value">9</div>
+                    <span class="stat-trend neutral">3.6%</span>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-header">
+                        <h3>已回滚</h3>
+                        <div class="stat-icon red">↩️</div>
+                    </div>
+                    <div class="stat-value">2</div>
+                    <span class="stat-trend neutral">本月</span>
+                </div>
+            </div>
+
+            <!-- AI决策黑匣子 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🖥️ AI决策黑匣子</h3>
+                    <span class="tag tag-purple">决策ID: D-2024-0315-0089</span>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+                        <div class="ai-analysis-card" style="background: #FEF2F2; border: 1px solid #FECACA;">
+                            <div style="font-size: 12px; color: #991B1B; font-weight: 600; margin-bottom: 8px;">📥 输入数据</div>
+                            <div style="font-size: 13px; color: #7F1D1D; line-height: 1.6;">
+                                差评内容: "等餐时间太长,等了40分钟"<br>
+                                平台: 美团<br>
+                                评分: 2星<br>
+                                用户等级: 金牌会员<br>
+                                历史消费: ¥2,580
+                            </div>
+                        </div>
+                        <div class="ai-analysis-card" style="background: #EFF6FF; border: 1px solid #BFDBFE;">
+                            <div style="font-size: 12px; color: #1E40AF; font-weight: 600; margin-bottom: 8px;">🧠 推理过程</div>
+                            <div style="font-size: 13px; color: #1E3A8A; line-height: 1.6;">
+                                1. 识别情绪: 失望/愤怒<br>
+                                2. 问题类型: 服务等待<br>
+                                3. 优先级: 高<br>
+                                4. 推荐策略: 道歉+补偿<br>
+                                5. 置信度: 94.6%
+                            </div>
+                        </div>
+                        <div class="ai-analysis-card" style="background: #F0FDF4; border: 1px solid #86EFAC;">
+                            <div style="font-size: 12px; color: #065F46; font-weight: 600; margin-bottom: 8px;">📤 输出结果</div>
+                            <div style="font-size: 13px; color: #064E3B; line-height: 1.6;">
+                                CLI命令:<br>
+                                <code style="background: #1E1E2E; color: #10B981; padding: 2px 6px; border-radius: 4px; font-size: 11px;">dyos meituan review --reply</code><br>
+                                执行状态: <span class="tag tag-success">成功</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: #1E1E2E; border-radius: 8px; padding: 16px;">
+                        <div style="color: #6B7280; font-size: 11px; margin-bottom: 8px;">// 完整决策追踪</div>
+                        <div style="color: #9CA3AF; font-size: 12px; line-height: 1.8;">
+                            <div><span style="color: #6B7280;">[10:23:45]</span> 接收差评通知 | 平台: 美团 | 评分: 2星</div>
+                            <div><span style="color: #6B7280;">[10:23:46]</span> 调用AI推理引擎 | 模型: gpt-4 | 请求ID: req_8x9k2</div>
+                            <div><span style="color: #6B7280;">[10:23:47]</span> 情感分析完成 | 情绪: 失望/愤怒 | 置信度: 94.6%</div>
+                            <div><span style="color: #6B7280;">[10:23:48]</span> 生成回复方案 | 策略: 道歉+补偿 | 方案编号: P-089</div>
+                            <div><span style="color: #6B7280;">[10:23:49]</span> CLI命令生成 | <span style="color: #10B981;">dyos meituan review --reply "感谢您的反馈..."</span></div>
+                            <div><span style="color: #6B7280;">[10:23:50]</span> 执行预览确认 | 用户确认: 自动执行</div>
+                            <div><span style="color: #6B7280;">[10:23:51]</span> CLI执行完成 | 状态: 200 OK | 耗时: 1.2s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 决策审计时间线 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📅 决策审计时间线</h3>
+                </div>
+                <div class="card-body">
+                    <div class="audit-timeline">
+                        <div class="timeline-item" style="display: flex; gap: 16px; margin-bottom: 24px; position: relative;">
+                            <div style="width: 40px; height: 40px; background: #FEE2E2; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">💬</div>
+                            <div style="flex: 1; padding-bottom: 24px; border-left: 2px solid var(--border); padding-left: 20px; margin-left: -21px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">AI差评回复 - 美团店铺</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">自动回复差评: "等餐时间太长..."</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="tag tag-success">已执行</span>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">10:23:51</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                                    <button class="btn btn-outline btn-sm" onclick="viewDecisionDetail('D-001')">查看详情</button>
+                                    <button class="btn btn-outline btn-sm" onclick="rollbackDecision('D-001')">回滚</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item" style="display: flex; gap: 16px; margin-bottom: 24px; position: relative;">
+                            <div style="width: 40px; height: 40px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">💰</div>
+                            <div style="flex: 1; padding-bottom: 24px; border-left: 2px solid var(--border); padding-left: 20px; margin-left: -21px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">AI价格调整 - 饿了么</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">爆款套餐价格下调5%: ¥32.8 → ¥31.2</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="tag tag-warning">待确认</span>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">10:18:32</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                                    <button class="btn btn-success btn-sm" onclick="approveDecision('D-002')">批准</button>
+                                    <button class="btn btn-outline btn-sm" onclick="rejectDecision('D-002')">拒绝</button>
+                                    <button class="btn btn-outline btn-sm" onclick="modifyDecision('D-002')">修改</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item" style="display: flex; gap: 16px; margin-bottom: 24px; position: relative;">
+                            <div style="width: 40px; height: 40px; background: #DBEAFE; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">📝</div>
+                            <div style="flex: 1; padding-bottom: 24px; border-left: 2px solid var(--border); padding-left: 20px; margin-left: -21px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">AI内容生成 - 抖音视频</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">生成推广视频脚本: "新品牛肉火锅测评"</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="tag tag-info">草稿</span>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">09:45:18</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                                    <button class="btn btn-success btn-sm" onclick="publishDecision('D-003')">发布</button>
+                                    <button class="btn btn-outline btn-sm" onclick="editDecision('D-003')">编辑</button>
+                                    <button class="btn btn-outline btn-sm" onclick="viewDecisionDetail('D-003')">详情</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item" style="display: flex; gap: 16px; margin-bottom: 24px; position: relative;">
+                            <div style="width: 40px; height: 40px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">✓</div>
+                            <div style="flex: 1; padding-bottom: 24px; border-left: 2px solid var(--border); padding-left: 20px; margin-left: -21px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">AI补货提醒 - 库存预警</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">雪花牛肉库存不足，已发送采购提醒</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span class="tag tag-success">已完成</span>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">09:30:05</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 人类vs AI对比 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>⚖️ 人类 vs AI 对比分析</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                                <span style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">👤</span>
+                                <span style="font-weight: 600;">人类处理</span>
+                            </div>
+                            <div style="font-size: 13px; line-height: 1.7; color: var(--text-secondary);">
+                                <p><strong>回复内容:</strong> "对不起给您带来不便，下次来给您打折"</p>
+                                <p><strong>处理时间:</strong> 45分钟</p>
+                                <p><strong>顾客满意度:</strong> 60%</p>
+                                <p><strong>二次消费率:</strong> 35%</p>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="font-size: 12px; color: var(--text-muted);">问题: 回复时间过长，未提供具体补偿方案</div>
+                            </div>
+                        </div>
+                        <div style="border: 2px solid var(--success); border-radius: 12px; padding: 20px; background: #F0FDF4;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                                <span style="width: 32px; height: 32px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">🤖</span>
+                                <span style="font-weight: 600;">AI处理</span>
+                                <span class="tag tag-success">更优</span>
+                            </div>
+                            <div style="font-size: 13px; line-height: 1.7; color: var(--text-secondary);">
+                                <p><strong>回复内容:</strong> "非常抱歉让您久等！我们已为您准备了专属优惠券，明天到店可享受8折优惠，并赠送特色小菜一份。"</p>
+                                <p><strong>处理时间:</strong> 15秒</p>
+                                <p><strong>顾客满意度:</strong> 92%</p>
+                                <p><strong>二次消费率:</strong> 78%</p>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="font-size: 12px; color: var(--success);">✓ 优势: 响应快、方案具体、有激励措施</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 决策回滚 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>↩️ 决策回滚记录</h3>
+                </div>
+                <div class="card-body">
+                    <table class="reconciliation-table">
+                        <thead>
+                            <tr>
+                                <th>决策ID</th>
+                                <th>类型</th>
+                                <th>执行时间</th>
+                                <th>回滚原因</th>
+                                <th>回滚时间</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code style="font-family: monospace;">D-2024-0312-0045</code></td>
+                                <td><span class="tag tag-info">价格调整</span></td>
+                                <td>2024-03-12 14:23</td>
+                                <td>价格下调幅度过大</td>
+                                <td>2024-03-12 14:35</td>
+                                <td><span class="tag tag-success">已恢复</span></td>
+                            </tr>
+                            <tr>
+                                <td><code style="font-family: monospace;">D-2024-0308-0098</code></td>
+                                <td><span class="tag tag-purple">内容发布</span></td>
+                                <td>2024-03-08 10:15</td>
+                                <td>文案内容需要修改</td>
+                                <td>2024-03-08 10:28</td>
+                                <td><span class="tag tag-success">已恢复</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
