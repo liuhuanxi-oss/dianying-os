@@ -359,6 +359,32 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                     <span>荣誉墙</span>
                 </div>
+                <!-- 新增：核心功能模块 -->
+                <div style="padding:12px 24px 8px;font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;">📊 核心管理</div>
+                <div class="nav-item" onclick="switchModule('merchant')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    <span>我的商户</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('performance')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span>业绩统计</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('commission')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>分润查看</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('customermgr')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span>客户管理</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('reports')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>数据报表</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('onboard')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <span>支付进件</span>
+                </div>
             </nav>
         </aside>
 
@@ -1229,6 +1255,660 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ==================== 我的商户管理模块 ==================== -->
+            <div id="module-merchant" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>🏪 我的商户管理</h3>
+                        <button class="btn btn-success btn-sm" onclick="openModal('add-merchant-modal')">+ 新增商户</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="crm-filters">
+                            <div class="filter-tag active">全部商户 (126)</div>
+                            <div class="filter-tag">正常营业 (118)</div>
+                            <div class="filter-tag">待审核 (5)</div>
+                            <div class="filter-tag">已暂停 (3)</div>
+                        </div>
+
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>商户信息</th>
+                                    <th>行业</th>
+                                    <th>签约日期</th>
+                                    <th>状态</th>
+                                    <th>月交易额</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#4361ee;">星</div>
+                                            <div>
+                                                <div style="font-weight:600;">星巴克咖啡(华强北店)</div>
+                                                <div style="font-size:12px;color:#64748b;">商户号：M202401001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>咖啡茶饮</td>
+                                    <td>2024-01-15</td>
+                                    <td><span class="status-badge status-signed">正常营业</span></td>
+                                    <td>¥156,280</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm" onclick="openModal('merchant-detail-modal')">详情</button>
+                                        <button class="btn btn-primary btn-sm" onclick="openModal('onboard-modal')">代进件</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#10b981;">麦</div>
+                                            <div>
+                                                <div style="font-weight:600;">麦当劳(海岸城店)</div>
+                                                <div style="font-size:12px;color:#64748b;">商户号：M202401002</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>快餐连锁</td>
+                                    <td>2024-01-10</td>
+                                    <td><span class="status-badge status-signed">正常营业</span></td>
+                                    <td>¥238,650</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">详情</button>
+                                        <button class="btn btn-primary btn-sm">代进件</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#f59e0b;">喜</div>
+                                            <div>
+                                                <div style="font-weight:600;">喜茶(万象城店)</div>
+                                                <div style="font-size:12px;color:#64748b;">商户号：M202401003</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>咖啡茶饮</td>
+                                    <td>2024-01-20</td>
+                                    <td><span class="status-badge status-following">待审核</span></td>
+                                    <td>-</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">详情</button>
+                                        <button class="btn btn-success btn-sm">代进件</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#ec4899;">奈</div>
+                                            <div>
+                                                <div style="font-weight:600;">奈雪の茶(南山店)</div>
+                                                <div style="font-size:12px;color:#64748b;">商户号：M202401004</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>咖啡茶饮</td>
+                                    <td>2024-01-18</td>
+                                    <td><span class="status-badge status-signed">正常营业</span></td>
+                                    <td>¥98,320</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">详情</button>
+                                        <button class="btn btn-primary btn-sm">代进件</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#8b5cf6;">小</div>
+                                            <div>
+                                                <div style="font-weight:600;">小杨生煎(福田店)</div>
+                                                <div style="font-size:12px;color:#64748b;">商户号：M202401005</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>中式餐饮</td>
+                                    <td>2024-01-05</td>
+                                    <td><span class="status-badge status-churned">已暂停</span></td>
+                                    <td>¥0</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">详情</button>
+                                        <button class="btn btn-warning btn-sm">激活</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="text-align:center;margin-top:24px;">
+                            <button class="btn btn-outline">加载更多</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 业绩统计模块 ==================== -->
+            <div id="module-performance" class="module-content">
+                <div class="stats-grid">
+                    <div class="stat-card success">
+                        <h3>本月交易额</h3>
+                        <div class="value">¥658万</div>
+                        <div class="sub"><span class="trend up">↑ 23.5%</span> 较上月</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>本月新增商户</h3>
+                        <div class="value">8<span style="font-size:16px">家</span></div>
+                        <div class="sub"><span class="trend up">↑ 12.5%</span> 较上月</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <h3>本月分润</h3>
+                        <div class="value">¥6,580</div>
+                        <div class="sub"><span class="trend up">↑ 18.2%</span> 较上月</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <h3>累计交易额</h3>
+                        <div class="value">¥2,560万</div>
+                        <div class="sub">历史累计</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📈 业绩增长趋势</h3>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;">周</button>
+                            <button class="btn btn-sm" style="background:white;color:var(--primary);">月</button>
+                            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;">季</button>
+                            <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;">年</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height:300px;">
+                            <div class="chart-bars" style="height:240px;">
+                                <div class="chart-bar" style="height:45%;"><div class="chart-bar-value">¥480万</div><div class="chart-bar-label">8月</div></div>
+                                <div class="chart-bar" style="height:52%;"><div class="chart-bar-value">¥520万</div><div class="chart-bar-label">9月</div></div>
+                                <div class="chart-bar" style="height:48%;"><div class="chart-bar-value">¥490万</div><div class="chart-bar-label">10月</div></div>
+                                <div class="chart-bar" style="height:58%;"><div class="chart-bar-value">¥540万</div><div class="chart-bar-label">11月</div></div>
+                                <div class="chart-bar" style="height:68%;"><div class="chart-bar-value">¥580万</div><div class="chart-bar-label">12月</div></div>
+                                <div class="chart-bar" style="height:78%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">¥658万</div><div class="chart-bar-label">1月</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📋 业绩明细</h3>
+                        <button class="btn btn-outline btn-sm" style="border-color:white;color:white;">导出报表</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>商户数</th>
+                                    <th>交易笔数</th>
+                                    <th>交易额</th>
+                                    <th>分润收益</th>
+                                    <th>增长</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-01 至 2024-01-31</td>
+                                    <td>126</td>
+                                    <td>28,560</td>
+                                    <td>¥6,580,000</td>
+                                    <td>¥6,580</td>
+                                    <td><span class="trend up">↑ 18.2%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-12-01 至 2023-12-31</td>
+                                    <td>118</td>
+                                    <td>25,420</td>
+                                    <td>¥5,800,000</td>
+                                    <td>¥5,800</td>
+                                    <td><span class="trend up">↑ 12.8%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-11-01 至 2023-11-30</td>
+                                    <td>110</td>
+                                    <td>23,680</td>
+                                    <td>¥5,400,000</td>
+                                    <td>¥5,400</td>
+                                    <td><span class="trend up">↑ 8.5%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 分润查看模块 ==================== -->
+            <div id="module-commission" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>💰 分润概览</h3>
+                        <button class="btn btn-success btn-sm" onclick="openModal('withdraw-modal')">申请提现</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-card success">
+                                <h3>可提现金额</h3>
+                                <div class="value">¥8,560.80</div>
+                                <div class="sub">T+0实时到账</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>本月分润</h3>
+                                <div class="value">¥6,580.00</div>
+                                <div class="sub">已结算</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <h3>累计分润</h3>
+                                <div class="value">¥12,800.00</div>
+                                <div class="sub">历史累计</div>
+                            </div>
+                            <div class="stat-card purple">
+                                <h3>冻结金额</h3>
+                                <div class="value">¥520.00</div>
+                                <div class="sub">待审核提现</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📊 分润明细</h3>
+                        <select class="form-select" style="width:150px;background:rgba(255,255,255,0.2);border:none;color:white;">
+                            <option>本月</option>
+                            <option>上月</option>
+                            <option>近3月</option>
+                            <option>近6月</option>
+                            <option>全部</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="profit-records">
+                            <div class="profit-record">
+                                <div class="profit-record-icon">☕</div>
+                                <div class="profit-record-info">
+                                    <h4>星巴克咖啡(华强北店)</h4>
+                                    <p>交易额 ¥2,560 | 分润比例 0.35%</p>
+                                </div>
+                                <div class="profit-record-amount">
+                                    <div class="amount">+¥8.96</div>
+                                    <div class="time">2024-01-20</div>
+                                </div>
+                            </div>
+                            <div class="profit-record">
+                                <div class="profit-record-icon">🍔</div>
+                                <div class="profit-record-info">
+                                    <h4>麦当劳(海岸城店)</h4>
+                                    <p>交易额 ¥3,860 | 分润比例 0.35%</p>
+                                </div>
+                                <div class="profit-record-amount">
+                                    <div class="amount">+¥13.51</div>
+                                    <div class="time">2024-01-20</div>
+                                </div>
+                            </div>
+                            <div class="profit-record">
+                                <div class="profit-record-icon">🧋</div>
+                                <div class="profit-record-info">
+                                    <h4>喜茶(万象城店)</h4>
+                                    <p>交易额 ¥1,860 | 分润比例 0.35%</p>
+                                </div>
+                                <div class="profit-record-amount">
+                                    <div class="amount">+¥6.51</div>
+                                    <div class="time">2024-01-19</div>
+                                </div>
+                            </div>
+                            <div class="profit-record">
+                                <div class="profit-record-icon">🥗</div>
+                                <div class="profit-record-info">
+                                    <h4>沙拉日记(科技园店)</h4>
+                                    <p>交易额 ¥860 | 分润比例 0.35%</p>
+                                </div>
+                                <div class="profit-record-amount">
+                                    <div class="amount">+¥3.01</div>
+                                    <div class="time">2024-01-19</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>💳 结算记录</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>结算日期</th>
+                                    <th>结算金额</th>
+                                    <th>结算状态</th>
+                                    <th>到账时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-15</td>
+                                    <td>¥5,280.50</td>
+                                    <td><span class="status-badge status-signed">已到账</span></td>
+                                    <td>2024-01-15 10:32</td>
+                                    <td><button class="btn btn-outline btn-sm">查看凭证</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-08</td>
+                                    <td>¥4,860.30</td>
+                                    <td><span class="status-badge status-signed">已到账</span></td>
+                                    <td>2024-01-08 09:15</td>
+                                    <td><button class="btn btn-outline btn-sm">查看凭证</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-01</td>
+                                    <td>¥5,120.80</td>
+                                    <td><span class="status-badge status-signed">已到账</span></td>
+                                    <td>2024-01-01 11:28</td>
+                                    <td><button class="btn btn-outline btn-sm">查看凭证</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 客户管理模块 ==================== -->
+            <div id="module-customermgr" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>👥 客户分配与管理</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('assign-customer-modal')">+ 分配客户</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="crm-filters">
+                            <div class="filter-tag active">全部业务员</div>
+                            <div class="filter-tag">张三 (42户)</div>
+                            <div class="filter-tag">李四 (38户)</div>
+                            <div class="filter-tag">王五 (28户)</div>
+                            <div class="filter-tag">赵六 (18户)</div>
+                        </div>
+
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>业务员</th>
+                                    <th>负责商户数</th>
+                                    <th>本月新增</th>
+                                    <th>签约率</th>
+                                    <th>最近跟进</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#4361ee;">张</div>
+                                            <div>
+                                                <div style="font-weight:600;">张三</div>
+                                                <div style="font-size:12px;color:#64748b;">高级业务员</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>42</td>
+                                    <td>5</td>
+                                    <td>78.5%</td>
+                                    <td>今天</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#10b981;">李</div>
+                                            <div>
+                                                <div style="font-weight:600;">李四</div>
+                                                <div style="font-size:12px;color:#64748b;">资深业务员</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>38</td>
+                                    <td>3</td>
+                                    <td>82.3%</td>
+                                    <td>昨天</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#f59e0b;">王</div>
+                                            <div>
+                                                <div style="font-weight:600;">王五</div>
+                                                <div style="font-size:12px;color:#64748b;">中级业务员</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>28</td>
+                                    <td>2</td>
+                                    <td>71.4%</td>
+                                    <td>2天前</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar" style="background:#8b5cf6;">赵</div>
+                                            <div>
+                                                <div style="font-weight:600;">赵六</div>
+                                                <div style="font-size:12px;color:#64748b;">初级业务员</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>18</td>
+                                    <td>1</td>
+                                    <td>66.7%</td>
+                                    <td>3天前</td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content-card" style="margin-top:24px;">
+                    <div class="card-header">
+                        <h3>📝 跟访记录</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('followup-modal')">+ 添加跟访</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="visit-timeline">
+                            <div class="visit-item">
+                                <h4>张三 - 跟访喜茶(万象城店)</h4>
+                                <p>客户对分润系统很感兴趣，表示下周和老板汇报后给答复。已发送产品资料和案例对比。</p>
+                                <div class="visit-time">📍 深圳市南山区海德三道 | 🕐 今天 14:30 | 🎯 签约洽谈</div>
+                            </div>
+                            <div class="visit-item">
+                                <h4>李四 - 跟访奈雪の茶(南山店)</h4>
+                                <p>了解客户目前的支付痛点，主要问题是到账慢、对账麻烦。推荐店赢OS的T+0快速提现功能，客户表示有兴趣。</p>
+                                <div class="visit-time">📍 深圳市南山区科技园 | 🕐 昨天 10:15 | 🎯 产品演示</div>
+                            </div>
+                            <div class="visit-item">
+                                <h4>王五 - 跟访小杨生煎(福田店)</h4>
+                                <p>初次拜访，介绍店赢OS聚合支付功能和AI运营分析。客户询问了费率和分润比例，已详细解答。</p>
+                                <div class="visit-time">📍 深圳市福田区华强北 | 🕐 1月18日 15:00 | 🎯 初次拜访</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 基础数据报表模块 ==================== -->
+            <div id="module-reports" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📊 数据报表中心</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px,1fr));gap:24px;">
+                            <div style="background:linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);border-radius:12px;padding:24px;color:white;">
+                                <div style="font-size:48px;margin-bottom:16px;">📈</div>
+                                <h4 style="font-size:18px;font-weight:600;margin-bottom:8px;">商户交易报表</h4>
+                                <p style="font-size:13px;opacity:0.9;margin-bottom:16px;">查看所有商户的交易数据、交易趋势、支付方式分布等</p>
+                                <button class="btn btn-sm" style="background:white;color:#4361ee;">查看报表</button>
+                            </div>
+                            <div style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);border-radius:12px;padding:24px;color:white;">
+                                <div style="font-size:48px;margin-bottom:16px;">💰</div>
+                                <h4 style="font-size:18px;font-weight:600;margin-bottom:8px;">分润收益报表</h4>
+                                <p style="font-size:13px;opacity:0.9;margin-bottom:16px;">查看分润明细、结算记录、提现历史等财务数据</p>
+                                <button class="btn btn-sm" style="background:white;color:#10b981;">查看报表</button>
+                            </div>
+                            <div style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);border-radius:12px;padding:24px;color:white;">
+                                <div style="font-size:48px;margin-bottom:16px;">👥</div>
+                                <h4 style="font-size:18px;font-weight:600;margin-bottom:8px;">团队业绩报表</h4>
+                                <p style="font-size:13px;opacity:0.9;margin-bottom:16px;">查看团队成员的业绩排名、商户数、分润贡献等</p>
+                                <button class="btn btn-sm" style="background:white;color:#f59e0b;">查看报表</button>
+                            </div>
+                            <div style="background:linear-gradient(135deg, #ec4899 0%, #db2777 100%);border-radius:12px;padding:24px;color:white;">
+                                <div style="font-size:48px;margin-bottom:16px;">🎯</div>
+                                <h4 style="font-size:18px;font-weight:600;margin-bottom:8px;">客户转化报表</h4>
+                                <p style="font-size:13px;opacity:0.9;margin-bottom:16px;">查看客户转化率、跟进效果、签约周期等数据</p>
+                                <button class="btn btn-sm" style="background:white;color:#ec4899;">查看报表</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card" style="margin-top:24px;">
+                    <div class="card-header">
+                        <h3>🔧 工单查询</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('ticket-modal')">+ 提交工单</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="crm-filters">
+                            <div class="filter-tag active">全部工单</div>
+                            <div class="filter-tag">待处理 (3)</div>
+                            <div class="filter-tag">处理中 (2)</div>
+                            <div class="filter-tag">已完成 (15)</div>
+                        </div>
+
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>工单编号</th>
+                                    <th>工单类型</th>
+                                    <th>问题描述</th>
+                                    <th>提交时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>T20240120-001</td>
+                                    <td>商户问题</td>
+                                    <td>星巴克(华强北店)支付到账延迟</td>
+                                    <td>2024-01-20 09:30</td>
+                                    <td><span class="status-badge status-following">处理中</span></td>
+                                    <td><button class="btn btn-outline btn-sm">查看</button></td>
+                                </tr>
+                                <tr>
+                                    <td>T20240119-002</td>
+                                    <td>系统问题</td>
+                                    <td>CRM系统登录异常</td>
+                                    <td>2024-01-19 14:20</td>
+                                    <td><span class="status-badge status-signed">已完成</span></td>
+                                    <td><button class="btn btn-outline btn-sm">查看</button></td>
+                                </tr>
+                                <tr>
+                                    <td>T20240118-003</td>
+                                    <td>进件问题</td>
+                                    <td>喜茶(万象城店)进件审核未通过</td>
+                                    <td>2024-01-18 11:15</td>
+                                    <td><span class="status-badge status-potential">待处理</span></td>
+                                    <td><button class="btn btn-outline btn-sm">查看</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 支付进件模块 ==================== -->
+            <div id="module-onboard" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>🔐 支付进件 - 代商户提交申请</h3>
+                        <button class="btn btn-success btn-sm" onclick="openModal('onboard-modal')">+ 新增进件申请</button>
+                    </div>
+                    <div class="card-body">
+                        <div style="background:#e0e7ff;padding:24px;border-radius:12px;margin-bottom:24px;border-left:4px solid #4361ee;">
+                            <h4 style="color:#4338ca;margin-bottom:12px;">💡 温馨提示</h4>
+                            <ul style="color:#3730a3;font-size:14px;line-height:1.8;margin-left:20px;">
+                                <li>请确保商户资料真实、完整、准确</li>
+                                <li>营业执照、身份证等证件需清晰可见</li>
+                                <li>审核通过后，商户即可开始使用支付功能</li>
+                                <li>审核周期一般为 1-3 个工作日</li>
+                            </ul>
+                        </div>
+
+                        <table class="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>商户名称</th>
+                                    <th>申请类型</th>
+                                    <th>提交时间</th>
+                                    <th>审核状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>喜茶(万象城店)</td>
+                                    <td>微信支付 + 支付宝</td>
+                                    <td>2024-01-20 10:30</td>
+                                    <td><span class="status-badge status-following">审核中</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                        <button class="btn btn-warning btn-sm">补充资料</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>奈雪の茶(南山店)</td>
+                                    <td>云闪付</td>
+                                    <td>2024-01-19 15:45</td>
+                                    <td><span class="status-badge status-signed">审核通过</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                        <button class="btn btn-success btn-sm">激活支付</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>小杨生煎(福田店)</td>
+                                    <td>微信支付 + 支付宝 + 云闪付</td>
+                                    <td>2024-01-18 09:20</td>
+                                    <td><span class="status-badge status-churned">审核未通过</span></td>
+                                    <td>
+                                        <button class="btn btn-outline btn-sm">查看详情</button>
+                                        <button class="btn btn-primary btn-sm">重新提交</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -1364,6 +2044,314 @@
         </div>
     </div>
 
+    <!-- 弹窗：新增商户 -->
+    <div class="modal-overlay" id="add-merchant-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🏪 新增商户</h3>
+                <button class="modal-close" onclick="closeModal('add-merchant-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>商户名称 *</label>
+                    <input type="text" class="form-input" placeholder="请输入商户名称">
+                </div>
+                <div class="form-group">
+                    <label>商户简称</label>
+                    <input type="text" class="form-input" placeholder="请输入商户简称">
+                </div>
+                <div class="form-group">
+                    <label>联系人</label>
+                    <input type="text" class="form-input" placeholder="请输入联系人姓名">
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="tel" class="form-input" placeholder="请输入联系电话">
+                </div>
+                <div class="form-group">
+                    <label>所属行业</label>
+                    <select class="form-select">
+                        <option>咖啡茶饮</option>
+                        <option>快餐连锁</option>
+                        <option>中式餐饮</option>
+                        <option>零售便利</option>
+                        <option>教育培训</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>商户地址</label>
+                    <input type="text" class="form-input" placeholder="请输入商户地址">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('add-merchant-modal')">取消</button>
+                <button class="btn btn-success" onclick="closeModal('add-merchant-modal');showToast('商户添加成功！')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：支付进件申请 -->
+    <div class="modal-overlay" id="onboard-modal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <h3>🔐 支付进件申请</h3>
+                <button class="modal-close" onclick="closeModal('onboard-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:#fef3c7;padding:16px;border-radius:8px;margin-bottom:24px;border-left:4px solid #f59e0b;">
+                    <h4 style="color:#92400e;margin-bottom:8px;">⚠️ 注意事项</h4>
+                    <p style="font-size:13px;color:#b45309;">请确保上传的证件清晰可见，信息真实有效</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>选择商户 *</label>
+                    <select class="form-select">
+                        <option>喜茶(万象城店)</option>
+                        <option>奈雪の茶(南山店)</option>
+                        <option>小杨生煎(福田店)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>支付渠道 *</label>
+                    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" checked> 微信支付
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" checked> 支付宝
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox"> 云闪付
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox"> 银行卡
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>营业执照 *</label>
+                    <div style="border:2px dashed #e2e8f0;border-radius:8px;padding:32px;text-align:center;cursor:pointer;">
+                        <div style="font-size:48px;margin-bottom:12px;">📄</div>
+                        <div style="font-size:14px;color:#64748b;">点击上传营业执照</div>
+                        <div style="font-size:12px;color:#94a3b8;margin-top:8px;">支持 JPG、PNG 格式，大小不超过 5MB</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>法人身份证 *</label>
+                    <div style="border:2px dashed #e2e8f0;border-radius:8px;padding:32px;text-align:center;cursor:pointer;">
+                        <div style="font-size:48px;margin-bottom:12px;">🪪</div>
+                        <div style="font-size:14px;color:#64748b;">点击上传法人身份证（正反面）</div>
+                        <div style="font-size:12px;color:#94a3b8;margin-top:8px;">支持 JPG、PNG 格式，大小不超过 5MB</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>银行卡信息 *</label>
+                    <input type="text" class="form-input" placeholder="请输入对公账户银行卡号">
+                </div>
+                
+                <div class="form-group">
+                    <label>开户行 *</label>
+                    <input type="text" class="form-input" placeholder="请输入开户支行名称">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('onboard-modal')">取消</button>
+                <button class="btn btn-success" onclick="closeModal('onboard-modal');showToast('进件申请提交成功！')">提交申请</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：申请提现 -->
+    <div class="modal-overlay" id="withdraw-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💰 申请提现</h3>
+                <button class="modal-close" onclick="closeModal('withdraw-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background:#d1fae5;padding:20px;border-radius:12px;text-align:center;margin-bottom:24px;">
+                    <div style="font-size:14px;color:#065f46;margin-bottom:8px;">可提现金额</div>
+                    <div style="font-size:32px;font-weight:700;color:#059669;">¥8,560.80</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>提现金额 *</label>
+                    <input type="number" class="form-input" placeholder="请输入提现金额" value="8560">
+                </div>
+                
+                <div class="form-group">
+                    <label>到账银行卡</label>
+                    <select class="form-select">
+                        <option>招商银行 ****8888 (默认)</option>
+                        <option>工商银行 ****6666</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>验证码</label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" class="form-input" placeholder="请输入验证码">
+                        <button class="btn btn-outline" style="white-space:nowrap;">获取验证码</button>
+                    </div>
+                </div>
+                
+                <div style="background:#e0e7ff;padding:16px;border-radius:8px;">
+                    <p style="font-size:13px;color:#4338ca;">💡 提现说明</p>
+                    <ul style="font-size:12px;color:#6366f1;margin-top:8px;margin-left:16px;">
+                        <li>T+0 实时到账（服务费 ¥1/笔）</li>
+                        <li>T+1 次日到账（免服务费）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('withdraw-modal')">取消</button>
+                <button class="btn btn-success" onclick="closeModal('withdraw-modal');showToast('提现申请已提交！')">确认提现</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：分配客户 -->
+    <div class="modal-overlay" id="assign-customer-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>👥 分配客户</h3>
+                <button class="modal-close" onclick="closeModal('assign-customer-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>选择商户</label>
+                    <select class="form-select">
+                        <option>喜茶(万象城店)</option>
+                        <option>奈雪の茶(南山店)</option>
+                        <option>小杨生煎(福田店)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>分配给业务员</label>
+                    <select class="form-select">
+                        <option>张三（高级业务员）- 剩余42个配额</option>
+                        <option>李四（资深业务员）- 剩余38个配额</option>
+                        <option>王五（中级业务员）- 剩余28个配额</option>
+                        <option>赵六（初级业务员）- 剩余18个配额</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>分配说明</label>
+                    <textarea class="form-input" rows="3" placeholder="请输入分配说明..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('assign-customer-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('assign-customer-modal');showToast('客户分配成功！')">确认分配</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：添加跟访 -->
+    <div class="modal-overlay" id="followup-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📝 添加跟访记录</h3>
+                <button class="modal-close" onclick="closeModal('followup-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>选择业务员</label>
+                    <select class="form-select">
+                        <option>张三</option>
+                        <option>李四</option>
+                        <option>王五</option>
+                        <option>赵六</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>跟访商户</label>
+                    <select class="form-select">
+                        <option>喜茶(万象城店)</option>
+                        <option>奈雪の茶(南山店)</option>
+                        <option>星巴克咖啡(华强北店)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>跟访时间</label>
+                    <input type="datetime-local" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>跟访类型</label>
+                    <select class="form-select">
+                        <option>初次拜访</option>
+                        <option>产品演示</option>
+                        <option>签约洽谈</option>
+                        <option>老客回访</option>
+                        <option>问题处理</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>跟访内容</label>
+                    <textarea class="form-input" rows="4" placeholder="请输入跟访内容..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('followup-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('followup-modal');showToast('跟访记录添加成功！')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：提交工单 -->
+    <div class="modal-overlay" id="ticket-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🔧 提交工单</h3>
+                <button class="modal-close" onclick="closeModal('ticket-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>工单类型</label>
+                    <select class="form-select">
+                        <option>系统问题</option>
+                        <option>商户问题</option>
+                        <option>进件问题</option>
+                        <option>分润问题</option>
+                        <option>其他问题</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>关联商户</label>
+                    <select class="form-select">
+                        <option>无</option>
+                        <option>星巴克咖啡(华强北店)</option>
+                        <option>麦当劳(海岸城店)</option>
+                        <option>喜茶(万象城店)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>问题描述 *</label>
+                    <textarea class="form-input" rows="4" placeholder="请详细描述您遇到的问题..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>上传附件</label>
+                    <div style="border:2px dashed #e2e8f0;border-radius:8px;padding:24px;text-align:center;cursor:pointer;">
+                        <div style="font-size:32px;margin-bottom:8px;">📎</div>
+                        <div style="font-size:14px;color:#64748b;">点击上传截图或文件</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('ticket-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('ticket-modal');showToast('工单提交成功！')">提交工单</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" style="position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:#10b981;color:white;padding:16px 32px;border-radius:12px;font-size:15px;font-weight:500;opacity:0;transition:all 0.3s;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);">✓ 操作成功</div>
+
     <script>
         function switchModule(module) {
             // 隐藏所有模块
@@ -1386,7 +2374,37 @@
 
         function copyCode() {
             navigator.clipboard.writeText('LAKALA2024-ZM8K2');
-            alert('邀请码已复制！');
+            showToast('邀请码已复制！');
+        }
+
+        // Toast 提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) {
+                // 如果 toast 不存在，创建一个
+                const newToast = document.createElement('div');
+                newToast.id = 'toast';
+                newToast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:#10b981;color:white;padding:16px 32px;border-radius:12px;font-size:15px;font-weight:500;opacity:0;transition:all 0.3s;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);';
+                newToast.textContent = '✓ ' + message;
+                document.body.appendChild(newToast);
+                setTimeout(() => {
+                    newToast.style.opacity = '1';
+                    newToast.style.transform = 'translateX(-50%) translateY(0)';
+                }, 10);
+                setTimeout(() => {
+                    newToast.style.opacity = '0';
+                    newToast.style.transform = 'translateX(-50%) translateY(100px)';
+                    setTimeout(() => newToast.remove(), 300);
+                }, 2000);
+            } else {
+                toast.textContent = '✓ ' + message;
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(100px)';
+                }, 2000);
+            }
         }
 
         // 点击遮罩关闭弹窗
