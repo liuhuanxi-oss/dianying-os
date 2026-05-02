@@ -6,25 +6,29 @@
   <title>店赢OS - 平台端</title>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="css/admin.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; color: #1e293b; }
     .app-layout { display: flex; min-height: 100vh; }
-    .sidebar { width: 260px; background: #1e293b; color: white; padding: 20px 0; }
-    .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #334155; margin-bottom: 20px; }
+    .sidebar { width: 260px; background: #0f172a; color: white; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #1e293b; }
     .logo { display: flex; align-items: center; gap: 12px; }
     .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
     .logo-title { font-size: 1.2rem; font-weight: 700; }
     .logo-subtitle { font-size: 0.75rem; color: #94a3b8; }
+    .sidebar-menu { flex: 1; overflow-y: auto; padding: 16px 0; }
     .menu-section { margin-bottom: 24px; }
-    .menu-section-title { padding: 0 20px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
-    .menu-item:hover { background: #334155; color: white; }
+    .menu-section-title { padding: 0 16px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
+    .menu-item:hover { background: #1e293b; color: white; }
     .menu-item.active { background: #10b981; color: white; }
-    .main-content { flex: 1; display: flex; flex-direction: column; }
-    .header { height: 64px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-    .header-left { display: flex; align-items: center; gap: 16px; }
+    .sidebar-footer { padding: 16px; border-top: 1px solid #1e293b; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .user-name { font-weight: 600; font-size: 0.9rem; }
+    .user-role { font-size: 0.75rem; color: #64748b; }
+    .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; min-height: 100vh; }
+    .header { height: 64px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     .page-title { font-size: 1.1rem; font-weight: 600; color: #1e293b; }
     .content-area { flex: 1; padding: 24px; overflow-y: auto; }
     .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -34,16 +38,11 @@
     .stat-label { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
     .stat-trend { font-size: 0.8rem; margin-top: 8px; }
     .stat-trend.up { color: #10b981; }
-    .sidebar-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px; border-top: 1px solid #334155; }
-    .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .user-name { font-weight: 600; font-size: 0.9rem; }
-    .user-role { font-size: 0.75rem; color: #64748b; }
   </style>
 </head>
 <body>
   <div class="app-layout">
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
           <div class="logo-icon"><i data-lucide="building-2"></i></div>
@@ -53,9 +52,7 @@
           </div>
         </div>
       </div>
-      
-      <div id="sidebar-menu"></div>
-      
+      <div class="sidebar-menu" id="sidebar-menu"></div>
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar"><i data-lucide="user"></i></div>
@@ -66,19 +63,11 @@
         </div>
       </div>
     </div>
-    
     <div class="main-content">
-      <div class="header">
-        <div class="header-left">
-          <div class="page-title" id="pageTitle">平台概览</div>
-        </div>
-      </div>
-      <div class="content-area" id="contentArea">
-        <!-- 页面内容动态渲染 -->
-      </div>
+      <div class="header"><div class="page-title" id="pageTitle">平台概览</div></div>
+      <div class="content-area" id="contentArea"></div>
     </div>
   </div>
-
   <script>
     const menuConfig = [
       { section: '平台运营', items: [
@@ -92,87 +81,47 @@
         { id: 'finance', name: '财务中心', icon: 'dollar-sign' },
         { id: 'payment', name: '支付交易', icon: 'credit-card' }
       ]},
-      { section: '运营支撑', items: [
-        { id: 'content', name: '内容运营', icon: 'file-text' },
-        { id: 'customer', name: '客户成功', icon: 'heart' },
-        { id: 'support', name: '客服支持', icon: 'headphones' }
-      ]},
-      { section: '系统设置', items: [
+      { section: '系统', items: [
         { id: 'settings', name: '系统设置', icon: 'settings' }
       ]}
     ];
-
     let currentPage = 'overview';
-
     function renderSidebar() {
       const menuEl = document.getElementById('sidebar-menu');
       let html = '';
-      
       menuConfig.forEach(section => {
-        html += `<div class="menu-section">
-          <div class="menu-section-title">${section.section}</div>`;
-        
+        html += `<div class="menu-section"><div class="menu-section-title">${section.section}</div>`;
         section.items.forEach(item => {
           const isActive = currentPage === item.id ? 'active' : '';
-          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')">
-            <i data-lucide="${item.icon}"></i>
-            <span>${item.name}</span>
-          </div>`;
+          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
         });
-        
         html += `</div>`;
       });
-      
       menuEl.innerHTML = html;
       lucide.createIcons();
     }
-
     function navigateTo(pageId, pageName) {
       currentPage = pageId;
       document.getElementById('pageTitle').textContent = pageName;
       renderSidebar();
       renderPage(pageId);
     }
-
     function renderPage(pageId) {
       const content = document.getElementById('contentArea');
-      
       if (pageId === 'overview') {
         content.innerHTML = `
           <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-value">3,256</div>
-              <div class="stat-label">入驻商家数</div>
-              <div class="stat-trend up">↑ 156 今日新增</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">128</div>
-              <div class="stat-label">代理商数</div>
-              <div class="stat-trend up">↑ 8 今日新增</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">¥8.6M</div>
-              <div class="stat-label">今日总交易额</div>
-              <div class="stat-trend up">↑ 18.5% 较昨日</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">98.6%</div>
-              <div class="stat-label">系统可用率</div>
-              <div class="stat-trend up">正常运行</div>
-            </div>
+            <div class="stat-card"><div class="stat-value">3,256</div><div class="stat-label">入驻商家数</div><div class="stat-trend up">↑ 156 今日新增</div></div>
+            <div class="stat-card"><div class="stat-value">128</div><div class="stat-label">代理商数</div><div class="stat-trend up">↑ 8 今日新增</div></div>
+            <div class="stat-card"><div class="stat-value">¥8.6M</div><div class="stat-label">今日总交易额</div><div class="stat-trend up">↑ 18.5% 较昨日</div></div>
+            <div class="stat-card"><div class="stat-value">98.6%</div><div class="stat-label">系统可用率</div><div class="stat-trend up">正常运行</div></div>
           </div>
-          <div class="card" style="margin-top: 20px;">
-            <h3 style="margin-bottom: 16px;">平台运营概况</h3>
-            <p>店赢OS平台稳定运行中，所有系统功能正常。商家入驻持续增长，AI运营系统已为3000+商家提供服务。</p>
-          </div>
+          <div class="card" style="margin-top: 20px;"><h3>平台运营概况</h3><p style="margin-top: 16px; color: #64748b;">店赢OS平台稳定运行中，所有系统功能正常。商家入驻持续增长，AI运营系统已为3000+商家提供服务。</p></div>
         `;
       } else {
-        content.innerHTML = `<div class="card"><h2>${pageId} 页面</h2><p>该页面正在开发中...</p></div>`;
+        content.innerHTML = `<div class="card"><h2>${pageId} 页面</h2><p style="margin-top: 16px; color: #64748b;">该页面正在开发中...</p></div>`;
       }
-      
-      lucide.createIcons();
     }
-
     document.addEventListener('DOMContentLoaded', function() {
       renderSidebar();
       renderPage('overview');
