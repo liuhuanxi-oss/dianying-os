@@ -4,131 +4,169 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>店赢OS - 代理商端</title>
-  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="css/mobile-responsive.css">
   <style>
-    .role-badge {
-      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #f8fafc; }
+    .app-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: #1e293b; color: white; padding: 20px 0; }
+    .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #334155; margin-bottom: 20px; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-title { font-size: 1.2rem; font-weight: 700; }
+    .logo-subtitle { font-size: 0.75rem; color: #94a3b8; }
+    .menu-section { margin-bottom: 24px; }
+    .menu-section-title { padding: 0 20px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
+    .menu-item:hover { background: #334155; color: white; }
+    .menu-item.active { background: #f59e0b; color: white; }
+    .main-content { flex: 1; display: flex; flex-direction: column; }
+    .header { height: 64px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .page-title { font-size: 1.1rem; font-weight: 600; color: #1e293b; }
+    .content-area { flex: 1; padding: 24px; overflow-y: auto; }
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .stat-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #1e293b; }
+    .stat-label { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+    .stat-trend { font-size: 0.8rem; margin-top: 8px; }
+    .stat-trend.up { color: #10b981; }
+    .sidebar-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px; border-top: 1px solid #334155; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 36px; height: 36px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .user-name { font-weight: 600; font-size: 0.9rem; }
+    .user-role { font-size: 0.75rem; color: #64748b; }
   </style>
 </head>
 <body>
-  <!-- 代理商端主容器 -->
-  <div class="admin-container">
-    <aside class="sidebar" id="sidebar">
+  <div class="app-layout">
+    <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <a href="index.html" class="sidebar-logo">
-          <img src="assets/logo.svg" alt="店赢OS">
-          <span class="sidebar-title">代理商端</span>
-        </a>
-        <button class="sidebar-toggle" id="sidebarToggle">
-          <i data-lucide="panel-left-close"></i>
-        </button>
-      </div>
-      
-      <div class="sidebar-search">
-        <div class="sidebar-search-wrapper">
-          <i data-lucide="search"></i>
-          <input type="text" class="sidebar-search-input" placeholder="搜索功能..." id="sidebarSearch">
+        <div class="logo">
+          <div class="logo-icon"><i data-lucide="users"></i></div>
+          <div>
+            <div class="logo-title">店赢OS</div>
+            <div class="logo-subtitle">代理商端</div>
+          </div>
         </div>
       </div>
       
-      <div class="sidebar-back-link">
-        <a href="index.html" class="back-link">
-          <i data-lucide="arrow-left"></i>
-          <span>返回首页</span>
-        </a>
-      </div>
-      
-      <nav class="sidebar-nav" id="sidebarNav"></nav>
+      <div id="sidebar-menu"></div>
       
       <div class="sidebar-footer">
-        <div class="admin-user">
-          <div class="admin-avatar">
-            <i data-lucide="briefcase"></i>
-          </div>
-          <div class="admin-info">
-            <span class="admin-name">华东区代理中心</span>
-            <span class="admin-role"><span class="role-badge">钻石代理商</span></span>
+        <div class="user-info">
+          <div class="user-avatar"><i data-lucide="user"></i></div>
+          <div>
+            <div class="user-name">演示代理</div>
+            <div class="user-role">金牌代理商</div>
           </div>
         </div>
       </div>
-    </aside>
+    </div>
     
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-    
-    <main class="main-content">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="mobile-menu-toggle" id="mobileMenuToggle">
-            <i data-lucide="menu"></i>
-          </button>
-          <div class="breadcrumb" id="breadcrumb">
-            <span class="breadcrumb-item">首页</span>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <button class="topbar-btn" title="消息">
-            <i data-lucide="bell"></i>
-            <span class="notification-badge">2</span>
-          </button>
-        </div>
-      </header>
-      
-      <div class="content-area" id="contentArea"></div>
-    </main>
-    
-    <nav class="mobile-bottom-nav" id="mobileBottomNav">
-      <div class="mobile-bottom-nav-items">
-        <div class="mobile-bottom-nav-item active" data-page="agent-overview">
-          <i data-lucide="layout-dashboard"></i>
-          <span>首页</span>
-        </div>
-        <div class="mobile-bottom-nav-item" data-page="agent-merchants">
-          <i data-lucide="store"></i>
-          <span>商户</span>
-        </div>
-        <div class="mobile-bottom-nav-item" data-page="agent-commission">
-          <i data-lucide="wallet"></i>
-          <span>分润</span>
+    <div class="main-content">
+      <div class="header">
+        <div class="header-left">
+          <div class="page-title" id="pageTitle">我的商户</div>
         </div>
       </div>
-    </nav>
-  </div>
-  
-  <!-- Toast容器 -->
-  <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;"></div>
-  
-  <!-- 确认对话框 -->
-  <div class="modal-overlay" id="confirmDialog">
-    <div class="confirm-dialog">
-      <div class="confirm-title" id="confirmTitle">确认操作</div>
-      <div class="confirm-message" id="confirmMessage">确定要执行此操作吗？</div>
-      <div class="confirm-actions">
-        <button class="btn btn-secondary" id="confirmCancel">取消</button>
-        <button class="btn btn-primary" id="confirmOk">确定</button>
+      <div class="content-area" id="contentArea">
+        <!-- 页面内容动态渲染 -->
       </div>
     </div>
   </div>
-  
-  <!-- 模态框容器 -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-container" id="modalContainer"></div>
-  </div>
-  
-  <script src="js/modules/admin-core.js"></script>
-  <script src="js/modules/agent-app.js"></script>
+
+  <script>
+    const menuConfig = [
+      { section: '业务管理', items: [
+        { id: 'merchants', name: '我的商户', icon: 'store' },
+        { id: 'stats', name: '业绩统计', icon: 'bar-chart-2' },
+        { id: 'commission', name: '分润查看', icon: 'dollar-sign' }
+      ]},
+      { section: '客户管理', items: [
+        { id: 'customers', name: '客户管理', icon: 'users' },
+        { id: 'reports', name: '数据报表', icon: 'file-text' }
+      ]}
+    ];
+
+    let currentPage = 'merchants';
+
+    function renderSidebar() {
+      const menuEl = document.getElementById('sidebar-menu');
+      let html = '';
+      
+      menuConfig.forEach(section => {
+        html += `<div class="menu-section">
+          <div class="menu-section-title">${section.section}</div>`;
+        
+        section.items.forEach(item => {
+          const isActive = currentPage === item.id ? 'active' : '';
+          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')">
+            <i data-lucide="${item.icon}"></i>
+            <span>${item.name}</span>
+          </div>`;
+        });
+        
+        html += `</div>`;
+      });
+      
+      menuEl.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function navigateTo(pageId, pageName) {
+      currentPage = pageId;
+      document.getElementById('pageTitle').textContent = pageName;
+      renderSidebar();
+      renderPage(pageId);
+    }
+
+    function renderPage(pageId) {
+      const content = document.getElementById('contentArea');
+      
+      if (pageId === 'merchants') {
+        content.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">156</div>
+              <div class="stat-label">我的商户数</div>
+              <div class="stat-trend up">↑ 12 本月新增</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">¥2.8M</div>
+              <div class="stat-label">本月交易额</div>
+              <div class="stat-trend up">↑ 22.5% 较上月</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">¥86,500</div>
+              <div class="stat-label">本月分润</div>
+              <div class="stat-trend up">↑ 18.3% 较上月</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">98.2%</div>
+              <div class="stat-label">商户活跃率</div>
+              <div class="stat-trend up">健康</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 16px;">商户列表</h3>
+            <p>商户管理功能开发中...</p>
+          </div>
+        `;
+      } else {
+        content.innerHTML = `<div class="card"><h2>${pageId} 页面</h2><p>该页面正在开发中...</p></div>`;
+      }
+      
+      lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderSidebar();
+      renderPage('merchants');
+    });
+  </script>
 </body>
 </html>
