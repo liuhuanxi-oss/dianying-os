@@ -5227,6 +5227,328 @@
             </div>
         </div>
 
+
+        <!-- ==================== 对战擂台模块 ==================== -->
+        <div id="module-battle-arena" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🏆 对战擂台</h2>
+                    <p>人类 vs AI · 实时对决展示</p>
+                </div>
+            </div>
+            
+            <div class="battle-arena">
+                <div class="battle-header">
+                    <h3>HUMAN vs AI ARENA</h3>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 14px;">选择场景，人类决策与AI决策实时对比</p>
+                </div>
+                
+                <div class="battle-teams">
+                    <!-- 人类方 -->
+                    <div class="team-human">
+                        <div class="team-header">
+                            <div class="team-icon">👤</div>
+                            <div class="team-name">人类玩家</div>
+                        </div>
+                        <div class="team-score" id="humanScore">0</div>
+                        
+                        <select class="battle-scenario-select" id="battleScenario">
+                            <option value="review">差评回复</option>
+                            <option value="pricing">定价决策</option>
+                            <option value="inventory">库存补货</option>
+                            <option value="marketing">营销文案</option>
+                        </select>
+                        
+                        <textarea class="battle-input" id="humanInput" placeholder="请输入您的决策...&#10;例如：针对差评"请退款"给出回复" rows="3"></textarea>
+                        
+                        <button class="battle-start-btn" onclick="startBattle()">⚔️ 开始对战</button>
+                    </div>
+                    
+                    <!-- AI方 -->
+                    <div class="team-ai">
+                        <div class="team-header">
+                            <div class="team-icon">🤖</div>
+                            <div class="team-name">AI助手</div>
+                        </div>
+                        <div class="team-score" id="aiScore">0</div>
+                        
+                        <div style="color: rgba(255,255,255,0.6); font-size: 13px; text-align: center; margin-bottom: 16px;">
+                            AI正在思考中...
+                        </div>
+                        
+                        <div class="battle-input" id="aiOutput" style="background: rgba(68, 68, 255, 0.2);" readonly placeholder="AI将自动生成决策...">AI将自动生成决策...</div>
+                        
+                        <button class="battle-start-btn" style="background: linear-gradient(135deg, #4444ff 0%, #3b82f6 100%);">
+                            🤖 AI响应中
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 对战结果 -->
+                <div class="battle-result" id="battleResult" style="display: none;">
+                    <div class="result-title" id="resultTitle">对战结果</div>
+                    <div class="battle-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">效率</div>
+                            <div class="metric-value metric-human" id="humanEfficiency">-</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">准确度</div>
+                            <div class="metric-value" id="accuracyScore">-</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">速度</div>
+                            <div class="metric-value metric-ai" id="aiSpeed">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 历史战绩 -->
+                <div style="margin-top: 24px;">
+                    <h4 style="color: white; font-size: 14px; margin-bottom: 12px;">📊 历史战绩</h4>
+                    <div class="history-list" id="historyList">
+                        <div class="history-item">
+                            <div class="history-winner">
+                                <span class="history-win-badge ai">AI胜</span>
+                                <span style="color: rgba(255,255,255,0.7); font-size: 12px;">差评回复场景</span>
+                            </div>
+                            <span style="color: rgba(255,255,255,0.5); font-size: 12px;">2分钟前</span>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-winner">
+                                <span class="history-win-badge human">人类胜</span>
+                                <span style="color: rgba(255,255,255,0.7); font-size: 12px;">定价决策场景</span>
+                            </div>
+                            <span style="color: rgba(255,255,255,0.5); font-size: 12px;">5分钟前</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 24px; margin-top: 16px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: #ff4444;" id="humanWinRate">45%</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.6);">人类胜率</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; font-weight: 700; color: #4444ff;" id="aiWinRate">55%</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.6);">AI胜率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== 时间加速模块 ==================== -->
+        <div id="module-time-machine" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>⏰ 时间加速</h2>
+                    <p>赛博朋克风格 · 快速验证AI长期决策效果</p>
+                </div>
+            </div>
+            
+            <div class="time-machine">
+                <div class="time-header">
+                    <h3 class="cyber-text">TIME MACHINE</h3>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 14px;">模拟时间流逝，观察AI决策的长期效果</p>
+                </div>
+                
+                <div class="time-display" id="timeDisplay">Day 1</div>
+                <div class="time-ratio" id="timeRatio">1天 = 1分钟 · 当前速度: 1x</div>
+                
+                <div class="time-controls">
+                    <button class="time-btn" onclick="setTimeSpeed('slow')">🐢 1天=1分钟</button>
+                    <button class="time-btn" onclick="setTimeSpeed('normal')">🚶 1周=5分钟</button>
+                    <button class="time-btn" onclick="setTimeSpeed('fast')">🚀 1月=15分钟</button>
+                    <button class="time-btn pause" id="pauseBtn" onclick="toggleTimePause()">⏸️ 暂停</button>
+                    <button class="time-btn reset" onclick="resetTime()">🔄 重置</button>
+                </div>
+                
+                <div class="time-stats">
+                    <div class="time-stat">
+                        <div class="time-stat-icon">💰</div>
+                        <div class="time-stat-value" id="simulatedSales">¥8,520</div>
+                        <div class="time-stat-label">累计销售额</div>
+                    </div>
+                    <div class="time-stat">
+                        <div class="time-stat-icon">📝</div>
+                        <div class="time-stat-value" id="simulatedReviews">12</div>
+                        <div class="time-stat-label">处理差评数</div>
+                    </div>
+                    <div class="time-stat">
+                        <div class="time-stat-icon">📦</div>
+                        <div class="time-stat-value" id="simulatedInventory">68%</div>
+                        <div class="time-stat-label">库存充足率</div>
+                    </div>
+                    <div class="time-stat">
+                        <div class="time-stat-icon">🎯</div>
+                        <div class="time-stat-value" id="simulatedROI">+24.5%</div>
+                        <div class="time-stat-label">ROI增长</div>
+                    </div>
+                </div>
+                
+                <div class="time-timeline">
+                    <div class="timeline-title">📅 事件时间线</div>
+                    <div class="timeline-events" id="timelineEvents">
+                        <div class="timeline-event ai">
+                            <div class="event-time">Day 1</div>
+                            <div class="event-content">
+                                <div class="event-title">🤖 AI自动调整价格</div>
+                                <div class="event-desc">根据竞品价格分析，小幅上调2元，预计增加利润¥320</div>
+                            </div>
+                        </div>
+                        <div class="timeline-event warning">
+                            <div class="event-time">Day 3</div>
+                            <div class="event-content">
+                                <div class="event-title">⚠️ 库存预警</div>
+                                <div class="event-desc">爆款商品库存不足，AI已自动下单补货</div>
+                            </div>
+                        </div>
+                        <div class="timeline-event danger">
+                            <div class="event-time">Day 5</div>
+                            <div class="event-content">
+                                <div class="event-title">🔥 突发差评</div>
+                                <div class="event-desc">客户反馈配送延迟，AI已生成3种回复方案</div>
+                            </div>
+                        </div>
+                        <div class="timeline-event ai">
+                            <div class="event-time">Day 7</div>
+                            <div class="event-content">
+                                <div class="event-title">🤖 AI营销策略执行</div>
+                                <div class="event-desc">开启限时折扣活动，预计提升订单量15%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ROI预测对比 -->
+                <div style="margin-top: 24px; background: rgba(0,0,0,0.5); border-radius: 8px; padding: 20px;">
+                    <h4 style="color: white; font-size: 14px; margin-bottom: 16px;">📈 ROI预测对比</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">加速模式预期收益</div>
+                            <div style="font-size: 28px; font-weight: 700; color: #fbbf24;">¥125,800</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.5);">30天后预测</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">AI辅助实际收益</div>
+                            <div style="font-size: 28px; font-weight: 700; color: #00ff88;">¥132,450</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.5);">+5.3%超额完成</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== Mock控制台模块 ==================== -->
+        <div id="module-mock-control" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🎛️ Mock数据控制台</h2>
+                    <p>快速切换数据模式 · 评委体验专用</p>
+                </div>
+            </div>
+            
+            <div class="mock-console">
+                <div class="mock-header">
+                    <h3>数据模式控制</h3>
+                    <div class="mock-master-switch">
+                        <label>全局开关</label>
+                        <label class="mock-toggle">
+                            <input type="checkbox" id="mockMasterSwitch" checked onchange="toggleMockMode()">
+                            <span class="mock-slider"></span>
+                        </label>
+                        <span class="mock-mode-badge mock" id="mockModeBadge">Mock模式</span>
+                    </div>
+                </div>
+                
+                <div class="mock-sections">
+                    <!-- 数据场景选择 -->
+                    <div class="mock-section">
+                        <h4><span class="icon">🏪</span> 数据场景选择</h4>
+                        <div class="scenario-grid">
+                            <button class="scenario-btn active" onclick="selectScenario(this, 'restaurant')">
+                                <div class="scenario-icon">🍜</div>
+                                餐饮店
+                            </button>
+                            <button class="scenario-btn" onclick="selectScenario(this, 'tea')">
+                                <div class="scenario-icon">🧋</div>
+                                奶茶店
+                            </button>
+                            <button class="scenario-btn" onclick="selectScenario(this, 'convenience')">
+                                <div class="scenario-icon">🏪</div>
+                                便利店
+                            </button>
+                            <button class="scenario-btn" onclick="selectScenario(this, 'supermarket')">
+                                <div class="scenario-icon">🛒</div>
+                                超市
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据密度调节 -->
+                    <div class="mock-section">
+                        <h4><span class="icon">📊</span> 数据密度调节</h4>
+                        <input type="range" class="density-slider" id="densitySlider" min="1" max="3" value="2" oninput="updateDensity(this.value)">
+                        <div class="density-labels">
+                            <span>稀疏</span>
+                            <span>正常</span>
+                            <span>密集</span>
+                        </div>
+                        <div style="margin-top: 16px; display: flex; justify-content: space-between; color: rgba(255,255,255,0.6); font-size: 12px;">
+                            <span>订单量: <strong id="orderCount">50/天</strong></span>
+                            <span>差评率: <strong id="reviewRate">3.2%</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 异常事件注入 -->
+                <div class="mock-section" style="margin-top: 24px;">
+                    <h4><span class="icon">⚡</span> 异常事件注入</h4>
+                    <div class="event-toggles">
+                        <label class="event-toggle">
+                            <input type="checkbox" id="eventBadReview">
+                            <span class="check"></span>
+                            <span>随机差评</span>
+                        </label>
+                        <label class="event-toggle">
+                            <input type="checkbox" id="eventLowStock">
+                            <span class="check"></span>
+                            <span>库存告急</span>
+                        </label>
+                        <label class="event-toggle">
+                            <input type="checkbox" id="eventCompetitor">
+                            <span class="check"></span>
+                            <span>竞品降价</span>
+                        </label>
+                        <label class="event-toggle">
+                            <input type="checkbox" id="eventHoliday">
+                            <span class="check"></span>
+                            <span>节假日流量</span>
+                        </label>
+                        <label class="event-toggle">
+                            <input type="checkbox" id="eventRefund">
+                            <span class="check"></span>
+                            <span>批量退款</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mock-actions">
+                    <button class="mock-action-btn reset" onclick="resetMockData()">
+                        🔄 重置所有数据
+                    </button>
+                    <button class="mock-action-btn apply" onclick="applyMockSettings()">
+                        ✓ 应用设置
+                    </button>
+                </div>
+                
+                <div class="mock-status">
+                    <div class="mock-status-dot"></div>
+                    <div class="mock-status-text" id="mockStatusText">
+                        Mock数据已启用 · 餐饮店场景 · 正常密度 · 0个异常事件激活
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- ==================== 底部Agent状态条 ==================== -->
@@ -7594,6 +7916,323 @@
             setTimeout(() => {
                 showToast('success', '已生成3个创意方案');
             }, 1500);
+        }
+
+        // ==================== WAIC比赛杀招功能 JavaScript ====================
+        
+        // ==================== 对战擂台功能 ====================
+        let humanScore = 0;
+        let aiScore = 0;
+        let battleHistory = [];
+        
+        function startBattle() {
+            const scenario = document.getElementById('battleScenario').value;
+            const humanInput = document.getElementById('humanInput').value;
+            
+            if (!humanInput.trim()) {
+                showToast('warning', '请输入您的决策内容');
+                return;
+            }
+            
+            // 模拟AI生成响应
+            const aiResponses = {
+                review: '感谢您的反馈，对于给您带来的不便我们深表歉意。我们已安排专人跟进退款流程，款项将在24小时内到账。同时，我们为您准备了一张¥20的补偿券，欢迎下次光临，我们会做得更好！',
+                pricing: '基于市场分析和历史数据，建议将爆款商品价格调整至¥38-42区间。考虑到竞争对手定价¥39，当前最优定价为¥40，预计可提升利润12%，同时保持竞争力。',
+                inventory: '根据过去30天销售趋势和季节性因素分析，建议对以下商品增加库存：爆款奶茶(+200杯)、新品试饮装(+100份)、节假日限定款(+150份)。预计补货成本¥4,500，预计可增加销售额¥12,000。',
+                marketing: '🎉 限时特惠来啦！指定商品第二件半价，搭配满减券最高可省¥30。转发活动海报到朋友圈，即可获得专属折扣码。周末会员日双倍积分，积分可兑换免费赠品哦！'
+            };
+            
+            const aiResponse = aiResponses[scenario];
+            document.getElementById('aiOutput').innerText = aiResponse;
+            document.getElementById('aiOutput').style.color = 'rgba(68, 68, 255, 1)';
+            
+            // 模拟评分和结果
+            setTimeout(() => {
+                const humanEfficiency = Math.floor(Math.random() * 30) + 70;
+                const aiEfficiency = Math.floor(Math.random() * 30) + 70;
+                const aiSpeed = Math.floor(Math.random() * 5) + 3;
+                const accuracy = Math.floor(Math.random() * 20) + 80;
+                
+                document.getElementById('humanEfficiency').innerText = humanEfficiency + '%';
+                document.getElementById('aiSpeed').innerText = aiSpeed + 's';
+                document.getElementById('accuracyScore').innerText = accuracy + '%';
+                
+                // 判定胜负
+                const humanTotal = humanEfficiency + accuracy;
+                const aiTotal = aiEfficiency + (100 - aiSpeed * 5);
+                
+                let result, resultClass, winner;
+                if (humanTotal > aiTotal + 10) {
+                    result = '人类玩家获胜！';
+                    resultClass = 'result-winner';
+                    winner = 'human';
+                    humanScore++;
+                } else if (aiTotal > humanTotal + 10) {
+                    result = 'AI助手获胜！';
+                    resultClass = 'result-winner';
+                    winner = 'ai';
+                    aiScore++;
+                } else {
+                    result = '平局！';
+                    resultClass = 'result-tie';
+                    winner = 'tie';
+                }
+                
+                document.getElementById('resultTitle').innerText = result;
+                document.getElementById('resultTitle').className = 'result-title ' + resultClass;
+                document.getElementById('humanScore').innerText = humanScore;
+                document.getElementById('aiScore').innerText = aiScore;
+                document.getElementById('battleResult').style.display = 'block';
+                
+                // 更新历史记录
+                addBattleHistory(scenario, winner);
+                
+                showToast('success', result);
+            }, 1000);
+        }
+        
+        function addBattleHistory(scenario, winner) {
+            const scenarios = {
+                review: '差评回复',
+                pricing: '定价决策',
+                inventory: '库存补货',
+                marketing: '营销文案'
+            };
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div class="history-winner">
+                    <span class="history-win-badge ${winner === 'human' ? 'human' : (winner === 'ai' ? 'ai' : '')}">${winner === 'human' ? '人类胜' : (winner === 'ai' ? 'AI胜' : '平局')}</span>
+                    <span style="color: rgba(255,255,255,0.7); font-size: 12px;">${scenarios[scenario]}场景</span>
+                </div>
+                <span style="color: rgba(255,255,255,0.5); font-size: 12px;">刚刚</span>
+            `;
+            
+            const historyList = document.getElementById('historyList');
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // 更新胜率
+            const total = humanScore + aiScore;
+            if (total > 0) {
+                document.getElementById('humanWinRate').innerText = Math.round(humanScore / total * 100) + '%';
+                document.getElementById('aiWinRate').innerText = Math.round(aiScore / total * 100) + '%';
+            }
+        }
+        
+        // ==================== 时间加速功能 ====================
+        let currentDay = 1;
+        let timeSpeed = 'slow'; // slow, normal, fast
+        let timePaused = false;
+        let timeInterval = null;
+        
+        const speedSettings = {
+            slow: { label: '1天=1分钟', multiplier: 1, display: '1x' },
+            normal: { label: '1周=5分钟', multiplier: 7, display: '7x' },
+            fast: { label: '1月=15分钟', multiplier: 30, display: '30x' }
+        };
+        
+        function setTimeSpeed(speed) {
+            timeSpeed = speed;
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const settings = speedSettings[speed];
+            document.getElementById('timeRatio').innerText = settings.label + ' · 当前速度: ' + settings.display;
+            
+            if (!timePaused) {
+                startTimeMachine();
+            }
+        }
+        
+        function startTimeMachine() {
+            if (timeInterval) clearInterval(timeInterval);
+            
+            const interval = timeSpeed === 'slow' ? 60000 : (timeSpeed === 'normal' ? 8000 : 3000);
+            
+            timeInterval = setInterval(() => {
+                if (timePaused) return;
+                
+                currentDay++;
+                document.getElementById('timeDisplay').innerText = 'Day ' + currentDay;
+                
+                // 更新统计数据
+                const sales = 8500 + currentDay * 320;
+                const reviews = Math.floor(currentDay * 1.2);
+                const inventory = Math.max(40, 85 - currentDay * 0.5);
+                const roi = (currentDay * 0.8).toFixed(1);
+                
+                document.getElementById('simulatedSales').innerText = '¥' + sales.toLocaleString();
+                document.getElementById('simulatedReviews').innerText = reviews;
+                document.getElementById('simulatedInventory').innerText = Math.round(inventory) + '%';
+                document.getElementById('simulatedROI').innerText = '+' + roi + '%';
+                
+                // 添加时间线事件
+                if (currentDay % 3 === 0) {
+                    addTimelineEvent('ai', '🤖 AI自动调整价格', '根据市场分析，价格策略已优化');
+                }
+                if (currentDay % 5 === 0) {
+                    addTimelineEvent('warning', '⚠️ 库存预警', '部分商品库存不足，AI已自动补货');
+                }
+                if (currentDay % 7 === 0) {
+                    addTimelineEvent('ai', '📢 营销活动', 'AI已启动新一轮促销活动');
+                }
+                
+                if (currentDay >= 30) {
+                    clearInterval(timeInterval);
+                    showToast('success', '30天模拟完成！');
+                }
+            }, interval);
+        }
+        
+        function toggleTimePause() {
+            timePaused = !timePaused;
+            const btn = document.getElementById('pauseBtn');
+            btn.innerHTML = timePaused ? '▶️ 继续' : '⏸️ 暂停';
+            btn.classList.toggle('active', timePaused);
+            
+            showToast('info', timePaused ? '时间已暂停' : '时间继续');
+        }
+        
+        function resetTime() {
+            if (timeInterval) clearInterval(timeInterval);
+            currentDay = 1;
+            timePaused = false;
+            document.getElementById('timeDisplay').innerText = 'Day 1';
+            document.getElementById('pauseBtn').innerHTML = '⏸️ 暂停';
+            document.getElementById('pauseBtn').classList.remove('active');
+            
+            // 重置统计数据
+            document.getElementById('simulatedSales').innerText = '¥8,520';
+            document.getElementById('simulatedReviews').innerText = '12';
+            document.getElementById('simulatedInventory').innerText = '68%';
+            document.getElementById('simulatedROI').innerText = '+24.5%';
+            
+            // 清空时间线
+            document.getElementById('timelineEvents').innerHTML = `
+                <div class="timeline-event ai">
+                    <div class="event-time">Day 1</div>
+                    <div class="event-content">
+                        <div class="event-title">🤖 AI自动调整价格</div>
+                        <div class="event-desc">根据竞品价格分析，小幅上调2元，预计增加利润¥320</div>
+                    </div>
+                </div>
+            `;
+            
+            showToast('success', '时间已重置');
+        }
+        
+        function addTimelineEvent(type, title, desc) {
+            const event = document.createElement('div');
+            event.className = 'timeline-event ' + type;
+            event.innerHTML = `
+                <div class="event-time">Day ${currentDay}</div>
+                <div class="event-content">
+                    <div class="event-title">${title}</div>
+                    <div class="event-desc">${desc}</div>
+                </div>
+            `;
+            
+            const timeline = document.getElementById('timelineEvents');
+            timeline.insertBefore(event, timeline.firstChild);
+        }
+        
+        // ==================== Mock控制台功能 ====================
+        let currentScenario = 'restaurant';
+        let currentDensity = 2;
+        let mockEnabled = true;
+        
+        function toggleMockMode() {
+            mockEnabled = document.getElementById('mockMasterSwitch').checked;
+            const badge = document.getElementById('mockModeBadge');
+            badge.innerText = mockEnabled ? 'Mock模式' : '真实模式';
+            badge.className = 'mock-mode-badge ' + (mockEnabled ? 'mock' : 'real');
+            
+            showToast('info', mockEnabled ? '已切换到Mock数据模式' : '已切换到真实数据模式');
+            updateMockStatus();
+        }
+        
+        function selectScenario(btn, scenario) {
+            document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentScenario = scenario;
+            
+            const scenarioNames = {
+                restaurant: '餐饮店',
+                tea: '奶茶店',
+                convenience: '便利店',
+                supermarket: '超市'
+            };
+            
+            showToast('info', '已切换到' + scenarioNames[scenario] + '场景');
+            updateMockStatus();
+        }
+        
+        function updateDensity(value) {
+            currentDensity = parseInt(value);
+            const densities = { 1: '稀疏', 2: '正常', 3: '密集' };
+            const orders = { 1: '20/天', 2: '50/天', 3: '150/天' };
+            const rates = { 1: '1.5%', 2: '3.2%', 3: '8.5%' };
+            
+            document.getElementById('orderCount').innerText = orders[value];
+            document.getElementById('reviewRate').innerText = rates[value];
+            
+            showToast('info', '已调整为' + densities[value] + '密度');
+            updateMockStatus();
+        }
+        
+        function resetMockData() {
+            document.getElementById('mockMasterSwitch').checked = true;
+            document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.scenario-btn').classList.add('active');
+            document.getElementById('densitySlider').value = 2;
+            document.querySelectorAll('.event-toggle input').forEach(input => input.checked = false);
+            
+            currentScenario = 'restaurant';
+            currentDensity = 2;
+            mockEnabled = true;
+            
+            document.getElementById('mockModeBadge').innerText = 'Mock模式';
+            document.getElementById('mockModeBadge').className = 'mock-mode-badge mock';
+            document.getElementById('orderCount').innerText = '50/天';
+            document.getElementById('reviewRate').innerText = '3.2%';
+            
+            showToast('success', 'Mock数据已重置');
+            updateMockStatus();
+        }
+        
+        function applyMockSettings() {
+            const activeEvents = [];
+            if (document.getElementById('eventBadReview').checked) activeEvents.push('随机差评');
+            if (document.getElementById('eventLowStock').checked) activeEvents.push('库存告急');
+            if (document.getElementById('eventCompetitor').checked) activeEvents.push('竞品降价');
+            if (document.getElementById('eventHoliday').checked) activeEvents.push('节假日流量');
+            if (document.getElementById('eventRefund').checked) activeEvents.push('批量退款');
+            
+            showToast('success', '设置已应用！' + (activeEvents.length > 0 ? '激活事件: ' + activeEvents.join(', ') : '无激活事件'));
+            updateMockStatus();
+        }
+        
+        function updateMockStatus() {
+            const scenarioNames = {
+                restaurant: '餐饮店',
+                tea: '奶茶店',
+                convenience: '便利店',
+                supermarket: '超市'
+            };
+            const densities = { 1: '稀疏', 2: '正常', 3: '密集' };
+            
+            const activeEvents = [];
+            if (document.getElementById('eventBadReview').checked) activeEvents.push('随机差评');
+            if (document.getElementById('eventLowStock').checked) activeEvents.push('库存告急');
+            if (document.getElementById('eventCompetitor').checked) activeEvents.push('竞品降价');
+            if (document.getElementById('eventHoliday').checked) activeEvents.push('节假日流量');
+            if (document.getElementById('eventRefund').checked) activeEvents.push('批量退款');
+            
+            const modeText = mockEnabled ? 'Mock数据已启用' : '真实数据模式';
+            const statusText = modeText + ' · ' + scenarioNames[currentScenario] + '场景 · ' + densities[currentDensity] + '密度 · ' + activeEvents.length + '个异常事件激活';
+            
+            document.getElementById('mockStatusText').innerText = statusText;
         }
     </script>
 </body>
