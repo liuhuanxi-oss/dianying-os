@@ -7,152 +7,312 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --primary: #f59e0b;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --blue: #3b82f6;
-      --bg: #f1f5f9;
-      --card-bg: white;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --sidebar-bg: #0f172a;
-      --sidebar-hover: #1e293b;
+      --color-primary: #6366F1;
+      --color-primary-light: #818CF8;
+      --color-cta: #10B981;
+      --color-cta-hover: #059669;
+      --color-bg: #F5F3FF;
+      --color-card: #FFFFFF;
+      --color-text: #1E1B4B;
+      --color-text-secondary: #6366F1;
+      --color-text-muted: #94A3B8;
+      --color-border: #E2E8F0;
+      --color-sidebar: #1E1B4B;
+      --color-sidebar-hover: #2D2A5E;
+      --color-danger: #EF4444;
+      --color-warning: #F59E0B;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --transition: 200ms ease;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: all 0.3s; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    body { 
+      font-family: var(--font-sans); 
+      background: var(--color-bg); 
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
     .app-layout { display: flex; min-height: 100vh; }
     
-    /* 侧边栏 */
-    .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #1e293b; }
+    .sidebar { 
+      width: 260px; 
+      background: var(--color-sidebar); 
+      color: white; 
+      display: flex; 
+      flex-direction: column; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      bottom: 0; 
+      z-index: 100;
+    }
+    .sidebar-header { 
+      padding: var(--spacing-lg) var(--spacing-md); 
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon { 
+      width: 40px; 
+      height: 40px; 
+      background: var(--color-warning);
+      border-radius: var(--radius-sm); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+    }
     .logo-title { font-size: 1.2rem; font-weight: 700; }
-    .logo-subtitle { font-size: 0.75rem; color: #94a3b8; }
-    .sidebar-menu { flex: 1; overflow-y: auto; padding: 16px 0; }
-    .menu-section { margin-bottom: 24px; }
-    .menu-section-title { padding: 0 16px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
-    .menu-item:hover { background: var(--sidebar-hover); color: white; }
-    .menu-item.active { background: var(--primary); color: white; }
-    .sidebar-footer { padding: 16px; border-top: 1px solid #1e293b; }
+    .logo-subtitle { font-size: 0.75rem; color: var(--color-text-muted); }
+    
+    .sidebar-menu { flex: 1; overflow-y: auto; padding: var(--spacing-md) 0; }
+    .menu-section { margin-bottom: var(--spacing-lg); }
+    .menu-section-title { 
+      padding: 0 var(--spacing-md) var(--spacing-sm); 
+      font-size: 0.7rem; 
+      color: var(--color-text-muted); 
+      text-transform: uppercase; 
+      letter-spacing: 0.05em; 
+      font-weight: 600; 
+    }
+    .menu-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 10px var(--spacing-md); 
+      cursor: pointer; 
+      transition: background var(--transition), color var(--transition);
+      color: var(--color-text-muted);
+    }
+    .menu-item:hover { background: var(--color-sidebar-hover); color: white; }
+    .menu-item.active { background: var(--color-warning); color: white; }
+    
+    .sidebar-footer { 
+      padding: var(--spacing-md); 
+      border-top: 1px solid rgba(255,255,255,0.1); 
+    }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .user-avatar { 
+      width: 36px; 
+      height: 36px; 
+      background: var(--color-warning); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+    }
     .user-name { font-weight: 600; font-size: 0.9rem; }
-    .user-role { font-size: 0.75rem; color: #64748b; }
+    .user-role { font-size: 0.75rem; color: var(--color-text-muted); }
     
-    .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; min-height: 100vh; }
-    .header { height: 64px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .page-title { font-size: 1.1rem; font-weight: 600; }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-    .content-area { flex: 1; padding: 24px; overflow-y: auto; }
+    .main-content { 
+      flex: 1; 
+      margin-left: 260px; 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; 
+    }
+    .header { 
+      height: 64px; 
+      background: var(--color-card); 
+      border-bottom: 1px solid var(--color-border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 0 var(--spacing-lg);
+    }
+    .page-title { font-size: 1.1rem; font-weight: 600; color: var(--color-text); }
+    .content-area { flex: 1; padding: var(--spacing-lg); overflow-y: auto; }
     
-    /* 卡片样式 */
-    .card { background: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; transition: all 0.3s; }
-    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-title { font-size: 1rem; font-weight: 600; }
+    .card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      margin-bottom: var(--spacing-md);
+      border: 1px solid var(--color-border);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); }
+    .card-title { font-size: 1rem; font-weight: 600; color: var(--color-text); }
     
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .stat-card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer; }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .stat-value { font-size: 2rem; font-weight: 700; }
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-    .stat-trend { font-size: 0.8rem; margin-top: 8px; }
-    .stat-trend.up { color: var(--success); }
-    .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); }
+    .stat-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--color-text); font-family: var(--font-mono); }
+    .stat-label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; }
+    .stat-trend { font-size: 0.8rem; margin-top: var(--spacing-sm); }
+    .stat-trend.up { color: var(--color-cta); }
+    .stat-trend.down { color: var(--color-danger); }
     
-    /* 按钮 */
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: #d97706; }
-    .btn-secondary { background: var(--bg); color: var(--text); }
-    .btn-secondary:hover { background: var(--border); }
-    .btn-success { background: var(--success); color: white; }
-    .btn-danger { background: var(--danger); color: white; }
+    .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .chart-container { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+    }
+    
+    .btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      padding: 10px 16px; 
+      border-radius: var(--radius-sm); 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      cursor: pointer; 
+      border: none; 
+      transition: all var(--transition);
+    }
+    .btn-primary { background: var(--color-primary); color: white; }
+    .btn-primary:hover { background: var(--color-primary-light); }
+    .btn-secondary { background: var(--color-card); color: var(--color-text); border: 1px solid var(--color-border); }
+    .btn-secondary:hover { background: var(--color-bg); }
+    .btn-warning { background: var(--color-warning); color: white; }
     .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-    .btn-lg { padding: 12px 24px; font-size: 1rem; }
     
-    /* 标签 */
-    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
-    .tag-green { background: #dcfce7; color: #15803d; }
-    .tag-yellow { background: #fef3c7; color: #b45309; }
-    .tag-red { background: #fee2e2; color: #dc2626; }
-    .tag-blue { background: #dbeafe; color: #1d4ed8; }
-    .tag-purple { background: #f3e8ff; color: #7c3aed; }
-    .tag-orange { background: #ffedd5; color: #c2410c; }
-    .tag-gray { background: #f1f5f9; color: var(--text-muted); }
+    .tag { cursor: pointer;
+      display: inline-flex; 
+      align-items: center; 
+      padding: 4px 10px; 
+      border-radius: 20px; 
+      font-size: 0.75rem; 
+      font-weight: 500; 
+    }
+    .tag-green { background: #DCFCE7; color: #15803D; }
+    .tag-blue { background: #DBEAFE; color: #1D4ED8; }
+    .tag-yellow { background: #FEF3C7; color: #B45309; }
+    .tag-gray { background: var(--color-bg); color: var(--color-text-muted); }
+    .tag-orange { background: #FFF7ED; color: #C2410C; }
     
-    /* 表格 */
-    .table { width: 100%; border-collapse: collapse; }
-    .table th, .table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-    .table th { font-weight: 600; color: var(--text-muted); font-size: 0.85rem; background: #f8fafc; }
-    .table tr:hover { background: #f8fafc; }
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { text-align: left; padding: 12px; background: var(--color-bg); font-weight: 600; font-size: 0.85rem; color: var(--color-text-muted); }
+    .data-table td { padding: 12px; border-bottom: 1px solid var(--color-border); }
+    .data-table tr:hover td { background: var(--color-bg); }
     
-    /* 邀请码卡片 */
-    .invite-card { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; padding: 32px; color: white; text-align: center; }
-    .invite-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
-    .invite-desc { opacity: 0.9; margin-bottom: 20px; }
-    .invite-code { font-size: 2rem; font-weight: 700; letter-spacing: 4px; background: rgba(255,255,255,0.2); padding: 16px 32px; border-radius: 8px; display: inline-block; margin-bottom: 20px; }
-    .invite-qr { width: 150px; height: 150px; background: white; border-radius: 12px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-    .invite-qr-placeholder { width: 120px; height: 120px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #64748b; }
+    /* Merchant list */
+    .merchant-list { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+    .merchant-item { cursor: pointer;
+      display: flex; 
+      align-items: center; 
+      padding: var(--spacing-md); 
+      background: var(--color-card); 
+      border: 1px solid var(--color-border); 
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .merchant-item:hover { border-color: var(--color-primary); }
+    .merchant-avatar { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: var(--radius-sm); 
+      background: var(--color-bg); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: var(--color-text-muted);
+      margin-right: var(--spacing-md);
+    }
+    .merchant-info { flex: 1; }
+    .merchant-name { font-weight: 600; margin-bottom: 4px; }
+    .merchant-meta { font-size: 0.8rem; color: var(--color-text-muted); }
+    .merchant-stats { display: flex; gap: 24px; text-align: right; }
+    .merchant-stat-value { font-weight: 600; font-family: var(--font-mono); }
+    .merchant-stat-label { font-size: 0.75rem; color: var(--color-text-muted); }
     
-    /* 排行榜 */
-    .ranking-list { list-style: none; }
-    .ranking-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 12px; }
-    .ranking-item:first-child { background: linear-gradient(135deg, #fef3c7, #fff7ed); border: 2px solid #f59e0b; }
-    .ranking-medal { font-size: 1.5rem; margin-right: 8px; }
-    .ranking-info { flex: 1; }
-    .ranking-name { font-weight: 600; }
-    .ranking-meta { font-size: 0.8rem; color: var(--text-muted); }
-    .ranking-value { text-align: right; }
-    .ranking-num { font-weight: 700; color: var(--primary); }
-    .ranking-label { font-size: 0.75rem; color: var(--text-muted); }
+    /* Commission card */
+    .commission-card { 
+      background: linear-gradient(135deg, var(--color-warning), #D97706); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      color: white;
+      margin-bottom: var(--spacing-md);
+    }
+    .commission-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); }
+    .commission-title { font-size: 0.9rem; opacity: 0.9; }
+    .commission-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; }
+    .commission-value { font-size: 2.5rem; font-weight: 700; font-family: var(--font-mono); }
+    .commission-change { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+    .commission-breakdown { display: flex; gap: var(--spacing-lg); margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid rgba(255,255,255,0.2); }
+    .breakdown-item { text-align: center; }
+    .breakdown-value { font-size: 1.25rem; font-weight: 600; font-family: var(--font-mono); }
+    .breakdown-label { font-size: 0.75rem; opacity: 0.8; margin-top: 2px; }
     
-    /* 佣金卡片 */
-    .commission-card { background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; padding: 32px; color: white; text-align: center; }
-    .commission-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 8px; }
-    .commission-value { font-size: 3rem; font-weight: 700; margin-bottom: 8px; }
-    .commission-trend { font-size: 0.9rem; opacity: 0.9; }
-    
-    /* 健康度 */
-    .health-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-    .health-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
-    .health-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 12px; }
-    .health-info { flex: 1; }
-    .health-name { font-weight: 600; margin-bottom: 4px; }
-    .health-meta { font-size: 0.8rem; color: var(--text-muted); }
-    .health-score { text-align: right; }
-    .health-number { font-size: 1.5rem; font-weight: 700; }
-    
-    /* 表单 */
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; }
-    .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: var(--card-bg); color: var(--text); }
-    .form-input:focus { outline: none; border-color: var(--primary); }
+    /* Performance chart */
+    .performance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .performance-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+    .performance-icon { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      margin: 0 auto var(--spacing-sm);
+    }
+    .performance-icon.blue { background: #DBEAFE; color: #1D4ED8; }
+    .performance-icon.green { background: #DCFCE7; color: #15803D; }
+    .performance-icon.purple { background: #F3E8FF; color: #7C3AED; }
+    .performance-icon.orange { background: #FEF3C7; color: #B45309; }
+    .performance-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
+    .performance-label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; }
     
     /* Toast */
-    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: #1e293b; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s ease-out; }
-    .toast.success { background: var(--success); }
-    .toast.error { background: var(--danger); }
+    .toast { 
+      position: fixed; 
+      bottom: var(--spacing-lg); 
+      right: var(--spacing-lg); 
+      padding: 12px 20px; 
+      background: var(--color-text); 
+      color: white; 
+      border-radius: var(--radius-sm); 
+      z-index: 2000; 
+      animation: slideIn 0.3s ease-out;
+    }
+    .toast.success { background: var(--color-cta); }
     @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     
-    /* 实时数据 */
-    .live-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 6px; animation: livePulse 1.5s infinite; }
-    @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    
-    /* 图表 */
-    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-    
-    /* 响应式 */
-    @media (max-width: 1200px) {
+    @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .chart-grid { grid-template-columns: 1fr; }
+      .performance-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main-content { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .performance-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -168,9 +328,7 @@
           </div>
         </div>
       </div>
-      
       <div class="sidebar-menu" id="sidebar-menu"></div>
-      
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar"><i data-lucide="user"></i></div>
@@ -185,43 +343,46 @@
     <div class="main-content">
       <div class="header">
         <div class="page-title" id="pageTitle">我的商户</div>
-        <div class="header-actions">
-          <button class="btn btn-primary btn-sm" onclick="showToast('数据更新中...', 'success')">
-            <span class="live-dot"></span> 数据实时
-          </button>
-        </div>
+        <div class="header-actions" id="headerActions"></div>
       </div>
-      
       <div class="content-area" id="contentArea"></div>
     </div>
   </div>
 
   <script>
-    let currentPage = 'merchants';
-    let charts = {};
-    
     const menuConfig = [
       { section: '业务管理', items: [
         { id: 'merchants', name: '我的商户', icon: 'store' },
         { id: 'stats', name: '业绩统计', icon: 'bar-chart-2' },
-        { id: 'commission', name: '佣金结算', icon: 'wallet' },
-        { id: 'invite', name: '拓客工具', icon: 'share-2' }
+        { id: 'commission', name: '分润查看', icon: 'dollar-sign' }
       ]},
       { section: '客户管理', items: [
-        { id: 'customers', name: '客户健康度', icon: 'heart-pulse' },
-        { id: 'ranking', name: '拓客排行', icon: 'trophy' },
+        { id: 'customers', name: '客户管理', icon: 'users' },
         { id: 'reports', name: '数据报表', icon: 'file-text' }
-      ]},
-      { section: '我的', items: [
-        { id: 'profile', name: '个人信息', icon: 'user' },
-        { id: 'settings', name: '设置', icon: 'settings' }
       ]}
     ];
 
-    document.addEventListener('DOMContentLoaded', function() {
-      renderSidebar();
-      renderPage('merchants');
-    });
+    let currentPage = 'merchants';
+    let charts = {};
+
+    const myMerchants = [
+      { id: 1, name: '川味坊', category: '川菜', location: '朝阳区', monthlySales: '¥328,560', orders: 2856, rating: 4.9, status: 'active', commission: '¥9,857', joinDate: '2023-03-15' },
+      { id: 2, name: '湘江楼', category: '湘菜', location: '海淀区', monthlySales: '¥286,340', orders: 2456, rating: 4.8, status: 'active', commission: '¥8,590', joinDate: '2023-04-22' },
+      { id: 3, name: '粤式茶餐厅', category: '粤菜', location: '西城区', monthlySales: '¥245,780', orders: 2134, rating: 4.7, status: 'active', commission: '¥7,373', joinDate: '2023-05-08' },
+      { id: 4, name: '老北京涮肉', category: '火锅', location: '东城区', monthlySales: '¥198,560', orders: 1789, rating: 4.6, status: 'active', commission: '¥5,957', joinDate: '2023-06-18' },
+      { id: 5, name: '日式料理', category: '日料', location: '朝阳区', monthlySales: '¥176,890', orders: 1523, rating: 4.9, status: 'active', commission: '¥5,307', joinDate: '2023-07-25' },
+      { id: 6, name: '韩式烤肉', category: '韩餐', location: '海淀区', monthlySales: '¥165,340', orders: 1432, rating: 4.5, status: 'active', commission: '¥4,960', joinDate: '2023-08-12' },
+      { id: 7, name: '西餐厅', category: '西餐', location: '西城区', monthlySales: '¥145,670', orders: 1234, rating: 4.7, status: 'active', commission: '¥4,370', joinDate: '2023-09-03' },
+      { id: 8, name: '咖啡馆', category: '饮品', location: '朝阳区', monthlySales: '¥98,450', orders: 2134, rating: 4.8, status: 'active', commission: '¥2,954', joinDate: '2023-10-15' }
+    ];
+
+    const commissionHistory = [
+      { id: 'COM001', merchant: '川味坊', amount: '¥9,857', rate: '3%', date: '2024-01-15', status: '已结算' },
+      { id: 'COM002', merchant: '湘江楼', amount: '¥8,590', rate: '3%', date: '2024-01-15', status: '已结算' },
+      { id: 'COM003', merchant: '粤式茶餐厅', amount: '¥7,373', rate: '3%', date: '2024-01-15', status: '已结算' },
+      { id: 'COM004', merchant: '老北京涮肉', amount: '¥5,957', rate: '3%', date: '2024-01-14', status: '已结算' },
+      { id: 'COM005', merchant: '日式料理', amount: '¥5,307', rate: '3%', date: '2024-01-14', status: '处理中' }
+    ];
 
     function renderSidebar() {
       const menuEl = document.getElementById('sidebar-menu');
@@ -230,7 +391,7 @@
         html += `<div class="menu-section"><div class="menu-section-title">${section.section}</div>`;
         section.items.forEach(item => {
           const isActive = currentPage === item.id ? 'active' : '';
-          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
+          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')" role="button" tabindex="0"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
         });
         html += `</div>`;
       });
@@ -262,84 +423,44 @@
       if (pageId === 'merchants') {
         content.innerHTML = `
           <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><i data-lucide="store"></i></div>
-              <div class="stat-value">156</div>
-              <div class="stat-label">我的商户数</div>
-              <div class="stat-trend up">↑ 12 本月新增</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #fef3c7; color: #b45309;"><i data-lucide="yen-sign"></i></div>
-              <div class="stat-value">¥2.8M</div>
-              <div class="stat-label">本月交易额</div>
-              <div class="stat-trend up">↑ 22.5% 较上月</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><i data-lucide="wallet"></i></div>
-              <div class="stat-value">¥86,500</div>
-              <div class="stat-label">本月分润</div>
-              <div class="stat-trend up">↑ 18.3% 较上月</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #f3e8ff; color: #7c3aed;"><i data-lucide="activity"></i></div>
-              <div class="stat-value">98.2%</div>
-              <div class="stat-label">商户活跃率</div>
-              <div class="stat-trend up">健康</div>
-            </div>
+            <div class="stat-card"><div class="stat-value">156</div><div class="stat-label">我的商户数</div><div class="stat-trend up">↑ 12 本月新增</div></div>
+            <div class="stat-card"><div class="stat-value">¥2.8M</div><div class="stat-label">本月交易额</div><div class="stat-trend up">↑ 22.5% 较上月</div></div>
+            <div class="stat-card"><div class="stat-value">¥86,500</div><div class="stat-label">本月分润</div><div class="stat-trend up">↑ 18.3% 较上月</div></div>
+            <div class="stat-card"><div class="stat-value">98.2%</div><div class="stat-label">商户活跃率</div><div class="stat-trend up">健康</div></div>
           </div>
           
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: var(--spacing-md);">
             <div class="card-header">
-              <div class="card-title">🏪 商户列表</div>
-              <div style="display: flex; gap: 12px;">
-                <input type="text" class="form-input" placeholder="搜索商户名称..." style="width: 200px;">
-                <select class="form-input" style="width: 150px;">
-                  <option>全部版本</option>
-                  <option>基础版</option>
-                  <option>专业版</option>
-                  <option>企业版</option>
-                </select>
+              <div class="card-title">商户列表</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm"><i data-lucide="search"></i> 搜索</button>
+                <button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> 添加商户</button>
               </div>
             </div>
-            <table class="table" style="margin-top: 16px;">
-              <thead>
-                <tr><th>商户名称</th><th>版本</th><th>入驻时间</th><th>本月交易</th><th>健康度</th><th>操作</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>店赢川菜旗舰店</strong></td>
-                  <td><span class="tag tag-purple">企业版</span></td>
-                  <td>2023-06-15</td>
-                  <td>¥128,560</td>
-                  <td><span class="tag tag-green">优秀</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>海底捞朝阳店</strong></td>
-                  <td><span class="tag tag-green">专业版</span></td>
-                  <td>2023-08-22</td>
-                  <td>¥98,500</td>
-                  <td><span class="tag tag-green">优秀</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>湘菜馆海淀店</strong></td>
-                  <td><span class="tag tag-green">专业版</span></td>
-                  <td>2023-10-01</td>
-                  <td>¥75,600</td>
-                  <td><span class="tag tag-yellow">良好</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>粤菜馆西城店</strong></td>
-                  <td><span class="tag tag-blue">基础版</span></td>
-                  <td>2023-11-18</td>
-                  <td>¥62,300</td>
-                  <td><span class="tag tag-yellow">良好</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <span class="tag tag-orange" style="cursor: pointer;">全部 156</span>
+              <span class="tag tag-gray" style="cursor: pointer;">活跃 142</span>
+              <span class="tag tag-gray" style="cursor: pointer;">待审核 8</span>
+              <span class="tag tag-gray" style="cursor: pointer;">已冻结 6</span>
+            </div>
+            <div class="merchant-list">
+              ${myMerchants.map(m => `
+                <div class="merchant-item" onclick="showToast('查看 ${m.name} 详情')">
+                  <div class="merchant-avatar"><i data-lucide="store"></i></div>
+                  <div class="merchant-info">
+                    <div class="merchant-name">${m.name}</div>
+                    <div class="merchant-meta">${m.category} · ${m.location} · ${m.joinDate}入驻</div>
+                  </div>
+                  <div class="merchant-stats">
+                    <div><div class="merchant-stat-value">${m.monthlySales}</div><div class="merchant-stat-label">月交易</div></div>
+                    <div><div class="merchant-stat-value">${m.orders.toLocaleString()}</div><div class="merchant-stat-label">订单</div></div>
+                    <div><div class="merchant-stat-value">${m.rating}</div><div class="merchant-stat-label">评分</div></div>
+                    <div><div class="merchant-stat-value" style="color: var(--color-cta);">${m.commission}</div><div class="merchant-stat-label">月分润</div></div>
+                  </div>
+                  <span class="tag tag-green" style="margin-left: 16px;">活跃</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
         lucide.createIcons();
@@ -347,93 +468,69 @@
       } else if (pageId === 'stats') {
         content.innerHTML = `
           <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><i data-lucide="trending-up"></i></div>
-              <div class="stat-value">156</div>
-              <div class="stat-label">商户总数</div>
-              <div class="stat-trend up">较上月 +12</div>
+            <div class="stat-card"><div class="stat-value">¥32.5M</div><div class="stat-label">累计交易额</div><div class="stat-trend up">↑ 25.6% 本年</div></div>
+            <div class="stat-card"><div class="stat-value">¥975K</div><div class="stat-label">累计分润</div><div class="stat-trend up">↑ 22.3% 本年</div></div>
+            <div class="stat-card"><div class="stat-value">156</div><div class="stat-label">服务商户</div><div class="stat-trend up">↑ 12 本月</div></div>
+            <div class="stat-card"><div class="stat-value">¥6,250</div><div class="stat-label">户均贡献</div><div class="stat-trend up">↑ 8.5%</div></div>
+          </div>
+          
+          <div class="charts-grid" style="margin-top: var(--spacing-md);">
+            <div class="chart-container"><div class="card-title">近6个月业绩趋势</div><canvas id="performanceChart" height="250"></canvas></div>
+            <div class="chart-container"><div class="card-title">商户行业分布</div><canvas id="industryChart" height="250"></canvas></div>
+          </div>
+          
+          <div class="performance-grid">
+            <div class="performance-card">
+              <div class="performance-icon blue"><i data-lucide="trending-up"></i></div>
+              <div class="performance-value">+28.5%</div>
+              <div class="performance-label">交易额增长率</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #fef3c7; color: #b45309;"><i data-lucide="percent"></i></div>
-              <div class="stat-value">15.8%</div>
-              <div class="stat-label">续费率</div>
-              <div class="stat-trend up">优秀</div>
+            <div class="performance-card">
+              <div class="performance-icon green"><i data-lucide="users"></i></div>
+              <div class="performance-value">156</div>
+              <div class="performance-label">活跃商户数</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #f3e8ff; color: #7c3aed;"><i data-lucide="star"></i></div>
-              <div class="stat-value">92.5</div>
-              <div class="stat-label">客户满意度</div>
-              <div class="stat-trend up">↑ 2.3</div>
+            <div class="performance-card">
+              <div class="performance-icon purple"><i data-lucide="star"></i></div>
+              <div class="performance-value">4.7</div>
+              <div class="performance-label">平均评分</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><i data-lucide="target"></i></div>
-              <div class="stat-value">68%</div>
-              <div class="stat-label">目标完成率</div>
-              <div class="stat-trend up">本月</div>
+            <div class="performance-card">
+              <div class="performance-icon orange"><i data-lucide="target"></i></div>
+              <div class="performance-value">¥2.8M</div>
+              <div class="performance-label">本月目标完成</div>
             </div>
           </div>
           
-          <div class="chart-grid" style="margin-top: 20px;">
-            <div class="card">
-              <div class="card-title">商户增长趋势</div>
-              <canvas id="merchantTrendChart" height="250"></canvas>
-            </div>
-            <div class="card">
-              <div class="card-title">分润收入趋势</div>
-              <canvas id="commissionTrendChart" height="250"></canvas>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📊 版本分布</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2.5rem; font-weight: 700; color: #64748b;">45</div>
-                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">基础版</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">占比 28.8%</div>
-              </div>
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">78</div>
-                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">专业版</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">占比 50%</div>
-              </div>
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2.5rem; font-weight: 700; color: #8b5cf6;">33</div>
-                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">企业版</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">占比 21.2%</div>
-              </div>
-            </div>
+          <div class="card" style="margin-top: var(--spacing-md);">
+            <div class="card-header"><div class="card-title">月度业绩明细</div></div>
+            <table class="data-table">
+              <thead><tr><th>月份</th><th>新增商户</th><th>交易额</th><th>分润金额</th><th>完成率</th></tr></thead>
+              <tbody>
+                <tr><td>2024年1月</td><td>12</td><td style="font-family: var(--font-mono);">¥2,800,000</td><td style="font-family: var(--font-mono);">¥86,500</td><td><span class="tag tag-green">112%</span></td></tr>
+                <tr><td>2023年12月</td><td>15</td><td style="font-family: var(--font-mono);">¥2,450,000</td><td style="font-family: var(--font-mono);">¥75,200</td><td><span class="tag tag-green">98%</span></td></tr>
+                <tr><td>2023年11月</td><td>10</td><td style="font-family: var(--font-mono);">¥2,280,000</td><td style="font-family: var(--font-mono);">¥69,800</td><td><span class="tag tag-green">95%</span></td></tr>
+                <tr><td>2023年10月</td><td>8</td><td style="font-family: var(--font-mono);">¥2,120,000</td><td style="font-family: var(--font-mono);">¥64,500</td><td><span class="tag tag-green">92%</span></td></tr>
+              </tbody>
+            </table>
           </div>
         `;
-        
         setTimeout(() => {
           lucide.createIcons();
-          charts.merchantTrend = new Chart(document.getElementById('merchantTrendChart'), {
+          charts.performance = new Chart(document.getElementById('performanceChart'), {
             type: 'line',
             data: {
-              labels: ['7月', '8月', '9月', '10月', '11月', '12月', '1月'],
-              datasets: [{
-                label: '商户数',
-                data: [98, 112, 126, 138, 145, 152, 156],
-                borderColor: '#f59e0b',
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                fill: true,
-                tension: 0.4
-              }]
+              labels: ['8月', '9月', '10月', '11月', '12月', '1月'],
+              datasets: [
+                { label: '交易额(万元)', data: [180, 210, 240, 268, 295, 320], borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4 },
+                { label: '分润(万元)', data: [5.4, 6.3, 7.2, 8.0, 8.9, 10.2], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 }
+              ]
             },
             options: { responsive: true }
           });
-          
-          charts.commissionTrend = new Chart(document.getElementById('commissionTrendChart'), {
-            type: 'bar',
-            data: {
-              labels: ['7月', '8月', '9月', '10月', '11月', '12月', '1月'],
-              datasets: [{
-                label: '分润(万)',
-                data: [4.2, 5.1, 5.8, 6.5, 7.2, 7.8, 8.6],
-                backgroundColor: '#10b981'
-              }]
-            },
+          charts.industry = new Chart(document.getElementById('industryChart'), {
+            type: 'doughnut',
+            data: { labels: ['川菜', '湘菜', '粤菜', '火锅', '日料', '其他'], datasets: [{ data: [28, 22, 18, 15, 10, 7], backgroundColor: ['#6366F1', '#818CF8', '#F59E0B', '#10B981', '#EC4899', '#94A3B8'] }] },
             options: { responsive: true }
           });
         }, 100);
@@ -441,513 +538,106 @@
       } else if (pageId === 'commission') {
         content.innerHTML = `
           <div class="commission-card">
-            <div class="commission-label">本月佣金预估</div>
+            <div class="commission-header">
+              <div class="commission-title">本月可提现分润</div>
+              <div class="commission-badge">待结算</div>
+            </div>
             <div class="commission-value">¥86,500</div>
-            <div class="commission-trend">↑ 18.3% 较上月 (¥73,100)</div>
-          </div>
-          
-          <div class="stats-grid" style="margin-top: 20px;">
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><i data-lucide="wallet"></i></div>
-              <div class="stat-value">¥523,000</div>
-              <div class="stat-label">累计佣金</div>
-              <div class="stat-trend up">历史累计</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><i data-lucide="banknote"></i></div>
-              <div class="stat-value">¥45,000</div>
-              <div class="stat-label">已提现</div>
-              <div class="stat-trend">剩余 ¥41,500</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #f3e8ff; color: #7c3aed;"><i data-lucide="gift"></i></div>
-              <div class="stat-value">¥15%</div>
-              <div class="stat-label">平均分润比例</div>
-              <div class="stat-trend up">最高 20%</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #ffedd5; color: #c2410c;"><i data-lucide="clock"></i></div>
-              <div class="stat-value">T+7</div>
-              <div class="stat-label">结算周期</div>
-              <div class="stat-trend">每月7日结算</div>
+            <div class="commission-change">较上月 +18.3% · 预计2天后到账</div>
+            <div class="commission-breakdown">
+              <div class="breakdown-item"><div class="breakdown-value">¥68,200</div><div class="breakdown-label">交易分润(3%)</div></div>
+              <div class="breakdown-item"><div class="breakdown-value">¥12,800</div><div class="breakdown-label">活动奖励</div></div>
+              <div class="breakdown-item"><div class="breakdown-value">¥5,500</div><div class="breakdown-label">续费奖励</div></div>
             </div>
           </div>
           
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-header">
-              <div class="card-title">💰 佣金明细</div>
-              <button class="btn btn-success" onclick="showToast('申请提现成功', 'success')">
-                <i data-lucide="banknote"></i> 申请提现
-              </button>
-            </div>
-            <table class="table" style="margin-top: 16px;">
-              <thead>
-                <tr><th>结算周期</th><th>新增商户</th><th>续费商户</th><th>佣金金额</th><th>状态</th><th>操作</th></tr>
-              </thead>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value">¥975K</div><div class="stat-label">累计分润</div><div class="stat-trend up">本年</div></div>
+            <div class="stat-card"><div class="stat-value">¥86,500</div><div class="stat-label">本月分润</div><div class="stat-trend up">↑ 18.3%</div></div>
+            <div class="stat-card"><div class="stat-value">¥42,500</div><div class="stat-label">已提现</div><div class="stat-trend">剩余可提</div></div>
+            <div class="stat-card"><div class="stat-value">¥44,000</div><div class="stat-label">待结算</div><div class="stat-trend">2天后到账</div></div>
+          </div>
+          
+          <div class="charts-grid" style="margin-top: var(--spacing-md);">
+            <div class="chart-container"><div class="card-title">分润趋势</div><canvas id="commissionTrendChart" height="200"></canvas></div>
+            <div class="chart-container"><div class="card-title">分润构成</div><canvas id="commissionPieChart" height="200"></canvas></div>
+          </div>
+          
+          <div class="card" style="margin-top: var(--spacing-md);">
+            <div class="card-header"><div class="card-title">分润记录</div><button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> 导出</button></div>
+            <table class="data-table">
+              <thead><tr><th>订单号</th><th>商户</th><th>分润金额</th><th>分润比例</th><th>日期</th><th>状态</th></tr></thead>
               <tbody>
-                <tr>
-                  <td>2024年1月</td>
-                  <td>12家</td>
-                  <td>138家</td>
-                  <td><strong style="color: #10b981;">¥86,500</strong></td>
-                  <td><span class="tag tag-yellow">待结算</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td>2023年12月</td>
-                  <td>15家</td>
-                  <td>132家</td>
-                  <td>¥73,100</td>
-                  <td><span class="tag tag-green">已结算</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td>2023年11月</td>
-                  <td>10家</td>
-                  <td>128家</td>
-                  <td>¥65,800</td>
-                  <td><span class="tag tag-green">已结算</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td>2023年10月</td>
-                  <td>8家</td>
-                  <td>125家</td>
-                  <td>¥58,500</td>
-                  <td><span class="tag tag-green">已结算</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
+                ${commissionHistory.map(c => `
+                  <tr>
+                    <td style="font-family: var(--font-mono);">${c.id}</td>
+                    <td>${c.merchant}</td>
+                    <td style="font-family: var(--font-mono); color: var(--color-cta);">${c.amount}</td>
+                    <td>${c.rate}</td>
+                    <td>${c.date}</td>
+                    <td><span class="tag ${c.status === '已结算' ? 'tag-green' : 'tag-yellow'}">${c.status}</span></td>
+                  </tr>
+                `).join('')}
               </tbody>
             </table>
           </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📋 分润规则</div>
-            <div style="margin-top: 16px; padding: 16px; background: #f8fafc; border-radius: 8px;">
-              <div style="margin-bottom: 12px;"><strong>新签商户分润：</strong></div>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                <div style="padding: 12px; background: white; border-radius: 6px;">
-                  <div style="font-weight: 600; color: #64748b;">基础版</div>
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b; margin-top: 4px;">¥150/月</div>
-                </div>
-                <div style="padding: 12px; background: white; border-radius: 6px;">
-                  <div style="font-weight: 600; color: #64748b;">专业版</div>
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b; margin-top: 4px;">¥450/月</div>
-                </div>
-                <div style="padding: 12px; background: white; border-radius: 6px;">
-                  <div style="font-weight: 600; color: #64748b;">企业版</div>
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b; margin-top: 4px;">¥1,500/月</div>
-                </div>
-              </div>
-              <div style="margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">
-                <p>• 续费分润为首月佣金的80%</p>
-                <p>• 季度/年度付费按比例分月结算</p>
-                <p>• 达到对应等级可提升分润比例</p>
-              </div>
-            </div>
-          </div>
         `;
-        lucide.createIcons();
-
-      } else if (pageId === 'invite') {
-        content.innerHTML = `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="invite-card">
-              <div class="invite-title">🎁 专属邀请链接</div>
-              <div class="invite-desc">分享您的专属邀请码，成功入驻即享高额佣金</div>
-              <div class="invite-code">VIP2024</div>
-              <div style="display: flex; justify-content: center; gap: 12px;">
-                <button class="btn btn-secondary" style="background: white;" onclick="showToast('链接已复制', 'success')">
-                  <i data-lucide="copy"></i> 复制链接
-                </button>
-                <button class="btn btn-secondary" style="background: white;" onclick="showToast('分享链接已生成')">
-                  <i data-lucide="share"></i> 分享
-                </button>
-              </div>
-            </div>
-            
-            <div class="card">
-              <div class="card-title">📊 邀请数据统计</div>
-              <div style="margin-top: 20px;">
-                <div style="display: flex; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 12px;">
-                  <div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">邀请链接点击</div>
-                    <div style="font-size: 1.5rem; font-weight: 700;">1,286</div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">转化率</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">12.1%</div>
-                  </div>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 12px;">
-                  <div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">注册用户</div>
-                    <div style="font-size: 1.5rem; font-weight: 700;">156</div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">入驻成功率</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">78.7%</div>
-                  </div>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: 8px;">
-                  <div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">成功入驻</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;">123家</div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">累计佣金</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">¥523,000</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-header">
-              <div class="card-title">🏆 拓客排行榜</div>
-              <button class="btn btn-secondary btn-sm" onclick="navigateTo('ranking', '拓客排行')">查看全部</button>
-            </div>
-            <ul class="ranking-list" style="margin-top: 16px;">
-              <li class="ranking-item">
-                <span class="ranking-medal">🥇</span>
-                <div class="ranking-info">
-                  <div class="ranking-name">张经理</div>
-                  <div class="ranking-meta">华东大区 · 累计156家</div>
-                </div>
-                <div class="ranking-value">
-                  <div class="ranking-num">¥523,000</div>
-                  <div class="ranking-label">累计佣金</div>
-                </div>
-              </li>
-              <li class="ranking-item">
-                <span class="ranking-medal">🥈</span>
-                <div class="ranking-info">
-                  <div class="ranking-name">李总监</div>
-                  <div class="ranking-meta">华南大区 · 累计128家</div>
-                </div>
-                <div class="ranking-value">
-                  <div class="ranking-num">¥456,000</div>
-                  <div class="ranking-label">累计佣金</div>
-                </div>
-              </li>
-              <li class="ranking-item">
-                <span class="ranking-medal">🥉</span>
-                <div class="ranking-info">
-                  <div class="ranking-name">王经理</div>
-                  <div class="ranking-meta">华北大区 · 累计98家</div>
-                </div>
-                <div class="ranking-value">
-                  <div class="ranking-num">¥328,000</div>
-                  <div class="ranking-label">累计佣金</div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📱 二维码推广物料</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px; cursor: pointer;">
-                <div style="width: 120px; height: 120px; background: #e2e8f0; border-radius: 8px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
-                  <span style="color: var(--text-muted); font-size: 0.8rem;">二维码</span>
-                </div>
-                <div style="font-weight: 600;">朋友圈海报</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">点击下载</div>
-              </div>
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px; cursor: pointer;">
-                <div style="width: 120px; height: 120px; background: #e2e8f0; border-radius: 8px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
-                  <span style="color: var(--text-muted); font-size: 0.8rem;">二维码</span>
-                </div>
-                <div style="font-weight: 600;">微信群物料</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">点击下载</div>
-              </div>
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px; cursor: pointer;">
-                <div style="width: 120px; height: 120px; background: #e2e8f0; border-radius: 8px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
-                  <span style="color: var(--text-muted); font-size: 0.8rem;">二维码</span>
-                </div>
-                <div style="font-weight: 600;">线下展会物料</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">点击下载</div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
+        setTimeout(() => {
+          lucide.createIcons();
+          charts.commissionTrend = new Chart(document.getElementById('commissionTrendChart'), {
+            type: 'bar',
+            data: { labels: ['8月', '9月', '10月', '11月', '12月', '1月'], datasets: [{ label: '分润(万元)', data: [5.4, 6.3, 7.2, 8.0, 8.9, 10.2], backgroundColor: '#10B981' }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+          charts.commissionPie = new Chart(document.getElementById('commissionPieChart'), {
+            type: 'doughnut',
+            data: { labels: ['交易分润', '活动奖励', '续费奖励', '其他'], datasets: [{ data: [68, 15, 12, 5], backgroundColor: ['#6366F1', '#10B981', '#F59E0B', '#94A3B8'] }] },
+            options: { responsive: true }
+          });
+        }, 100);
 
       } else if (pageId === 'customers') {
         content.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">❤️ 商户健康度排名</div>
-              <select class="form-input" style="width: 150px;">
-                <option>全部商户</option>
-                <option>企业版</option>
-                <option>专业版</option>
-                <option>基础版</option>
-              </select>
-            </div>
-            <div style="margin-top: 16px;">
-              <div class="health-item">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">1</div>
-                <div class="health-info">
-                  <div class="health-name">店赢川菜旗舰店</div>
-                  <div class="health-meta">企业版 · 最后活跃：今天</div>
-                </div>
-                <div class="health-score">
-                  <div class="health-number" style="color: #10b981;">95</div>
-                  <div class="health-bar" style="width: 80px;"><div class="health-fill" style="width: 95%; background: #10b981;"></div></div>
-                </div>
-              </div>
-              
-              <div class="health-item">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">2</div>
-                <div class="health-info">
-                  <div class="health-name">海底捞朝阳店</div>
-                  <div class="health-meta">专业版 · 最后活跃：今天</div>
-                </div>
-                <div class="health-score">
-                  <div class="health-number" style="color: #10b981;">92</div>
-                  <div class="health-bar" style="width: 80px;"><div class="health-fill" style="width: 92%; background: #10b981;"></div></div>
-                </div>
-              </div>
-              
-              <div class="health-item">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">3</div>
-                <div class="health-info">
-                  <div class="health-name">湘菜馆海淀店</div>
-                  <div class="health-meta">专业版 · 最后活跃：昨天</div>
-                </div>
-                <div class="health-score">
-                  <div class="health-number" style="color: #3b82f6;">85</div>
-                  <div class="health-bar" style="width: 80px;"><div class="health-fill" style="width: 85%; background: #3b82f6;"></div></div>
-                </div>
-              </div>
-              
-              <div class="health-item">
-                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">4</div>
-                <div class="health-info">
-                  <div class="health-name">粤菜馆西城店</div>
-                  <div class="health-meta">基础版 · 最后活跃：3天前</div>
-                </div>
-                <div class="health-score">
-                  <div class="health-number" style="color: #f59e0b;">72</div>
-                  <div class="health-bar" style="width: 80px;"><div class="health-fill" style="width: 72%; background: #f59e0b;"></div></div>
-                </div>
-              </div>
-            </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value">2,890</div><div class="stat-label">触达客户数</div><div class="stat-trend up">↑ 156 本月</div></div>
+            <div class="stat-card"><div class="stat-value">568</div><div class="stat-label">意向客户</div><div class="stat-trend up">↑ 28 本月</div></div>
+            <div class="stat-card"><div class="stat-value">156</div><div class="stat-label">成功签约</div><div class="stat-trend up">↑ 12 本月</div></div>
+            <div class="stat-card"><div class="stat-value">35.2%</div><div class="stat-label">转化率</div><div class="stat-trend up">↑ 2.8%</div></div>
           </div>
           
-          <div class="card" style="margin-top: 20px;">
+          <div class="card" style="margin-top: var(--spacing-md);">
             <div class="card-header">
-              <div class="card-title">⚠️ 流失预警商户</div>
-              <span class="tag tag-red">需要关注 5家</span>
+              <div class="card-title">客户列表</div>
+              <button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> 添加客户</button>
             </div>
-            <div style="margin-top: 16px;">
-              <div class="health-item" style="border-left: 3px solid #ef4444;">
-                <div class="health-info">
-                  <div class="health-name">老街坊家常菜</div>
-                  <div class="health-meta" style="color: #ef4444;">⚠️ 连续15天未活跃 · 即将到期</div>
-                </div>
-                <button class="btn btn-sm btn-primary" onclick="showToast('已发送关怀短信', 'success')">联系关怀</button>
-              </div>
-              <div class="health-item" style="border-left: 3px solid #f59e0b;">
-                <div class="health-info">
-                  <div class="health-name">川味小馆</div>
-                  <div class="health-meta" style="color: #f59e0b;">⚠️ 连续7天未活跃</div>
-                </div>
-                <button class="btn btn-sm btn-secondary" onclick="showToast('已发送关怀短信', 'success')">联系关怀</button>
-              </div>
-              <div class="health-item" style="border-left: 3px solid #f59e0b;">
-                <div class="health-info">
-                  <div class="health-name">味道工厂</div>
-                  <div class="health-meta" style="color: #f59e0b;">⚠️ 本月无新订单</div>
-                </div>
-                <button class="btn btn-sm btn-secondary" onclick="showToast('已发送关怀短信', 'success')">联系关怀</button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📈 商户活跃趋势</div>
-            <canvas id="activeTrendChart" height="200" style="margin-top: 16px;"></canvas>
-          </div>
-        `;
-        
-        setTimeout(() => {
-          lucide.createIcons();
-          charts.activeTrend = new Chart(document.getElementById('activeTrendChart'), {
-            type: 'line',
-            data: {
-              labels: ['7月', '8月', '9月', '10月', '11月', '12月', '1月'],
-              datasets: [{
-                label: '活跃商户',
-                data: [120, 135, 142, 148, 152, 155, 156],
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                tension: 0.4
-              }, {
-                label: '沉默商户',
-                data: [8, 6, 5, 4, 3, 3, 2],
-                borderColor: '#f59e0b',
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                fill: true,
-                tension: 0.4
-              }]
-            },
-            options: { responsive: true }
-          });
-        }, 100);
-
-      } else if (pageId === 'ranking') {
-        content.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">🏆 全国拓客排行榜</div>
-              <select class="form-input" style="width: 150px;">
-                <option>全部区域</option>
-                <option>华北大区</option>
-                <option>华东大区</option>
-                <option>华南大区</option>
-              </select>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
-              <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #fef3c7, #fff7ed); border-radius: 12px; border: 2px solid #f59e0b;">
-                <div style="font-size: 3rem; margin-bottom: 8px;">🥇</div>
-                <div style="font-weight: 700; font-size: 1.1rem;">张经理</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">华北大区</div>
-                <div style="margin-top: 12px;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;">156家</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">本月新增 12家</div>
-                </div>
-              </div>
-              
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 3rem; margin-bottom: 8px;">🥈</div>
-                <div style="font-weight: 700; font-size: 1.1rem;">李总监</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">华东大区</div>
-                <div style="margin-top: 12px;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #64748b;">128家</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">本月新增 10家</div>
-                </div>
-              </div>
-              
-              <div style="text-align: center; padding: 24px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 3rem; margin-bottom: 8px;">🥉</div>
-                <div style="font-weight: 700; font-size: 1.1rem;">王经理</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">华南大区</div>
-                <div style="margin-top: 12px;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #cd7f32;">98家</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">本月新增 8家</div>
-                </div>
-              </div>
-            </div>
-            
-            <ul class="ranking-list" style="margin-top: 24px;">
-              <li class="ranking-item">
-                <span style="width: 30px; text-align: center; font-weight: 700; color: var(--text-muted);">4</span>
-                <div class="ranking-info">
-                  <div class="ranking-name">赵总监</div>
-                  <div class="ranking-meta">华西大区</div>
-                </div>
-                <div class="ranking-value">
-                  <div class="ranking-num">86家</div>
-                  <div class="ranking-label">¥298,000</div>
-                </div>
-              </li>
-              <li class="ranking-item">
-                <span style="width: 30px; text-align: center; font-weight: 700; color: var(--text-muted);">5</span>
-                <div class="ranking-info">
-                  <div class="ranking-name">陈经理</div>
-                  <div class="ranking-meta">华中大区</div>
-                </div>
-                <div class="ranking-value">
-                  <div class="ranking-num">72家</div>
-                  <div class="ranking-label">¥256,000</div>
-                </div>
-              </li>
-            </ul>
+            <table class="data-table">
+              <thead><tr><th>客户名称</th><th>行业</th><th>联系人</th><th>意向度</th><th>跟进日期</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>鼎盛火锅</td><td>火锅</td><td>王经理</td><td><span class="tag tag-green">高</span></td><td>2024-01-15</td><td><span class="tag tag-blue">跟进中</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>海上鲜</td><td>海鲜</td><td>李总</td><td><span class="tag tag-green">高</span></td><td>2024-01-14</td><td><span class="tag tag-blue">跟进中</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>味千拉面</td><td>日料</td><td>张主管</td><td><span class="tag tag-yellow">中</span></td><td>2024-01-13</td><td><span class="tag tag-blue">跟进中</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>外婆家</td><td>江浙菜</td><td>刘总</td><td><span class="tag tag-yellow">中</span></td><td>2024-01-12</td><td><span class="tag tag-gray">已签约</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+              </tbody>
+            </table>
           </div>
         `;
         lucide.createIcons();
-
-      } else if (pageId === 'reports') {
-        content.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">📊 数据报表</div>
-              <div style="display: flex; gap: 12px;">
-                <select class="form-input" style="width: 120px;">
-                  <option>本月</option>
-                  <option>上月</option>
-                  <option>近3月</option>
-                  <option>本年</option>
-                </select>
-                <button class="btn btn-secondary">
-                  <i data-lucide="download"></i> 导出
-                </button>
-              </div>
-            </div>
-            
-            <div class="stats-grid" style="margin-top: 16px;">
-              <div class="stat-card">
-                <div class="stat-value">¥523,000</div>
-                <div class="stat-label">累计分润</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">156</div>
-                <div class="stat-label">累计商户</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">¥3,352</div>
-                <div class="stat-label">平均商户产值</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">98.2%</div>
-                <div class="stat-label">活跃率</div>
-              </div>
-            </div>
-            
-            <canvas id="reportChart" height="300" style="margin-top: 24px;"></canvas>
-          </div>
-        `;
-        
-        setTimeout(() => {
-          lucide.createIcons();
-          charts.report = new Chart(document.getElementById('reportChart'), {
-            type: 'bar',
-            data: {
-              labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-              datasets: [{
-                label: '新签商户',
-                data: [12, 15, 18, 14, 16, 12],
-                backgroundColor: '#3b82f6'
-              }, {
-                label: '续费商户',
-                data: [85, 92, 98, 105, 112, 138],
-                backgroundColor: '#10b981'
-              }]
-            },
-            options: { responsive: true }
-          });
-        }, 100);
 
       } else {
         content.innerHTML = `
           <div class="card">
-            <div style="text-align: center; padding: 60px 20px;">
-              <div style="width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <i data-lucide="construction" style="width: 32px; height: 32px; color: #94a3b8;"></i>
-              </div>
-              <h3>${pageId}</h3>
-              <p style="color: var(--text-muted); margin-top: 8px;">该页面正在开发中，敬请期待...</p>
-            </div>
+            <div class="card-title">${pageId} 页面</div>
+            <p style="margin-top: 16px; color: var(--color-text-muted);">该页面正在开发中，敬请期待...</p>
           </div>
         `;
         lucide.createIcons();
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderSidebar();
+      renderPage('merchants');
+    });
   </script>
 </body>
 </html>

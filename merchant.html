@@ -1,1621 +1,2108 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>店赢OS - 商家端 | WAIC演示版</title>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --primary: #3b82f6;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --bg: #f1f5f9;
-      --card-bg: white;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --sidebar-bg: #0f172a;
-      --sidebar-hover: #1e293b;
-    }
-    .dark {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: #334155;
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: all 0.3s; }
-    
-    .app-layout { display: flex; min-height: 100vh; }
-    
-    /* 侧边栏 */
-    .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #1e293b; }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-    .logo-title { font-size: 1.2rem; font-weight: 700; }
-    .logo-subtitle { font-size: 0.75rem; color: #94a3b8; }
-    
-    .sidebar-menu { flex: 1; overflow-y: auto; padding: 16px 0; }
-    .menu-section { margin-bottom: 24px; }
-    .menu-section-title { padding: 0 16px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
-    .menu-item:hover { background: var(--sidebar-hover); color: white; }
-    .menu-item.active { background: var(--primary); color: white; }
-    
-    .sidebar-footer { padding: 16px; border-top: 1px solid #1e293b; }
-    .user-info { display: flex; align-items: center; gap: 12px; cursor: pointer; position: relative; }
-    .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .user-name { font-weight: 600; font-size: 0.9rem; }
-    .user-role { font-size: 0.75rem; color: #64748b; }
-    .user-menu { position: absolute; bottom: 60px; left: 0; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; z-index: 200; }
-    .user-menu.show { display: block; }
-    .user-menu-item { padding: 12px 16px; display: flex; align-items: center; gap: 10px; color: #1e293b; cursor: pointer; transition: background 0.2s; }
-    .user-menu-item:hover { background: #f1f5f9; }
-    
-    /* 主内容 */
-    .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; min-height: 100vh; }
-    .header { height: 64px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
-    .header-left { display: flex; align-items: center; gap: 16px; }
-    .page-title { font-size: 1.1rem; font-weight: 600; }
-    
-    /* 门店选择器 */
-    .store-selector { position: relative; }
-    .store-select { padding: 8px 32px 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; cursor: pointer; appearance: none; }
-    .store-select:focus { outline: none; border-color: var(--primary); }
-    .store-selector::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: 4px solid transparent; border-top-color: var(--text-muted); pointer-events: none; }
-    
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-    .header-icon-btn { width: 36px; height: 36px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; position: relative; }
-    .header-icon-btn:hover { background: var(--bg); color: var(--text); }
-    .notification-badge { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background: var(--danger); color: white; border-radius: 50%; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; }
-    
-    /* 通知面板 */
-    .notification-panel { position: absolute; top: 60px; right: 60px; width: 360px; background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 30px rgba(0,0,0,0.15); display: none; z-index: 300; overflow: hidden; }
-    .notification-panel.show { display: block; }
-    .notification-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .notification-header h3 { font-size: 1rem; font-weight: 600; }
-    .notification-list { max-height: 400px; overflow-y: auto; }
-    .notification-item { padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
-    .notification-item:hover { background: var(--bg); }
-    .notification-item.unread { background: #eff6ff; }
-    .notification-item.unread:hover { background: #dbeafe; }
-    .notification-title { font-weight: 500; font-size: 0.9rem; margin-bottom: 4px; }
-    .notification-desc { font-size: 0.8rem; color: var(--text-muted); }
-    .notification-time { font-size: 0.7rem; color: #94a3b8; margin-top: 4px; }
-    .notification-footer { padding: 12px; text-align: center; border-top: 1px solid var(--border); }
-    .notification-footer a { color: var(--primary); text-decoration: none; font-size: 0.85rem; cursor: pointer; }
-    
-    /* 演示模式按钮 */
-    .demo-btn { background: linear-gradient(135deg, var(--success), #059669); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.3s; animation: pulse 2s infinite; }
-    .demo-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } }
-    
-    .content-area { flex: 1; padding: 24px; overflow-y: auto; }
-    
-    /* 卡片和统计 */
-    .card { background: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; transition: all 0.3s; }
-    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-title { font-size: 1rem; font-weight: 600; }
-    .card-actions { display: flex; gap: 8px; }
-    
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .stat-card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer; }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .stat-value { font-size: 2rem; font-weight: 700; }
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-    .stat-trend { font-size: 0.8rem; margin-top: 8px; }
-    .stat-trend.up { color: var(--success); }
-    .stat-trend.down { color: var(--danger); }
-    .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-    
-    .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
-    .chart-container { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    
-    /* 按钮样式 */
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: #2563eb; }
-    .btn-secondary { background: var(--bg); color: var(--text); }
-    .btn-secondary:hover { background: var(--border); }
-    .btn-success { background: var(--success); color: white; }
-    .btn-success:hover { background: #059669; }
-    .btn-warning { background: var(--warning); color: white; }
-    .btn-warning:hover { background: #d97706; }
-    .btn-danger { background: var(--danger); color: white; }
-    .btn-danger:hover { background: #dc2626; }
-    .btn-purple { background: linear-gradient(135deg, var(--purple), #7c3aed); color: white; }
-    .btn-purple:hover { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
-    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-    .btn-icon { padding: 8px; }
-    
-    /* 诊断弹窗 */
-    .diagnosis-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-    .diagnosis-modal.show { display: flex; }
-    .diagnosis-content { background: white; border-radius: 16px; padding: 32px; width: 500px; max-width: 90%; }
-    .diagnosis-progress { height: 8px; background: #e2e8f0; border-radius: 4px; margin: 20px 0; overflow: hidden; }
-    .diagnosis-progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 4px; width: 0; transition: width 0.3s; }
-    .diagnosis-status { text-align: center; padding: 20px; }
-    .diagnosis-status i { font-size: 2rem; margin-bottom: 12px; }
-    .diagnosis-report { display: none; }
-    .diagnosis-report.show { display: block; }
-    .diagnosis-score { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: white; }
-    .diagnosis-score.good { background: linear-gradient(135deg, var(--success), #059669); }
-    .diagnosis-score.warning { background: linear-gradient(135deg, var(--warning), #d97706); }
-    .diagnosis-score.danger { background: linear-gradient(135deg, var(--danger), #dc2626); }
-    .diagnosis-list { margin-top: 20px; }
-    .diagnosis-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px; }
-    .diagnosis-item.positive { border-left: 3px solid var(--success); }
-    .diagnosis-item.negative { border-left: 3px solid var(--warning); }
-    .diagnosis-item-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .diagnosis-item-icon.positive { background: #dcfce7; color: var(--success); }
-    .diagnosis-item-icon.negative { background: #fef3c7; color: var(--warning); }
-    
-    /* Agent看板 */
-    .agent-board { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .agent-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-    .agent-card { background: #f8fafc; border-radius: 10px; padding: 16px; text-align: center; border: 2px solid #e2e8f0; transition: all 0.3s; }
-    .agent-card.active { border-color: var(--primary); background: #eff6ff; }
-    .agent-icon { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
-    .agent-name { font-weight: 600; margin-bottom: 4px; }
-    .agent-status { font-size: 0.75rem; color: var(--text-muted); }
-    .agent-card.active .agent-status { color: var(--success); }
-    .agent-data-collector .agent-icon { background: #dbeafe; color: #1d4ed8; }
-    .agent-analytics .agent-icon { background: #f3e8ff; color: #7c3aed; }
-    .agent-decision .agent-icon { background: #dcfce7; color: #15803d; }
-    .agent-execution .agent-icon { background: #ffedd5; color: #c2410c; }
-    .agent-supervision .agent-icon { background: #fce7f3; color: #be185d; }
-    
-    /* 差评处理演示面板 */
-    .bad-review-demo { background: linear-gradient(135deg, #fef3c7, #fff7ed); border: 2px solid var(--warning); border-radius: 16px; padding: 24px; margin: 20px 0; }
-    .demo-title { font-size: 1.2rem; font-weight: 700; color: #92400e; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-    .demo-subtitle { color: #b45309; font-size: 0.9rem; margin-bottom: 20px; }
-    .demo-flow { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
-    .flow-step { flex: 1; min-width: 150px; background: white; border-radius: 12px; padding: 16px; text-align: center; position: relative; }
-    .flow-step::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--warning); }
-    .flow-step:last-child::after { display: none; }
-    .flow-step-icon { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .flow-step-icon.data { background: #dbeafe; }
-    .flow-step-icon.analyze { background: #f3e8ff; }
-    .flow-step-icon.decision { background: #dcfce7; }
-    .flow-step-icon.execute { background: #ffedd5; }
-    .flow-step-icon.result { background: #fce7f3; }
-    .flow-step-title { font-weight: 600; font-size: 0.85rem; }
-    .flow-step-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-    .flow-step-status { margin-top: 8px; }
-    .flow-step-status.pending { color: var(--text-muted); }
-    .flow-step-status.running { color: var(--primary); animation: blink 1s infinite; }
-    .flow-step-status.done { color: var(--success); }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    
-    /* 效果对比面板 */
-    .compare-panel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
-    .compare-card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
-    .compare-icon { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .compare-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
-    .compare-values { display: flex; align-items: center; justify-content: center; gap: 16px; }
-    .compare-old { font-size: 1.2rem; color: var(--text-muted); text-decoration: line-through; }
-    .compare-arrow { color: var(--success); font-size: 1.2rem; }
-    .compare-new { font-size: 1.5rem; font-weight: 700; color: var(--success); }
-    
-    /* 标签 */
-    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
-    .tag-blue { background: #dbeafe; color: #1d4ed8; }
-    .tag-green { background: #dcfce7; color: #15803d; }
-    .tag-yellow { background: #fef3c7; color: #b45309; }
-    .tag-red { background: #fee2e2; color: #dc2626; }
-    .tag-purple { background: #f3e8ff; color: #7c3aed; }
-    .tag-gray { background: #f1f5f9; color: var(--text-muted); }
-    
-    /* Toast提示 */
-    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: #1e293b; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s ease-out; }
-    .toast.success { background: var(--success); }
-    .toast.error { background: var(--danger); }
-    .toast.info { background: var(--primary); }
-    @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    
-    /* 导出面板 */
-    .export-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-    .export-panel.show { display: flex; }
-    .export-content { background: white; border-radius: 16px; padding: 32px; width: 400px; }
-    .export-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
-    .export-option:hover { border-color: var(--primary); background: #eff6ff; }
-    .export-option.selected { border-color: var(--primary); background: #eff6ff; }
-    .export-option-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-    .export-progress { margin-top: 20px; }
-    .export-progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-    .export-progress-fill { height: 100%; background: var(--success); border-radius: 4px; width: 0; transition: width 0.3s; }
-    
-    /* 演示模式全屏 */
-    .demo-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; z-index: 2000; color: white; }
-    .demo-overlay.show { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .demo-overlay-content { text-align: center; max-width: 800px; padding: 40px; }
-    .demo-overlay-title { font-size: 2rem; font-weight: 700; margin-bottom: 16px; background: linear-gradient(135deg, var(--primary), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .demo-overlay-desc { font-size: 1.2rem; color: #94a3b8; margin-bottom: 32px; }
-    .demo-progress { width: 300px; height: 6px; background: #334155; border-radius: 3px; margin: 0 auto; overflow: hidden; }
-    .demo-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 3px; transition: width 0.3s; }
-    .demo-step-indicator { margin-top: 20px; display: flex; gap: 8px; }
-    .demo-step-dot { width: 10px; height: 10px; border-radius: 50%; background: #334155; }
-    .demo-step-dot.active { background: var(--success); }
-    .demo-step-dot.done { background: var(--primary); }
-    
-    /* 实时数据动画 */
-    .live-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 6px; animation: livePulse 1.5s infinite; }
-    @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
-    
-    /* AI对话页面 */
-    .chat-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; height: calc(100vh - 160px); }
-    .chat-sidebar { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-y: auto; }
-    .chat-list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; }
-    .chat-list-item:hover { background: var(--bg); }
-    .chat-list-item.active { background: #eff6ff; }
-    .chat-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary), var(--purple)); color: white; }
-    .chat-info { flex: 1; }
-    .chat-name { font-weight: 600; font-size: 0.9rem; }
-    .chat-preview { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .chat-time { font-size: 0.7rem; color: #94a3b8; }
-    .new-chat-btn { width: 100%; margin-bottom: 16px; }
-    
-    .chat-main { background: var(--card-bg); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
-    .chat-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-    .chat-header-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--success), #059669); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
-    .chat-header-info h3 { font-size: 1rem; }
-    .chat-header-info p { font-size: 0.8rem; color: var(--text-muted); }
-    .chat-messages { flex: 1; padding: 20px; overflow-y: auto; }
-    .message { display: flex; gap: 12px; margin-bottom: 20px; }
-    .message.user { flex-direction: row-reverse; }
-    .message-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .message.user .message-avatar { background: var(--primary); color: white; }
-    .message.ai .message-avatar { background: linear-gradient(135deg, var(--success), #059669); color: white; }
-    .message-content { max-width: 70%; padding: 12px 16px; border-radius: 12px; }
-    .message.user .message-content { background: var(--primary); color: white; }
-    .message.ai .message-content { background: var(--bg); color: var(--text); }
-    .message-time { font-size: 0.7rem; color: #94a3b8; margin-top: 4px; text-align: right; }
-    .chat-input-area { padding: 16px 20px; border-top: 1px solid var(--border); }
-    .quick-questions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .quick-q-btn { padding: 6px 12px; background: var(--bg); border: none; border-radius: 16px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
-    .quick-q-btn:hover { background: var(--border); }
-    .chat-input-wrapper { display: flex; gap: 12px; }
-    .chat-input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 24px; font-size: 0.9rem; background: var(--card-bg); color: var(--text); }
-    .chat-input:focus { outline: none; border-color: var(--primary); }
-    .send-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-    .send-btn:hover { background: #2563eb; }
-    
-    /* 知识库页面 */
-    .knowledge-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; }
-    .knowledge-sidebar { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: fit-content; }
-    .knowledge-sidebar h4 { font-size: 0.9rem; margin-bottom: 12px; color: var(--text); }
-    .category-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 4px; }
-    .category-item:hover { background: var(--bg); }
-    .category-item.active { background: #eff6ff; color: var(--primary); }
-    .category-count { font-size: 0.75rem; background: var(--border); padding: 2px 8px; border-radius: 10px; }
-    .category-item.active .category-count { background: var(--primary); color: white; }
-    .search-box { position: relative; margin-bottom: 16px; }
-    .search-box input { width: 100%; padding: 10px 14px 10px 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); }
-    .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-    .knowledge-content { background: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .template-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: all 0.2s; cursor: pointer; }
-    .template-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); }
-    .template-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 1.5rem; }
-    .template-title { font-weight: 600; margin-bottom: 6px; }
-    .template-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
-    .template-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-    .template-footer { display: flex; justify-content: space-between; align-items: center; }
-    .template-uses { font-size: 0.8rem; color: #94a3b8; }
-    .collection-btn { background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; }
-    .collection-btn:hover { color: var(--warning); }
-    .collection-btn.collected { color: var(--warning); }
-    
-    /* 决策日志页面 */
-    .log-filters { display: flex; gap: 12px; margin-bottom: 20px; background: var(--card-bg); padding: 16px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .log-filter-group { display: flex; gap: 8px; align-items: center; }
-    .log-timeline { position: relative; padding-left: 30px; }
-    .log-timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--border); }
-    .log-item { position: relative; background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .log-item::before { content: ''; position: absolute; left: -24px; top: 24px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 0 0 2px var(--primary); }
-    .log-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-    .log-title { font-weight: 600; font-size: 1rem; }
-    .log-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
-    .log-chain { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; padding: 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 16px; }
-    .chain-step { text-align: center; padding: 12px 8px; background: white; border-radius: 8px; }
-    .chain-step-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
-    .chain-step-icon.source { background: #dbeafe; color: #1d4ed8; }
-    .chain-step-icon.analyze { background: #f3e8ff; color: #7c3aed; }
-    .chain-step-icon.decision { background: #dcfce7; color: #15803d; }
-    .chain-step-icon.execute { background: #ffedd5; color: #c2410c; }
-    .chain-step-icon.result { background: #fce7f3; color: #be185d; }
-    .chain-step-label { font-size: 0.75rem; color: var(--text-muted); }
-    .chain-step-value { font-size: 0.85rem; font-weight: 500; margin-top: 4px; }
-    .log-result { display: flex; gap: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; }
-    .log-result-icon { color: #15803d; }
-    .log-result-text { font-size: 0.9rem; }
-    
-    /* 快捷键说明 */
-    .shortcut-hint { position: fixed; bottom: 24px; left: 280px; background: var(--card-bg); border-radius: 8px; padding: 8px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 0.8rem; color: var(--text-muted); display: none; z-index: 100; }
-    .shortcut-hint.show { display: block; }
-    .shortcut-hint kbd { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-family: monospace; margin: 0 2px; }
-    
-    /* 响应式 */
-    @media (max-width: 1200px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .charts-grid { grid-template-columns: 1fr; }
-      .agent-grid { grid-template-columns: repeat(3, 1fr); }
-      .compare-panel { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 768px) {
-      .sidebar { width: 80px; }
-      .sidebar .logo-title, .sidebar .logo-subtitle, .sidebar .menu-section-title, .sidebar .user-name, .sidebar .user-role { display: none; }
-      .main-content { margin-left: 80px; }
-      .store-selector { display: none; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店赢OS - 商户工作台</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-light: #6366f1;
+            --primary-dark: #3730a3;
+            --accent: #059669;
+            --accent-light: #10b981;
+            --accent-dark: #047857;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航 */
+        .topbar {
+            height: 70px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .breadcrumb {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .breadcrumb span {
+            color: var(--text-muted);
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .notify-btn {
+            width: 45px;
+            height: 45px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .notify-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        .notify-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .upgrade-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(5, 150, 105, 0.3);
+        }
+        
+        .套餐tag {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .套餐tag .expire {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            bottom: 0;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+        }
+        
+        .nav-item i {
+            width: 22px;
+            font-size: 18px;
+        }
+        
+        .nav-item .badge {
+            margin-left: auto;
+            padding: 3px 10px;
+            background: var(--danger);
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .nav-section-title {
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 20px 18px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* 工作台 */
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+        
+        .stat-card .icon.blue { background: rgba(99, 102, 241, 0.2); }
+        .stat-card .icon.green { background: rgba(5, 150, 105, 0.2); }
+        .stat-card .icon.orange { background: rgba(245, 158, 11, 0.2); }
+        .stat-card .icon.red { background: rgba(239, 68, 68, 0.2); }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .stat-card .change {
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .stat-card .change.up { color: var(--accent); }
+        .stat-card .change.down { color: var(--danger); }
+        
+        /* 待办事项 */
+        .todo-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .todo-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .todo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .todo-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .todo-header .count {
+            padding: 4px 12px;
+            background: var(--danger);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+        
+        .todo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .todo-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .todo-item .platform-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .todo-item .platform-icon.meituan { background: #FF6B00; }
+        .todo-item .platform-icon.ele { background: #008CFF; }
+        .todo-item .platform-icon.douyin { background: #000000; }
+        .todo-item .platform-icon.dianping { background: #FF6633; }
+        
+        .todo-item .content {
+            flex: 1;
+        }
+        
+        .todo-item .title {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .todo-item .desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .todo-item .time {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        
+        /* 快速操作 */
+        .quick-actions {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .quick-actions h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .action-item {
+            background: var(--bg-dark);
+            border-radius: 14px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .action-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .action-item .icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .action-item .icon.purple { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); }
+        .action-item .icon.green { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); }
+        .action-item .icon.orange { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+        .action-item .icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); }
+        
+        .action-item .name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .action-item .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        /* 差评处理页面 */
+        .page-content {
+            display: none;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .filter-tab:hover, .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        /* 差评列表 */
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .review-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .review-platform {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .review-platform .icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .review-platform .info .name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .review-platform .info .meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .review-tags {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .tag {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag.danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .tag.warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .tag.info { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .tag.success { background: rgba(5, 150, 105, 0.2); color: #10b981; }
+        
+        .review-content {
+            padding: 20px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .review-content .stars {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .review-content .text {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        .review-analysis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .analysis-item {
+            background: var(--bg-dark);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .analysis-item .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .analysis-item .value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .reply-section {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+        
+        .reply-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .reply-tab {
+            padding: 10px 18px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .reply-tab:hover, .reply-tab.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .reply-preview {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .reply-preview p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        .reply-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(5, 150, 105, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+        
+        /* 平台管理 */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .platform-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .platform-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .platform-card .icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        .platform-card .name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .platform-card .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        
+        .platform-card .status.connected {
+            background: rgba(5, 150, 105, 0.2);
+            color: var(--accent);
+        }
+        
+        .platform-card .status.disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .platform-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* 数据看板 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .dashboard-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .dashboard-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .platform-chart {
+            height: 250px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        
+        .chart-bar {
+            width: 50px;
+            background: linear-gradient(180deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .chart-bar:hover {
+            transform: scaleY(1.05);
+        }
+        
+        .chart-bar .value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .chart-bar .label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        
+        /* 对账页面 */
+        .bill-table {
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .bill-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .bill-table th {
+            background: var(--bg-dark);
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .bill-table td {
+            padding: 18px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+        
+        .bill-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        
+        .bill-table .amount {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .bill-table .status-tag {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .bill-table .status-tag.normal { background: rgba(5, 150, 105, 0.2); color: var(--accent); }
+        .bill-table .status-tag.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        
+        /* 定价页面 */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .product-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .product-card .product-img {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .product-card .info {
+            flex: 1;
+        }
+        
+        .product-card .name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-card .meta {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .product-card .price-info {
+            text-align: right;
+        }
+        
+        .product-card .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .product-card .suggest-price {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        .product-card .suggest-price span {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            width: 550px;
+            max-width: 90%;
+        }
+        
+        .modal h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        .pricing-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .pricing-modal-card {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pricing-modal-card:hover {
+            border-color: var(--border);
+        }
+        
+        .pricing-modal-card.featured {
+            border-color: var(--primary);
+            background: rgba(67, 56, 202, 0.1);
+        }
+        
+        .pricing-modal-card .name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-modal-card .price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        .pricing-modal-card .period {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .pricing-modal-card .features {
+            margin-top: 15px;
+            text-align: left;
+        }
+        
+        .pricing-modal-card .features li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pricing-modal-card .features li i {
+            color: var(--accent);
+        }
+        
+        /* Toast通知 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left: 4px solid var(--accent);
+        }
+        
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+        
+        .toast.success i { color: var(--accent); }
+        .toast.error i { color: var(--danger); }
+        
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 80px;
+            }
+            .sidebar .nav-text, .nav-section-title {
+                display: none;
+            }
+            .nav-item {
+                justify-content: center;
+                padding: 16px;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="app-layout">
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <div class="logo-icon"><i data-lucide="store"></i></div>
-          <div>
-            <div class="logo-title">店赢OS</div>
-            <div class="logo-subtitle">商家端</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="sidebar-menu" id="sidebar-menu"></div>
-      
-      <div class="sidebar-footer">
-        <div class="user-info" onclick="toggleUserMenu()">
-          <div class="user-avatar"><i data-lucide="user"></i></div>
-          <div>
-            <div class="user-name" id="currentUserName">演示商家</div>
-            <div class="user-role" id="currentStoreName">演示旗舰店</div>
-          </div>
-          <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: #64748b;"></i>
-        </div>
-        <div class="user-menu" id="userMenu">
-          <div class="user-menu-item" onclick="showProfile()"><i data-lucide="user"></i> 个人信息</div>
-          <div class="user-menu-item" onclick="showSettings()"><i data-lucide="settings"></i> 设置</div>
-          <div class="user-menu-item" onclick="showOperationLog()"><i data-lucide="history"></i> 操作日志</div>
-          <div class="user-menu-item" onclick="showShortcuts()"><i data-lucide="keyboard"></i> 快捷键</div>
-          <div style="border-top: 1px solid #e2e8f0; margin: 8px 0;"></div>
-          <div class="user-menu-item"><i data-lucide="log-out"></i> 退出登录</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="main-content">
-      <div class="header">
-        <div class="header-left">
-          <div class="store-selector">
-            <select class="store-select" id="storeSelect" onchange="switchStore()">
-              <option value="flagship">演示旗舰店</option>
-              <option value="chaoyang">朝阳店</option>
-              <option value="haidian">海淀店</option>
-              <option value="xicheng">西城店</option>
-            </select>
-          </div>
-          <div class="page-title" id="pageTitle">运营概览</div>
-        </div>
-        <div class="header-actions">
-          <button class="demo-btn" onclick="startDemo()">
-            <i data-lucide="play"></i> 开始演示
-          </button>
-          <button class="header-icon-btn" onclick="toggleNotification()" title="通知">
-            <i data-lucide="bell"></i>
-            <span class="notification-badge" id="notifBadge">5</span>
-          </button>
-          <button class="header-icon-btn" onclick="toggleTheme()" title="切换主题">
-            <i data-lucide="sun" id="themeIcon"></i>
-          </button>
-        </div>
-      </div>
-      
-      <!-- 通知面板 -->
-      <div class="notification-panel" id="notificationPanel">
-        <div class="notification-header">
-          <h3>通知中心</h3>
-          <a onclick="markAllRead()">全部已读</a>
-        </div>
-        <div class="notification-list" id="notificationList"></div>
-        <div class="notification-footer">
-          <a onclick="showAllNotifications()">查看全部通知</a>
-        </div>
-      </div>
-      
-      <div class="content-area" id="contentArea"></div>
-    </div>
-  </div>
-
-  <!-- 诊断弹窗 -->
-  <div class="diagnosis-modal" id="diagnosisModal">
-    <div class="diagnosis-content">
-      <h2 style="text-align: center; margin-bottom: 8px;">🔍 一键门店诊断</h2>
-      <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">正在扫描门店各项指标...</p>
-      <div class="diagnosis-progress">
-        <div class="diagnosis-progress-bar" id="diagnosisProgress"></div>
-      </div>
-      <div class="diagnosis-status" id="diagnosisStatus">
-        <div style="font-size: 1.2rem;">正在分析数据...</div>
-      </div>
-      <div class="diagnosis-report" id="diagnosisReport"></div>
-      <div style="text-align: center; margin-top: 20px;">
-        <button class="btn btn-secondary" onclick="closeDiagnosis()">关闭</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 导出面板 -->
-  <div class="export-panel" id="exportPanel">
-    <div class="export-content">
-      <h2 style="margin-bottom: 20px;">📥 导出报表</h2>
-      <div class="export-option selected" onclick="selectExportFormat('pdf', this)">
-        <div class="export-option-icon" style="background: #fee2e2; color: #dc2626;">
-          <i data-lucide="file-text"></i>
-        </div>
-        <div>
-          <div style="font-weight: 600;">PDF 格式</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">适合打印和存档</div>
-        </div>
-      </div>
-      <div class="export-option" onclick="selectExportFormat('excel', this)">
-        <div class="export-option-icon" style="background: #dcfce7; color: #15803d;">
-          <i data-lucide="table"></i>
-        </div>
-        <div>
-          <div style="font-weight: 600;">Excel 格式</div>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">适合数据分析和处理</div>
-        </div>
-      </div>
-      <div class="export-progress" id="exportProgress" style="display: none;">
-        <div style="font-size: 0.9rem; margin-bottom: 8px;">正在导出...</div>
-        <div class="export-progress-bar">
-          <div class="export-progress-fill" id="exportProgressFill"></div>
-        </div>
-      </div>
-      <div style="display: flex; gap: 12px; margin-top: 20px;">
-        <button class="btn btn-secondary" onclick="closeExport()" style="flex: 1;">取消</button>
-        <button class="btn btn-primary" onclick="doExport()" style="flex: 1;">确认导出</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 演示模式覆盖层 -->
-  <div class="demo-overlay" id="demoOverlay">
-    <div class="demo-overlay-content">
-      <div class="demo-overlay-title" id="demoTitle">店赢OS 智能运营系统</div>
-      <div class="demo-overlay-desc" id="demoDesc">5大AI Agent协同，为您的门店赋能</div>
-      <div class="demo-progress">
-        <div class="demo-progress-fill" id="demoProgressFill"></div>
-      </div>
-      <div class="demo-step-indicator" id="demoStepIndicator"></div>
-      <div style="margin-top: 40px;">
-        <button class="btn btn-secondary" onclick="stopDemo()">退出演示</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 快捷键提示 -->
-  <div class="shortcut-hint" id="shortcutHint">
-    按 <kbd>Ctrl</kbd>+<kbd>K</kbd> 打开搜索
-  </div>
-
-  <script>
-    // ========== 全局状态 ==========
-    let currentPage = 'overview';
-    let charts = {};
-    let isDarkMode = false;
-    let currentStore = 'flagship';
-    let exportFormat = 'pdf';
-    let isDemoRunning = false;
-    let demoInterval = null;
-    
-    // 通知数据
-    const notifications = [
-      { id: 1, title: 'AI决策提醒', desc: '检测到差评，建议立即处理', time: '5分钟前', unread: true, type: 'warning' },
-      { id: 2, title: '营收预警', desc: '今日营收已超出预期目标15%', time: '1小时前', unread: true, type: 'success' },
-      { id: 3, title: '竞品动态', desc: '周边3家竞品价格发生变动', time: '2小时前', unread: true, type: 'info' },
-      { id: 4, title: '系统公告', desc: '店赢OS v2.0.1 版本更新', time: '昨天', unread: true, type: 'info' },
-      { id: 5, title: '健康报告', desc: '本周门店健康评分提升至85分', time: '昨天', unread: false, type: 'success' },
-      { id: 6, title: '差评处理完成', desc: '美团差评已自动回复完成', time: '2天前', unread: false, type: 'success' }
-    ];
-
-    // 门店数据
-    const storeData = {
-      flagship: { name: '演示旗舰店', revenue: 128560, orders: 1256, customers: 3680, rating: 4.8 },
-      chaoyang: { name: '朝阳店', revenue: 98500, orders: 980, customers: 2850, rating: 4.7 },
-      haidian: { name: '海淀店', revenue: 75600, orders: 756, customers: 2100, rating: 4.6 },
-      xicheng: { name: '西城店', revenue: 62300, orders: 623, customers: 1780, rating: 4.5 }
-    };
-
-    // 菜单配置
-    const menuConfig = [
-      { section: '🚀 核心看板', items: [
-        { id: 'overview', name: '运营概览', icon: 'layout-dashboard' },
-        { id: 'ai-chat', name: 'AI对话', icon: 'bot' },
-        { id: 'bad-review', name: '差评处理演示', icon: 'message-circle' },
-        { id: 'compare', name: '效果对比', icon: 'git-compare' }
-      ]},
-      { section: '📊 数据中心', items: [
-        { id: 'report', name: '数据报表', icon: 'bar-chart' },
-        { id: 'export', name: '数据导出', icon: 'download' },
-        { id: 'knowledge', name: '知识库', icon: 'book-open' },
-        { id: 'log', name: '决策日志', icon: 'history' }
-      ]},
-      { section: '🎯 智能分析', items: [
-        { id: 'health', name: '门店健康', icon: 'heart-pulse' },
-        { id: 'calendar', name: '运营日历', icon: 'calendar' },
-        { id: 'roi', name: 'ROI计算', icon: 'calculator' },
-        { id: 'competitor', name: '竞品监控', icon: 'radar' }
-      ]},
-      { section: '🤖 AI能力', items: [
-        { id: 'agent-board', name: 'AI Agent看板', icon: 'cpu' },
-        { id: 'marketing', name: 'AI内容创作', icon: 'sparkles' },
-        { id: 'insight', name: 'AI洞察日报', icon: 'newspaper' },
-        { id: 'pricing', name: '智能定价', icon: 'trending-up' }
-      ]},
-      { section: '⚙️ 系统', items: [
-        { id: 'settings', name: '设置', icon: 'settings' },
-        { id: 'profile', name: '个人中心', icon: 'user' }
-      ]}
-    ];
-
-    // ========== 初始化 ==========
-    document.addEventListener('DOMContentLoaded', function() {
-      renderSidebar();
-      renderPage('overview');
-      renderNotifications();
-      initKeyboardShortcuts();
-      startLiveData();
-    });
-
-    // ========== 侧边栏渲染 ==========
-    function renderSidebar() {
-      const menuEl = document.getElementById('sidebar-menu');
-      let html = '';
-      menuConfig.forEach(section => {
-        html += `<div class="menu-section"><div class="menu-section-title">${section.section}</div>`;
-        section.items.forEach(item => {
-          const isActive = currentPage === item.id ? 'active' : '';
-          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
-        });
-        html += `</div>`;
-      });
-      menuEl.innerHTML = html;
-      lucide.createIcons();
-    }
-
-    // ========== 导航 ==========
-    function navigateTo(pageId, pageName) {
-      Object.values(charts).forEach(chart => chart.destroy());
-      charts = {};
-      currentPage = pageId;
-      document.getElementById('pageTitle').textContent = pageName;
-      renderSidebar();
-      renderPage(pageId);
-      lucide.createIcons();
-    }
-
-    // ========== Toast提示 ==========
-    function showToast(message, type = 'default') {
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" style="width: 16px; height: 16px; margin-right: 8px;"></i>${message}`;
-      document.body.appendChild(toast);
-      lucide.createIcons();
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    // ========== 通知功能 ==========
-    function renderNotifications() {
-      const list = document.getElementById('notificationList');
-      list.innerHTML = notifications.slice(0, 5).map(n => `
-        <div class="notification-item ${n.unread ? 'unread' : ''}" onclick="handleNotification(${n.id})">
-          <div class="notification-title">${n.title}</div>
-          <div class="notification-desc">${n.desc}</div>
-          <div class="notification-time">${n.time}</div>
-        </div>
-      `).join('');
-    }
-
-    function toggleNotification() {
-      const panel = document.getElementById('notificationPanel');
-      panel.classList.toggle('show');
-    }
-
-    function markAllRead() {
-      notifications.forEach(n => n.unread = false);
-      document.getElementById('notifBadge').style.display = 'none';
-      renderNotifications();
-      showToast('已全部标记为已读', 'success');
-    }
-
-    function handleNotification(id) {
-      const notif = notifications.find(n => n.id === id);
-      if (notif) {
-        notif.unread = false;
-        const unreadCount = notifications.filter(n => n.unread).length;
-        const badge = document.getElementById('notifBadge');
-        badge.textContent = unreadCount;
-        if (unreadCount === 0) badge.style.display = 'none';
-        renderNotifications();
-      }
-    }
-
-    // ========== 门店切换 ==========
-    function switchStore() {
-      currentStore = document.getElementById('storeSelect').value;
-      const store = storeData[currentStore];
-      document.getElementById('currentStoreName').textContent = store.name;
-      showToast(`已切换到${store.name}`, 'success');
-      if (currentPage === 'overview') {
-        renderPage('overview');
-      }
-    }
-
-    // ========== 主题切换 ==========
-    function toggleTheme() {
-      isDarkMode = !isDarkMode;
-      document.body.classList.toggle('dark', isDarkMode);
-      const icon = document.getElementById('themeIcon');
-      icon.setAttribute('data-lucide', isDarkMode ? 'moon' : 'sun');
-      lucide.createIcons();
-      showToast(isDarkMode ? '已切换到深色模式' : '已切换到浅色模式');
-    }
-
-    // ========== 诊断功能 ==========
-    function openDiagnosis() {
-      const modal = document.getElementById('diagnosisModal');
-      const progress = document.getElementById('diagnosisProgress');
-      const status = document.getElementById('diagnosisStatus');
-      const report = document.getElementById('diagnosisReport');
-      
-      modal.classList.add('show');
-      progress.style.width = '0%';
-      report.classList.remove('show');
-      status.style.display = 'block';
-      
-      let prog = 0;
-      const steps = ['正在采集数据...', '正在分析营收...', '正在分析评分...', '正在生成报告...'];
-      let stepIdx = 0;
-      
-      const interval = setInterval(() => {
-        prog += 5;
-        progress.style.width = prog + '%';
-        
-        if (prog >= stepIdx * 25 + 25 && stepIdx < steps.length) {
-          status.innerHTML = `<div style="font-size: 1.2rem;">${steps[stepIdx]}</div>`;
-          stepIdx++;
-        }
-        
-        if (prog >= 100) {
-          clearInterval(interval);
-          status.style.display = 'none';
-          report.classList.add('show');
-          report.innerHTML = `
-            <div style="text-align: center;">
-              <div class="diagnosis-score good">92</div>
-              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 16px;">门店健康状况优秀</div>
+    <!-- 顶部导航 -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="logo">
+                <div class="logo-icon">🏪</div>
+                <span>店赢OS</span>
             </div>
-            <div class="diagnosis-list">
-              <div class="diagnosis-item positive">
-                <div class="diagnosis-item-icon positive"><i data-lucide="trending-up" style="width: 14px; height: 14px;"></i></div>
-                <div><div style="font-weight: 500;">营收增长强劲</div><div style="font-size: 0.85rem; color: var(--text-muted);">本周营收较上周增长15.2%</div></div>
-              </div>
-              <div class="diagnosis-item positive">
-                <div class="diagnosis-item-icon positive"><i data-lucide="star" style="width: 14px; height: 14px;"></i></div>
-                <div><div style="font-weight: 500;">评分稳步提升</div><div style="font-size: 0.85rem; color: var(--text-muted);">平台评分达到4.8分，超越92%同类商家</div></div>
-              </div>
-              <div class="diagnosis-item positive">
-                <div class="diagnosis-item-icon positive"><i data-lucide="users" style="width: 14px; height: 14px;"></i></div>
-                <div><div style="font-weight: 500;">客流活跃度高</div><div style="font-size: 0.85rem; color: var(--text-muted);">午高峰时段客流同比增长8%</div></div>
-              </div>
-              <div class="diagnosis-item negative">
-                <div class="diagnosis-item-icon negative"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i></div>
-                <div><div style="font-weight: 500;">下午茶时段偏低</div><div style="font-size: 0.85rem; color: var(--text-muted);">14:00-16:00客流仅为午高峰的35%</div></div>
-              </div>
-              <div class="diagnosis-item negative">
-                <div class="diagnosis-item-icon negative"><i data-lucide="clock" style="width: 14px; height: 14px;"></i></div>
-                <div><div style="font-weight: 500;">出餐效率待提升</div><div style="font-size: 0.85rem; color: var(--text-muted);">平均出餐时间18分钟，略高于均值</div></div>
-              </div>
+            <div class="breadcrumb">
+                <span>商户工作台</span>
             </div>
-          `;
-          lucide.createIcons();
-        }
-      }, 80);
-    }
-
-    function closeDiagnosis() {
-      document.getElementById('diagnosisModal').classList.remove('show');
-    }
-
-    // ========== 导出功能 ==========
-    function openExport() {
-      document.getElementById('exportPanel').classList.add('show');
-    }
-
-    function closeExport() {
-      document.getElementById('exportPanel').classList.remove('show');
-    }
-
-    function selectExportFormat(format, el) {
-      exportFormat = format;
-      document.querySelectorAll('.export-option').forEach(opt => opt.classList.remove('selected'));
-      el.classList.add('selected');
-    }
-
-    function doExport() {
-      const progress = document.getElementById('exportProgress');
-      const bar = document.getElementById('exportProgressFill');
-      progress.style.display = 'block';
-      
-      let prog = 0;
-      const interval = setInterval(() => {
-        prog += 10;
-        bar.style.width = prog + '%';
-        if (prog >= 100) {
-          clearInterval(interval);
-          showToast(`${exportFormat.toUpperCase()}报表导出成功！`, 'success');
-          closeExport();
-          progress.style.display = 'none';
-          bar.style.width = '0%';
-        }
-      }, 200);
-    }
-
-    // ========== WAIC演示模式 ==========
-    const demoSteps = [
-      { title: '运营概览', desc: '实时数据看板，5大AI Agent协同工作', page: 'overview' },
-      { title: 'AI Agent看板', desc: '数据采集→智能分析→自动决策→执行→监督', page: 'agent-board' },
-      { title: '差评自动处理', desc: '从差评检测到满意回复的全流程自动化', page: 'bad-review' },
-      { title: '效果对比', desc: '使用前后数据对比，效果肉眼可见', page: 'compare' },
-      { title: 'ROI计算', desc: '智能投资回报分析，助您做出最优决策', page: 'roi' }
-    ];
-
-    function startDemo() {
-      isDemoRunning = true;
-      const overlay = document.getElementById('demoOverlay');
-      overlay.classList.add('show');
-      
-      // 渲染步骤指示器
-      const indicator = document.getElementById('demoStepIndicator');
-      indicator.innerHTML = demoSteps.map((_, i) => `<div class="demo-step-dot" id="demoDot${i}"></div>`).join('');
-      
-      let step = 0;
-      
-      function runStep() {
-        if (!isDemoRunning || step >= demoSteps.length) {
-          stopDemo();
-          return;
-        }
-        
-        const s = demoSteps[step];
-        document.getElementById('demoTitle').textContent = s.title;
-        document.getElementById('demoDesc').textContent = s.desc;
-        document.getElementById('demoProgressFill').style.width = ((step + 1) / demoSteps.length * 100) + '%';
-        
-        // 更新指示器
-        document.querySelectorAll('.demo-step-dot').forEach((dot, i) => {
-          dot.classList.remove('active', 'done');
-          if (i < step) dot.classList.add('done');
-          if (i === step) dot.classList.add('active');
-        });
-        
-        // 切换页面
-        navigateTo(s.page, s.title);
-        
-        step++;
-        if (step < demoSteps.length) {
-          demoInterval = setTimeout(runStep, 3500);
-        } else {
-          setTimeout(stopDemo, 1500);
-        }
-      }
-      
-      runStep();
-    }
-
-    function stopDemo() {
-      isDemoRunning = false;
-      clearTimeout(demoInterval);
-      document.getElementById('demoOverlay').classList.remove('show');
-      navigateTo('overview', '运营概览');
-    }
-
-    // ========== 用户菜单 ==========
-    function toggleUserMenu() {
-      document.getElementById('userMenu').classList.toggle('show');
-    }
-
-    function showProfile() {
-      document.getElementById('userMenu').classList.remove('show');
-      showToast('个人信息设置');
-    }
-
-    function showSettings() {
-      document.getElementById('userMenu').classList.remove('show');
-      showToast('系统设置');
-    }
-
-    function showOperationLog() {
-      document.getElementById('userMenu').classList.remove('show');
-      showToast('操作日志');
-    }
-
-    function showShortcuts() {
-      document.getElementById('userMenu').classList.remove('show');
-      showToast('Ctrl+K: 全局搜索 | Ctrl+D: 首页 | Ctrl+N: 新建');
-    }
-
-    // ========== 键盘快捷键 ==========
-    function initKeyboardShortcuts() {
-      document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'k') {
-          e.preventDefault();
-          showToast('🔍 全局搜索已打开');
-        }
-        if (e.ctrlKey && e.key === 'd') {
-          e.preventDefault();
-          navigateTo('overview', '运营概览');
-        }
-        if (e.ctrlKey && e.key === 'n') {
-          e.preventDefault();
-          showToast('新建工单');
-        }
-        if (e.key === 'Escape') {
-          document.getElementById('userMenu').classList.remove('show');
-          document.getElementById('notificationPanel').classList.remove('show');
-          document.getElementById('exportPanel').classList.remove('show');
-        }
-      });
-    }
-
-    // ========== 实时数据模拟 ==========
-    function startLiveData() {
-      setInterval(() => {
-        const statValues = document.querySelectorAll('.stat-value[data-live]');
-        statValues.forEach(el => {
-          const base = parseFloat(el.dataset.base);
-          const delta = Math.random() * 200 - 100;
-          const newVal = base + delta;
-          el.textContent = '¥' + Math.round(newVal).toLocaleString();
-        });
-      }, 30000);
-    }
-
-    // ========== 页面渲染 ==========
-    function renderPage(pageId) {
-      const content = document.getElementById('contentArea');
-      const store = storeData[currentStore];
-      
-      if (pageId === 'overview') {
-        content.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="live-dot"></span>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">数据实时更新中</span>
-            </div>
-            <button class="btn btn-primary" onclick="openDiagnosis()">
-              <i data-lucide="scan"></i> 一键诊断
+        </div>
+        <div class="topbar-right">
+            <button class="notify-btn" onclick="showPage('reviews')">
+                <i class="fas fa-bell"></i>
+                <span class="notify-badge">3</span>
             </button>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-card" onclick="navigateTo('report', '数据报表')">
-              <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><i data-lucide="yen-sign"></i></div>
-              <div class="stat-value" data-live data-base="${store.revenue}">¥${store.revenue.toLocaleString()}</div>
-              <div class="stat-label">今日营业额</div>
-              <div class="stat-trend up">↑ 12.5% 较昨日</div>
+            <div class="套餐tag">
+                <i class="fas fa-crown"></i>
+                <span>专业版</span>
+                <span class="expire">剩余28天</span>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><i data-lucide="shopping-cart"></i></div>
-              <div class="stat-value">${store.orders.toLocaleString()}</div>
-              <div class="stat-label">今日订单数</div>
-              <div class="stat-trend up">↑ 8.3% 较昨日</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #f3e8ff; color: #7c3aed;"><i data-lucide="users"></i></div>
-              <div class="stat-value">${store.customers.toLocaleString()}</div>
-              <div class="stat-label">到店客流</div>
-              <div class="stat-trend up">↑ 5.2% 较昨日</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #fef3c7; color: #b45309;"><i data-lucide="star"></i></div>
-              <div class="stat-value">${store.rating}</div>
-              <div class="stat-label">平台评分</div>
-              <div class="stat-trend up">↑ 0.2 较上周</div>
-            </div>
-          </div>
-          
-          <div class="charts-grid">
-            <div class="chart-container">
-              <div class="card-title">近7天营收趋势</div>
-              <canvas id="revenueChart" height="250"></canvas>
-            </div>
-            <div class="chart-container">
-              <div class="card-title">订单来源分布</div>
-              <canvas id="sourceChart" height="250"></canvas>
-            </div>
-          </div>
-          
-          <div class="agent-board">
-            <div class="card-title">🤖 AI Agent 协同状态</div>
-            <div class="agent-grid">
-              <div class="agent-card agent-data-collector active">
-                <div class="agent-icon"><i data-lucide="database"></i></div>
-                <div class="agent-name">数据采集</div>
-                <div class="agent-status">运行中 · 已采集865条</div>
-              </div>
-              <div class="agent-card agent-analytics active">
-                <div class="agent-icon"><i data-lucide="bar-chart-2"></i></div>
-                <div class="agent-name">分析Agent</div>
-                <div class="agent-status">运行中 · 已分析12项</div>
-              </div>
-              <div class="agent-card agent-decision active">
-                <div class="agent-icon"><i data-lucide="brain-circuit"></i></div>
-                <div class="agent-name">决策Agent</div>
-                <div class="agent-status">运行中 · 已生成8项决策</div>
-              </div>
-              <div class="agent-card agent-execution active">
-                <div class="agent-icon"><i data-lucide="zap"></i></div>
-                <div class="agent-name">执行Agent</div>
-                <div class="agent-status">运行中 · 已执行5项</div>
-              </div>
-              <div class="agent-card agent-supervision active">
-                <div class="agent-icon"><i data-lucide="eye"></i></div>
-                <div class="agent-name">监督Agent</div>
-                <div class="agent-status">运行中 · 效果回测中</div>
-              </div>
-            </div>
-          </div>
-        `;
+            <button class="upgrade-btn" onclick="showModal('pricing')">
+                <i class="fas fa-arrow-up"></i>
+                升级套餐
+            </button>
+            <div class="avatar">李</div>
+        </div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+            <i class="fas fa-home"></i>
+            <span class="nav-text">工作台</span>
+        </div>
+        <div class="nav-item" data-page="reviews" onclick="showPage('reviews')">
+            <i class="fas fa-angry"></i>
+            <span class="nav-text">差评处理</span>
+            <span class="badge">3</span>
+        </div>
+        <div class="nav-item" data-page="pricing" onclick="showPage('pricing')">
+            <i class="fas fa-chart-line"></i>
+            <span class="nav-text">智能定价</span>
+        </div>
+        <div class="nav-item" data-page="platforms" onclick="showPage('platforms')">
+            <i class="fas fa-mobile-alt"></i>
+            <span class="nav-text">多平台管理</span>
+        </div>
+        <div class="nav-item" data-page="accounting" onclick="showPage('accounting')">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span class="nav-text">自动对账</span>
+        </div>
         
-        setTimeout(() => {
-          lucide.createIcons();
-          charts.revenue = new Chart(document.getElementById('revenueChart'), {
-            type: 'line',
-            data: {
-              labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-              datasets: [{
-                label: '营业额',
-                data: [98000, 105000, 92000, 115000, 128000, 145000, store.revenue],
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                fill: true,
-                tension: 0.4
-              }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
-          });
-          
-          charts.source = new Chart(document.getElementById('sourceChart'), {
-            type: 'doughnut',
-            data: {
-              labels: ['美团', '饿了么', '抖音', '到店', '其他'],
-              datasets: [{
-                data: [35, 25, 15, 18, 7],
-                backgroundColor: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#64748b']
-              }]
-            },
-            options: { responsive: true }
-          });
-        }, 100);
-
-      } else if (pageId === 'bad-review') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 8px;">🎯 AI差评自动处理演示</h2>
-            <p style="color: var(--text-muted);">店赢OS 5大Agent协同，实现差评的全自动处理闭环</p>
-          </div>
-          
-          <div class="bad-review-demo">
-            <div class="demo-title">
-              <span>🔥</span> 差评自动处理流程
-            </div>
-            <div class="demo-subtitle">点击下方按钮，观看AI如何自动处理差评</div>
+        <div class="nav-section-title">账户</div>
+        <div class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span class="nav-text">设置</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span class="nav-text">帮助</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="nav-text">退出登录</span>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 工作台 -->
+        <div id="page-dashboard" class="page-content active">
+            <h1 class="page-title">今日工作台</h1>
+            <p class="page-subtitle">2024年1月15日 星期一 · 数据更新于 10:30</p>
             
-            <div class="demo-flow">
-              <div class="flow-step" id="flowStep1">
-                <div class="flow-step-icon data">📡</div>
-                <div class="flow-step-title">数据采集</div>
-                <div class="flow-step-desc">美团/饿了么差评检测</div>
-                <div class="flow-step-status pending" id="flowStatus1">⏳ 等待中</div>
-              </div>
-              <div class="flow-step" id="flowStep2">
-                <div class="flow-step-icon analyze">🧠</div>
-                <div class="flow-step-title">智能分析</div>
-                <div class="flow-step-desc">情绪识别+问题定位</div>
-                <div class="flow-step-status pending" id="flowStatus2">⏳ 等待中</div>
-              </div>
-              <div class="flow-step" id="flowStep3">
-                <div class="flow-step-icon decision">📋</div>
-                <div class="flow-step-title">决策生成</div>
-                <div class="flow-step-desc">3套回复方案可选</div>
-                <div class="flow-step-status pending" id="flowStatus3">⏳ 等待中</div>
-              </div>
-              <div class="flow-step" id="flowStep4">
-                <div class="flow-step-icon execute">✅</div>
-                <div class="flow-step-title">自动执行</div>
-                <div class="flow-step-desc">一键同步回复到平台</div>
-                <div class="flow-step-status pending" id="flowStatus4">⏳ 等待中</div>
-              </div>
-              <div class="flow-step" id="flowStep5">
-                <div class="flow-step-icon result">🎉</div>
-                <div class="flow-step-title">效果追踪</div>
-                <div class="flow-step-desc">7天效果回测</div>
-                <div class="flow-step-status pending" id="flowStatus5">⏳ 等待中</div>
-              </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon blue">💰</div>
+                    <div class="value">¥12,580</div>
+                    <div class="label">今日营收</div>
+                    <div class="change up"><i class="fas fa-arrow-up"></i> 较昨日 +15.8%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon green">📦</div>
+                    <div class="value">386</div>
+                    <div class="label">今日订单</div>
+                    <div class="change up"><i class="fas fa-arrow-up"></i> 较昨日 +12.3%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">⭐</div>
+                    <div class="value">4.72</div>
+                    <div class="label">综合评分</div>
+                    <div class="change up"><i class="fas fa-arrow-up"></i> 较昨日 +0.05</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon red">👥</div>
+                    <div class="value">2,156</div>
+                    <div class="label">月来访客</div>
+                    <div class="change up"><i class="fas fa-arrow-up"></i> 较上月 +8.2%</div>
+                </div>
             </div>
             
-            <div style="text-align: center;">
-              <button class="btn btn-purple btn-lg" onclick="runBadReviewDemo()" style="padding: 14px 32px; font-size: 1rem;">
-                <i data-lucide="play"></i> 开始演示
-              </button>
+            <div class="todo-section">
+                <div class="todo-card">
+                    <div class="todo-header">
+                        <h3>😡 待处理差评 <span class="count">3</span></h3>
+                        <button class="btn btn-secondary" onclick="showPage('reviews')">查看全部</button>
+                    </div>
+                    <div class="todo-item" onclick="showPage('reviews')">
+                        <div class="platform-icon meituan">🍔</div>
+                        <div class="content">
+                            <div class="title">美团-张女士</div>
+                            <div class="desc">等了40分钟还没送到，饭都凉了...</div>
+                        </div>
+                        <div class="time">10分钟前</div>
+                    </div>
+                    <div class="todo-item" onclick="showPage('reviews')">
+                        <div class="platform-icon ele">🛵</div>
+                        <div class="content">
+                            <div class="title">饿了么-王先生</div>
+                            <div class="desc">菜品少了一个，联系客服没人回</div>
+                        </div>
+                        <div class="time">25分钟前</div>
+                    </div>
+                    <div class="todo-item" onclick="showPage('reviews')">
+                        <div class="platform-icon douyin">📱</div>
+                        <div class="content">
+                            <div class="title">抖音-李小姐</div>
+                            <div class="desc">性价比太低，不会再来了</div>
+                        </div>
+                        <div class="time">1小时前</div>
+                    </div>
+                </div>
+                
+                <div class="todo-card">
+                    <div class="todo-header">
+                        <h3>💹 竞品价格变动 <span class="count" style="background: var(--warning);">2</span></h3>
+                        <button class="btn btn-secondary" onclick="showPage('pricing')">查看详情</button>
+                    </div>
+                    <div class="todo-item" onclick="showPage('pricing')">
+                        <div class="platform-icon" style="background: var(--danger);">⚠️</div>
+                        <div class="content">
+                            <div class="title">隔壁老王快餐店 降价了！</div>
+                            <div class="desc">招牌卤肉饭 从 ¥25 降至 ¥22（降幅12%）</div>
+                        </div>
+                        <div class="time">5分钟前</div>
+                    </div>
+                    <div class="todo-item" onclick="showPage('pricing')">
+                        <div class="platform-icon" style="background: var(--accent);">↑</div>
+                        <div class="content">
+                            <div class="title">好味小厨 涨价了</div>
+                            <div class="desc">红烧肉套餐 从 ¥38 升至 ¥42</div>
+                        </div>
+                        <div class="time">30分钟前</div>
+                    </div>
+                </div>
             </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📊 差评处理效果统计</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">326</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">本月处理差评</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #10b981;">89%</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">用户修改评价率</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">4.6h</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">平均处理时间</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">98%</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">执行成功率</div>
-              </div>
+            
+            <div class="quick-actions">
+                <h3>🚀 快捷操作</h3>
+                <div class="action-grid">
+                    <div class="action-item" onclick="showPage('reviews')">
+                        <div class="icon purple">🤖</div>
+                        <div class="name">AI处理差评</div>
+                        <div class="sub">一键生成回复</div>
+                    </div>
+                    <div class="action-item" onclick="showPage('pricing')">
+                        <div class="icon green">💹</div>
+                        <div class="name">智能调价</div>
+                        <div class="sub">AI定价建议</div>
+                    </div>
+                    <div class="action-item" onclick="showPage('platforms')">
+                        <div class="icon orange">📱</div>
+                        <div class="name">同步全平台</div>
+                        <div class="sub">一键发布</div>
+                    </div>
+                    <div class="action-item" onclick="showPage('accounting')">
+                        <div class="icon blue">📊</div>
+                        <div class="name">对账报表</div>
+                        <div class="sub">导出Excel</div>
+                    </div>
+                </div>
             </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'compare') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 8px;">📈 效果对比面板</h2>
-            <p style="color: var(--text-muted);">使用店赢OS前后的数据对比，效果一目了然</p>
-          </div>
-          
-          <div class="compare-panel">
-            <div class="compare-card">
-              <div class="compare-icon" style="background: #dcfce7; color: #15803d;">💰</div>
-              <div class="compare-label">月营收增长</div>
-              <div class="compare-values">
-                <span class="compare-old">¥68万</span>
-                <span class="compare-arrow">→</span>
-                <span class="compare-new">¥92万</span>
-              </div>
-              <div style="margin-top: 8px; color: #10b981; font-weight: 600;">+35%</div>
-            </div>
-            <div class="compare-card">
-              <div class="compare-icon" style="background: #fce7f3; color: #be185d;">⭐</div>
-              <div class="compare-label">平台评分</div>
-              <div class="compare-values">
-                <span class="compare-old">4.2</span>
-                <span class="compare-arrow">→</span>
-                <span class="compare-new">4.8</span>
-              </div>
-              <div style="margin-top: 8px; color: #10b981; font-weight: 600;">+0.6</div>
-            </div>
-            <div class="compare-card">
-              <div class="compare-icon" style="background: #fee2e2; color: #dc2626;">📉</div>
-              <div class="compare-label">差评率</div>
-              <div class="compare-values">
-                <span class="compare-old" style="text-decoration: none;">5.8%</span>
-                <span class="compare-arrow">→</span>
-                <span class="compare-new">1.2%</span>
-              </div>
-              <div style="margin-top: 8px; color: #10b981; font-weight: 600;">-79%</div>
-            </div>
-            <div class="compare-card">
-              <div class="compare-icon" style="background: #dbeafe; color: #1d4ed8;">👥</div>
-              <div class="compare-label">人力成本节省</div>
-              <div class="compare-values">
-                <span class="compare-new">2人</span>
-              </div>
-              <div style="margin-top: 8px; color: #10b981; font-weight: 600;">¥1.2万/月</div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📊 月度趋势对比</div>
-            <canvas id="compareChart" height="300" style="margin-top: 20px;"></canvas>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">🏆 核心优势</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="padding: 20px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 12px; color: white;">
-                <div style="font-size: 1.5rem; margin-bottom: 8px;">⚡</div>
-                <div style="font-weight: 600; margin-bottom: 4px;">秒级响应</div>
-                <div style="font-size: 0.85rem; opacity: 0.9;">差评处理从小时级缩短到分钟级</div>
-              </div>
-              <div style="padding: 20px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; color: white;">
-                <div style="font-size: 1.5rem; margin-bottom: 8px;">🎯</div>
-                <div style="font-weight: 600; margin-bottom: 4px;">精准定位</div>
-                <div style="font-size: 0.85rem; opacity: 0.9;">AI精准识别差评原因，给出最优解</div>
-              </div>
-              <div style="padding: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; color: white;">
-                <div style="font-size: 1.5rem; margin-bottom: 8px;">💎</div>
-                <div style="font-weight: 600; margin-bottom: 4px;">持续进化</div>
-                <div style="font-size: 0.85rem; opacity: 0.9;">越用越聪明，效果持续提升</div>
-              </div>
-            </div>
-          </div>
-        `;
+        </div>
         
-        setTimeout(() => {
-          lucide.createIcons();
-          charts.compare = new Chart(document.getElementById('compareChart'), {
-            type: 'bar',
-            data: {
-              labels: ['9月', '10月', '11月', '12月', '1月'],
-              datasets: [{
-                label: '使用前(预估)',
-                data: [58, 62, 65, 68, 72],
-                backgroundColor: '#94a3b8'
-              }, {
-                label: '使用后',
-                data: [78, 82, 88, 95, 102],
-                backgroundColor: '#10b981'
-              }]
-            },
-            options: { responsive: true }
-          });
-        }, 100);
-
-      } else if (pageId === 'agent-board') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 8px;">🤖 AI Agent 协作中心</h2>
-            <p style="color: var(--text-muted);">5个AI Agent 7×24小时自动协同，帮你管理门店运营的每一个细节</p>
-          </div>
-          
-          <div class="agent-board">
-            <div class="agent-grid">
-              <div class="agent-card agent-data-collector active">
-                <div class="agent-icon"><i data-lucide="database"></i></div>
-                <div class="agent-name">数据采集Agent</div>
-                <div class="agent-status">实时爬取8大平台数据</div>
-                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
-                  <span class="live-dot"></span> 正在采集
-                </div>
-              </div>
-              <div class="agent-card agent-analytics active">
-                <div class="agent-icon"><i data-lucide="bar-chart-2"></i></div>
-                <div class="agent-name">分析Agent</div>
-                <div class="agent-status">健康评分 + 趋势预测</div>
-                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
-                  <span class="live-dot"></span> 分析中
-                </div>
-              </div>
-              <div class="agent-card agent-decision active">
-                <div class="agent-icon"><i data-lucide="brain-circuit"></i></div>
-                <div class="agent-name">决策Agent</div>
-                <div class="agent-status">定价策略 + 差评回复</div>
-                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
-                  <span class="live-dot"></span> 决策中
-                </div>
-              </div>
-              <div class="agent-card agent-execution active">
-                <div class="agent-icon"><i data-lucide="zap"></i></div>
-                <div class="agent-name">执行Agent</div>
-                <div class="agent-status">CLI-Anything 一键执行</div>
-                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
-                  <span class="live-dot"></span> 执行中
-                </div>
-              </div>
-              <div class="agent-card agent-supervision active">
-                <div class="agent-icon"><i data-lucide="eye"></i></div>
-                <div class="agent-name">监督Agent</div>
-                <div class="agent-status">效果回测 + 知识沉淀</div>
-                <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
-                  <span class="live-dot"></span> 监控中
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📋 Agent协作链路示意</div>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 30px; background: #f8fafc; border-radius: 12px; margin-top: 16px;">
-              <div style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                  <span style="font-size: 2rem;">📡</span>
-                </div>
-                <div style="font-weight: 600;">数据采集</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">多平台数据聚合</div>
-              </div>
-              <div style="font-size: 2rem; color: #94a3b8;">→</div>
-              <div style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: #f3e8ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                  <span style="font-size: 2rem;">🧠</span>
-                </div>
-                <div style="font-weight: 600;">智能分析</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">AI深度洞察</div>
-              </div>
-              <div style="font-size: 2rem; color: #94a3b8;">→</div>
-              <div style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                  <span style="font-size: 2rem;">📋</span>
-                </div>
-                <div style="font-weight: 600;">自动决策</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">最优方案生成</div>
-              </div>
-              <div style="font-size: 2rem; color: #94a3b8;">→</div>
-              <div style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: #ffedd5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                  <span style="font-size: 2rem;">⚡</span>
-                </div>
-                <div style="font-weight: 600;">智能执行</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">一键同步全平台</div>
-              </div>
-              <div style="font-size: 2rem; color: #94a3b8;">→</div>
-              <div style="text-align: center;">
-                <div style="width: 80px; height: 80px; background: #fce7f3; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
-                  <span style="font-size: 2rem;">👁️</span>
-                </div>
-                <div style="font-weight: 600;">效果监督</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">持续优化迭代</div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'export') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 8px;">📥 数据导出中心</h2>
-            <p style="color: var(--text-muted);">支持导出多种格式，方便您进行数据分析</p>
-          </div>
-          
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
-            <div class="card" style="text-align: center; cursor: pointer;" onclick="openExport()">
-              <div style="width: 80px; height: 80px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                <i data-lucide="file-text" style="width: 32px; height: 32px; color: #dc2626;"></i>
-              </div>
-              <div style="font-weight: 600; font-size: 1.1rem;">导出PDF</div>
-              <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">适合打印和存档</div>
-            </div>
-            <div class="card" style="text-align: center; cursor: pointer;" onclick="openExport()">
-              <div style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                <i data-lucide="table" style="width: 32px; height: 32px; color: #15803d;"></i>
-              </div>
-              <div style="font-weight: 600; font-size: 1.1rem;">导出Excel</div>
-              <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">适合数据分析和处理</div>
-            </div>
-            <div class="card" style="text-align: center; cursor: pointer;" onclick="showToast('生成分享链接中...', 'info')">
-              <div style="width: 80px; height: 80px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                <i data-lucide="link" style="width: 32px; height: 32px; color: #1d4ed8;"></i>
-              </div>
-              <div style="font-weight: 600; font-size: 1.1rem;">生成分享链接</div>
-              <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">快速分享给团队成员</div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📋 最近导出记录</div>
-            <div style="margin-top: 16px;">
-              <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                <div><span style="font-weight: 500;">1月数据报告.pdf</span><span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 12px;">2024-01-15 14:30</span></div>
-                <div><span class="tag tag-green">已完成</span></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                <div><span style="font-weight: 500;">12月营收明细.xlsx</span><span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 12px;">2024-01-10 09:15</span></div>
-                <div><span class="tag tag-green">已完成</span></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px;">
-                <div><span style="font-weight: 500;">周报汇总.pdf</span><span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 12px;">2024-01-08 16:45</span></div>
-                <div><span class="tag tag-green">已完成</span></div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'profile') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 20px;">👤 个人中心</h2>
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-              <div style="text-align: center;">
-                <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                  <span style="font-size: 3rem; color: white;">商</span>
-                </div>
-                <div style="font-weight: 600; font-size: 1.2rem;">演示商家</div>
-                <div style="color: var(--text-muted);">旗舰版</div>
-              </div>
-              <div>
-                <div class="form-group">
-                  <label class="form-label">姓名</label>
-                  <input type="text" class="form-input" value="演示商家">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">手机号</label>
-                  <input type="text" class="form-input" value="138****8888">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">邮箱</label>
-                  <input type="email" class="form-input" value="demo@dianying.com">
-                </div>
-                <div style="display: flex; gap: 12px; margin-top: 20px;">
-                  <button class="btn btn-primary" onclick="showToast('保存成功', 'success')">保存修改</button>
-                  <button class="btn btn-secondary" onclick="showToast('密码修改')">修改密码</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">🔔 通知偏好</div>
-            <div style="margin-top: 16px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <!-- 差评处理页面 -->
+        <div id="page-reviews" class="page-content">
+            <div class="page-header">
                 <div>
-                  <div style="font-weight: 500;">差评提醒</div>
-                  <div style="font-size: 0.85rem; color: var(--text-muted);">收到差评时通知我</div>
+                    <h1 class="page-title">差评处理中心</h1>
+                    <p class="page-subtitle">AI智能分析差评，一键生成回复，同步全平台</p>
                 </div>
-                <label style="width: 48px; height: 24px; background: #10b981; border-radius: 12px; position: relative; cursor: pointer;">
-                  <input type="checkbox" checked style="display: none;">
-                  <span style="position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
-                </label>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border);">
-                <div>
-                  <div style="font-weight: 500;">营收日报</div>
-                  <div style="font-size: 0.85rem; color: var(--text-muted);">每日发送营收数据摘要</div>
+                <div class="filter-tabs">
+                    <div class="filter-tab active">全部 (8)</div>
+                    <div class="filter-tab">服务差 (3)</div>
+                    <div class="filter-tab">配送慢 (2)</div>
+                    <div class="filter-tab">口味差 (2)</div>
+                    <div class="filter-tab">其他 (1)</div>
                 </div>
-                <label style="width: 48px; height: 24px; background: #10b981; border-radius: 12px; position: relative; cursor: pointer;">
-                  <input type="checkbox" checked style="display: none;">
-                  <span style="position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
-                </label>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
-                <div>
-                  <div style="font-weight: 500;">竞品动态</div>
-                  <div style="font-size: 0.85rem; color: var(--text-muted);">竞品价格变动时通知我</div>
-                </div>
-                <label style="width: 48px; height: 24px; background: #e2e8f0; border-radius: 12px; position: relative; cursor: pointer;">
-                  <input type="checkbox" style="display: none;">
-                  <span style="position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'ai-chat') {
-        content.innerHTML = `
-          <div class="chat-layout">
-            <div class="chat-sidebar">
-              <button class="btn btn-primary new-chat-btn" onclick="showToast('新对话已创建', 'success')">
-                <i data-lucide="plus"></i> 新建对话
-              </button>
-              <div class="chat-list-item active">
-                <div class="chat-avatar">🤖</div>
-                <div class="chat-info">
-                  <div class="chat-name">虚拟店长-小赢</div>
-                  <div class="chat-preview">根据数据分析，建议调整下午茶时段...</div>
-                </div>
-              </div>
-              <div class="chat-list-item">
-                <div class="chat-avatar">💬</div>
-                <div class="chat-info">
-                  <div class="chat-name">差评处理专班</div>
-                  <div class="chat-preview">已自动回复差评...</div>
-                </div>
-              </div>
-              <div class="chat-list-item">
-                <div class="chat-avatar">📢</div>
-                <div class="chat-info">
-                  <div class="chat-name">营销策略讨论</div>
-                  <div class="chat-preview">周末活动方案已生成...</div>
-                </div>
-              </div>
-            </div>
-            <div class="chat-main">
-              <div class="chat-header">
-                <div class="chat-header-avatar">🤖</div>
-                <div class="chat-header-info">
-                  <h3>虚拟店长 - 小赢</h3>
-                  <p>随时为您服务 · 在线</p>
-                </div>
-                <div style="margin-left: auto;">
-                  <button class="btn btn-secondary btn-sm"><i data-lucide="settings"></i></button>
-                </div>
-              </div>
-              <div class="chat-messages">
-                <div class="message ai">
-                  <div class="message-avatar">🤖</div>
-                  <div class="message-content">
-                    <div>您好！我是您的虚拟店长小赢。今日门店运营状态良好，有几个数据需要您关注：</div>
-                    <div style="margin-top: 12px;">📊 <strong>今日数据</strong></div>
-                    <div>• 营收：¥12,856 (+12.5%)</div>
-                    <div>• 订单：1,256单 (+8.3%)</div>
-                    <div>• 评分：4.8分 (+0.2)</div>
-                    <div style="margin-top: 12px;" class="message-time">09:00</div>
-                  </div>
-                </div>
-              </div>
-              <div class="chat-input-area">
-                <div class="quick-questions">
-                  <button class="quick-q-btn" onclick="showToast('正在为您分析...')">今日数据摘要</button>
-                  <button class="quick-q-btn" onclick="navigateTo('bad-review', '差评处理演示')">差评如何处理</button>
-                  <button class="quick-q-btn" onclick="showToast('竞品价格已更新')">竞品价格对比</button>
-                </div>
-                <div class="chat-input-wrapper">
-                  <input type="text" class="chat-input" placeholder="输入您的问题...">
-                  <button class="send-btn"><i data-lucide="send"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'roi') {
-        content.innerHTML = `
-          <div class="card">
-            <h2 style="margin-bottom: 8px;">💰 ROI智能计算器</h2>
-            <p style="color: var(--text-muted);">输入您的门店数据，AI将为您计算最优投资回报方案</p>
-          </div>
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-            <div class="card">
-              <div class="card-title">📊 投入产出分析</div>
-              <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">月均营收（元）</label>
-                <input type="number" class="form-input" value="380000" id="roiRevenue">
-              </div>
-              <div class="form-group">
-                <label class="form-label">店赢OS费用（元/月）</label>
-                <input type="number" class="form-input" value="2800">
-              </div>
-              <div class="form-group">
-                <label class="form-label">人力成本节省（人/月）</label>
-                <input type="number" class="form-input" value="2">
-              </div>
-              <div class="form-group">
-                <label class="form-label">人均月工资（元）</label>
-                <input type="number" class="form-input" value="6000">
-              </div>
-              <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="calculateDemoROI()">
-                <i data-lucide="calculator"></i> 计算ROI
-              </button>
             </div>
             
-            <div class="card">
-              <div class="card-title">📈 ROI结果</div>
-              <div style="text-align: center; padding: 30px 0;">
-                <div style="font-size: 4rem; font-weight: 700; color: #10b981;" id="roiResult">32.8x</div>
-                <div style="color: var(--text-muted);">投资回报率</div>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                <div style="padding: 16px; background: #f8fafc; border-radius: 8px; text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;">¥156,000</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">年化收益增长</div>
+            <div class="review-list">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-platform">
+                            <div class="icon meituan" style="background: #FF6B00; color: white;">🍔</div>
+                            <div class="info">
+                                <div class="name">张女士</div>
+                                <div class="meta">美团 · 2024-01-15 10:20 · 订单#8888</div>
+                            </div>
+                        </div>
+                        <div class="review-tags">
+                            <span class="tag danger">😠 严重</span>
+                            <span class="tag warning">服务差</span>
+                            <span class="tag info">配送慢</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="stars">⭐⭐</div>
+                        <div class="text">等了40分钟还没送到，打电话给商家也没人接。饭都凉了，孩子饿得直哭，真的太失望了！以后再也不会点了。</div>
+                    </div>
+                    <div class="review-analysis">
+                        <div class="analysis-item">
+                            <div class="label">差评类型</div>
+                            <div class="value" style="color: var(--danger);">配送超时</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">情绪分析</div>
+                            <div class="value" style="color: var(--danger);">愤怒</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">影响程度</div>
+                            <div class="value" style="color: var(--warning);">高</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">预估损失</div>
+                            <div class="value" style="color: var(--danger);">约¥200</div>
+                        </div>
+                    </div>
+                    <div class="reply-section">
+                        <div class="reply-tabs">
+                            <div class="reply-tab selected" onclick="selectReply(this, 1)">温和安抚型</div>
+                            <div class="reply-tab" onclick="selectReply(this, 2)">补偿方案型</div>
+                            <div class="reply-tab" onclick="selectReply(this, 3)">正面解释型</div>
+                        </div>
+                        <div class="reply-preview">
+                            <p id="reply-text-1">尊敬的张女士，非常抱歉给您带来了如此糟糕的体验！您反映的问题我们已高度重视，已对相关配送环节进行彻查。作为补偿，我们愿意为您提供一张50元无门槛代金券，下次下单即可使用。再次向您致以最诚挚的歉意！</p>
+                            <p id="reply-text-2" style="display:none;">亲爱的张女士，看到您的评价我们非常痛心！40分钟的等待确实不应该发生，这是我们工作的失职。为了表达歉意，我们决定：1️⃣ 全额退款 2️⃣ 赠送50元代金券 3️⃣ 安排专人为您跟进后续服务。希望能有机会弥补这次的遗憾。</p>
+                            <p id="reply-text-3" style="display:none;">尊敬的张女士，感谢您的反馈。昨日因恶劣天气导致配送大面积延迟，给您造成不便深表歉意。我们已启动应急预案，增加配送运力，确保类似情况不再发生。您的批评是我们进步的动力！</p>
+                        </div>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary" onclick="publishReply()">
+                                <i class="fas fa-rocket"></i> 一键发布到全平台
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> 编辑回复
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 16px; background: #f8fafc; border-radius: 8px; text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6;">4.2月</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">回本周期</div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-platform">
+                            <div class="icon" style="background: #008CFF; color: white;">🛵</div>
+                            <div class="info">
+                                <div class="name">王先生</div>
+                                <div class="meta">饿了么 · 2024-01-15 09:45 · 订单#7777</div>
+                            </div>
+                        </div>
+                        <div class="review-tags">
+                            <span class="tag warning">⚠️ 中等</span>
+                            <span class="tag info">菜品问题</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="text">点的红烧肉饭，收到发现少了一份卤蛋，联系商家也没人回电话。希望能补发或者退款。</div>
+                    </div>
+                    <div class="review-analysis">
+                        <div class="analysis-item">
+                            <div class="label">差评类型</div>
+                            <div class="value" style="color: var(--warning);">漏发商品</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">情绪分析</div>
+                            <div class="value" style="color: var(--warning);">不满</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">影响程度</div>
+                            <div class="value" style="color: var(--primary);">中</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">预估损失</div>
+                            <div class="value" style="color: var(--warning);">约¥80</div>
+                        </div>
+                    </div>
+                    <div class="reply-section">
+                        <div class="reply-tabs">
+                            <div class="reply-tab selected">温和安抚型</div>
+                            <div class="reply-tab">补偿方案型</div>
+                        </div>
+                        <div class="reply-preview">
+                            <p>亲爱的王先生，非常抱歉出现了漏发的问题！这是我们打包环节的疏忽，向您致以真诚的歉意。我们将：1️⃣ 立即退还卤蛋的费用 2️⃣ 额外赠送您一张15元代金券作为补偿。已安排专人跟进，感谢您的理解！</p>
+                        </div>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary" onclick="publishReply()">
+                                <i class="fas fa-rocket"></i> 一键发布到全平台
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> 编辑回复
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 16px; background: #f8fafc; border-radius: 8px; text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;">¥156,000</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">年化人力节省</div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-platform">
+                            <div class="icon" style="background: #000000; color: white;">📱</div>
+                            <div class="info">
+                                <div class="name">李小姐</div>
+                                <div class="meta">抖音 · 2024-01-15 09:10 · 订单#6666</div>
+                            </div>
+                        </div>
+                        <div class="review-tags">
+                            <span class="tag info">⚡ 一般</span>
+                            <span class="tag success">性价比</span>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="stars">⭐⭐⭐</div>
+                        <div class="text">性价比太低，同样的钱别家能吃到更多。不会再回购了。</div>
+                    </div>
+                    <div class="review-analysis">
+                        <div class="analysis-item">
+                            <div class="label">差评类型</div>
+                            <div class="value" style="color: var(--primary);">性价比</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">情绪分析</div>
+                            <div class="value" style="color: var(--primary);">一般</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">影响程度</div>
+                            <div class="value" style="color: var(--primary);">低</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="label">预估损失</div>
+                            <div class="value" style="color: var(--primary);">约¥50</div>
+                        </div>
+                    </div>
+                    <div class="reply-section">
+                        <div class="reply-tabs">
+                            <div class="reply-tab selected">温和安抚型</div>
+                        </div>
+                        <div class="reply-preview">
+                            <p>亲爱的顾客，感谢您的反馈。我们始终致力于为顾客提供优质食材和用餐体验。您的意见已转达给我们的厨师团队，我们会认真考虑性价比的提升。欢迎您下次光临，相信会有更好的体验！</p>
+                        </div>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary" onclick="publishReply()">
+                                <i class="fas fa-rocket"></i> 一键发布到全平台
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> 编辑回复
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 16px; background: #f8fafc; border-radius: 8px; text-align: center;">
-                  <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">3280%</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">综合回报率</div>
-                </div>
-              </div>
             </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else {
-        content.innerHTML = `
-          <div class="card">
-            <div style="text-align: center; padding: 60px 20px;">
-              <div style="width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <i data-lucide="construction" style="width: 32px; height: 32px; color: #94a3b8;"></i>
-              </div>
-              <h3>${pageId}</h3>
-              <p style="color: var(--text-muted); margin-top: 8px;">该页面正在开发中，敬请期待...</p>
+        </div>
+        
+        <!-- 智能定价页面 -->
+        <div id="page-pricing" class="page-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">智能定价系统</h1>
+                    <p class="page-subtitle">AI监控竞品价格，自动给出调价建议，一键同步全平台</p>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 添加竞品监控
+                </button>
             </div>
-          </div>
-        `;
-        lucide.createIcons();
-      }
-    }
-
-    // ========== 差评演示流程 ==========
-    function runBadReviewDemo() {
-      const steps = [
-        { id: 1, status: 'running', text: '🔍 检测中...', desc: '发现美团差评：等餐时间太长...' },
-        { id: 2, status: 'pending', text: '⏳ 等待中', desc: '' },
-        { id: 3, status: 'pending', text: '⏳ 等待中', desc: '' },
-        { id: 4, status: 'pending', text: '⏳ 等待中', desc: '' },
-        { id: 5, status: 'pending', text: '⏳ 等待中', desc: '' }
-      ];
-      
-      function updateStep(stepId, status, text, desc) {
-        const statusEl = document.getElementById(`flowStatus${stepId}`);
-        const stepEl = document.getElementById(`flowStep${stepId}`);
-        if (statusEl) {
-          statusEl.className = `flow-step-status ${status}`;
-          statusEl.textContent = text;
+            
+            <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="stat-card">
+                    <div class="icon green">📊</div>
+                    <div class="value">12</div>
+                    <div class="label">监控竞品数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">⚡</div>
+                    <div class="value">5</div>
+                    <div class="label">今日调价提醒</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon blue">💰</div>
+                    <div class="value">+18.5%</div>
+                    <div class="label">调价后营收增长</div>
+                </div>
+            </div>
+            
+            <h3 style="font-size: 18px; margin-bottom: 20px;">🔥 需要关注的价格变动</h3>
+            <div class="todo-section" style="margin-bottom: 30px;">
+                <div class="todo-card" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger);">
+                    <div class="todo-header">
+                        <h3 style="color: var(--danger);">⚠️ 竞品降价提醒</h3>
+                        <span class="tag danger">立即处理</span>
+                    </div>
+                    <div class="todo-item">
+                        <div class="platform-icon" style="background: var(--danger);">⚠️</div>
+                        <div class="content">
+                            <div class="title">隔壁老王快餐店 - 招牌卤肉饭</div>
+                            <div class="desc">从 ¥25 降至 ¥22（降幅12%）| 你的售价¥26</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-dark); border-radius: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-muted);">AI建议售价</div>
+                                <div style="font-size: 24px; font-weight: 700; color: var(--warning);">¥23</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-muted);">预计销量提升</div>
+                                <div style="font-size: 18px; font-weight: 600; color: var(--accent);">+15%</div>
+                            </div>
+                            <button class="btn btn-warning" onclick="applyPrice()">
+                                <i class="fas fa-bolt"></i> 一键调价
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="todo-card">
+                    <div class="todo-header">
+                        <h3>📈 竞品涨价提醒（可跟进）</h3>
+                    </div>
+                    <div class="todo-item">
+                        <div class="platform-icon" style="background: var(--accent);">↑</div>
+                        <div class="content">
+                            <div class="title">好味小厨 - 红烧肉套餐</div>
+                            <div class="desc">从 ¥38 升至 ¥42 | 你的售价¥36</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-dark); border-radius: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-muted);">AI建议售价</div>
+                                <div style="font-size: 24px; font-weight: 700; color: var(--warning);">¥39</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-muted);">预计增收</div>
+                                <div style="font-size: 18px; font-weight: 600; color: var(--accent);">+¥3/单</div>
+                            </div>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-bolt"></i> 跟进涨价
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="font-size: 18px; margin-bottom: 20px;">📋 商品价格列表</h3>
+            <div class="product-list">
+                <div class="product-card">
+                    <div class="product-img">🍱</div>
+                    <div class="info">
+                        <div class="name">招牌卤肉饭</div>
+                        <div class="meta">月销 856 单 | 成本 ¥12 | 利润率 53%</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">¥26</div>
+                        <div class="suggest-price">建议价 <span>¥23</span> <i class="fas fa-arrow-down"></i></div>
+                    </div>
+                    <button class="btn btn-warning" onclick="applyPrice()">
+                        <i class="fas fa-sync-alt"></i> 调价
+                    </button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-img">🥩</div>
+                    <div class="info">
+                        <div class="name">红烧肉套餐</div>
+                        <div class="meta">月销 523 单 | 成本 ¥18 | 利润率 47%</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">¥36</div>
+                        <div class="suggest-price">建议价 <span>¥39</span> <i class="fas fa-arrow-up"></i></div>
+                    </div>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> 调价
+                    </button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-img">🍜</div>
+                    <div class="info">
+                        <div class="name">酸汤肥牛面</div>
+                        <div class="meta">月销 412 单 | 成本 ¥14 | 利润率 55%</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">¥32</div>
+                        <div class="suggest-price">建议价 <span>¥32</span> <i class="fas fa-check" style="color: var(--accent);"></i></div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-check"></i> 价格合理
+                    </button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-img">🥗</div>
+                    <div class="info">
+                        <div class="name">凯撒沙拉</div>
+                        <div class="meta">月销 298 单 | 成本 ¥8 | 利润率 67%</div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">¥25</div>
+                        <div class="suggest-price">建议价 <span>¥24</span> <i class="fas fa-arrow-down"></i></div>
+                    </div>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> 调价
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 多平台管理页面 -->
+        <div id="page-platforms" class="page-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">8平台统一管理</h1>
+                    <p class="page-subtitle">一个后台管理所有平台，数据汇总一览无余</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card">
+                    <div class="icon blue">💰</div>
+                    <div class="value">¥45,280</div>
+                    <div class="label">8平台总营收</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon green">📦</div>
+                    <div class="value">1,286</div>
+                    <div class="label">8平台总订单</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">⭐</div>
+                    <div class="value">4.68</div>
+                    <div class="label">平均评分</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon red">📱</div>
+                    <div class="value">6/8</div>
+                    <div class="label">已绑定平台</div>
+                </div>
+            </div>
+            
+            <h3 style="font-size: 18px; margin-bottom: 20px;">🔗 平台绑定状态</h3>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <div class="icon" style="background: #FF6B00; color: white;">🍔</div>
+                    <div class="name">美团</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #008CFF; color: white;">🛵</div>
+                    <div class="name">饿了么</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #000000; color: white;">📱</div>
+                    <div class="name">抖音</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #FF6633; color: white;">⭐</div>
+                    <div class="name">大众点评</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #00BF60; color: white;">🗺️</div>
+                    <div class="name">高德地图</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #FF4C4C; color: white;">🏪</div>
+                    <div class="name">口碑</div>
+                    <div class="status connected"><i class="fas fa-check-circle"></i> 已连接</div>
+                    <button class="btn btn-secondary">管理</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #07C160; color: white;">💬</div>
+                    <div class="name">微信</div>
+                    <div class="status disconnected"><i class="fas fa-times-circle"></i> 未连接</div>
+                    <button class="btn btn-primary">立即绑定</button>
+                </div>
+                <div class="platform-card">
+                    <div class="icon" style="background: #FF2442; color: white;">📕</div>
+                    <div class="name">小红书</div>
+                    <div class="status disconnected"><i class="fas fa-times-circle"></i> 未连接</div>
+                    <button class="btn btn-primary">立即绑定</button>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-chart-bar" style="color: var(--primary-light);"></i> 各平台营收对比</h3>
+                    <div class="platform-chart">
+                        <div class="chart-bar" style="height: 180px;">
+                            <span class="value">¥18.5k</span>
+                            <span class="label">美团</span>
+                        </div>
+                        <div class="chart-bar" style="height: 150px; background: linear-gradient(180deg, #008CFF 0%, #0066CC 100%);">
+                            <span class="value">¥12.8k</span>
+                            <span class="label">饿了么</span>
+                        </div>
+                        <div class="chart-bar" style="height: 120px; background: linear-gradient(180deg, #64748b 0%, #475569 100%);">
+                            <span class="value">¥8.2k</span>
+                            <span class="label">抖音</span>
+                        </div>
+                        <div class="chart-bar" style="height: 80px; background: linear-gradient(180deg, #FF6633 0%, #CC4400 100%);">
+                            <span class="value">¥4.5k</span>
+                            <span class="label">点评</span>
+                        </div>
+                        <div class="chart-bar" style="height: 40px; background: linear-gradient(180deg, #64748b 0%, #475569 100%);">
+                            <span class="value">¥1.3k</span>
+                            <span class="label">其他</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-chart-pie" style="color: var(--accent);"></i> 平台订单占比</h3>
+                    <div style="display: flex; align-items: center; gap: 30px; padding: 20px;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(#FF6B00 0% 40%, #008CFF 40% 68%, #000000 68% 86%, #FF6633 86% 96%, #00BF60 96% 100%); position: relative;">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">1286单</div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 12px; height: 12px; background: #FF6B00; border-radius: 3px;"></div>
+                                <span style="flex: 1;">美团</span>
+                                <span style="color: var(--text-muted);">40%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 12px; height: 12px; background: #008CFF; border-radius: 3px;"></div>
+                                <span style="flex: 1;">饿了么</span>
+                                <span style="color: var(--text-muted);">28%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 12px; height: 12px; background: #000000; border-radius: 3px;"></div>
+                                <span style="flex: 1;">抖音</span>
+                                <span style="color: var(--text-muted);">18%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 12px; height: 12px; background: #FF6633; border-radius: 3px;"></div>
+                                <span style="flex: 1;">点评</span>
+                                <span style="color: var(--text-muted);">10%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 12px; height: 12px; background: #00BF60; border-radius: 3px;"></div>
+                                <span style="flex: 1;">其他</span>
+                                <span style="color: var(--text-muted);">4%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="font-size: 18px; margin-bottom: 20px;">⚡ 批量操作</h3>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <button class="btn btn-primary" style="padding: 20px; justify-content: center;">
+                        <i class="fas fa-reply"></i> 统一回复评价
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 20px; justify-content: center;">
+                        <i class="fas fa-bullhorn"></i> 统一发布活动
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 20px; justify-content: center;">
+                        <i class="fas fa-box"></i> 统一上下架
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 20px; justify-content: center;">
+                        <i class="fas fa-sync-alt"></i> 统一同步库存
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自动对账页面 -->
+        <div id="page-accounting" class="page-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">自动对账系统</h1>
+                    <p class="page-subtitle">AI自动拉取账单、智能核对异常、一键导出报表</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> 立即对账
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> 导出报表
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-card">
+                    <div class="icon green">💰</div>
+                    <div class="value">¥45,280</div>
+                    <div class="label">对账交易额</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon blue">💳</div>
+                    <div class="value">¥3,856</div>
+                    <div class="label">手续费合计</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">⚠️</div>
+                    <div class="value">3</div>
+                    <div class="label">异常订单</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon green">✅</div>
+                    <div class="value">98.5%</div>
+                    <div class="label">对账成功率</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                <select style="padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                    <option>全部平台</option>
+                    <option>美团</option>
+                    <option>饿了么</option>
+                    <option>抖音</option>
+                    <option>大众点评</option>
+                </select>
+                <select style="padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                    <option>全部状态</option>
+                    <option>正常</option>
+                    <option>异常</option>
+                </select>
+                <input type="date" style="padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                <span style="color: var(--text-muted); line-height: 45px;">至</span>
+                <input type="date" style="padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+            </div>
+            
+            <div class="bill-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" checked></th>
+                            <th>订单号</th>
+                            <th>时间</th>
+                            <th>平台</th>
+                            <th>交易金额</th>
+                            <th>手续费</th>
+                            <th>实际到账</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115001</td>
+                            <td>2024-01-15 10:30</td>
+                            <td><span style="color: #FF6B00;">●</span> 美团</td>
+                            <td class="amount">¥58.00</td>
+                            <td>¥4.64</td>
+                            <td>¥53.36</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115002</td>
+                            <td>2024-01-15 10:15</td>
+                            <td><span style="color: #008CFF;">●</span> 饿了么</td>
+                            <td class="amount">¥86.00</td>
+                            <td>¥6.88</td>
+                            <td>¥79.12</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115003</td>
+                            <td>2024-01-15 09:50</td>
+                            <td><span style="color: #000000;">●</span> 抖音</td>
+                            <td class="amount">¥42.00</td>
+                            <td>¥3.36</td>
+                            <td>¥38.64</td>
+                            <td><span class="status-tag error">❌ 金额异常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115004</td>
+                            <td>2024-01-15 09:30</td>
+                            <td><span style="color: #FF6B00;">●</span> 美团</td>
+                            <td class="amount">¥126.00</td>
+                            <td>¥10.08</td>
+                            <td>¥115.92</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115005</td>
+                            <td>2024-01-15 09:15</td>
+                            <td><span style="color: #FF6633;">●</span> 大众点评</td>
+                            <td class="amount">¥78.00</td>
+                            <td>¥6.24</td>
+                            <td>¥71.76</td>
+                            <td><span class="status-tag error">❌ 重复订单</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115006</td>
+                            <td>2024-01-15 08:55</td>
+                            <td><span style="color: #008CFF;">●</span> 饿了么</td>
+                            <td class="amount">¥35.00</td>
+                            <td>¥2.80</td>
+                            <td>¥32.20</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115007</td>
+                            <td>2024-01-15 08:40</td>
+                            <td><span style="color: #FF6B00;">●</span> 美团</td>
+                            <td class="amount">¥168.00</td>
+                            <td>¥13.44</td>
+                            <td>¥154.56</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" checked></td>
+                            <td>#20240115008</td>
+                            <td>2024-01-15 08:25</td>
+                            <td><span style="color: #000000;">●</span> 抖音</td>
+                            <td class="amount">¥56.00</td>
+                            <td>¥4.48</td>
+                            <td>¥51.52</td>
+                            <td><span class="status-tag normal">正常</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 20px; background: var(--bg-card); border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span style="color: var(--text-muted);">已选 8 条记录</span>
+                    <span style="color: var(--text-muted);">|</span>
+                    <span>总交易额：<strong style="color: var(--accent); font-size: 18px;">¥45,280</strong></span>
+                    <span style="color: var(--text-muted);">|</span>
+                    <span>总手续费：<strong>¥3,856</strong></span>
+                    <span style="color: var(--text-muted);">|</span>
+                    <span>净收入：<strong style="color: var(--accent); font-size: 18px;">¥41,424</strong></span>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-file-excel"></i> 导出Excel
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-file-pdf"></i> 导出PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 升级套餐弹窗 -->
+    <div class="modal-overlay" id="pricing-modal">
+        <div class="modal">
+            <h3>💰 选择适合您的套餐</h3>
+            <div class="pricing-modal-grid">
+                <div class="pricing-modal-card">
+                    <div class="name">基础版</div>
+                    <div class="price">¥99</div>
+                    <div class="period">/月</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> 差评处理 100条/月</li>
+                        <li><i class="fas fa-check"></i> 多平台管理 3平台</li>
+                        <li><i class="fas fa-check"></i> 自动对账 月报</li>
+                        <li><i class="fas fa-times" style="color: var(--text-muted);"></i> 智能定价</li>
+                        <li><i class="fas fa-times" style="color: var(--text-muted);"></i> AI功能</li>
+                    </ul>
+                </div>
+                <div class="pricing-modal-card featured">
+                    <div class="name">专业版</div>
+                    <div class="price">¥299</div>
+                    <div class="period">/月</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> 差评处理 无限</li>
+                        <li><i class="fas fa-check"></i> 多平台管理 8平台</li>
+                        <li><i class="fas fa-check"></i> 自动对账 日报+月报</li>
+                        <li><i class="fas fa-check"></i> 智能定价</li>
+                        <li><i class="fas fa-check"></i> 全部AI功能</li>
+                    </ul>
+                </div>
+                <div class="pricing-modal-card">
+                    <div class="name">企业版</div>
+                    <div class="price">¥599</div>
+                    <div class="period">/月</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> 差评处理 无限</li>
+                        <li><i class="fas fa-check"></i> 多平台管理 8平台</li>
+                        <li><i class="fas fa-check"></i> 自动对账 日报+月报</li>
+                        <li><i class="fas fa-check"></i> 智能定价</li>
+                        <li><i class="fas fa-check"></i> 全部AI功能</li>
+                        <li><i class="fas fa-check"></i> 无限门店数</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 25px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('pricing')">取消</button>
+                <button class="btn btn-primary" style="flex: 1;" onclick="subscribe()">
+                    <i class="fas fa-crown"></i> 升级专业版
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast通知 -->
+    <div class="toast success" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">操作成功！</span>
+    </div>
+    
+    <script>
+        // 页面切换
+        function showPage(page) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-content').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById('page-' + page).classList.add('active');
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
         }
-        if (desc) {
-          stepEl.querySelector('.flow-step-desc').textContent = desc;
+        
+        // 回复选项卡切换
+        function selectReply(el, index) {
+            const tabs = el.parentElement.querySelectorAll('.reply-tab');
+            tabs.forEach(t => t.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            const previews = el.parentElement.parentElement.querySelectorAll('.reply-preview p');
+            previews.forEach(p => p.style.display = 'none');
+            document.getElementById('reply-text-' + index).style.display = 'block';
         }
-      }
-      
-      let currentStep = 1;
-      const stepData = [
-        { status: 'done', text: '✅ 已完成', desc: '发现美团差评：等餐时间太长...' },
-        { status: 'running', text: '⚡ 分析中', desc: '' },
-        null,
-        null,
-        null
-      ];
-      
-      // 重置所有步骤
-      for (let i = 1; i <= 5; i++) {
-        updateStep(i, 'pending', '⏳ 等待中', i === 1 ? '美团差评检测' : '');
-      }
-      
-      // 依次执行
-      const sequence = [
-        { step: 1, ...stepData[0] },
-        { step: 2, status: 'done', text: '✅ 已完成', desc: '情绪分析:负面 | 问题:等餐时间' },
-        { step: 2, status: 'running', text: '⚡ 分析中', desc: '' },
-        { step: 3, status: 'done', text: '✅ 已完成', desc: '生成3套回复方案' },
-        { step: 3, status: 'running', text: '⚡ 执行中', desc: '' },
-        { step: 4, status: 'done', text: '✅ 已完成', desc: '已同步到美团' },
-        { step: 4, status: 'running', text: '⏳ 追踪中', desc: '' },
-        { step: 5, status: 'done', text: '🎉 效果达成', desc: '用户已追评感谢' }
-      ];
-      
-      let idx = 0;
-      function runNext() {
-        if (idx >= sequence.length) {
-          showToast('差评处理演示完成！', 'success');
-          return;
+        
+        // 发布回复
+        function publishReply() {
+            showToast('success', '回复已同步发布到所有平台！');
         }
-        const item = sequence[idx];
-        updateStep(item.step, item.status, item.text, item.desc);
-        idx++;
-        setTimeout(runNext, 800);
-      }
-      
-      runNext();
-    }
-
-    function calculateDemoROI() {
-      const revenue = parseFloat(document.getElementById('roiRevenue').value) || 380000;
-      const ratio = Math.round((revenue * 0.35) / 2800 * 10) / 10;
-      document.getElementById('roiResult').textContent = ratio + 'x';
-      showToast('ROI计算完成！', 'success');
-    }
-  </script>
+        
+        // 调价
+        function applyPrice() {
+            showToast('success', '价格已更新到所有平台！');
+        }
+        
+        // 订阅
+        function subscribe() {
+            showToast('success', '恭喜！您已升级为专业版！');
+            closeModal('pricing');
+        }
+        
+        // 显示弹窗
+        function showModal(type) {
+            if (type === 'pricing') {
+                document.getElementById('pricing-modal').classList.add('active');
+            }
+        }
+        
+        // 关闭弹窗
+        function closeModal(type) {
+            if (type === 'pricing') {
+                document.getElementById('pricing-modal').classList.remove('active');
+            }
+        }
+        
+        // Toast通知
+        function showToast(type, message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 弹窗点击外部关闭
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+        
+        // 初始化 - 显示工作台
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('dashboard');
+        });
+    </script>
 </body>
 </html>

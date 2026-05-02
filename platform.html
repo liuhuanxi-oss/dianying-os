@@ -7,163 +7,319 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --primary: #10b981;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --bg: #f1f5f9;
-      --card-bg: white;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --sidebar-bg: #0f172a;
-      --sidebar-hover: #1e293b;
+      --color-primary: #6366F1;
+      --color-primary-light: #818CF8;
+      --color-cta: #10B981;
+      --color-cta-hover: #059669;
+      --color-bg: #F5F3FF;
+      --color-card: #FFFFFF;
+      --color-text: #1E1B4B;
+      --color-text-secondary: #6366F1;
+      --color-text-muted: #94A3B8;
+      --color-border: #E2E8F0;
+      --color-sidebar: #1E1B4B;
+      --color-sidebar-hover: #2D2A5E;
+      --color-danger: #EF4444;
+      --color-warning: #F59E0B;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --transition: 200ms ease;
     }
-    .dark {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: #334155;
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: all 0.3s; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    body { 
+      font-family: var(--font-sans); 
+      background: var(--color-bg); 
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
     .app-layout { display: flex; min-height: 100vh; }
     
-    /* 侧边栏 */
-    .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #1e293b; }
+    .sidebar { 
+      width: 260px; 
+      background: var(--color-sidebar); 
+      color: white; 
+      display: flex; 
+      flex-direction: column; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      bottom: 0; 
+      z-index: 100;
+    }
+    .sidebar-header { 
+      padding: var(--spacing-lg) var(--spacing-md); 
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
     .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon { 
+      width: 40px; 
+      height: 40px; 
+      background: var(--color-cta);
+      border-radius: var(--radius-sm); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+    }
     .logo-title { font-size: 1.2rem; font-weight: 700; }
-    .logo-subtitle { font-size: 0.75rem; color: #94a3b8; }
-    .sidebar-menu { flex: 1; overflow-y: auto; padding: 16px 0; }
-    .menu-section { margin-bottom: 24px; }
-    .menu-section-title { padding: 0 16px 8px; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: all 0.2s; color: #94a3b8; }
-    .menu-item:hover { background: var(--sidebar-hover); color: white; }
-    .menu-item.active { background: var(--primary); color: white; }
-    .sidebar-footer { padding: 16px; border-top: 1px solid #1e293b; }
+    .logo-subtitle { font-size: 0.75rem; color: var(--color-text-muted); }
+    
+    .sidebar-menu { flex: 1; overflow-y: auto; padding: var(--spacing-md) 0; }
+    .menu-section { margin-bottom: var(--spacing-lg); }
+    .menu-section-title { 
+      padding: 0 var(--spacing-md) var(--spacing-sm); 
+      font-size: 0.7rem; 
+      color: var(--color-text-muted); 
+      text-transform: uppercase; 
+      letter-spacing: 0.05em; 
+      font-weight: 600; 
+    }
+    .menu-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 10px var(--spacing-md); 
+      cursor: pointer; 
+      transition: background var(--transition), color var(--transition);
+      color: var(--color-text-muted);
+    }
+    .menu-item:hover { background: var(--color-sidebar-hover); color: white; }
+    .menu-item.active { background: var(--color-cta); color: white; }
+    
+    .sidebar-footer { 
+      padding: var(--spacing-md); 
+      border-top: 1px solid rgba(255,255,255,0.1); 
+    }
     .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .user-avatar { 
+      width: 36px; 
+      height: 36px; 
+      background: var(--color-cta); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+    }
     .user-name { font-weight: 600; font-size: 0.9rem; }
-    .user-role { font-size: 0.75rem; color: #64748b; }
+    .user-role { font-size: 0.75rem; color: var(--color-text-muted); }
     
-    .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; min-height: 100vh; }
-    .header { height: 64px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .page-title { font-size: 1.1rem; font-weight: 600; }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-    .content-area { flex: 1; padding: 24px; overflow-y: auto; }
+    .main-content { 
+      flex: 1; 
+      margin-left: 260px; 
+      display: flex; 
+      flex-direction: column; 
+      min-height: 100vh; 
+    }
+    .header { 
+      height: 64px; 
+      background: var(--color-card); 
+      border-bottom: 1px solid var(--color-border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 0 var(--spacing-lg);
+    }
+    .page-title { font-size: 1.1rem; font-weight: 600; color: var(--color-text); }
+    .content-area { flex: 1; padding: var(--spacing-lg); overflow-y: auto; }
     
-    /* 卡片样式 */
-    .card { background: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; transition: all 0.3s; }
-    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-title { font-size: 1rem; font-weight: 600; }
+    .card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      margin-bottom: var(--spacing-md);
+      border: 1px solid var(--color-border);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); }
+    .card-title { font-size: 1rem; font-weight: 600; color: var(--color-text); }
     
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .stat-card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer; }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .stat-value { font-size: 2rem; font-weight: 700; }
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-    .stat-trend { font-size: 0.8rem; margin-top: 8px; }
-    .stat-trend.up { color: var(--success); }
-    .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); }
+    .stat-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--color-text); font-family: var(--font-mono); }
+    .stat-label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; }
+    .stat-trend { font-size: 0.8rem; margin-top: var(--spacing-sm); }
+    .stat-trend.up { color: var(--color-cta); }
+    .stat-trend.down { color: var(--color-danger); }
     
-    /* 按钮 */
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: #059669; }
-    .btn-secondary { background: var(--bg); color: var(--text); }
-    .btn-secondary:hover { background: var(--border); }
-    .btn-success { background: var(--success); color: white; }
-    .btn-danger { background: var(--danger); color: white; }
+    .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .chart-container { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+    }
+    
+    .btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      padding: 10px 16px; 
+      border-radius: var(--radius-sm); 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      cursor: pointer; 
+      border: none; 
+      transition: all var(--transition);
+    }
+    .btn-primary { background: var(--color-primary); color: white; }
+    .btn-primary:hover { background: var(--color-primary-light); }
+    .btn-secondary { background: var(--color-card); color: var(--color-text); border: 1px solid var(--color-border); }
+    .btn-secondary:hover { background: var(--color-bg); }
+    .btn-success { background: var(--color-cta); color: white; }
     .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-    .btn-icon { padding: 8px; }
     
-    /* 表格 */
-    .table { width: 100%; border-collapse: collapse; }
-    .table th, .table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-    .table th { font-weight: 600; color: var(--text-muted); font-size: 0.85rem; background: #f8fafc; }
-    .table tr:hover { background: #f8fafc; }
+    .tag { cursor: pointer;
+      display: inline-flex; 
+      align-items: center; 
+      padding: 4px 10px; 
+      border-radius: 20px; 
+      font-size: 0.75rem; 
+      font-weight: 500; 
+    }
+    .tag-green { background: #DCFCE7; color: #15803D; }
+    .tag-blue { background: #DBEAFE; color: #1D4ED8; }
+    .tag-yellow { background: #FEF3C7; color: #B45309; }
+    .tag-gray { background: var(--color-bg); color: var(--color-text-muted); }
     
-    /* 标签 */
-    .tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
-    .tag-green { background: #dcfce7; color: #15803d; }
-    .tag-yellow { background: #fef3c7; color: #b45309; }
-    .tag-red { background: #fee2e2; color: #dc2626; }
-    .tag-blue { background: #dbeafe; color: #1d4ed8; }
-    .tag-purple { background: #f3e8ff; color: #7c3aed; }
-    .tag-gray { background: #f1f5f9; color: var(--text-muted); }
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { text-align: left; padding: 12px; background: var(--color-bg); font-weight: 600; font-size: 0.85rem; color: var(--color-text-muted); }
+    .data-table td { padding: 12px; border-bottom: 1px solid var(--color-border); }
+    .data-table tr:hover td { background: var(--color-bg); }
     
-    /* 系统监控 */
-    .monitor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .monitor-item { padding: 16px; background: #f8fafc; border-radius: 8px; }
-    .monitor-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
-    .monitor-value { font-size: 1.5rem; font-weight: 700; }
-    .monitor-bar { height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 8px; overflow: hidden; }
-    .monitor-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+    /* Merchant cards */
+    .merchant-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .merchant-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .merchant-card:hover { border-color: var(--color-primary); }
+    .merchant-avatar { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: var(--radius-sm); 
+      background: var(--color-primary); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .merchant-name { font-weight: 600; margin-bottom: 4px; }
+    .merchant-category { font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 8px; }
+    .merchant-stats { display: flex; gap: 16px; font-size: 0.85rem; }
+    .merchant-stat { text-align: center; }
+    .merchant-stat-value { font-weight: 600; font-family: var(--font-mono); }
+    .merchant-stat-label { font-size: 0.75rem; color: var(--color-text-muted); }
     
-    /* 工单系统 */
-    .ticket-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .ticket-tab { padding: 8px 16px; background: var(--bg); border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
-    .ticket-tab.active { background: var(--primary); color: white; }
-    .ticket-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border-radius: 8px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
-    .ticket-item:hover { background: #e2e8f0; }
-    .ticket-priority { width: 8px; height: 40px; border-radius: 4px; }
-    .ticket-priority.high { background: #ef4444; }
-    .ticket-priority.medium { background: #f59e0b; }
-    .ticket-priority.low { background: #10b981; }
-    .ticket-info { flex: 1; }
-    .ticket-title { font-weight: 600; margin-bottom: 4px; }
-    .ticket-meta { font-size: 0.8rem; color: var(--text-muted); }
-    .ticket-status { text-align: right; }
+    /* Agent list */
+    .agent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .agent-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+      transition: all var(--transition);
+    }
+    .agent-avatar { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .agent-gold { background: #F59E0B; }
+    .agent-silver { background: #94A3B8; }
+    .agent-bronze { background: #CD7F32; }
+    .agent-name { font-weight: 600; margin-bottom: 4px; }
+    .agent-level { font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 8px; }
+    .agent-stats { display: flex; gap: 16px; font-size: 0.85rem; }
     
-    /* 套餐管理 */
-    .package-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .package-card { background: var(--card-bg); border-radius: 16px; padding: 32px 24px; text-align: center; border: 2px solid var(--border); transition: all 0.3s; }
-    .package-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .package-card.featured { border-color: var(--primary); background: linear-gradient(180deg, #f0fdf4 0%, white 100%); }
-    .package-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
-    .package-price { font-size: 2.5rem; font-weight: 700; color: var(--primary); }
-    .package-price span { font-size: 1rem; font-weight: normal; color: var(--text-muted); }
-    .package-period { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
-    .package-features { list-style: none; text-align: left; margin: 20px 0; }
-    .package-features li { padding: 8px 0; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .package-features li i { color: var(--success); }
-    .package-btn { width: 100%; margin-top: 16px; }
-    
-    /* 公告系统 */
-    .announce-form { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; }
-    .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: var(--card-bg); color: var(--text); }
-    .form-input:focus { outline: none; border-color: var(--primary); }
-    .form-textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: var(--card-bg); color: var(--text); resize: vertical; min-height: 150px; }
-    .announce-item { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border-radius: 8px; margin-bottom: 12px; }
-    .announce-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    /* Finance */
+    .finance-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+    .finance-card { 
+      background: var(--color-card); 
+      border-radius: var(--radius); 
+      padding: var(--spacing-lg); 
+      border: 1px solid var(--color-border);
+    }
+    .finance-icon { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: var(--radius-sm); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .finance-icon.green { background: #DCFCE7; color: #15803D; }
+    .finance-icon.blue { background: #DBEAFE; color: #1D4ED8; }
+    .finance-icon.purple { background: #F3E8FF; color: #7C3AED; }
+    .finance-icon.orange { background: #FEF3C7; color: #B45309; }
+    .finance-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
+    .finance-label { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; }
+    .finance-change { font-size: 0.8rem; margin-top: 8px; }
     
     /* Toast */
-    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: #1e293b; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s ease-out; }
-    .toast.success { background: var(--success); }
-    .toast.error { background: var(--danger); }
+    .toast { 
+      position: fixed; 
+      bottom: var(--spacing-lg); 
+      right: var(--spacing-lg); 
+      padding: 12px 20px; 
+      background: var(--color-text); 
+      color: white; 
+      border-radius: var(--radius-sm); 
+      z-index: 2000; 
+      animation: slideIn 0.3s ease-out;
+    }
+    .toast.success { background: var(--color-cta); }
     @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     
-    /* 实时数据 */
-    .live-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 6px; animation: livePulse 1.5s infinite; }
-    @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    
-    /* 图表 */
-    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-    
-    /* 响应式 */
-    @media (max-width: 1200px) {
+    @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .monitor-grid { grid-template-columns: repeat(2, 1fr); }
-      .package-grid { grid-template-columns: 1fr; }
+      .merchant-grid { grid-template-columns: repeat(2, 1fr); }
+      .agent-grid { grid-template-columns: repeat(2, 1fr); }
+      .finance-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main-content { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .merchant-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -179,9 +335,7 @@
           </div>
         </div>
       </div>
-      
       <div class="sidebar-menu" id="sidebar-menu"></div>
-      
       <div class="sidebar-footer">
         <div class="user-info">
           <div class="user-avatar"><i data-lucide="user"></i></div>
@@ -196,21 +350,13 @@
     <div class="main-content">
       <div class="header">
         <div class="page-title" id="pageTitle">平台概览</div>
-        <div class="header-actions">
-          <button class="btn btn-primary btn-sm" onclick="showToast('系统运行正常', 'success')">
-            <span class="live-dot"></span> 系统正常
-          </button>
-        </div>
+        <div class="header-actions" id="headerActions"></div>
       </div>
-      
       <div class="content-area" id="contentArea"></div>
     </div>
   </div>
 
   <script>
-    let currentPage = 'overview';
-    let charts = {};
-    
     const menuConfig = [
       { section: '平台运营', items: [
         { id: 'overview', name: '平台概览', icon: 'layout-dashboard' },
@@ -218,25 +364,46 @@
         { id: 'agents', name: '代理商管理', icon: 'users' },
         { id: 'sales', name: '业务人员', icon: 'user-check' }
       ]},
-      { section: '运维中心', items: [
-        { id: 'monitor', name: '系统监控', icon: 'activity' },
-        { id: 'tickets', name: '工单客服', icon: 'ticket' },
-        { id: 'announce', name: '公告广播', icon: 'megaphone' }
-      ]},
-      { section: '商业化', items: [
-        { id: 'packages', name: '套餐管理', icon: 'package' },
+      { section: '数据中心', items: [
         { id: 'analytics', name: '数据洞察', icon: 'bar-chart-2' },
-        { id: 'finance', name: '财务中心', icon: 'dollar-sign' }
+        { id: 'finance', name: '财务中心', icon: 'dollar-sign' },
+        { id: 'payment', name: '支付交易', icon: 'credit-card' }
       ]},
       { section: '系统', items: [
         { id: 'settings', name: '系统设置', icon: 'settings' }
       ]}
     ];
 
-    document.addEventListener('DOMContentLoaded', function() {
-      renderSidebar();
-      renderPage('overview');
-    });
+    let currentPage = 'overview';
+    let charts = {};
+
+    const merchants = [
+      { id: 1, name: '川味坊', category: '川菜', monthlySales: '¥328,560', orders: 2856, rating: 4.9, status: 'active' },
+      { id: 2, name: '湘江楼', category: '湘菜', monthlySales: '¥286,340', orders: 2456, rating: 4.8, status: 'active' },
+      { id: 3, name: '粤式茶餐厅', category: '粤菜', monthlySales: '¥245,780', orders: 2134, rating: 4.7, status: 'active' },
+      { id: 4, name: '老北京涮肉', category: '火锅', monthlySales: '¥198,560', orders: 1789, rating: 4.6, status: 'active' },
+      { id: 5, name: '日式料理', category: '日料', monthlySales: '¥176,890', orders: 1523, rating: 4.9, status: 'active' },
+      { id: 6, name: '韩式烤肉', category: '韩餐', monthlySales: '¥165,340', orders: 1432, rating: 4.5, status: 'active' },
+      { id: 7, name: '西餐厅', category: '西餐', monthlySales: '¥145,670', orders: 1234, rating: 4.7, status: 'active' },
+      { id: 8, name: '咖啡馆', category: '饮品', monthlySales: '¥98,450', orders: 2134, rating: 4.8, status: 'active' }
+    ];
+
+    const agents = [
+      { id: 1, name: '张明远', level: '金牌代理商', merchants: 156, monthlyRevenue: '¥2.8M', commission: '¥86,500', avatar: 'user' },
+      { id: 2, name: '李婉清', level: '金牌代理商', merchants: 142, monthlyRevenue: '¥2.5M', commission: '¥78,200', avatar: 'user' },
+      { id: 3, name: '王建国', level: '银牌代理商', merchants: 98, monthlyRevenue: '¥1.8M', commission: '¥52,300', avatar: 'user' },
+      { id: 4, name: '刘晓峰', level: '银牌代理商', merchants: 87, monthlyRevenue: '¥1.6M', commission: '¥46,800', avatar: 'user' },
+      { id: 5, name: '陈雅琴', level: '铜牌代理商', merchants: 65, monthlyRevenue: '¥1.2M', commission: '¥32,500', avatar: 'user' },
+      { id: 6, name: '赵子轩', level: '铜牌代理商', merchants: 58, monthlyRevenue: '¥1.0M', commission: '¥28,600', avatar: 'user' }
+    ];
+
+    const recentTransactions = [
+      { id: 'TXN001', merchant: '川味坊', amount: '¥2,560', time: '10:32:15', status: 'success' },
+      { id: 'TXN002', merchant: '湘江楼', amount: '¥1,280', time: '10:31:42', status: 'success' },
+      { id: 'TXN003', merchant: '粤式茶餐厅', amount: '¥890', time: '10:30:58', status: 'success' },
+      { id: 'TXN004', merchant: '老北京涮肉', amount: '¥3,450', time: '10:29:33', status: 'pending' },
+      { id: 'TXN005', merchant: '日式料理', amount: '¥1,680', time: '10:28:21', status: 'success' }
+    ];
 
     function renderSidebar() {
       const menuEl = document.getElementById('sidebar-menu');
@@ -245,7 +412,7 @@
         html += `<div class="menu-section"><div class="menu-section-title">${section.section}</div>`;
         section.items.forEach(item => {
           const isActive = currentPage === item.id ? 'active' : '';
-          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
+          html += `<div class="menu-item ${isActive}" onclick="navigateTo('${item.id}', '${item.name}')" role="button" tabindex="0"><i data-lucide="${item.icon}"></i><span>${item.name}</span></div>`;
         });
         html += `</div>`;
       });
@@ -277,484 +444,64 @@
       if (pageId === 'overview') {
         content.innerHTML = `
           <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dcfce7; color: #15803d;"><i data-lucide="store"></i></div>
-              <div class="stat-value">3,256</div>
-              <div class="stat-label">入驻商家数</div>
-              <div class="stat-trend up">↑ 156 今日新增</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8;"><i data-lucide="users"></i></div>
-              <div class="stat-value">128</div>
-              <div class="stat-label">代理商数</div>
-              <div class="stat-trend up">↑ 8 今日新增</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #fef3c7; color: #b45309;"><i data-lucide="yen-sign"></i></div>
-              <div class="stat-value">¥8.6M</div>
-              <div class="stat-label">今日总交易额</div>
-              <div class="stat-trend up">↑ 18.5% 较昨日</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background: #f3e8ff; color: #7c3aed;"><i data-lucide="cpu"></i></div>
-              <div class="stat-value">5,428</div>
-              <div class="stat-label">活跃Agent数</div>
-              <div class="stat-trend up">实时运行中</div>
-            </div>
+            <div class="stat-card"><div class="stat-value">3,256</div><div class="stat-label">入驻商家数</div><div class="stat-trend up">↑ 156 今日新增</div></div>
+            <div class="stat-card"><div class="stat-value">128</div><div class="stat-label">代理商数</div><div class="stat-trend up">↑ 8 今日新增</div></div>
+            <div class="stat-card"><div class="stat-value">¥8.6M</div><div class="stat-label">今日总交易额</div><div class="stat-trend up">↑ 18.5% 较昨日</div></div>
+            <div class="stat-card"><div class="stat-value">98.6%</div><div class="stat-label">系统可用率</div><div class="stat-trend up">正常运行</div></div>
           </div>
           
-          <div class="chart-grid">
-            <div class="card">
-              <div class="card-title">商家增长趋势</div>
-              <canvas id="merchantChart" height="250"></canvas>
-            </div>
-            <div class="card">
-              <div class="card-title">交易额趋势</div>
-              <canvas id="revenueChart" height="250"></canvas>
-            </div>
+          <div class="charts-grid">
+            <div class="chart-container"><div class="card-title">近30天交易趋势</div><canvas id="platformTrendChart" height="250"></canvas></div>
+            <div class="chart-container"><div class="card-title">商家行业分布</div><canvas id="categoryChart" height="250"></canvas></div>
           </div>
           
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-header">
-              <div class="card-title">📊 系统运行状态</div>
-              <button class="btn btn-secondary btn-sm" onclick="navigateTo('monitor', '系统监控')">查看详情</button>
-            </div>
-            <div class="monitor-grid">
-              <div class="monitor-item">
-                <div class="monitor-label">CPU 使用率</div>
-                <div class="monitor-value" style="color: #10b981;">23%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 23%; background: #10b981;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">内存占用</div>
-                <div class="monitor-value" style="color: #3b82f6;">45%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 45%; background: #3b82f6;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">API 调用量</div>
-                <div class="monitor-value">128K/h</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 68%; background: #8b5cf6;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">系统可用率</div>
-                <div class="monitor-value" style="color: #10b981;">99.99%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 99.99%; background: #10b981;"></div></div>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        setTimeout(() => {
-          lucide.createIcons();
-          charts.merchant = new Chart(document.getElementById('merchantChart'), {
-            type: 'line',
-            data: {
-              labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-              datasets: [{
-                label: '商家数',
-                data: [1800, 2100, 2400, 2650, 2900, 3256],
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                tension: 0.4
-              }]
-            },
-            options: { responsive: true }
-          });
-          
-          charts.revenue = new Chart(document.getElementById('revenueChart'), {
-            type: 'bar',
-            data: {
-              labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-              datasets: [{
-                label: '交易额(万)',
-                data: [520, 680, 750, 820, 950, 1200],
-                backgroundColor: '#3b82f6'
-              }]
-            },
-            options: { responsive: true }
-          });
-        }, 100);
-
-      } else if (pageId === 'monitor') {
-        content.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">🔍 实时系统监控</div>
-              <span class="tag tag-green"><span class="live-dot"></span> 运行正常</span>
-            </div>
-            <div class="monitor-grid" style="margin-top: 20px;">
-              <div class="monitor-item">
-                <div class="monitor-label">CPU 使用率</div>
-                <div class="monitor-value" style="color: #10b981;">23%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 23%; background: #10b981;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">内存占用</div>
-                <div class="monitor-value" style="color: #3b82f6;">45%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 45%; background: #3b82f6;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">磁盘使用</div>
-                <div class="monitor-value" style="color: #f59e0b;">67%</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 67%; background: #f59e0b;"></div></div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">网络带宽</div>
-                <div class="monitor-value">1.2Gbps</div>
-                <div class="monitor-bar"><div class="monitor-bar-fill" style="width: 40%; background: #8b5cf6;"></div></div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📊 业务指标</div>
-            <div class="monitor-grid" style="margin-top: 16px;">
-              <div class="monitor-item">
-                <div class="monitor-label">在线商家数</div>
-                <div class="monitor-value">2,856</div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">活跃Agent数</div>
-                <div class="monitor-value">5,428</div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">今日决策次数</div>
-                <div class="monitor-value">128,560</div>
-              </div>
-              <div class="monitor-item">
-                <div class="monitor-label">执行成功率</div>
-                <div class="monitor-value" style="color: #10b981;">98.6%</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-header">
-              <div class="card-title">⚠️ 错误日志告警</div>
-              <button class="btn btn-secondary btn-sm">查看全部</button>
-            </div>
-            <table class="table" style="margin-top: 16px;">
-              <thead>
-                <tr><th>时间</th><th>级别</th><th>服务</th><th>错误信息</th><th>状态</th></tr>
-              </thead>
+          <div class="card" style="margin-top: var(--spacing-md);">
+            <div class="card-header"><div class="card-title">实时交易监控</div><span class="tag tag-green">在线</span></div>
+            <table class="data-table">
+              <thead><tr><th>订单号</th><th>商家</th><th>金额</th><th>时间</th><th>状态</th></tr></thead>
               <tbody>
-                <tr>
-                  <td>14:32:15</td>
-                  <td><span class="tag tag-yellow">警告</span></td>
-                  <td>agent-execution</td>
-                  <td>API调用超时</td>
-                  <td><span class="tag tag-green">已解决</span></td>
-                </tr>
-                <tr>
-                  <td>13:15:42</td>
-                  <td><span class="tag tag-red">错误</span></td>
-                  <td>data-collector</td>
-                  <td>美团API限流</td>
-                  <td><span class="tag tag-green">已解决</span></td>
-                </tr>
-                <tr>
-                  <td>11:28:03</td>
-                  <td><span class="tag tag-yellow">警告</span></td>
-                  <td>ai-analysis</td>
-                  <td>模型响应延迟</td>
-                  <td><span class="tag tag-green">已解决</span></td>
-                </tr>
+                ${recentTransactions.map(t => `<tr><td style="font-family: var(--font-mono);">${t.id}</td><td>${t.merchant}</td><td style="font-family: var(--font-mono);">${t.amount}</td><td style="color: var(--color-text-muted);">${t.time}</td><td><span class="tag ${t.status === 'success' ? 'tag-green' : 'tag-yellow'}">${t.status === 'success' ? '成功' : '处理中'}</span></td></tr>`).join('')}
               </tbody>
             </table>
           </div>
         `;
-        lucide.createIcons();
-
-      } else if (pageId === 'tickets') {
-        content.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">🎫 工单客服系统</div>
-              <button class="btn btn-primary" onclick="showToast('新建工单功能')">
-                <i data-lucide="plus"></i> 新建工单
-              </button>
-            </div>
-            
-            <div class="ticket-tabs">
-              <button class="ticket-tab active">全部 <span class="tag tag-gray">12</span></button>
-              <button class="ticket-tab">待处理 <span class="tag tag-red">3</span></button>
-              <button class="ticket-tab">处理中 <span class="tag tag-yellow">5</span></button>
-              <button class="ticket-tab">已关闭 <span class="tag tag-green">4</span></button>
-            </div>
-            
-            <div class="ticket-item">
-              <div class="ticket-priority high"></div>
-              <div class="ticket-info">
-                <div class="ticket-title">商家反映AI决策出现异常</div>
-                <div class="ticket-meta">提交人：张老板 | 店赢川菜旗舰店 | 2小时前</div>
-              </div>
-              <div class="ticket-status">
-                <span class="tag tag-red">待处理</span>
-              </div>
-            </div>
-            
-            <div class="ticket-item">
-              <div class="ticket-priority high"></div>
-              <div class="ticket-info">
-                <div class="ticket-title">数据同步延迟问题</div>
-                <div class="ticket-meta">提交人：李经理 | 海底捞朝阳店 | 3小时前</div>
-              </div>
-              <div class="ticket-status">
-                <span class="tag tag-red">待处理</span>
-              </div>
-            </div>
-            
-            <div class="ticket-item">
-              <div class="ticket-priority medium"></div>
-              <div class="ticket-info">
-                <div class="ticket-title">功能建议：增加批量操作</div>
-                <div class="ticket-meta">提交人：王老板 | 湘菜馆海淀店 | 5小时前</div>
-              </div>
-              <div class="ticket-status">
-                <span class="tag tag-yellow">处理中</span>
-              </div>
-            </div>
-            
-            <div class="ticket-item">
-              <div class="ticket-priority low"></div>
-              <div class="ticket-info">
-                <div class="ticket-title">账单金额有误</div>
-                <div class="ticket-meta">提交人：赵总 | 粤菜馆西城店 | 昨天</div>
-              </div>
-              <div class="ticket-status">
-                <span class="tag tag-green">已关闭</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📈 工单统计</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #ef4444;">23</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">本月工单数</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #10b981;">95%</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">解决率</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">2.3h</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">平均响应时间</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">4.8</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">用户满意度</div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'packages') {
-        content.innerHTML = `
-          <div class="card">
-            <div class="card-title">💎 套餐版本对比</div>
-          </div>
-          
-          <div class="package-grid">
-            <div class="package-card">
-              <div class="package-name">基础版</div>
-              <div class="package-price">¥999<span>/月</span></div>
-              <div class="package-period">适合小微商家</div>
-              <ul class="package-features">
-                <li><i data-lucide="check"></i> 基础数据看板</li>
-                <li><i data-lucide="check"></i> 1个AI Agent</li>
-                <li><i data-lucide="check"></i> 3个平台接入</li>
-                <li><i data-lucide="check"></i> 基础差评处理</li>
-                <li><i data-lucide="x" style="color: #94a3b8;"></i> 智能定价</li>
-                <li><i data-lucide="x" style="color: #94a3b8;"></i> 竞品监控</li>
-              </ul>
-              <button class="btn btn-secondary package-btn">立即开通</button>
-            </div>
-            
-            <div class="package-card featured">
-              <div style="display: inline-block; padding: 4px 12px; background: #10b981; color: white; border-radius: 12px; font-size: 0.75rem; margin-bottom: 12px;">最受欢迎</div>
-              <div class="package-name">专业版</div>
-              <div class="package-price">¥2,999<span>/月</span></div>
-              <div class="package-period">适合成长型商家</div>
-              <ul class="package-features">
-                <li><i data-lucide="check"></i> 高级数据看板</li>
-                <li><i data-lucide="check"></i> 3个AI Agent</li>
-                <li><i data-lucide="check"></i> 8大平台接入</li>
-                <li><i data-lucide="check"></i> 智能差评处理</li>
-                <li><i data-lucide="check"></i> 智能动态定价</li>
-                <li><i data-lucide="check"></i> 竞品实时监控</li>
-              </ul>
-              <button class="btn btn-primary package-btn">立即开通</button>
-            </div>
-            
-            <div class="package-card">
-              <div class="package-name">企业版</div>
-              <div class="package-price">¥9,999<span>/月</span></div>
-              <div class="package-period">适合连锁品牌</div>
-              <ul class="package-features">
-                <li><i data-lucide="check"></i> 企业级数据看板</li>
-                <li><i data-lucide="check"></i> 5个AI Agent</li>
-                <li><i data-lucide="check"></i> 全平台接入</li>
-                <li><i data-lucide="check"></i> 智能差评处理</li>
-                <li><i data-lucide="check"></i> 智能动态定价</li>
-                <li><i data-lucide="check"></i> 竞品实时监控</li>
-                <li><i data-lucide="check"></i> 多门店管理</li>
-                <li><i data-lucide="check"></i> 专属客服支持</li>
-              </ul>
-              <button class="btn btn-secondary package-btn">联系销售</button>
-            </div>
-          </div>
-          
-          <div class="card" style="margin-top: 20px;">
-            <div class="card-title">📊 版本销售统计</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #64748b;">856</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">基础版用户</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #10b981;">2,156</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">专业版用户</div>
-              </div>
-              <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">244</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">企业版用户</div>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
-
-      } else if (pageId === 'announce') {
-        content.innerHTML = `
-          <div class="announce-form">
-            <div class="card-header">
-              <div class="card-title">📢 发布公告</div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">公告标题</label>
-              <input type="text" class="form-input" placeholder="输入公告标题">
-            </div>
-            <div class="form-group">
-              <label class="form-label">公告类型</label>
-              <select class="form-input">
-                <option>系统通知</option>
-                <option>功能更新</option>
-                <option>活动公告</option>
-                <option>维护通知</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">公告内容</label>
-              <textarea class="form-textarea" placeholder="输入公告内容..."></textarea>
-            </div>
-            <div class="form-group">
-              <label class="form-label">发送范围</label>
-              <div style="display: flex; gap: 12px;">
-                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                  <input type="radio" name="scope" checked> 全部商家
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                  <input type="radio" name="scope"> 指定商家
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                  <input type="radio" name="scope"> 指定代理商下级
-                </label>
-              </div>
-            </div>
-            <button class="btn btn-primary" onclick="showToast('公告发布成功', 'success')">
-              <i data-lucide="send"></i> 立即发布
-            </button>
-          </div>
-          
-          <div class="card">
-            <div class="card-title">📋 历史公告</div>
-            <div style="margin-top: 16px;">
-              <div class="announce-item">
-                <div class="announce-icon" style="background: #dbeafe; color: #1d4ed8;">📢</div>
-                <div class="ticket-info">
-                  <div class="ticket-title">店赢OS v2.0.1 版本更新说明</div>
-                  <div class="ticket-meta">系统通知 · 2024-01-15 10:00 · 已发送至全部商家</div>
-                </div>
-                <span class="tag tag-green">已发送</span>
-              </div>
-              <div class="announce-item">
-                <div class="announce-icon" style="background: #dcfce7; color: #15803d;">🎉</div>
-                <div class="ticket-info">
-                  <div class="ticket-title">【活动】新年开门红·限时优惠来袭</div>
-                  <div class="ticket-meta">活动公告 · 2024-01-10 09:00 · 已发送至全部商家</div>
-                </div>
-                <span class="tag tag-green">已发送</span>
-              </div>
-              <div class="announce-item">
-                <div class="announce-icon" style="background: #fef3c7; color: #b45309;">⚠️</div>
-                <div class="ticket-info">
-                  <div class="ticket-title">系统维护通知（1月8日 02:00-06:00）</div>
-                  <div class="ticket-meta">维护通知 · 2024-01-05 14:00 · 已发送至全部商家</div>
-                </div>
-                <span class="tag tag-green">已发送</span>
-              </div>
-            </div>
-          </div>
-        `;
-        lucide.createIcons();
+        setTimeout(() => {
+          lucide.createIcons();
+          charts.platformTrend = new Chart(document.getElementById('platformTrendChart'), {
+            type: 'line',
+            data: {
+              labels: ['1日', '5日', '10日', '15日', '20日', '25日', '30日'],
+              datasets: [{ label: '交易额(万元)', data: [680, 720, 750, 810, 780, 850, 860], borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+          charts.category = new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: { labels: ['川菜', '湘菜', '粤菜', '火锅', '日料', '其他'], datasets: [{ data: [28, 22, 18, 15, 10, 7], backgroundColor: ['#6366F1', '#818CF8', '#F59E0B', '#10B981', '#EC4899', '#94A3B8'] }] },
+            options: { responsive: true }
+          });
+        }, 100);
 
       } else if (pageId === 'merchants') {
         content.innerHTML = `
           <div class="card">
             <div class="card-header">
-              <div class="card-title">🏪 商家管理</div>
-              <div style="display: flex; gap: 12px;">
-                <input type="text" class="form-input" placeholder="搜索商家名称..." style="width: 200px;">
-                <select class="form-input" style="width: 150px;">
-                  <option>全部版本</option>
-                  <option>基础版</option>
-                  <option>专业版</option>
-                  <option>企业版</option>
-                </select>
-                <button class="btn btn-secondary"><i data-lucide="search"></i></button>
+              <div class="card-title">商家列表</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-sm"><i data-lucide="search"></i> 搜索</button>
+                <button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> 新增商家</button>
               </div>
             </div>
-            <table class="table" style="margin-top: 16px;">
-              <thead>
-                <tr><th>商家名称</th><th>版本</th><th>入驻时间</th><th>月活跃天数</th><th>状态</th><th>操作</th></tr>
-              </thead>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <span class="tag tag-green" style="cursor: pointer;">全部 3,256</span>
+              <span class="tag tag-gray" style="cursor: pointer;">活跃 2,890</span>
+              <span class="tag tag-gray" style="cursor: pointer;">待审核 156</span>
+              <span class="tag tag-gray" style="cursor: pointer;">已冻结 210</span>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>商家名称</th><th>行业</th><th>月销售额</th><th>订单数</th><th>评分</th><th>状态</th><th>操作</th></tr></thead>
               <tbody>
-                <tr>
-                  <td><strong>店赢川菜旗舰店</strong></td>
-                  <td><span class="tag tag-purple">企业版</span></td>
-                  <td>2023-06-15</td>
-                  <td>28天</td>
-                  <td><span class="tag tag-green">活跃</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>海底捞朝阳店</strong></td>
-                  <td><span class="tag tag-green">专业版</span></td>
-                  <td>2023-08-22</td>
-                  <td>26天</td>
-                  <td><span class="tag tag-green">活跃</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>湘菜馆海淀店</strong></td>
-                  <td><span class="tag tag-blue">基础版</span></td>
-                  <td>2023-10-01</td>
-                  <td>15天</td>
-                  <td><span class="tag tag-yellow">低活跃</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>粤菜馆西城店</strong></td>
-                  <td><span class="tag tag-green">专业版</span></td>
-                  <td>2023-09-18</td>
-                  <td>27天</td>
-                  <td><span class="tag tag-green">活跃</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
+                ${merchants.map(m => `<tr><td><div style="display: flex; align-items: center; gap: 8px;"><div class="merchant-avatar" style="width: 32px; height: 32px; margin: 0;"><i data-lucide="store" style="width: 16px; height: 16px;"></i></div>${m.name}</div></td><td>${m.category}</td><td style="font-family: var(--font-mono);">${m.monthlySales}</td><td style="font-family: var(--font-mono);">${m.orders.toLocaleString()}</td><td style="font-family: var(--font-mono);">${m.rating}</td><td><span class="tag tag-green">活跃</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>`).join('')}
               </tbody>
             </table>
           </div>
@@ -763,63 +510,129 @@
 
       } else if (pageId === 'agents') {
         content.innerHTML = `
+          <div class="stats-grid" style="margin-bottom: var(--spacing-md);">
+            <div class="stat-card"><div class="stat-value">128</div><div class="stat-label">代理商总数</div><div class="stat-trend up">本月新增 12</div></div>
+            <div class="stat-card"><div class="stat-value">¥42.5M</div><div class="stat-label">代理总交易额</div><div class="stat-trend up">↑ 22.3%</div></div>
+            <div class="stat-card"><div class="stat-value">¥1.28M</div><div class="stat-label">本月分润总额</div><div class="stat-trend up">↑ 18.5%</div></div>
+            <div class="stat-card"><div class="stat-value">98.2%</div><div class="stat-label">代理活跃率</div><div class="stat-trend up">健康</div></div>
+          </div>
+          
           <div class="card">
-            <div class="card-header">
-              <div class="card-title">👥 代理商管理</div>
-              <button class="btn btn-primary" onclick="showToast('添加代理商')">
-                <i data-lucide="plus"></i> 添加代理商
-              </button>
+            <div class="card-header"><div class="card-title">代理商列表</div><button class="btn btn-primary btn-sm"><i data-lucide="plus"></i> 新增代理</button></div>
+            <div class="agent-grid">
+              ${agents.map(a => `
+                <div class="agent-card" onclick="showToast('查看代理商详情')">
+                  <div class="agent-avatar ${a.level.includes('金牌') ? 'agent-gold' : a.level.includes('银牌') ? 'agent-silver' : 'agent-bronze'}"><i data-lucide="${a.avatar}"></i></div>
+                  <div class="agent-name">${a.name}</div>
+                  <div class="agent-level">${a.level}</div>
+                  <div class="agent-stats">
+                    <div class="merchant-stat"><div class="merchant-stat-value">${a.merchants}</div><div class="merchant-stat-label">商户</div></div>
+                    <div class="merchant-stat"><div class="merchant-stat-value">${a.monthlyRevenue}</div><div class="merchant-stat-label">月交易</div></div>
+                    <div class="merchant-stat"><div class="merchant-stat-value">${a.commission}</div><div class="merchant-stat-label">月分润</div></div>
+                  </div>
+                </div>
+              `).join('')}
             </div>
-            <table class="table" style="margin-top: 16px;">
-              <thead>
-                <tr><th>代理商名称</th><th>等级</th><th>下级商户</th><th>累计佣金</th><th>状态</th><th>操作</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>北京华北大区</strong></td>
-                  <td><span class="tag tag-purple">金牌</span></td>
-                  <td>156家</td>
-                  <td>¥856,000</td>
-                  <td><span class="tag tag-green">正常</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>上海华东大区</strong></td>
-                  <td><span class="tag tag-green">银牌</span></td>
-                  <td>98家</td>
-                  <td>¥528,000</td>
-                  <td><span class="tag tag-green">正常</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-                <tr>
-                  <td><strong>广州华南大区</strong></td>
-                  <td><span class="tag tag-green">银牌</span></td>
-                  <td>86家</td>
-                  <td>¥456,000</td>
-                  <td><span class="tag tag-green">正常</span></td>
-                  <td><button class="btn btn-sm btn-secondary">详情</button></td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         `;
         lucide.createIcons();
 
+      } else if (pageId === 'analytics') {
+        content.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value">¥256.8M</div><div class="stat-label">累计交易额</div><div class="stat-trend up">↑ 25.6% 本月</div></div>
+            <div class="stat-card"><div class="stat-value">2,890,560</div><div class="stat-label">累计订单数</div><div class="stat-trend up">↑ 18.3% 本月</div></div>
+            <div class="stat-card"><div class="stat-value">4.7</div><div class="stat-label">平均评分</div><div class="stat-trend up">↑ 0.2 本月</div></div>
+            <div class="stat-card"><div class="stat-value">89.5%</div><div class="stat-label">订单完成率</div><div class="stat-trend up">稳定</div></div>
+          </div>
+          
+          <div class="charts-grid" style="margin-top: var(--spacing-md);">
+            <div class="chart-container"><div class="card-title">年度交易趋势</div><canvas id="yearTrendChart" height="250"></canvas></div>
+            <div class="chart-container"><div class="card-title">地区分布 TOP5</div><canvas id="regionChart" height="250"></canvas></div>
+          </div>
+          
+          <div class="card" style="margin-top: var(--spacing-md);">
+            <div class="card-header"><div class="card-title">商家排行榜</div></div>
+            <table class="data-table">
+              <thead><tr><th>排名</th><th>商家</th><th>月交易额</th><th>增长率</th><th>评分</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight: 600; color: var(--color-warning);">🥇 1</td><td>川味坊</td><td style="font-family: var(--font-mono);">¥328,560</td><td style="color: var(--color-cta);">+28.5%</td><td>4.9</td></tr>
+                <tr><td style="font-weight: 600; color: var(--color-text-muted);">🥈 2</td><td>湘江楼</td><td style="font-family: var(--font-mono);">¥286,340</td><td style="color: var(--color-cta);">+22.3%</td><td>4.8</td></tr>
+                <tr><td style="font-weight: 600; color: #CD7F32;">🥉 3</td><td>粤式茶餐厅</td><td style="font-family: var(--font-mono);">¥245,780</td><td style="color: var(--color-cta);">+18.6%</td><td>4.7</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+        setTimeout(() => {
+          lucide.createIcons();
+          charts.yearTrend = new Chart(document.getElementById('yearTrendChart'), {
+            type: 'line',
+            data: { labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], datasets: [{ label: '交易额(万元)', data: [1800, 2200, 2800, 3200, 3600, 4200, 4800, 5200, 5800, 6200, 6800, 7200], borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4 }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+          charts.region = new Chart(document.getElementById('regionChart'), {
+            type: 'bar',
+            data: { labels: ['北京', '上海', '广州', '深圳', '杭州'], datasets: [{ label: '商家数', data: [680, 720, 560, 480, 420], backgroundColor: '#10B981' }] },
+            options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+          });
+        }, 100);
+
+      } else if (pageId === 'finance') {
+        content.innerHTML = `
+          <div class="finance-summary">
+            <div class="finance-card"><div class="finance-icon green"><i data-lucide="wallet"></i></div><div class="finance-value">¥42.5M</div><div class="finance-label">平台总营收</div><div class="finance-change" style="color: var(--color-cta);">↑ 22.3% 本月</div></div>
+            <div class="finance-card"><div class="finance-icon blue"><i data-lucide="credit-card"></i></div><div class="finance-value">¥8.6M</div><div class="finance-label">本月流水</div><div class="finance-change" style="color: var(--color-cta);">↑ 18.5%</div></div>
+            <div class="finance-card"><div class="finance-icon purple"><i data-lucide="trending-up"></i></div><div class="finance-value">¥1.28M</div><div class="finance-label">应付分润</div><div class="finance-change">待结算</div></div>
+            <div class="finance-card"><div class="finance-icon orange"><i data-lucide="banknote"></i></div><div class="finance-value">¥856K</div><div class="finance-label">平台服务费</div><div class="finance-change" style="color: var(--color-cta);">↑ 12.3%</div></div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header"><div class="card-title">财务报表</div><button class="btn btn-secondary btn-sm"><i data-lucide="download"></i> 导出</button></div>
+            <table class="data-table">
+              <thead><tr><th>日期</th><th>类型</th><th>金额</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>2024-01-15</td><td>商户分润</td><td style="font-family: var(--font-mono);">¥256,800</td><td><span class="tag tag-green">已结算</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>2024-01-14</td><td>平台服务费</td><td style="font-family: var(--font-mono);">¥42,560</td><td><span class="tag tag-green">已结算</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>2024-01-13</td><td>代理商分润</td><td style="font-family: var(--font-mono);">¥128,400</td><td><span class="tag tag-green">已结算</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+                <tr><td>2024-01-12</td><td>系统维护费</td><td style="font-family: var(--font-mono);">¥15,000</td><td><span class="tag tag-green">已结算</span></td><td><button class="btn btn-secondary btn-sm">详情</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="charts-grid" style="margin-top: var(--spacing-md);">
+            <div class="chart-container"><div class="card-title">收入趋势</div><canvas id="incomeChart" height="200"></canvas></div>
+            <div class="chart-container"><div class="card-title">支出构成</div><canvas id="expenseChart" height="200"></canvas></div>
+          </div>
+        `;
+        setTimeout(() => {
+          lucide.createIcons();
+          charts.income = new Chart(document.getElementById('incomeChart'), {
+            type: 'bar',
+            data: { labels: ['1月', '2月', '3月', '4月', '5月', '6月'], datasets: [{ label: '收入(万元)', data: [680, 720, 850, 920, 1020, 1150], backgroundColor: '#10B981' }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+          });
+          charts.expense = new Chart(document.getElementById('expenseChart'), {
+            type: 'doughnut',
+            data: { labels: ['商户分润', '代理分润', '运营成本', '技术投入'], datasets: [{ data: [55, 20, 15, 10], backgroundColor: ['#6366F1', '#10B981', '#F59E0B', '#EC4899'] }] },
+            options: { responsive: true }
+          });
+        }, 100);
+
       } else {
         content.innerHTML = `
           <div class="card">
-            <div style="text-align: center; padding: 60px 20px;">
-              <div style="width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <i data-lucide="construction" style="width: 32px; height: 32px; color: #94a3b8;"></i>
-              </div>
-              <h3>${pageId}</h3>
-              <p style="color: var(--text-muted); margin-top: 8px;">该页面正在开发中，敬请期待...</p>
-            </div>
+            <div class="card-title">${pageId} 页面</div>
+            <p style="margin-top: 16px; color: var(--color-text-muted);">该页面正在开发中，敬请期待...</p>
           </div>
         `;
         lucide.createIcons();
       }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderSidebar();
+      renderPage('overview');
+    });
   </script>
 </body>
 </html>
