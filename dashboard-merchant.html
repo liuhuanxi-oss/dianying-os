@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - 门店运营看板</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/dashboard-dataease.css">
+  <link rel="stylesheet" href="css/mobile-responsive.css">
+  <style>
+    /* 商户端布局容器 */
+    .left-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .left-column::-webkit-scrollbar, .right-column::-webkit-scrollbar {
+      width: 3px;
+    }
+    .left-column::-webkit-scrollbar-thumb, .right-column::-webkit-scrollbar-thumb {
+      background: rgba(24,144,255,0.3);
+      border-radius: 3px;
+    }
+    /* 右侧栏独立滚动样式 */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .right-column::-webkit-scrollbar { width: 3px; }
+    .right-column::-webkit-scrollbar-thumb {
+      background: rgba(24,144,255,0.3);
+      border-radius: 3px;
+    }
+
+    /* 商户端补充样式 */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge.open {
+      background: rgba(82, 196, 26, 0.15);
+      color: #52c41a;
+      border: 1px solid rgba(82, 196, 26, 0.3);
+    }
+
+    .status-badge.closed {
+      background: rgba(255, 77, 79, 0.15);
+      color: #ff4d4f;
+      border: 1px solid rgba(255, 77, 79, 0.3);
+    }
+
+    .dish-grid {
+      display: grid;
+      gap: 8px;
+      max-height: 100%;
+      overflow-y: auto;
+    }
+
+    .dish-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: rgba(24, 144, 255, 0.05);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .dish-item:hover {
+      background: rgba(24, 144, 255, 0.1);
+    }
+
+    .dish-rank {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .dish-rank.gold {
+      background: linear-gradient(135deg, #faad14, #d48806);
+      color: #fff;
+    }
+
+    .dish-rank.silver {
+      background: linear-gradient(135deg, #8c8c8c, #595959);
+      color: #fff;
+    }
+
+    .dish-rank.bronze {
+      background: linear-gradient(135deg, #d48806, #b35f00);
+      color: #fff;
+    }
+
+    .dish-rank.normal {
+      background: rgba(145, 213, 255, 0.2);
+      color: #91d5ff;
+    }
+
+    .dish-info {
+      flex: 1;
+    }
+
+    .dish-name {
+      font-size: 13px;
+      color: var(--text-value);
+      margin-bottom: 2px;
+    }
+
+    .dish-stats {
+      display: flex;
+      gap: 15px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .dish-amount {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-light);
+      font-family: 'Courier New', monospace;
+    }
+
+    .usage-ring {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .usage-ring .value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary-light);
+      font-family: 'Courier New', monospace;
+    }
+
+    .usage-ring .label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .hour-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .member-pie-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .member-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 15px;
+    }
+
+    .member-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .member-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景光晕 -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- 顶部标题栏 -->
+  <div class="header-bar">
+    <div class="header-title">
+      <div class="icon">🏪</div>
+      <h1 style="cursor: pointer;" onclick="window.location.href='index.html'" title="返回首页">重庆火锅店 - 门店运营看板</h1>
+      <span class="status-badge open">
+        <span class="dot" style="width:6px;height:6px;background:#52c41a;border-radius:50%;"></span>
+        营业中
+      </span>
+    </div>
+    <div class="header-info">
+      <div class="header-status">
+        <i data-lucide="clock" style="width:16px;height:16px;color:#1890ff;"></i>
+        <span>今日营业 8小时25分</span>
+      </div>
+      <div class="header-time">
+        <div class="time" id="currentTime">00:00:00</div>
+        <div class="date" id="currentDate">2024年01月01日</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主容器 -->
+  <div class="dashboard-container">
+    <!-- 左侧栏 - KPI指标 -->
+    <div class="left-column kpi-grid">
+      <!-- KPI 1: 今日营业额 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">今日营业额</span>
+          <div class="kpi-icon"><i data-lucide="wallet"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="68542">0</span>
+          <span class="kpi-unit">元</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+          <span>较昨日 +18.5%</span>
+        </div>
+      </div>
+
+      <!-- KPI 2: 订单量 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">今日订单量</span>
+          <div class="kpi-icon"><i data-lucide="shopping-cart"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="486">0</span>
+          <span class="kpi-unit">单</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+          <span>堂食 312 / 外卖 174</span>
+        </div>
+      </div>
+
+      <!-- KPI 3: 客单价 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">客单价</span>
+          <div class="kpi-icon"><i data-lucide="users"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="141">0</span>
+          <span class="kpi-unit">元</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+          <span>较上周 +5.2%</span>
+        </div>
+      </div>
+
+      <!-- KPI 4: 翻台率 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">翻台率</span>
+          <div class="kpi-icon"><i data-lucide="rotate-cw"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="4.2">0</span>
+          <span class="kpi-unit">次</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="check" style="width:14px;height:14px;"></i>
+          <span>优秀水平</span>
+        </div>
+      </div>
+
+      <!-- KPI 5: 好评率 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">顾客好评率</span>
+          <div class="kpi-icon"><i data-lucide="star"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="98.6">0</span>
+          <span class="kpi-unit">%</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="star" style="width:14px;height:14px;color:#faad14;"></i>
+          <span>4.9分 / 286条评价</span>
+        </div>
+      </div>
+
+      <!-- 菜品销量TOP8 -->
+      <div class="de-card" style="flex: 1.5;">
+        <div class="de-card-header">
+          <i data-lucide="utensils" class="icon"></i>
+          <h3>菜品销量TOP8</h3>
+          <span class="badge">实时</span>
+        </div>
+        <div class="de-card-body">
+          <div class="dish-grid" id="dishRank"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中间栏 - 核心图表区 -->
+    <div class="center-column">
+      <!-- 实时交易流水图 -->
+      <div class="de-card center-top">
+        <div class="de-card-header">
+          <i data-lucide="bar-chart-2" class="icon"></i>
+          <h3>今日实时交易流水</h3>
+          <span class="badge">每5分钟更新</span>
+        </div>
+        <div class="de-card-body" style="padding: 10px;">
+          <div id="realtimeTradeChart" class="chart-container"></div>
+        </div>
+      </div>
+
+      <!-- 中间图表区 -->
+      <div class="center-middle">
+        <!-- 桌台使用率 -->
+        <div class="de-card">
+          <div class="de-card-header">
+            <i data-lucide="layout-grid" class="icon"></i>
+            <h3>实时桌台使用</h3>
+          </div>
+          <div class="de-card-body">
+            <div class="usage-ring">
+              <div id="usageChart" style="width: 140px; height: 140px;"></div>
+              <div class="value" id="usageValue">78%</div>
+              <div class="label">18桌使用中 / 共23桌</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 会员画像 -->
+        <div class="de-card">
+          <div class="de-card-header">
+            <i data-lucide="user" class="icon"></i>
+            <h3>会员画像分析</h3>
+          </div>
+          <div class="de-card-body">
+            <div class="member-pie-container">
+              <div id="memberChart" style="width: 130px; height: 130px;"></div>
+              <div class="member-legend" id="memberLegend"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部三图表 -->
+      <div class="center-bottom">
+        <!-- 时段热力图 -->
+        <div class="de-card">
+          <div class="de-card-header">
+            <i data-lucide="thermometer" class="icon"></i>
+            <h3>时段销售热度</h3>
+          </div>
+          <div class="de-card-body">
+            <div id="heatmapChart" class="chart-container"></div>
+          </div>
+        </div>
+
+        <!-- 订单来源 -->
+        <div class="de-card">
+          <div class="de-card-header">
+            <i data-lucide="radio" class="icon"></i>
+            <h3>订单来源分布</h3>
+          </div>
+          <div class="de-card-body">
+            <div id="orderSourceChart" class="chart-container"></div>
+          </div>
+        </div>
+
+        <!-- 员工绩效 -->
+        <div class="de-card">
+          <div class="de-card-header">
+            <i data-lucide="award" class="icon"></i>
+            <h3>服务绩效TOP5</h3>
+          </div>
+          <div class="de-card-body">
+            <div class="rank-list" id="staffRank"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧栏 -->
+    <div class="right-column kpi-grid">
+      <!-- KPI 6: 在线等待 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">当前等待桌数</span>
+          <div class="kpi-icon"><i data-lucide="users"></i></div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value counting" data-target="8">0</span>
+          <span class="kpi-unit">桌</span>
+        </div>
+        <div class="kpi-trend up">
+          <i data-lucide="clock" style="width:14px;height:14px;"></i>
+          <span>平均等待 12分钟</span>
+        </div>
+      </div>
+
+      <!-- 时段销售热力 -->
+      <div class="de-card" style="flex: 1;">
+        <div class="de-card-header">
+          <i data-lucide="calendar" class="icon"></i>
+          <h3>一周时段热力分布</h3>
+        </div>
+        <div class="de-card-body" style="padding: 10px;">
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+          <div class="hour-label">10:00 - 22:00 每小时</div>
+        </div>
+      </div>
+
+      <!-- 库存预警 -->
+      <div class="de-card" style="flex: 1.2;">
+        <div class="de-card-header">
+          <i data-lucide="alert-triangle" class="icon"></i>
+          <h3>库存预警提醒</h3>
+          <span class="badge">3项待处理</span>
+        </div>
+        <div class="de-card-body">
+          <div class="alert-list" id="alertList"></div>
+        </div>
+      </div>
+
+      <!-- 实时订单滚动 -->
+      <div class="de-card" style="flex: 1.5;">
+        <div class="de-card-header">
+          <i data-lucide="activity" class="icon"></i>
+          <h3>实时订单流水</h3>
+          <span class="badge">LIVE</span>
+        </div>
+        <div class="de-card-body" style="padding: 10px 0;">
+          <div class="trade-scroll-container">
+            <div class="trade-scroll-list" id="orderScroll"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // 全局变量
+    // ============================================
+    const charts = {};
+
+    // ============================================
+    // Mock数据
+    // ============================================
+    const mockData = {
+      // 时段交易数据
+      hours: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'],
+      hourValues: [1200, 2800, 5200, 4800, 2100, 1500, 1800, 4200, 6800, 7200, 5800, 3200],
+      hourLastWeek: [1100, 2500, 4800, 4500, 1900, 1400, 1600, 3900, 6200, 6800, 5400, 2900],
+
+      // 菜品销量排行
+      dishes: [
+        { name: '麻辣牛肉', sales: 328, amount: 13120 },
+        { name: '鲜毛肚', sales: 286, amount: 11440 },
+        { name: '千层肚', sales: 256, amount: 10240 },
+        { name: '鸭肠', sales: 234, amount: 7020 },
+        { name: '黄喉', sales: 198, amount: 5940 },
+        { name: '嫩牛肉', sales: 187, amount: 7480 },
+        { name: '虾滑', sales: 165, amount: 6600 },
+        { name: '贡菜', sales: 142, amount: 2840 }
+      ],
+
+      // 订单来源
+      orderSources: [
+        { name: '到店扫码', value: 45, color: '#1890ff' },
+        { name: '美团外卖', value: 22, color: '#ffd700' },
+        { name: '抖音团购', value: 18, color: '#fe2c55' },
+        { name: '大众点评', value: 10, color: '#ff6b6b' },
+        { name: '其他', value: 5, color: '#52c41a' }
+      ],
+
+      // 会员等级分布
+      memberLevels: [
+        { name: '钻石会员', value: 8, color: '#b8b8c4' },
+        { name: '黄金会员', value: 25, color: '#faad14' },
+        { name: '白银会员', value: 35, color: '#8c8c8c' },
+        { name: '普通会员', value: 32, color: '#1890ff' }
+      ],
+
+      // 员工绩效
+      staffRank: [
+        { name: '张姐', score: 98.5, orders: 126 },
+        { name: '李哥', score: 96.2, orders: 118 },
+        { name: '王芳', score: 95.8, orders: 112 },
+        { name: '赵磊', score: 94.5, orders: 108 },
+        { name: '陈丽', score: 93.2, orders: 102 }
+      ],
+
+      // 库存预警
+      alerts: [
+        { type: 'warning', name: '鲜毛肚', desc: '库存不足，剩余23份', icon: 'alert-triangle' },
+        { type: 'warning', name: '鸭肠', desc: '库存不足，剩余18份', icon: 'alert-triangle' },
+        { type: 'danger', name: '黄喉', desc: '即将售罄，剩余5份', icon: 'x-circle' }
+      ],
+
+      // 一周热力数据
+      weekHeatmap: [
+        [0.2, 0.3, 0.8, 0.9, 0.6, 0.3, 0.3, 0.5, 0.85, 0.95, 0.7, 0.4],
+        [0.15, 0.25, 0.75, 0.85, 0.55, 0.25, 0.25, 0.45, 0.8, 0.9, 0.65, 0.35],
+        [0.18, 0.28, 0.78, 0.88, 0.58, 0.28, 0.28, 0.48, 0.82, 0.92, 0.68, 0.38],
+        [0.22, 0.35, 0.82, 0.92, 0.62, 0.32, 0.32, 0.52, 0.88, 0.98, 0.72, 0.42],
+        [0.25, 0.38, 0.85, 0.95, 0.65, 0.35, 0.35, 0.55, 0.9, 1, 0.75, 0.45],
+        [0.4, 0.5, 0.9, 1, 0.75, 0.45, 0.45, 0.65, 0.95, 1, 0.85, 0.55],
+        [0.35, 0.45, 0.88, 0.98, 0.72, 0.42, 0.42, 0.62, 0.92, 0.98, 0.8, 0.5]
+      ]
+    };
+
+    // ============================================
+    // 时间更新
+    // ============================================
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+      const dateStr = now.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+      document.getElementById('currentTime').textContent = timeStr;
+      document.getElementById('currentDate').textContent = dateStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // ============================================
+    // 数字滚动动画
+    // ============================================
+    function animateCounting() {
+      document.querySelectorAll('.counting').forEach(el => {
+        const target = parseFloat(el.dataset.target);
+        const isFloat = target < 100;
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const current = target * easeOut;
+
+          if (isFloat) {
+            el.textContent = current.toFixed(1);
+          } else {
+            el.textContent = Math.floor(current).toLocaleString();
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    // ============================================
+    // 渲染菜品排行
+    // ============================================
+    function renderDishRank() {
+      const container = document.getElementById('dishRank');
+      container.innerHTML = mockData.dishes.map((dish, index) => {
+        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'normal';
+        return `
+          <div class="dish-item">
+            <div class="dish-rank ${rankClass}">${index + 1}</div>
+            <div class="dish-info">
+              <div class="dish-name">${dish.name}</div>
+              <div class="dish-stats">
+                <span>销量 ${dish.sales} 份</span>
+              </div>
+            </div>
+            <div class="dish-amount">¥${dish.amount.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ============================================
+    // 渲染员工排行
+    // ============================================
+    function renderStaffRank() {
+      const container = document.getElementById('staffRank');
+      container.innerHTML = mockData.staffRank.map((staff, index) => `
+        <div class="rank-item top-${index + 1}">
+          <span class="rank-num">${index + 1}</span>
+          <span class="rank-name">${staff.name}</span>
+          <span class="rank-value">${staff.score}分</span>
+        </div>
+      `).join('');
+    }
+
+    // ============================================
+    // 渲染库存预警
+    // ============================================
+    function renderAlerts() {
+      const container = document.getElementById('alertList');
+      container.innerHTML = mockData.alerts.map(alert => `
+        <div class="alert-item ${alert.type}">
+          <i data-lucide="${alert.icon}" style="width:20px;height:20px;"></i>
+          <div class="alert-content">
+            <div class="name">${alert.name}</div>
+            <div class="desc">${alert.desc}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ============================================
+    // 渲染一周热力图网格
+    // ============================================
+    function renderHeatmapGrid() {
+      const container = document.getElementById('heatmapGrid');
+      const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+      let html = '<div style="display: grid; gap: 3px;">';
+
+      mockData.weekHeatmap.forEach((day, dayIndex) => {
+        html += '<div style="display: flex; gap: 3px; align-items: center;">';
+        html += `<span style="width: 30px; font-size: 10px; color: var(--text-muted);">${days[dayIndex]}</span>`;
+        day.forEach((value, hourIndex) => {
+          const level = Math.floor(value * 5);
+          html += `<div class="heatmap-cell level-${level}" style="width: 14px; height: 14px;" title="${days[dayIndex]} ${mockData.hours[hourIndex]}: ${(value * 100).toFixed(0)}%"></div>`;
+        });
+        html += '</div>';
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // ============================================
+    // 渲染实时订单滚动
+    // ============================================
+    function generateOrderItems() {
+      const tableNos = ['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'E1', 'E2', 'E3'];
+      const dishes = ['麻辣牛肉', '鲜毛肚', '千层肚', '鸭肠', '黄喉', '嫩牛肉', '虾滑', '鸳鸯锅'];
+      const items = [];
+
+      for (let i = 0; i < 20; i++) {
+        const table = tableNos[Math.floor(Math.random() * tableNos.length)];
+        const dish = dishes[Math.floor(Math.random() * dishes.length)];
+        const amount = (Math.random() * 300 + 80).toFixed(2);
+        const time = new Date(Date.now() - i * 15000).toLocaleTimeString('zh-CN', { hour12: false });
+        items.push({ table, dish, amount, time });
+      }
+      return items;
+    }
+
+    function renderOrderScroll() {
+      const items = generateOrderItems();
+      const html = items.map(item => `
+        <div class="trade-item-scroll">
+          <span class="time">${item.time}</span>
+          <span class="merchant">${item.table}桌 - ${item.dish}</span>
+          <span class="amount">¥${item.amount}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('orderScroll').innerHTML = html + html;
+    }
+
+    // ============================================
+    // 初始化图表
+    // ============================================
+    function initCharts() {
+      // 1. 今日实时交易流水图
+      charts.realtimeTrade = echarts.init(document.getElementById('realtimeTradeChart'));
+      charts.realtimeTrade.setOption({
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          borderColor: '#1890ff',
+          textStyle: { color: '#fff' }
+        },
+        legend: {
+          data: ['今日', '上周同期'],
+          textStyle: { color: '#91d5ff', fontSize: 11 },
+          top: 5
+        },
+        grid: { left: '5%', right: '5%', bottom: '10%', top: '18%' },
+        xAxis: {
+          type: 'category',
+          data: mockData.hours,
+          axisLine: { lineStyle: { color: '#1890ff' } },
+          axisLabel: { color: '#91d5ff', fontSize: 10 }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: 'rgba(24, 144, 255, 0.15)' } },
+          axisLabel: { color: '#91d5ff', fontSize: 10 }
+        },
+        series: [
+          {
+            name: '今日',
+            type: 'bar',
+            data: mockData.hourValues,
+            barWidth: '40%',
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#40a9ff' },
+                { offset: 1, color: '#096dd9' }
+              ]),
+              borderRadius: [4, 4, 0, 0]
+            }
+          },
+          {
+            name: '上周同期',
+            type: 'line',
+            data: mockData.hourLastWeek,
+            smooth: true,
+            showSymbol: false,
+            lineStyle: { color: '#faad14', width: 2, type: 'dashed' }
+          }
+        ]
+      });
+
+      // 2. 桌台使用率环形图
+      charts.usageChart = echarts.init(document.getElementById('usageChart'));
+      charts.usageChart.setOption({
+        series: [{
+          type: 'pie',
+          radius: ['65%', '85%'],
+          center: ['50%', '50%'],
+          startAngle: 90,
+          label: { show: false },
+          data: [
+            { value: 78, itemStyle: { color: '#1890ff' } },
+            { value: 22, itemStyle: { color: 'rgba(24, 144, 255, 0.15)' } }
+          ]
+        }]
+      });
+
+      // 3. 会员画像
+      charts.memberChart = echarts.init(document.getElementById('memberChart'));
+      charts.memberChart.setOption({
+        series: [{
+          type: 'pie',
+          radius: ['50%', '75%'],
+          center: ['50%', '50%'],
+          label: { show: false },
+          data: mockData.memberLevels.map(m => ({
+            name: m.name,
+            value: m.value,
+            itemStyle: { color: m.color }
+          }))
+        }]
+      });
+
+      // 渲染会员图例
+      document.getElementById('memberLegend').innerHTML = mockData.memberLevels.map(m => `
+        <div class="member-legend-item">
+          <div class="member-legend-dot" style="background: ${m.color};"></div>
+          <span>${m.name} ${m.value}%</span>
+        </div>
+      `).join('');
+
+      // 4. 时段销售热力图
+      charts.heatmapChart = echarts.init(document.getElementById('heatmapChart'));
+      const heatmapData = [];
+      const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+      mockData.weekHeatmap.forEach((day, dayIndex) => {
+        day.forEach((value, hourIndex) => {
+          heatmapData.push([hourIndex, dayIndex, Math.round(value * 100)]);
+        });
+      });
+
+      charts.heatmapChart.setOption({
+        tooltip: {
+          position: 'top',
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          borderColor: '#1890ff',
+          textStyle: { color: '#fff' },
+          formatter: params => `${days[params.data[1]]} ${mockData.hours[params.data[0]]}<br/>热度: ${params.data[2]}%`
+        },
+        grid: { left: '18%', right: '5%', bottom: '15%', top: '5%' },
+        xAxis: {
+          type: 'category',
+          data: mockData.hours,
+          axisLine: { show: false },
+          axisLabel: { color: '#91d5ff', fontSize: 8, rotate: 45 }
+        },
+        yAxis: {
+          type: 'category',
+          data: days,
+          axisLine: { show: false },
+          axisLabel: { color: '#91d5ff', fontSize: 9 }
+        },
+        visualMap: {
+          min: 0,
+          max: 100,
+          calculable: true,
+          orient: 'horizontal',
+          left: 'center',
+          bottom: 0,
+          inRange: { color: ['#1e3a5f', '#2d5a8c', '#3d7ab8', '#4d9ae0', '#5db0ff'] },
+          textStyle: { color: '#91d5ff', fontSize: 9 },
+          show: false
+        },
+        series: [{
+          type: 'heatmap',
+          data: heatmapData,
+          label: { show: false },
+          itemStyle: { borderWidth: 2, borderColor: '#0f172a' }
+        }]
+      });
+
+      // 5. 订单来源分布
+      charts.orderSourceChart = echarts.init(document.getElementById('orderSourceChart'));
+      charts.orderSourceChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+          borderColor: '#1890ff',
+          textStyle: { color: '#fff' }
+        },
+        legend: { show: false },
+        series: [{
+          type: 'pie',
+          radius: ['40%', '70%'],
+          center: ['50%', '50%'],
+          label: {
+            show: true,
+            color: '#91d5ff',
+            fontSize: 10,
+            formatter: '{b}\n{d}%'
+          },
+          data: mockData.orderSources
+        }]
+      });
+    }
+
+    // ============================================
+    // 窗口大小变化自适应
+    // ============================================
+    window.addEventListener('resize', () => {
+      Object.values(charts).forEach(chart => chart.resize());
+    });
+
+    // ============================================
+    // 页面初始化
+    // ============================================
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        lucide.createIcons();
+        animateCounting();
+        renderDishRank();
+        renderStaffRank();
+        renderAlerts();
+        renderHeatmapGrid();
+        renderOrderScroll();
+        initCharts();
+      }, 300);
+    });
+
+    // 实时数据刷新模拟
+    setInterval(() => {
+      mockData.hourValues = mockData.hourValues.map(v => v + Math.floor(Math.random() * 10 - 5));
+      charts.realtimeTrade.setOption({
+        series: [{ data: mockData.hourValues }]
+      });
+    }, 30000);
+  </script>
+</body>
+</html>
