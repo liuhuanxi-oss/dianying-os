@@ -40,7 +40,7 @@
             overflow-y: auto;
         }
         .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
-        .logo h1 { font-size: 20px; font-weight: 700; }
+        .logo h1 { font-size: 20px; font-weight: 400; }
         .logo span { font-size: 12px; opacity: 0.8; }
         .nav-section { margin-bottom: 24px; }
         .nav-section-title { padding: 8px 24px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; }
@@ -52,7 +52,7 @@
         /* 主内容 */
         .main { flex: 1; margin-left: 260px; padding: 32px; }
         .page-header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
-        .page-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .page-header h2 { font-size: 28px; font-weight: 400; margin-bottom: 8px; }
         .page-header p { color: var(--text-secondary); }
         .header-actions { display: flex; gap: 12px; }
 
@@ -71,9 +71,9 @@
         .stat-card.info { border-left-color: var(--info); }
         .stat-card.purple { border-left-color: var(--purple); }
         .stat-card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
-        .stat-card .value { font-size: 32px; font-weight: 700; color: var(--text-primary); }
+        .stat-card .value { font-size: 32px; font-weight: 400; color: var(--text-primary); }
         .stat-card .sub { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
-        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; }
         .stat-card .trend.up { background: #d1fae5; color: #065f46; }
         .stat-card .trend.down { background: #fee2e2; color: #991b1b; }
 
@@ -169,7 +169,7 @@
         .progress-ring .bg { stroke: var(--border); }
         .progress-ring .progress { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 1s; }
         .progress-ring .text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-        .progress-ring .text .num { font-size: 20px; font-weight: 700; }
+        .progress-ring .text .num { font-size: 20px; font-weight: 400; }
 
         /* 分账配置 */
         .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
@@ -185,7 +185,7 @@
         .config-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .config-item:last-child { border-bottom: none; }
         .config-item .label { font-size: 14px; color: var(--text-secondary); }
-        .config-item .value { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .config-item .value { font-size: 18px; font-weight: 400; color: var(--primary); }
 
         /* 商户评级 */
         .rating-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -201,14 +201,14 @@
         .rating-card.grade-b { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-color: #3b82f6; }
         .rating-card.grade-c { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-color: #f59e0b; }
         .rating-card.grade-d { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-color: #ef4444; }
-        .rating-badge { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: white; }
+        .rating-badge { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 400; color: white; }
         .grade-a .rating-badge { background: #10b981; }
         .grade-b .rating-badge { background: #3b82f6; }
         .grade-c .rating-badge { background: #f59e0b; }
         .grade-d .rating-badge { background: #ef4444; }
-        .rating-card h4 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .rating-card h4 { font-size: 20px; font-weight: 400; margin-bottom: 8px; }
         .rating-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
-        .rating-stats { font-size: 24px; font-weight: 700; }
+        .rating-stats { font-size: 24px; font-weight: 400; }
 
         /* 风险准备金 */
         .reserve-overview {
@@ -225,7 +225,7 @@
             text-align: center;
         }
         .reserve-card h3 { font-size: 14px; opacity: 0.8; margin-bottom: 12px; }
-        .reserve-card .value { font-size: 36px; font-weight: 700; }
+        .reserve-card .value { font-size: 36px; font-weight: 400; }
 
         /* 纠纷处理 */
         .dispute-flow {
@@ -246,7 +246,7 @@
         .flow-step:last-child::after { display: none; }
         .flow-step::before { content: ''; position: absolute; top: 24px; left: 0; width: 50%; height: 3px; background: var(--border); }
         .flow-step:first-child::before { display: none; }
-        .flow-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; position: relative; z-index: 1; }
+        .flow-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 400; position: relative; z-index: 1; }
         .flow-step.completed .flow-icon { background: var(--secondary); }
         .flow-step.current .flow-icon { background: var(--warning); animation: pulse 2s infinite; }
         .flow-step h4 { font-size: 14px; font-weight: 600; }
@@ -265,10 +265,10 @@
         .nps-score {
             text-align: center;
         }
-        .nps-score .number { font-size: 72px; font-weight: 700; color: var(--primary); line-height: 1; }
+        .nps-score .number { font-size: 72px; font-weight: 400; color: var(--primary); line-height: 1; }
         .nps-score .label { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
         .nps-breakdown { flex: 1; }
-        .nps-bar { display: flex; height: 32px; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+        .nps-bar { display: flex; height: 32px; border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
         .nps-bar .promoters { background: #10b981; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
         .nps-bar .passives { background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-weight: 600; }
         .nps-bar .detractors { background: #ef4444; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
@@ -324,7 +324,7 @@
             text-align: center;
         }
         .churn-card h4 { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
-        .churn-card .count { font-size: 48px; font-weight: 700; color: var(--text-primary); }
+        .churn-card .count { font-size: 48px; font-weight: 400; color: var(--text-primary); }
         .churn-card .count.warning { color: var(--warning); }
         .churn-card .count.danger { color: var(--danger); }
 
@@ -435,9 +435,9 @@
 <body>
 <!-- WAIC演示进度指示器 -->
 <div id="demoProgressBar" style="display:none; position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #E5E7EB; z-index: 9999;">
-    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); width: 0%; transition: width 0.5s ease;"></div>
+    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #15be53, #059669); width: 0%; transition: width 0.5s ease;"></div>
 </div>
-<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #15be53, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
     🎬 平台端演示模式
 </div>
     <!-- 移动端菜单遮罩 -->
@@ -3090,7 +3090,7 @@
                         background: linear-gradient(135deg, #10b981, #059669);
                         color: white;
                         padding: 16px 24px;
-                        border-radius: 12px;
+                        border-radius: 8px;
                         font-size: 15px;
                         font-weight: 500;
                         box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);

@@ -39,7 +39,7 @@
             overflow-y: auto;
         }
         .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
-        .logo h1 { font-size: 20px; font-weight: 700; }
+        .logo h1 { font-size: 20px; font-weight: 400; }
         .logo span { font-size: 12px; opacity: 0.8; }
         .nav-item { padding: 14px 24px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px; }
         .nav-item:hover { background: rgba(255,255,255,0.1); }
@@ -49,7 +49,7 @@
         /* 主内容 */
         .main { flex: 1; margin-left: 260px; padding: 32px; }
         .page-header { margin-bottom: 32px; }
-        .page-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .page-header h2 { font-size: 28px; font-weight: 400; margin-bottom: 8px; }
         .page-header p { color: var(--text-secondary); }
 
         /* 统计卡片 */
@@ -66,9 +66,9 @@
         .stat-card.info { border-left-color: var(--info); }
         .stat-card.purple { border-left-color: var(--purple); }
         .stat-card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
-        .stat-card .value { font-size: 32px; font-weight: 700; color: var(--text-primary); }
+        .stat-card .value { font-size: 32px; font-weight: 400; color: var(--text-primary); }
         .stat-card .sub { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
-        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; }
         .stat-card .trend.up { background: #d1fae5; color: #065f46; }
         .stat-card .trend.down { background: #fee2e2; color: #991b1b; }
 
@@ -133,7 +133,7 @@
         .profit-content { flex: 1; }
         .profit-content h3 { font-size: 20px; color: #065f46; margin-bottom: 8px; }
         .profit-content p { font-size: 14px; color: #047857; }
-        .profit-amount { font-size: 36px; font-weight: 700; color: #059669; }
+        .profit-amount { font-size: 36px; font-weight: 400; color: #059669; }
 
         /* 分润记录 */
         .profit-records { display: grid; gap: 16px; }
@@ -146,12 +146,12 @@
             border-radius: var(--radius);
             border-left: 4px solid var(--secondary);
         }
-        .profit-record-icon { width: 48px; height: 48px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .profit-record-icon { width: 48px; height: 48px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .profit-record-info { flex: 1; }
         .profit-record-info h4 { font-size: 16px; font-weight: 600; }
         .profit-record-info p { font-size: 13px; color: var(--text-secondary); }
         .profit-record-amount { text-align: right; }
-        .profit-record-amount .amount { font-size: 20px; font-weight: 700; color: var(--secondary); }
+        .profit-record-amount .amount { font-size: 20px; font-weight: 400; color: var(--secondary); }
         .profit-record-amount .time { font-size: 12px; color: var(--text-secondary); }
 
         /* 分润图表 */
@@ -197,7 +197,7 @@
         }
         .leaderboard-item:hover { transform: translateX(8px); box-shadow: var(--shadow); }
         .leaderboard-item.top3 { background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border: 2px solid #f59e0b; }
-        .leaderboard-rank { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+        .leaderboard-rank { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 400; font-size: 18px; }
         .rank-1 { background: linear-gradient(135deg, #ffd700, #ffb800); color: #7c5800; }
         .rank-2 { background: linear-gradient(135deg, #c0c0c0, #a8a8a8); color: #555; }
         .rank-3 { background: linear-gradient(135deg, #cd7f32, #b8722d); color: white; }
@@ -206,7 +206,7 @@
         .leaderboard-info p { font-size: 13px; color: var(--text-secondary); }
         .leaderboard-stats { display: flex; gap: 24px; }
         .leaderboard-stat { text-align: center; }
-        .leaderboard-stat .num { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .leaderboard-stat .num { font-size: 18px; font-weight: 400; color: var(--primary); }
         .leaderboard-stat .label { font-size: 11px; color: var(--text-secondary); }
 
         /* 物料商城 */
@@ -224,7 +224,7 @@
         .material-info h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
         .material-info p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
         .material-price { display: flex; justify-content: space-between; align-items: center; }
-        .material-price .price { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .material-price .price { font-size: 20px; font-weight: 400; color: var(--primary); }
         .material-price .price span { font-size: 12px; font-weight: normal; color: var(--text-secondary); }
 
         /* 课程中心 */
@@ -390,9 +390,9 @@
 <body>
 <!-- WAIC演示进度指示器 -->
 <div id="demoProgressBar" style="display:none; position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #E5E7EB; z-index: 9999;">
-    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); width: 0%; transition: width 0.5s ease;"></div>
+    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #15be53, #059669); width: 0%; transition: width 0.5s ease;"></div>
 </div>
-<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #15be53, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
     🎬 代理商端演示模式
 </div>
     <!-- 移动端菜单遮罩 -->

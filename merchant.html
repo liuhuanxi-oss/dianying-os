@@ -7,21 +7,21 @@
     <style>
         /* ==================== CSS变量定义 ==================== */
         :root {
-            --primary: #6366F1;          /* 靛蓝主色 */
-            --primary-dark: #4F46E5;
-            --primary-light: #A5B4FC;
-            --secondary: #10B981;        /* 翡翠绿CTA */
+            --primary: #533afd;          /* Stripe紫主色 */
+            --primary-dark: #4434d4;
+            --primary-light: #b9b9f9;
+            --secondary: #15be53;        /* 翡翠绿CTA */
             --secondary-dark: #059669;
             --danger: #EF4444;           /* 危险/差评 */
             --warning: #F59E0B;          /* 警告 */
-            --success: #10B981;          /* 成功 */
+            --success: #15be53;          /* 成功 */
             --info: #3B82F6;
             --bg-light: #F8FAFC;
             --bg-card: #FFFFFF;
-            --text-primary: #1E293B;
+            --text-primary: #061b31;
             --text-secondary: #64748B;
             --text-muted: #94A3B8;
-            --border: #E2E8F0;
+            --border: #e5edf5;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --radius: 12px;
@@ -58,9 +58,9 @@
         .store-logo {
             width: 40px; height: 40px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 10px;
+            border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 18px;
+            color: white; font-weight: 400; font-size: 18px;
         }
         .store-info h1 { font-size: 16px; font-weight: 600; }
         .store-info span { font-size: 12px; color: var(--text-secondary); }
@@ -87,7 +87,7 @@
         .topbar-btn {
             width: 40px; height: 40px;
             border: none; background: var(--bg-light);
-            border-radius: 10px; cursor: pointer;
+            border-radius: 6px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: var(--transition);
             position: relative;
@@ -102,7 +102,7 @@
         }
         .user-avatar {
             width: 40px; height: 40px;
-            border-radius: 10px;
+            border-radius: 6px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             display: flex; align-items: center; justify-content: center;
             color: white; font-weight: 600; font-size: 14px;
@@ -129,7 +129,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             text-align: center;
         }
-        .sidebar-logo h2 { font-size: 20px; font-weight: 700; }
+        .sidebar-logo h2 { font-size: 20px; font-weight: 400; }
         .sidebar-logo span { font-size: 11px; opacity: 0.8; }
         
         .sidebar-nav { padding: 16px 0; }
@@ -157,7 +157,7 @@
             color: white;
             font-size: 11px;
             padding: 2px 8px;
-            border-radius: 10px;
+            border-radius: 6px;
             font-weight: 600;
         }
         .sidebar.collapsed .nav-item span,
@@ -182,7 +182,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .page-header h2 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .page-header h2 { font-size: 24px; font-weight: 400; margin-bottom: 4px; }
         .page-header p { color: var(--text-secondary); font-size: 14px; }
         .page-actions { display: flex; gap: 12px; }
 
@@ -218,7 +218,7 @@
         .stat-icon.green { background: #D1FAE5; }
         .stat-icon.yellow { background: #FEF3C7; }
         .stat-icon.red { background: #FEE2E2; }
-        .stat-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+        .stat-value { font-size: 28px; font-weight: 400; margin-bottom: 4px; }
         .stat-value small { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
         .stat-trend {
             display: inline-flex; align-items: center; gap: 4px;
@@ -380,7 +380,7 @@
         .platform-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
         .platform-logo {
             width: 48px; height: 48px;
-            border-radius: 12px;
+            border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             font-size: 24px;
         }
@@ -395,7 +395,7 @@
         .status-disconnected { background: var(--danger); }
         .platform-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .platform-stat { text-align: center; }
-        .platform-stat-value { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .platform-stat-value { font-size: 18px; font-weight: 400; color: var(--primary); }
         .platform-stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .platform-health {
             margin-top: 12px;
@@ -437,7 +437,7 @@
         .product-img {
             width: 56px; height: 56px;
             background: var(--bg-light);
-            border-radius: 10px;
+            border-radius: 6px;
             display: flex; align-items: center; justify-content: center;
             font-size: 24px;
             margin-right: 16px;
@@ -446,7 +446,7 @@
         .product-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
         .product-category { font-size: 12px; color: var(--text-secondary); }
         .product-price { text-align: right; }
-        .current-price { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .current-price { font-size: 18px; font-weight: 400; color: var(--primary); }
         .suggested-price { font-size: 12px; color: var(--text-secondary); }
         .suggested-price span { color: var(--secondary); font-weight: 600; }
         .pricing-sidebar { background: var(--bg-light); border-radius: var(--radius); padding: 20px; }
@@ -458,7 +458,7 @@
             text-align: center;
         }
         .weather-icon { font-size: 48px; margin-bottom: 8px; }
-        .weather-temp { font-size: 32px; font-weight: 700; color: #1E40AF; }
+        .weather-temp { font-size: 32px; font-weight: 400; color: #1E40AF; }
         .weather-desc { color: #3B82F6; font-size: 14px; }
         .pricing-factors { margin-top: 20px; }
         .factor-item {
@@ -503,7 +503,7 @@
         .status-matched { background: #D1FAE5; color: #065F46; }
         .status-pending { background: #FEF3C7; color: #92400E; }
         .status-error { background: #FEE2E2; color: #991B1B; }
-        .amount-highlight { font-weight: 700; color: var(--primary); }
+        .amount-highlight { font-weight: 400; color: var(--primary); }
         .amount-diff { font-size: 12px; color: var(--danger); }
 
         /* ==================== 图表区域 ==================== */
@@ -657,7 +657,7 @@
         }
         .ai-suggestion-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .ai-suggestion-icon { font-size: 28px; }
-        .ai-suggestion-title { font-weight: 700; color: #92400E; font-size: 15px; }
+        .ai-suggestion-title { font-weight: 400; color: #92400E; font-size: 15px; }
         .ai-suggestion p { color: #78350F; font-size: 14px; line-height: 1.6; }
         .ai-suggestion .highlight { font-weight: 600; color: #B45309; }
 
@@ -778,11 +778,11 @@
         .module-icon.platform { background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); }
         .module-icon.pricing { background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); }
         .module-icon.reconcile { background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); }
-        .module-content h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .module-content h3 { font-size: 18px; font-weight: 400; margin-bottom: 8px; }
         .module-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
         .module-stats { display: flex; gap: 16px; }
         .module-stat { text-align: center; }
-        .module-stat-value { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .module-stat-value { font-size: 20px; font-weight: 400; color: var(--primary); }
         .module-stat-label { font-size: 11px; color: var(--text-secondary); }
 
         /* ==================== Toast提示 ==================== */
@@ -954,7 +954,7 @@
             text-align: center;
         }
         .ai-analysis-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
-        .ai-analysis-value { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+        .ai-analysis-value { font-size: 16px; font-weight: 400; color: var(--text-primary); }
         .ai-analysis-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .badge-danger { background: #FEE2E2; color: #991B1B; }
         .badge-warning { background: #FEF3C7; color: #92400E; }
@@ -1015,7 +1015,7 @@
         .price-change-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; }
         .price-change-product { font-weight: 600; }
         .price-change-detail { font-size: 12px; color: var(--text-secondary); }
-        .price-arrow { color: var(--primary); font-weight: 700; }
+        .price-arrow { color: var(--primary); font-weight: 400; }
         
         /* 营收对比图表 */
         .revenue-comparison { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
@@ -1090,22 +1090,22 @@
         /* 账单平台卡片 */
         .bill-platform-card { background: var(--bg-light); border-radius: var(--radius); padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .bill-platform-info { display: flex; align-items: center; gap: 12px; }
-        .bill-platform-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .bill-platform-icon { width: 40px; height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .bill-platform-name { font-weight: 600; }
         .bill-platform-cycle { font-size: 12px; color: var(--text-secondary); }
-        .bill-platform-amount { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .bill-platform-amount { font-size: 20px; font-weight: 400; color: var(--primary); }
         
         /* 对账结果弹窗 */
         .reconcile-result-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
         .result-summary-item { text-align: center; padding: 16px; background: var(--bg-light); border-radius: var(--radius); }
-        .result-summary-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .result-summary-value { font-size: 24px; font-weight: 400; margin-bottom: 4px; }
         .result-summary-label { font-size: 12px; color: var(--text-secondary); }
         
         /* 产品定价详情 */
         .product-detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
         .product-detail-item { text-align: center; padding: 16px; background: var(--bg-light); border-radius: var(--radius); }
         .product-detail-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
-        .product-detail-value { font-size: 18px; font-weight: 700; }
+        .product-detail-value { font-size: 18px; font-weight: 400; }
         
         /* 定时任务提示 */
         .scheduled-task { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #FEF3C7; border-radius: var(--radius); margin-bottom: 16px; font-size: 13px; }
@@ -1162,7 +1162,7 @@
         }
         .battle-header h3 {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 400;
             background: linear-gradient(90deg, #ff4444, #ffffff, #4444ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1205,13 +1205,13 @@
         .team-ai .team-icon { background: #4444ff; }
         .team-name {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 400;
         }
         .team-human .team-name { color: #ff4444; }
         .team-ai .team-name { color: #4444ff; }
         .team-score {
             font-size: 36px;
-            font-weight: 700;
+            font-weight: 400;
             text-align: center;
             margin: 20px 0;
         }
@@ -1250,7 +1250,7 @@
             border-radius: 8px;
             color: white;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 400;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -1266,7 +1266,7 @@
         }
         .result-title {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 400;
             text-align: center;
             margin-bottom: 16px;
         }
@@ -1285,7 +1285,7 @@
             border-radius: 8px;
         }
         .metric-label { font-size: 12px; color: rgba(255, 255, 255, 0.7); margin-bottom: 4px; }
-        .metric-value { font-size: 20px; font-weight: 700; }
+        .metric-value { font-size: 20px; font-weight: 400; }
         .metric-human { color: #ff4444; }
         .metric-ai { color: #4444ff; }
         .history-list {
@@ -1342,13 +1342,13 @@
         }
         .time-header h3 {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 400;
             color: #00ff88;
             text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
         }
         .time-display {
             font-size: 72px;
-            font-weight: 700;
+            font-weight: 400;
             color: white;
             text-align: center;
             margin: 24px 0;
@@ -1403,7 +1403,7 @@
         .time-stat-icon { font-size: 24px; margin-bottom: 8px; }
         .time-stat-value {
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 400;
             color: #00ff88;
             margin-bottom: 4px;
         }
@@ -1457,7 +1457,7 @@
         }
         .mock-header h3 {
             font-size: 20px;
-            font-weight: 700;
+            font-weight: 400;
             color: white;
         }
         .mock-master-switch {
@@ -1495,7 +1495,7 @@
             border-radius: 50%;
             transition: all 0.3s ease;
         }
-        .mock-toggle input:checked + .mock-slider { background: #10B981; }
+        .mock-toggle input:checked + .mock-slider { background: #15be53; }
         .mock-toggle input:checked + .mock-slider::before { transform: translateX(28px); }
         .mock-mode-badge {
             padding: 4px 12px;
@@ -1503,7 +1503,7 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .mock-mode-badge.mock { background: #10B981; color: white; }
+        .mock-mode-badge.mock { background: #15be53; color: white; }
         .mock-mode-badge.real { background: #3B82F6; color: white; }
         .mock-sections {
             display: grid;
@@ -1541,10 +1541,10 @@
             transition: all 0.3s ease;
             text-align: center;
         }
-        .scenario-btn:hover { border-color: #6366F1; }
+        .scenario-btn:hover { border-color: #533afd; }
         .scenario-btn.active {
             background: rgba(99, 102, 241, 0.3);
-            border-color: #6366F1;
+            border-color: #533afd;
         }
         .scenario-icon { font-size: 24px; margin-bottom: 8px; }
         .density-slider {
@@ -1619,7 +1619,7 @@
         }
         .mock-action-btn.reset:hover { background: #EF4444; color: white; }
         .mock-action-btn.apply {
-            background: #10B981;
+            background: #15be53;
             border: none;
             color: white;
         }
@@ -1637,11 +1637,11 @@
         .mock-status-dot {
             width: 12px;
             height: 12px;
-            background: #10B981;
+            background: #15be53;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-        .mock-status-text { font-size: 13px; color: #10B981; }
+        .mock-status-text { font-size: 13px; color: #15be53; }
         
         /* 响应式适配 */
         @media (max-width: 1024px) {
@@ -1662,7 +1662,7 @@
             padding: 12px 16px;
             background: var(--bg-card);
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 6px;
             transition: all 0.3s ease;
         }
         .workflow-node.pending {
@@ -1757,7 +1757,7 @@
             text-align: center;
         }
         .channel-metric-label { font-size: 11px; color: var(--text-secondary); }
-        .channel-metric-value { font-size: 16px; font-weight: 700; }
+        .channel-metric-value { font-size: 16px; font-weight: 400; }
         
         /* 开关样式 */
         .switch {
@@ -1807,15 +1807,15 @@
         }
         .route-log-time { color: #64748B; font-size: 11px; }
         .route-log-channel { color: #60A5FA; }
-        .route-log-fee { color: #10B981; font-weight: 600; }
+        .route-log-fee { color: #15be53; font-weight: 600; }
     </style>
 </head>
 <body>
 <!-- WAIC演示进度指示器 -->
 <div id="demoProgressBar" style="display:none; position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #E5E7EB; z-index: 9999;">
-    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); width: 0%; transition: width 0.5s ease;"></div>
+    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #15be53, #059669); width: 0%; transition: width 0.5s ease;"></div>
 </div>
-<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #15be53, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
     🎬 WAIC演示模式
 </div>
     <!-- ==================== 顶部导航栏 ==================== -->
@@ -2604,7 +2604,7 @@
                                 <div class="pie-chart"></div>
                                 <div class="pie-center">
                                     <div style="font-size: 12px; color: var(--text-secondary);">总计</div>
-                                    <div style="font-size: 20px; font-weight: 700;">288</div>
+                                    <div style="font-size: 20px; font-weight: 400;">288</div>
                                 </div>
                             </div>
                             <div class="pie-legend" style="margin-top: 16px;">
@@ -2682,22 +2682,22 @@
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px;">
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: var(--text-secondary);">美团</div>
-                            <div style="font-size: 20px; font-weight: 700; color: #FFD100;">¥4,256</div>
+                            <div style="font-size: 20px; font-weight: 400; color: #FFD100;">¥4,256</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">33.1%</div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: var(--text-secondary);">饿了么</div>
-                            <div style="font-size: 20px; font-weight: 700; color: #00B5E2;">¥3,856</div>
+                            <div style="font-size: 20px; font-weight: 400; color: #00B5E2;">¥3,856</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">30.0%</div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: var(--text-secondary);">抖音</div>
-                            <div style="font-size: 20px; font-weight: 700; color: #000;">¥2,544</div>
+                            <div style="font-size: 20px; font-weight: 400; color: #000;">¥2,544</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">19.8%</div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: var(--text-secondary);">其他</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--primary);">¥2,200</div>
+                            <div style="font-size: 20px; font-weight: 400; color: var(--primary);">¥2,200</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">17.1%</div>
                         </div>
                     </div>
@@ -2749,7 +2749,7 @@
                             </div>
                             <div style="font-size: 13px; color: var(--text-secondary);">结算日: 每周二</div>
                             <div style="font-size: 13px; color: var(--text-secondary);">到账日: T+3</div>
-                            <div style="font-size: 16px; font-weight: 700; color: var(--primary); margin-top: 8px;">¥28,560</div>
+                            <div style="font-size: 16px; font-weight: 400; color: var(--primary); margin-top: 8px;">¥28,560</div>
                         </div>
                         <div style="padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
@@ -2758,7 +2758,7 @@
                             </div>
                             <div style="font-size: 13px; color: var(--text-secondary);">结算日: 每周三</div>
                             <div style="font-size: 13px; color: var(--text-secondary);">到账日: T+2</div>
-                            <div style="font-size: 16px; font-weight: 700; color: var(--primary); margin-top: 8px;">¥24,320</div>
+                            <div style="font-size: 16px; font-weight: 400; color: var(--primary); margin-top: 8px;">¥24,320</div>
                         </div>
                         <div style="padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
@@ -2767,7 +2767,7 @@
                             </div>
                             <div style="font-size: 13px; color: var(--text-secondary);">结算日: 每日</div>
                             <div style="font-size: 13px; color: var(--text-secondary);">到账日: T+1</div>
-                            <div style="font-size: 16px; font-weight: 700; color: var(--primary); margin-top: 8px;">¥18,420</div>
+                            <div style="font-size: 16px; font-weight: 400; color: var(--primary); margin-top: 8px;">¥18,420</div>
                         </div>
                         <div style="padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
@@ -2776,7 +2776,7 @@
                             </div>
                             <div style="font-size: 13px; color: var(--text-secondary);">结算日: 每周五</div>
                             <div style="font-size: 13px; color: var(--text-secondary);">到账日: T+5</div>
-                            <div style="font-size: 16px; font-weight: 700; color: var(--primary); margin-top: 8px;">¥12,850</div>
+                            <div style="font-size: 16px; font-weight: 400; color: var(--primary); margin-top: 8px;">¥12,850</div>
                         </div>
                     </div>
                 </div>
@@ -2977,15 +2977,15 @@
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEE2E2; border-radius: 8px;">
                             <div style="flex: 1;"><div style="font-weight: 600;">精品五花肉</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 2kg | 安全库存: 10kg</div></div>
-                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--danger);">-80%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 400; color: var(--danger);">-80%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEE2E2; border-radius: 8px;">
                             <div style="flex: 1;"><div style="font-weight: 600;">新鲜蔬菜拼盘</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 5份 | 安全库存: 30份</div></div>
-                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--danger);">-83%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 400; color: var(--danger);">-83%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEF3C7; border-radius: 8px;">
                             <div style="flex: 1;"><div style="font-weight: 600;">食用油(5L)</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 3桶 | 安全库存: 10桶</div></div>
-                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--warning);">-70%</div><button class="btn btn-outline btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 400; color: var(--warning);">-70%</div><button class="btn btn-outline btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
                         </div>
                     </div>
                 </div>
@@ -2994,13 +2994,13 @@
                 <div class="card-header"><h3>🤖 AI销量预测 (未来7天)</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; text-align: center;">
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">今天</div><div style="font-size: 24px; font-weight: 700; color: var(--primary);">285</div><div style="font-size: 11px;">件</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">明天</div><div style="font-size: 24px; font-weight: 700;">312</div><div style="font-size: 11px;">件 ↑9%</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">周三</div><div style="font-size: 24px; font-weight: 700;">298</div><div style="font-size: 11px;">件 ↑5%</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">周四</div><div style="font-size: 24px; font-weight: 700;">325</div><div style="font-size: 11px;">件 ↑14%</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">周五</div><div style="font-size: 24px; font-weight: 700; color: var(--secondary);">385</div><div style="font-size: 11px;">件 ↑35%</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">周六</div><div style="font-size: 24px; font-weight: 700; color: var(--secondary);">420</div><div style="font-size: 11px;">件 ↑47%</div></div>
-                        <div><div style="font-size: 12px; color: var(--text-secondary);">周日</div><div style="font-size: 24px; font-weight: 700;">380</div><div style="font-size: 11px;">件 ↑33%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">今天</div><div style="font-size: 24px; font-weight: 400; color: var(--primary);">285</div><div style="font-size: 11px;">件</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">明天</div><div style="font-size: 24px; font-weight: 400;">312</div><div style="font-size: 11px;">件 ↑9%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周三</div><div style="font-size: 24px; font-weight: 400;">298</div><div style="font-size: 11px;">件 ↑5%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周四</div><div style="font-size: 24px; font-weight: 400;">325</div><div style="font-size: 11px;">件 ↑14%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周五</div><div style="font-size: 24px; font-weight: 400; color: var(--secondary);">385</div><div style="font-size: 11px;">件 ↑35%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周六</div><div style="font-size: 24px; font-weight: 400; color: var(--secondary);">420</div><div style="font-size: 11px;">件 ↑47%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周日</div><div style="font-size: 24px; font-weight: 400;">380</div><div style="font-size: 11px;">件 ↑33%</div></div>
                     </div>
                     <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 8px;">
                         <div style="font-weight: 600; color: var(--primary-dark); margin-bottom: 8px;">💡 AI建议</div>
@@ -3030,7 +3030,7 @@
                 <div class="content-card">
                     <div class="card-header"><h3>🏪 门店3D布局</h3></div>
                     <div class="card-body" style="padding: 0;">
-                        <div style="background: linear-gradient(135deg, #1E293B 0%, #334155 100%); padding: 40px; min-height: 400px; position: relative;">
+                        <div style="background: linear-gradient(135deg, #061b31 0%, #334155 100%); padding: 40px; min-height: 400px; position: relative;">
                             <div style="display: flex; flex-direction: column; gap: 20px;">
                                 <div style="display: flex; gap: 20px;">
                                     <div style="background: rgba(99,102,241,0.3); border: 2px solid var(--primary); border-radius: 8px; padding: 20px; flex: 1; text-align: center;">
@@ -3068,9 +3068,9 @@
                         <div class="card-header"><h3>📊 实时指标</h3></div>
                         <div class="card-body">
                             <div style="display: flex; flex-direction: column; gap: 16px;">
-                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">当前客流</div><div style="font-size: 28px; font-weight: 700;">28<span style="font-size: 14px; color: var(--text-secondary);">人/小时</span></div></div>
-                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">桌位利用率</div><div style="font-size: 28px; font-weight: 700; color: var(--warning);">78%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 78%; background: var(--warning); border-radius: 2px;"></div></div></div>
-                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">员工效率</div><div style="font-size: 28px; font-weight: 700; color: var(--secondary);">92%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 92%; background: var(--secondary); border-radius: 2px;"></div></div></div>
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">当前客流</div><div style="font-size: 28px; font-weight: 400;">28<span style="font-size: 14px; color: var(--text-secondary);">人/小时</span></div></div>
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">桌位利用率</div><div style="font-size: 28px; font-weight: 400; color: var(--warning);">78%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 78%; background: var(--warning); border-radius: 2px;"></div></div></div>
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">员工效率</div><div style="font-size: 28px; font-weight: 400; color: var(--secondary);">92%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 92%; background: var(--secondary); border-radius: 2px;"></div></div></div>
                             </div>
                         </div>
                     </div>
@@ -3149,13 +3149,13 @@
                     <div class="card-header"><h3>🐜 支付宝小程序</h3></div>
                     <div class="card-body">
                         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-                            <div style="width: 60px; height: 60px; background: #1677FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🐜</div>
+                            <div style="width: 60px; height: 60px; background: #1677FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🐜</div>
                             <div><div style="font-weight: 600;">老王家常菜</div><div style="font-size: 12px; color: var(--text-secondary);">小程序已上线 · v2.1.0</div></div>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; margin-bottom: 20px;">
-                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--primary);">1,258</div><div style="font-size: 11px; color: var(--text-secondary);">访问量</div></div>
-                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--secondary);">86</div><div style="font-size: 11px; color: var(--text-secondary);">下单数</div></div>
-                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--warning);">6.8%</div><div style="font-size: 11px; color: var(--text-secondary);">转化率</div></div>
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 400; color: var(--primary);">1,258</div><div style="font-size: 11px; color: var(--text-secondary);">访问量</div></div>
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 400; color: var(--secondary);">86</div><div style="font-size: 11px; color: var(--text-secondary);">下单数</div></div>
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 400; color: var(--warning);">6.8%</div><div style="font-size: 11px; color: var(--text-secondary);">转化率</div></div>
                         </div>
                         <button class="btn btn-outline" style="width: 100%;" onclick="showToast('info', '跳转到支付宝小程序后台')">管理小程序</button>
                     </div>
@@ -3164,7 +3164,7 @@
                     <div class="card-header"><h3>🔐 芝麻信用免押</h3></div>
                     <div class="card-body">
                         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1677FF 0%, #0984E3 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;"><svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1677FF 0%, #0984E3 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
                             <div><div style="font-weight: 600;">信用免押服务</div><div style="font-size: 12px; color: var(--text-secondary);">提升用户信任度</div></div>
                         </div>
                         <div style="padding: 16px; background: #E6F7FF; border-radius: 8px; margin-bottom: 16px;">
@@ -3346,27 +3346,27 @@
                 <div class="card-header"><h3>📍 门店列表</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                        <div style="padding: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 12px; color: white;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 8px; color: white;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                <div style="font-size: 20px; font-weight: 700;">望京SOHO店</div>
+                                <div style="font-size: 20px; font-weight: 400;">望京SOHO店</div>
                                 <span style="padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 11px;">旗舰店</span>
                             </div>
                             <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;">朝阳区望京SOHO T3-B座</div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">¥35.6K</div><div style="font-size: 10px; opacity: 0.8;">今日营收</div></div>
-                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">4.6⭐</div><div style="font-size: 10px; opacity: 0.8;">评分</div></div>
+                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 400;">¥35.6K</div><div style="font-size: 10px; opacity: 0.8;">今日营收</div></div>
+                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 400;">4.6⭐</div><div style="font-size: 10px; opacity: 0.8;">评分</div></div>
                             </div>
                             <div style="margin-top: 12px; padding: 8px; background: rgba(16,185,129,0.3); border-radius: 6px; text-align: center; font-size: 12px;">🟢 营业中</div>
                         </div>
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; border: 1px solid var(--border);">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border);">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                <div style="font-size: 20px; font-weight: 700;">国贸CBD店</div>
+                                <div style="font-size: 20px; font-weight: 400;">国贸CBD店</div>
                                 <span style="padding: 2px 8px; background: var(--bg-light); border-radius: 4px; font-size: 11px; color: var(--text-secondary);">标准店</span>
                             </div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">朝阳区国贸三期B1层</div>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">¥28.4K</div><div style="font-size: 10px; color: var(--text-secondary);">今日营收</div></div>
-                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">4.4⭐</div><div style="font-size: 10px; color: var(--text-secondary);">评分</div></div>
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 400;">¥28.4K</div><div style="font-size: 10px; color: var(--text-secondary);">今日营收</div></div>
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 400;">4.4⭐</div><div style="font-size: 10px; color: var(--text-secondary);">评分</div></div>
                             </div>
                             <div style="margin-top: 12px; padding: 8px; background: #D1FAE5; border-radius: 6px; text-align: center; font-size: 12px; color: #065F46;">🟢 营业中</div>
                         </div>
@@ -3396,24 +3396,24 @@
                 <div class="card-header"><h3>🏆 会员等级分布</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
-                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 12px;">
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 8px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">💎</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #92400E;">328</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #92400E;">328</div>
                             <div style="font-size: 12px; color: #92400E;">钻石会员</div>
                         </div>
-                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 12px;">
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 8px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">🥇</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #065F46;">1,258</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #065F46;">1,258</div>
                             <div style="font-size: 12px; color: #065F46;">黄金会员</div>
                         </div>
-                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-radius: 12px;">
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-radius: 8px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">🥈</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #1E40AF;">3,456</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #1E40AF;">3,456</div>
                             <div style="font-size: 12px; color: #1E40AF;">白银会员</div>
                         </div>
-                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%); border-radius: 12px;">
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #F1F5F9 0%, #e5edf5 100%); border-radius: 8px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">🥉</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #475569;">7,814</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #475569;">7,814</div>
                             <div style="font-size: 12px; color: #475569;">普通会员</div>
                         </div>
                     </div>
@@ -3439,7 +3439,7 @@
                 <div class="card-header"><h3>💳 支付通道状态</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                        <div style="padding: 20px; background: #F6FFED; border-radius: 12px; border: 1px solid #B7EB8F;">
+                        <div style="padding: 20px; background: #F6FFED; border-radius: 8px; border: 1px solid #B7EB8F;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
                                 <div style="font-size: 28px;">💚</div>
                                 <span class="tag tag-success">正常</span>
@@ -3448,7 +3448,7 @@
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">今日交易 ¥6,580 (156笔)</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">费率 0.38%</div>
                         </div>
-                        <div style="padding: 20px; background: #E6F7FF; border-radius: 12px; border: 1px solid #91CAFF;">
+                        <div style="padding: 20px; background: #E6F7FF; border-radius: 8px; border: 1px solid #91CAFF;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
                                 <div style="font-size: 28px;">🔵</div>
                                 <span class="tag tag-success">正常</span>
@@ -3457,7 +3457,7 @@
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">今日交易 ¥4,280 (98笔)</div>
                             <div style="font-size: 12px; color: var(--text-secondary);">费率 0.38%</div>
                         </div>
-                        <div style="padding: 20px; background: #F1F5F9; border-radius: 12px; border: 1px solid #D9D9D9;">
+                        <div style="padding: 20px; background: #F1F5F9; border-radius: 8px; border: 1px solid #D9D9D9;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
                                 <div style="font-size: 28px;">💳</div>
                                 <span class="tag tag-warning">维护中</span>
@@ -3632,28 +3632,28 @@
                 <div class="card-header"><h3>🚀 部署方式选择</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                        <div style="padding: 24px; background: #E6F7FF; border-radius: 12px; border: 2px solid #91CAFF; cursor: pointer;">
+                        <div style="padding: 24px; background: #E6F7FF; border-radius: 8px; border: 2px solid #91CAFF; cursor: pointer;">
                             <div style="text-align: center;">
                                 <div style="font-size: 32px; margin-bottom: 12px;">☁️</div>
                                 <div style="font-weight: 600; margin-bottom: 8px;">SaaS云端版</div>
                                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">即开即用，自动升级</div>
-                                <div style="font-size: 20px; font-weight: 700; color: var(--primary);">¥299/月</div>
+                                <div style="font-size: 20px; font-weight: 400; color: var(--primary);">¥299/月</div>
                             </div>
                         </div>
-                        <div style="padding: 24px; background: #F6FFED; border-radius: 12px; border: 2px solid var(--secondary); cursor: pointer;" onclick="showToast('info', '私有化部署需联系销售')">
+                        <div style="padding: 24px; background: #F6FFED; border-radius: 8px; border: 2px solid var(--secondary); cursor: pointer;" onclick="showToast('info', '私有化部署需联系销售')">
                             <div style="text-align: center;">
                                 <div style="font-size: 32px; margin-bottom: 12px;">🏢</div>
                                 <div style="font-weight: 600; margin-bottom: 8px;">私有化部署</div>
                                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">数据本地存储，完全可控</div>
-                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary);">¥29,800/年</div>
+                                <div style="font-size: 20px; font-weight: 400; color: var(--secondary);">¥29,800/年</div>
                             </div>
                         </div>
-                        <div style="padding: 24px; background: #FFF7E6; border-radius: 12px; border: 2px solid var(--warning); cursor: pointer;" onclick="showToast('info', '混合部署需联系销售')">
+                        <div style="padding: 24px; background: #FFF7E6; border-radius: 8px; border: 2px solid var(--warning); cursor: pointer;" onclick="showToast('info', '混合部署需联系销售')">
                             <div style="text-align: center;">
                                 <div style="font-size: 32px; margin-bottom: 12px;">🔀</div>
                                 <div style="font-weight: 600; margin-bottom: 8px;">混合部署</div>
                                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">核心数据本地，AI云端</div>
-                                <div style="font-size: 20px; font-weight: 700; color: var(--warning);">¥9,800/年</div>
+                                <div style="font-size: 20px; font-weight: 400; color: var(--warning);">¥9,800/年</div>
                             </div>
                         </div>
                     </div>
@@ -3706,7 +3706,7 @@
                     <div class="card-header"><h3>🔍 快速搜索</h3></div>
                     <div class="card-body">
                         <div style="position: relative;">
-                            <input type="text" placeholder="输入关键词搜索功能、设置、数据..." style="width: 100%; padding: 16px 16px 16px 48px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px;">
+                            <input type="text" placeholder="输入关键词搜索功能、设置、数据..." style="width: 100%; padding: 16px 16px 16px 48px; border: 2px solid var(--border); border-radius: 8px; font-size: 16px;">
                             <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 20px;">🔍</span>
                             <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px;">
                                 <kbd style="padding: 4px 8px; background: var(--bg-light); border-radius: 4px; font-size: 11px; color: var(--text-secondary);">Ctrl</kbd>
@@ -3758,17 +3758,17 @@
                     <div class="card-body">
                         <div style="display: flex; flex-direction: column; gap: 16px;">
                             <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('report'); showToast('info', '已学习：查看数据报表')">
-                                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">1</div>
+                                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400;">1</div>
                                 <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">查看数据报表</div><div style="font-size: 13px; color: var(--text-secondary);">了解门店运营数据，掌握经营全貌</div></div>
                                 <span style="color: var(--text-secondary);">→</span>
                             </div>
                             <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('review'); showToast('info', '已学习：处理差评')">
-                                <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">2</div>
+                                <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400;">2</div>
                                 <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">处理差评</div><div style="font-size: 13px; color: var(--text-secondary);">AI智能分析，一键回复各平台差评</div></div>
                                 <span style="color: var(--text-secondary);">→</span>
                             </div>
                             <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('pricing'); showToast('info', '已学习：智能定价')">
-                                <div style="width: 40px; height: 40px; background: var(--warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">3</div>
+                                <div style="width: 40px; height: 40px; background: var(--warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400;">3</div>
                                 <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">智能定价</div><div style="font-size: 13px; color: var(--text-secondary);">AI推荐最优定价策略，提升营收</div></div>
                                 <span style="color: var(--text-secondary);">→</span>
                             </div>
@@ -3789,32 +3789,32 @@
                     <span class="tag tag-success">🟢 全自动运行中</span>
                 </div>
             </div>
-            <div class="content-card" style="background: linear-gradient(135deg, #1E293B 0%, #334155 100%); border: none;">
+            <div class="content-card" style="background: linear-gradient(135deg, #061b31 0%, #334155 100%); border: none;">
                 <div class="card-header" style="background: transparent; border-color: rgba(255,255,255,0.1);"><h3 style="color: white;">🔄 5大Agent协同工作流</h3></div>
                 <div class="card-body">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                        <div style="text-align: center; padding: 20px; background: rgba(99,102,241,0.3); border-radius: 12px; min-width: 150px;">
+                        <div style="text-align: center; padding: 20px; background: rgba(99,102,241,0.3); border-radius: 8px; min-width: 150px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
                             <div style="color: white; font-weight: 600;">监控Agent</div>
                             <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">实时监控8大平台</div>
                             <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
                         </div>
                         <div style="color: white; font-size: 24px;">→</div>
-                        <div style="text-align: center; padding: 20px; background: rgba(16,185,129,0.3); border-radius: 12px; min-width: 150px;">
+                        <div style="text-align: center; padding: 20px; background: rgba(16,185,129,0.3); border-radius: 8px; min-width: 150px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">🧠</div>
                             <div style="color: white; font-weight: 600;">分析Agent</div>
                             <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">AI情绪+关键词</div>
                             <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
                         </div>
                         <div style="color: white; font-size: 24px;">→</div>
-                        <div style="text-align: center; padding: 20px; background: rgba(245,158,11,0.3); border-radius: 12px; min-width: 150px;">
+                        <div style="text-align: center; padding: 20px; background: rgba(245,158,11,0.3); border-radius: 8px; min-width: 150px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">✍️</div>
                             <div style="color: white; font-weight: 600;">生成Agent</div>
                             <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">3套回复方案</div>
                             <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
                         </div>
                         <div style="color: white; font-size: 24px;">→</div>
-                        <div style="text-align: center; padding: 20px; background: rgba(239,68,68,0.3); border-radius: 12px; min-width: 150px;">
+                        <div style="text-align: center; padding: 20px; background: rgba(239,68,68,0.3); border-radius: 8px; min-width: 150px;">
                             <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
                             <div style="color: white; font-weight: 600;">执行Agent</div>
                             <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">一键发送各平台</div>
@@ -3866,7 +3866,7 @@
                         <input type="text" id="aiChatInput" placeholder="输入您的问题，如：今天营收多少？" style="flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;" onkeypress="if(event.key==='Enter')sendAiChat()">
                         <button class="btn btn-primary" onclick="sendAiChat()">发送</button>
                     </div>
-                    <div style="background: var(--bg-light); border-radius: 12px; padding: 20px; min-height: 200px;">
+                    <div style="background: var(--bg-light); border-radius: 8px; padding: 20px; min-height: 200px;">
                         <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">💡 快捷问题：</div>
                         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                             <span class="tag tag-info" style="cursor: pointer;" onclick="quickAsk('今日营收情况如何？')">今日营收</span>
@@ -3960,22 +3960,22 @@
                 <div class="card-header"><h3>📂 知识分类</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载差评处理技巧')">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载差评处理技巧')">
                             <div style="font-size: 32px; margin-bottom: 8px;">💬</div>
                             <div style="font-weight: 600; font-size: 14px;">差评处理</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">12篇文档</div>
                         </div>
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载定价策略')">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载定价策略')">
                             <div style="font-size: 32px; margin-bottom: 8px;">💰</div>
                             <div style="font-weight: 600; font-size: 14px;">定价策略</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">8篇文档</div>
                         </div>
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载营销方案')">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载营销方案')">
                             <div style="font-size: 32px; margin-bottom: 8px;">🎯</div>
                             <div style="font-weight: 600; font-size: 14px;">营销活动</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">15篇文档</div>
                         </div>
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载会员运营')">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; text-align: center; cursor: pointer; transition: var(--transition);" onclick="showToast('info', '正在加载会员运营')">
                             <div style="font-size: 32px; margin-bottom: 8px;">👥</div>
                             <div style="font-weight: 600; font-size: 14px;">会员运营</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">10篇文档</div>
@@ -4100,7 +4100,7 @@
                     <div class="card-body">
                         <div style="width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(var(--success) 0deg, var(--success) 270deg, var(--border) 270deg); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
                             <div style="width: 140px; height: 140px; background: white; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <div style="font-size: 42px; font-weight: 700; color: var(--success);">85</div>
+                                <div style="font-size: 42px; font-weight: 400; color: var(--success);">85</div>
                                 <div style="font-size: 12px; color: var(--text-secondary);">健康指数</div>
                             </div>
                         </div>
@@ -4195,7 +4195,7 @@
                 <div class="card-header"><h3>🎯 本月营销活动</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-                        <div style="padding: 20px; background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border-radius: 12px;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <span class="tag tag-danger">进行中</span>
                                 <span style="font-size: 12px; color: var(--text-secondary);">剩余5天</span>
@@ -4204,7 +4204,7 @@
                             <div style="font-size: 13px; color: var(--text-secondary);">全场8折，会员双倍积分</div>
                             <div style="margin-top: 12px; font-size: 12px; color: var(--danger);">📈 营收 +35%</div>
                         </div>
-                        <div style="padding: 20px; background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-radius: 12px;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <span class="tag tag-info">即将开始</span>
                                 <span style="font-size: 12px; color: var(--text-secondary);">3天后</span>
@@ -4213,7 +4213,7 @@
                             <div style="font-size: 13px; color: var(--text-secondary);">春季新品尝鲜价</div>
                             <div style="margin-top: 12px; font-size: 12px; color: var(--info);">预计曝光 +5000</div>
                         </div>
-                        <div style="padding: 20px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 12px;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <span class="tag tag-success">已结束</span>
                                 <span style="font-size: 12px; color: var(--text-secondary);">已完成</span>
@@ -4300,7 +4300,7 @@
                     <div class="content-card" style="text-align: center;">
                         <div class="card-header" style="justify-content: center;"><h3>📈 预测结果</h3></div>
                         <div class="card-body">
-                            <div style="font-size: 48px; font-weight: 700; color: var(--success); margin-bottom: 8px;">156%</div>
+                            <div style="font-size: 48px; font-weight: 400; color: var(--success); margin-bottom: 8px;">156%</div>
                             <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">预计投资回报率</div>
                             <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; text-align: left;">
                                 <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
@@ -4349,9 +4349,9 @@
                 <div class="card-header"><h3>🏪 竞品列表</h3></div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px;">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                <div style="width: 48px; height: 48px; background: #FEE2E2; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍜</div>
+                                <div style="width: 48px; height: 48px; background: #FEE2E2; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍜</div>
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600;">湘菜馆A店</div>
                                     <div style="font-size: 12px; color: var(--text-secondary);">距您286米</div>
@@ -4360,15 +4360,15 @@
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700; color: var(--danger);">¥58</div>
+                                    <div style="font-size: 18px; font-weight: 400; color: var(--danger);">¥58</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">人均消费</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700;">4.5</div>
+                                    <div style="font-size: 18px; font-weight: 400;">4.5</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">评分</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700; color: var(--success);">¥62</div>
+                                    <div style="font-size: 18px; font-weight: 400; color: var(--success);">¥62</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">您的价格</div>
                                 </div>
                             </div>
@@ -4376,9 +4376,9 @@
                                 ⚠️ 您的价格比竞品高7%，建议关注其促销活动
                             </div>
                         </div>
-                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px;">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                <div style="width: 48px; height: 48px; background: #DBEAFE; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍲</div>
+                                <div style="width: 48px; height: 48px; background: #DBEAFE; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🍲</div>
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600;">川味小厨</div>
                                     <div style="font-size: 12px; color: var(--text-secondary);">距您512米</div>
@@ -4387,15 +4387,15 @@
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700; color: var(--success);">¥52</div>
+                                    <div style="font-size: 18px; font-weight: 400; color: var(--success);">¥52</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">人均消费</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700;">4.3</div>
+                                    <div style="font-size: 18px; font-weight: 400;">4.3</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">评分</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 18px; font-weight: 700; color: var(--warning);">¥62</div>
+                                    <div style="font-size: 18px; font-weight: 400; color: var(--warning);">¥62</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">您的价格</div>
                                 </div>
                             </div>
@@ -4464,11 +4464,11 @@
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--bg-light); border-radius: 8px;">
-                                    <div style="font-size: 28px; font-weight: 700; color: var(--primary);">128</div>
+                                    <div style="font-size: 28px; font-weight: 400; color: var(--primary);">128</div>
                                     <div style="font-size: 12px; color: var(--text-secondary);">已生成文案</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--bg-light); border-radius: 8px;">
-                                    <div style="font-size: 28px; font-weight: 700; color: var(--success);">86%</div>
+                                    <div style="font-size: 28px; font-weight: 400; color: var(--success);">86%</div>
                                     <div style="font-size: 12px; color: var(--text-secondary);">使用率</div>
                                 </div>
                             </div>
@@ -4507,24 +4507,24 @@
                     <button class="btn btn-outline btn-sm" onclick="showToast('success', '日报已推送')">推送日报</button>
                 </div>
             </div>
-            <div class="content-card" style="background: linear-gradient(135deg, #1E293B 0%, #334155 100%); border: none;">
+            <div class="content-card" style="background: linear-gradient(135deg, #061b31 0%, #334155 100%); border: none;">
                 <div class="card-header" style="background: transparent; border-color: rgba(255,255,255,0.1);"><h3 style="color: white;">📋 今日概览</h3></div>
                 <div class="card-body" style="color: white;">
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 28px; font-weight: 700; color: var(--success);">+18.5%</div>
+                            <div style="font-size: 28px; font-weight: 400; color: var(--success);">+18.5%</div>
                             <div style="font-size: 12px; opacity: 0.7;">营收增长</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 28px; font-weight: 700; color: var(--success);">92</div>
+                            <div style="font-size: 28px; font-weight: 400; color: var(--success);">92</div>
                             <div style="font-size: 12px; opacity: 0.7;">健康指数</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 28px; font-weight: 700; color: var(--warning);">3</div>
+                            <div style="font-size: 28px; font-weight: 400; color: var(--warning);">3</div>
                             <div style="font-size: 12px; opacity: 0.7;">待处理项</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 28px; font-weight: 700; color: var(--primary);">5</div>
+                            <div style="font-size: 28px; font-weight: 400; color: var(--primary);">5</div>
                             <div style="font-size: 12px; opacity: 0.7;">优化建议</div>
                         </div>
                     </div>
@@ -4611,7 +4611,7 @@
                 <div class="card-header"><h3>🎯 活动列表</h3></div>
                 <div class="card-body">
                     <div style="display: grid; gap: 16px;">
-                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 12px;">
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                                 <div>
                                     <span class="tag tag-success" style="margin-right: 8px;">进行中</span>
@@ -4624,24 +4624,24 @@
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--primary);">满100减20</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--primary);">满100减20</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">券面额</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700;">1,258</div>
+                                    <div style="font-size: 20px; font-weight: 400;">1,258</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">已发放</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--success);">856</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--success);">856</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">已核销</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--warning);">剩余5天</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--warning);">剩余5天</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">有效期</div>
                                 </div>
                             </div>
                         </div>
-                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 12px;">
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                                 <div>
                                     <span class="tag tag-info" style="margin-right: 8px;">预热中</span>
@@ -4654,24 +4654,24 @@
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--primary);">新客立减15</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--primary);">新客立减15</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">券面额</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700;">500</div>
+                                    <div style="font-size: 20px; font-weight: 400;">500</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">发放上限</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700;">0</div>
+                                    <div style="font-size: 20px; font-weight: 400;">0</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">已发放</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--info);">3月20日</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--info);">3月20日</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">开始时间</div>
                                 </div>
                             </div>
                         </div>
-                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 12px;">
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
                                 <div>
                                     <span class="tag tag-purple" style="margin-right: 8px;">拼团活动</span>
@@ -4684,19 +4684,19 @@
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--primary);">¥88</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--primary);">¥88</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">拼团价</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700;">156</div>
+                                    <div style="font-size: 20px; font-weight: 400;">156</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">成团数</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700; color: var(--success);">89%</div>
+                                    <div style="font-size: 20px; font-weight: 400; color: var(--success);">89%</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">成团率</div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 20px; font-weight: 700;">¥13.7K</div>
+                                    <div style="font-size: 20px; font-weight: 400;">¥13.7K</div>
                                     <div style="font-size: 11px; color: var(--text-secondary);">带来营收</div>
                                 </div>
                             </div>
@@ -4768,21 +4768,21 @@
                     <span class="tag tag-warning">3条待确认</span>
                 </div>
                 <div class="card-body">
-                    <div class="cli-preview-box" style="background: #1E1E2E; border-radius: 12px; padding: 20px; font-family: 'Monaco', 'Menlo', monospace; font-size: 13px;">
+                    <div class="cli-preview-box" style="background: #1E1E2E; border-radius: 8px; padding: 20px; font-family: 'Monaco', 'Menlo', monospace; font-size: 13px;">
                         <div style="color: #6B7280; margin-bottom: 12px; font-size: 11px;">// AI决策预览 - 确认后执行</div>
                         <div style="margin-bottom: 8px;">
                             <span style="color: #F59E0B;">$</span>
-                            <span style="color: #10B981;">dyos meituan review --reply "感谢您的反馈..."</span>
+                            <span style="color: #15be53;">dyos meituan review --reply "感谢您的反馈..."</span>
                             <span style="color: #6B7280;"> # 差评回复</span>
                         </div>
                         <div style="margin-bottom: 8px;">
                             <span style="color: #F59E0B;">$</span>
-                            <span style="color: #10B981;">dyos eleme product --update-price --id 12345 --price 28.8</span>
+                            <span style="color: #15be53;">dyos eleme product --update-price --id 12345 --price 28.8</span>
                             <span style="color: #6B7280;"> # 价格调整</span>
                         </div>
                         <div style="margin-bottom: 8px;">
                             <span style="color: #F59E0B;">$</span>
-                            <span style="color: #10B981;">dyos douyin content --publish --type video --title "新品上市"</span>
+                            <span style="color: #15be53;">dyos douyin content --publish --type video --title "新品上市"</span>
                             <span style="color: #6B7280;"> # 内容发布</span>
                         </div>
                     </div>
@@ -4929,42 +4929,42 @@
                     <div style="display: grid; gap: 12px;">
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos meituan review --reply "感谢您的反馈..."</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos meituan review --reply "感谢您的反馈..."</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">美团差评自动回复</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos eleme product --update-price --id 12345 --price 28.8</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos eleme product --update-price --id 12345 --price 28.8</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">饿了么产品价格调整</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos douyin content --publish --type video --title "新品上市"</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos douyin content --publish --type video --title "新品上市"</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">抖音内容发布</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos dianping review --analyze --date 2024-01-15</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos dianping review --analyze --date 2024-01-15</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">大众点评评价分析</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos koubei campaign --create --type discount --value 20</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos koubei campaign --create --type discount --value 20</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">口碑营销活动创建</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos amap location --update --lat 22.54 --lng 113.95</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos amap location --update --lat 22.54 --lng 113.95</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">高德位置信息更新</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos baidu seo --optimize --keywords "火锅,深圳"</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos baidu seo --optimize --keywords "火锅,深圳"</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">百度SEO优化</div>
                         </div>
                         <div style="background: #1E1E2E; border-radius: 8px; padding: 12px 16px;">
                             <span style="color: #F59E0B; font-family: monospace;">$</span>
-                            <span style="color: #10B981; font-family: monospace;">dyos xiaohongshu note --publish --title "探店分享"</span>
+                            <span style="color: #15be53; font-family: monospace;">dyos xiaohongshu note --publish --title "探店分享"</span>
                             <div style="color: #6B7280; font-size: 11px; margin-top: 4px;">小红书笔记发布</div>
                         </div>
                     </div>
@@ -5038,7 +5038,7 @@
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-review">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-review">
                             <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">差评自动回复</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">AI自动分析差评并生成最优回复</p>
@@ -5050,7 +5050,7 @@
                                 <span style="color: var(--success);">● 已启用</span>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-pricing">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-pricing">
                             <div style="font-size: 48px; margin-bottom: 12px;">💰</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">智能价格调整</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">根据天气、竞争自动调价</p>
@@ -5062,7 +5062,7 @@
                                 <span style="color: var(--success);">● 已启用</span>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-content">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-content">
                             <div style="font-size: 48px; margin-bottom: 12px;">📝</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">自动内容发布</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">定时发布推广内容到各平台</p>
@@ -5074,7 +5074,7 @@
                                 <span style="color: var(--text-muted);">○ 已关闭</span>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-inventory">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-inventory">
                             <div style="font-size: 48px; margin-bottom: 12px;">📦</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">库存智能预警</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">自动监控库存并补货提醒</p>
@@ -5086,7 +5086,7 @@
                                 <span style="color: var(--success);">● 已启用</span>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-campaign">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-campaign">
                             <div style="font-size: 48px; margin-bottom: 12px;">🎯</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">营销活动自动</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">自动创建和优化营销活动</p>
@@ -5098,7 +5098,7 @@
                                 <span style="color: var(--text-muted);">○ 已关闭</span>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-service">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; transition: var(--transition);" class="autopilot-feature" id="autopilot-service">
                             <div style="font-size: 48px; margin-bottom: 12px;">🤖</div>
                             <h4 style="font-size: 16px; margin-bottom: 8px;">智能客服</h4>
                             <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">24小时自动回复客户咨询</p>
@@ -5122,7 +5122,7 @@
                 </div>
                 <div class="card-body">
                     <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 10px;">
+                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 6px;">
                             <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">💬</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; font-size: 14px;">差评回复 - 美团店铺</div>
@@ -5134,7 +5134,7 @@
                                 <button class="btn btn-outline btn-sm" onclick="showToast('info', '已接管')">接管</button>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; padding: 16px; background: #EEF2FF; border: 1px solid #A5B4FC; border-radius: 10px;">
+                        <div style="display: flex; align-items: center; padding: 16px; background: #EEF2FF; border: 1px solid #b9b9f9; border-radius: 6px;">
                             <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">💰</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; font-size: 14px;">价格调整 - 饿了么平台</div>
@@ -5146,7 +5146,7 @@
                                 <button class="btn btn-outline btn-sm" onclick="showToast('info', '已接管')">接管</button>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 10px;">
+                        <div style="display: flex; align-items: center; padding: 16px; background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 6px;">
                             <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">📦</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; font-size: 14px;">库存预警 - 雪花牛肉</div>
@@ -5158,7 +5158,7 @@
                                 <span class="tag tag-success">已处理</span>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; padding: 16px; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 10px;">
+                        <div style="display: flex; align-items: center; padding: 16px; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 6px;">
                             <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px;">🤖</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; font-size: 14px;">智能客服 - 客户咨询回复</div>
@@ -5182,22 +5182,22 @@
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center;">
                         <div>
-                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">15分钟</div>
+                            <div style="font-size: 32px; font-weight: 400; color: var(--primary);">15分钟</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">差评回复耗时</div>
                             <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 85%</div>
                         </div>
                         <div>
-                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">3分钟</div>
+                            <div style="font-size: 32px; font-weight: 400; color: var(--primary);">3分钟</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">价格调整耗时</div>
                             <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 92%</div>
                         </div>
                         <div>
-                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">5分钟</div>
+                            <div style="font-size: 32px; font-weight: 400; color: var(--primary);">5分钟</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">内容发布耗时</div>
                             <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↓ 节省 88%</div>
                         </div>
                         <div>
-                            <div style="font-size: 32px; font-weight: 700; color: var(--primary);">24小时</div>
+                            <div style="font-size: 32px; font-weight: 400; color: var(--primary);">24小时</div>
                             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">客服响应时间</div>
                             <div style="font-size: 11px; color: var(--success); margin-top: 4px;">↑ 全天候服务</div>
                         </div>
@@ -5301,7 +5301,7 @@
                             <div style="font-size: 12px; color: #065F46; font-weight: 600; margin-bottom: 8px;">📤 输出结果</div>
                             <div style="font-size: 13px; color: #064E3B; line-height: 1.6;">
                                 CLI命令:<br>
-                                <code style="background: #1E1E2E; color: #10B981; padding: 2px 6px; border-radius: 4px; font-size: 11px;">dyos meituan review --reply</code><br>
+                                <code style="background: #1E1E2E; color: #15be53; padding: 2px 6px; border-radius: 4px; font-size: 11px;">dyos meituan review --reply</code><br>
                                 执行状态: <span class="tag tag-success">成功</span>
                             </div>
                         </div>
@@ -5313,7 +5313,7 @@
                             <div><span style="color: #6B7280;">[10:23:46]</span> 调用AI推理引擎 | 模型: gpt-4 | 请求ID: req_8x9k2</div>
                             <div><span style="color: #6B7280;">[10:23:47]</span> 情感分析完成 | 情绪: 失望/愤怒 | 置信度: 94.6%</div>
                             <div><span style="color: #6B7280;">[10:23:48]</span> 生成回复方案 | 策略: 道歉+补偿 | 方案编号: P-089</div>
-                            <div><span style="color: #6B7280;">[10:23:49]</span> CLI命令生成 | <span style="color: #10B981;">dyos meituan review --reply "感谢您的反馈..."</span></div>
+                            <div><span style="color: #6B7280;">[10:23:49]</span> CLI命令生成 | <span style="color: #15be53;">dyos meituan review --reply "感谢您的反馈..."</span></div>
                             <div><span style="color: #6B7280;">[10:23:50]</span> 执行预览确认 | 用户确认: 自动执行</div>
                             <div><span style="color: #6B7280;">[10:23:51]</span> CLI执行完成 | 状态: 200 OK | 耗时: 1.2s</div>
                         </div>
@@ -5413,7 +5413,7 @@
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
-                        <div style="border: 2px solid var(--border); border-radius: 12px; padding: 20px;">
+                        <div style="border: 2px solid var(--border); border-radius: 8px; padding: 20px;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
                                 <span style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">👤</span>
                                 <span style="font-weight: 600;">人类处理</span>
@@ -5428,7 +5428,7 @@
                                 <div style="font-size: 12px; color: var(--text-muted);">问题: 回复时间过长，未提供具体补偿方案</div>
                             </div>
                         </div>
-                        <div style="border: 2px solid var(--success); border-radius: 12px; padding: 20px; background: #F0FDF4;">
+                        <div style="border: 2px solid var(--success); border-radius: 8px; padding: 20px; background: #F0FDF4;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
                                 <span style="width: 32px; height: 32px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">🤖</span>
                                 <span style="font-weight: 600;">AI处理</span>
@@ -5585,11 +5585,11 @@
                     </div>
                     <div style="display: flex; justify-content: center; gap: 24px; margin-top: 16px;">
                         <div style="text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: #ff4444;" id="humanWinRate">45%</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #ff4444;" id="humanWinRate">45%</div>
                             <div style="font-size: 12px; color: rgba(255,255,255,0.6);">人类胜率</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-size: 24px; font-weight: 700; color: #4444ff;" id="aiWinRate">55%</div>
+                            <div style="font-size: 24px; font-weight: 400; color: #4444ff;" id="aiWinRate">55%</div>
                             <div style="font-size: 12px; color: rgba(255,255,255,0.6);">AI胜率</div>
                         </div>
                     </div>
@@ -5686,12 +5686,12 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">加速模式预期收益</div>
-                            <div style="font-size: 28px; font-weight: 700; color: #fbbf24;">¥125,800</div>
+                            <div style="font-size: 28px; font-weight: 400; color: #fbbf24;">¥125,800</div>
                             <div style="font-size: 12px; color: rgba(255,255,255,0.5);">30天后预测</div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px;">AI辅助实际收益</div>
-                            <div style="font-size: 28px; font-weight: 700; color: #00ff88;">¥132,450</div>
+                            <div style="font-size: 28px; font-weight: 400; color: #00ff88;">¥132,450</div>
                             <div style="font-size: 12px; color: rgba(255,255,255,0.5);">+5.3%超额完成</div>
                         </div>
                     </div>
@@ -5925,7 +5925,7 @@
                 </div>
 
                 <!-- 智能定价工作流 -->
-                <div class="content-card" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border: 2px solid #10B981;">
+                <div class="content-card" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border: 2px solid #15be53;">
                     <div class="card-header" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
                         <h3>💰 智能定价</h3>
                         <span class="tag tag-success">4节点</span>
@@ -6016,15 +6016,15 @@
                             <div style="font-weight: 600; font-size: 13px;">采集Agent</div>
                             <div style="font-size: 11px; color: var(--text-secondary);">数据采集</div>
                         </div>
-                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #3B82F6, #10B981); position: relative;">
-                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #10B981;"></div>
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #3B82F6, #15be53); position: relative;">
+                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #15be53;"></div>
                         </div>
                         <div class="agent-node" style="text-align: center;">
-                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #34D399 0%, #10B981 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">🔬</div>
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #34D399 0%, #15be53 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">🔬</div>
                             <div style="font-weight: 600; font-size: 13px;">分析Agent</div>
                             <div style="font-size: 11px; color: var(--text-secondary);">智能分析</div>
                         </div>
-                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #10B981, #F59E0B); position: relative;">
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #15be53, #F59E0B); position: relative;">
                             <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #F59E0B;"></div>
                         </div>
                         <div class="agent-node" style="text-align: center;">
@@ -6052,15 +6052,15 @@
                     <div style="display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">数据吞吐量</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--primary);">1,256 <span style="font-size: 12px; font-weight: 400;">条/分</span></div>
+                            <div style="font-size: 20px; font-weight: 400; color: var(--primary);">1,256 <span style="font-size: 12px; font-weight: 400;">条/分</span></div>
                         </div>
                         <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">平均响应时间</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--success);">45 <span style="font-size: 12px; font-weight: 400;">毫秒</span></div>
+                            <div style="font-size: 20px; font-weight: 400; color: var(--success);">45 <span style="font-size: 12px; font-weight: 400;">毫秒</span></div>
                         </div>
                         <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
                             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">并发处理</div>
-                            <div style="font-size: 20px; font-weight: 700; color: var(--warning);">32 <span style="font-size: 12px; font-weight: 400;">任务</span></div>
+                            <div style="font-size: 20px; font-weight: 400; color: var(--warning);">32 <span style="font-size: 12px; font-weight: 400;">任务</span></div>
                         </div>
                     </div>
                 </div>
@@ -6073,11 +6073,11 @@
                     <button class="btn btn-outline btn-sm" onclick="clearWorkflowLogs()">清空日志</button>
                 </div>
                 <div class="card-body" style="padding: 0;">
-                    <div id="workflowLog" style="max-height: 200px; overflow-y: auto; padding: 16px; background: #1E293B; border-radius: 0 0 var(--radius) var(--radius); font-family: 'Monaco', 'Menlo', monospace; font-size: 12px;">
+                    <div id="workflowLog" style="max-height: 200px; overflow-y: auto; padding: 16px; background: #061b31; border-radius: 0 0 var(--radius) var(--radius); font-family: 'Monaco', 'Menlo', monospace; font-size: 12px;">
                         <div style="color: #94A3B8;">[10:23:45] 系统启动，工作流引擎就绪</div>
-                        <div style="color: #10B981;">[10:23:46] ✓ 差评自动回复工作流已激活</div>
-                        <div style="color: #10B981;">[10:23:46] ✓ 智能定价工作流已激活</div>
-                        <div style="color: #10B981;">[10:23:47] ✓ 多平台同步工作流已激活</div>
+                        <div style="color: #15be53;">[10:23:46] ✓ 差评自动回复工作流已激活</div>
+                        <div style="color: #15be53;">[10:23:46] ✓ 智能定价工作流已激活</div>
+                        <div style="color: #15be53;">[10:23:47] ✓ 多平台同步工作流已激活</div>
                         <div style="color: #60A5FA;">[10:23:48] → 采集Agent开始监控竞品数据</div>
                     </div>
                 </div>
@@ -6290,16 +6290,16 @@
                             </div>
                             <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; margin-bottom: 16px;">
                                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">预估手续费</div>
-                                <div style="font-size: 28px; font-weight: 700; color: var(--primary);" id="simFee">¥1.90</div>
+                                <div style="font-size: 28px; font-weight: 400; color: var(--primary);" id="simFee">¥1.90</div>
                             </div>
                             <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
                                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">节省手续费</div>
-                                <div style="font-size: 24px; font-weight: 700; color: var(--success);" id="simSavings">¥0.60</div>
+                                <div style="font-size: 24px; font-weight: 400; color: var(--success);" id="simSavings">¥0.60</div>
                             </div>
                         </div>
                         <div>
                             <div style="font-weight: 600; margin-bottom: 12px;">路由决策过程</div>
-                            <div id="routeDecision" style="background: #1E293B; border-radius: 8px; padding: 16px; font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; min-height: 200px;">
+                            <div id="routeDecision" style="background: #061b31; border-radius: 8px; padding: 16px; font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; min-height: 200px;">
                                 <div style="color: #94A3B8;">[等待模拟...]</div>
                                 <div style="color: #64748B; margin-top: 8px;">输入交易金额并点击"模拟交易"查看路由决策过程</div>
                             </div>
@@ -6337,11 +6337,11 @@
                             <div style="display: flex; gap: 8px;">
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">98%</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--success);">98%</div>
                                 </div>
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
-                                    <div style="font-size: 16px; font-weight: 700;">156</div>
+                                    <div style="font-size: 16px; font-weight: 400;">156</div>
                                 </div>
                             </div>
                         </div>
@@ -6366,11 +6366,11 @@
                             <div style="display: flex; gap: 8px;">
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">96%</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--success);">96%</div>
                                 </div>
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
-                                    <div style="font-size: 16px; font-weight: 700;">89</div>
+                                    <div style="font-size: 16px; font-weight: 400;">89</div>
                                 </div>
                             </div>
                         </div>
@@ -6395,11 +6395,11 @@
                             <div style="display: flex; gap: 8px;">
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">95%</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--success);">95%</div>
                                 </div>
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
-                                    <div style="font-size: 16px; font-weight: 700;">42</div>
+                                    <div style="font-size: 16px; font-weight: 400;">42</div>
                                 </div>
                             </div>
                         </div>
@@ -6424,11 +6424,11 @@
                             <div style="display: flex; gap: 8px;">
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">97%</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--success);">97%</div>
                                 </div>
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
-                                    <div style="font-size: 16px; font-weight: 700;">38</div>
+                                    <div style="font-size: 16px; font-weight: 400;">38</div>
                                 </div>
                             </div>
                         </div>
@@ -6453,11 +6453,11 @@
                             <div style="display: flex; gap: 8px;">
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--text-muted);">离线</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--text-muted);">离线</div>
                                 </div>
                                 <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
                                     <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
-                                    <div style="font-size: 16px; font-weight: 700; color: var(--text-muted);">0</div>
+                                    <div style="font-size: 16px; font-weight: 400; color: var(--text-muted);">0</div>
                                 </div>
                             </div>
                         </div>
@@ -6652,7 +6652,7 @@
                 <div style="margin-top: 20px; padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <span>预计总增收：</span>
-                        <span style="font-weight: 700; color: var(--success);">+¥580/日</span>
+                        <span style="font-weight: 400; color: var(--success);">+¥580/日</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span>涉及平台：</span>
@@ -6769,11 +6769,11 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div style="padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                         <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">对账金额</div>
-                        <div style="font-size: 20px; font-weight: 700; color: var(--primary);">¥12,856</div>
+                        <div style="font-size: 20px; font-weight: 400; color: var(--primary);">¥12,856</div>
                     </div>
                     <div style="padding: 16px; background: var(--bg-light); border-radius: var(--radius);">
                         <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">差异金额</div>
-                        <div style="font-size: 20px; font-weight: 700; color: var(--danger);">-¥8</div>
+                        <div style="font-size: 20px; font-weight: 400; color: var(--danger);">-¥8</div>
                     </div>
                 </div>
             </div>
@@ -7369,7 +7369,7 @@
                     { platform: '抖音', amount: 2544, color: '#1D1D1D' },
                     { platform: '点评', amount: 1856, color: '#FF6633' },
                     { platform: '口碑', amount: 756, color: '#FF9500' },
-                    { platform: '其他', amount: 588, color: '#6366F1' }
+                    { platform: '其他', amount: 588, color: '#533afd' }
                 ];
                 const maxAmount = Math.max(...revenueData.map(r => r.amount));
                 let html = '';
@@ -9313,7 +9313,7 @@
                             // 添加完成日志
                             if (log) {
                                 const time = new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-                                log.innerHTML += '<div style="color: #10B981;">[' + time + '] ✓ ' + workflowNames[wf] + ' - ' + nodeTitle + ' 完成</div>';
+                                log.innerHTML += '<div style="color: #15be53;">[' + time + '] ✓ ' + workflowNames[wf] + ' - ' + nodeTitle + ' 完成</div>';
                                 log.scrollTop = log.scrollHeight;
                             }
                             
