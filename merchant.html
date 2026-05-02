@@ -1564,6 +1564,161 @@
             .battle-header h3, .time-header h3 { font-size: 18px; }
             .time-display { font-size: 48px; }
         }
+        
+        /* ==================== AI工作流模块样式 ==================== */
+        .workflow-node {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .workflow-node.pending {
+            opacity: 0.6;
+            border-color: var(--text-muted);
+        }
+        .workflow-node.running {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+            animation: workflowPulse 1.5s infinite;
+        }
+        .workflow-node.success {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        @keyframes workflowPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+        }
+        .workflow-node-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        .workflow-node-info { flex: 1; }
+        .workflow-node-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+        .workflow-node-desc { font-size: 12px; color: var(--text-secondary); }
+        .workflow-arrow {
+            width: 2px;
+            height: 20px;
+            background: var(--border);
+            margin-left: 34px;
+            position: relative;
+        }
+        .workflow-arrow::after {
+            content: '▼';
+            position: absolute;
+            bottom: -8px;
+            left: -5px;
+            font-size: 10px;
+            color: var(--border);
+        }
+        .workflow-arrow.active {
+            background: var(--success);
+        }
+        .workflow-arrow.active::after {
+            color: var(--success);
+        }
+        
+        /* Agent节点样式 */
+        .agent-avatar {
+            transition: transform 0.3s ease;
+        }
+        .agent-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        /* ==================== 智能支付路由模块样式 ==================== */
+        .channel-card {
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .channel-card:hover {
+            border-color: var(--primary);
+        }
+        .channel-card.disabled {
+            opacity: 0.5;
+        }
+        .channel-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .channel-metrics {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .channel-metric {
+            flex: 1;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .channel-metric-label { font-size: 11px; color: var(--text-secondary); }
+        .channel-metric-value { font-size: 16px; font-weight: 700; }
+        
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* 路由决策日志 */
+        .route-log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .route-log-time { color: #64748B; font-size: 11px; }
+        .route-log-channel { color: #60A5FA; }
+        .route-log-fee { color: #10B981; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -1647,6 +1802,8 @@
             <div class="nav-item" onclick="switchModule('digital-twin')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg><span>数字孪生</span></div>
             <div class="nav-item" onclick="switchModule('voice')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg><span>语音交互</span></div>
             <div class="nav-item" onclick="switchModule('alipay')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg><span>AI支付宝</span></div>
+            <div class="nav-item" onclick="switchModule('ai-workflow')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span>AI工作流</span></div>
+            <div class="nav-item" onclick="switchModule('smart-route')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg><span>智能支付路由</span></div>
             <div style="padding:16px 20px 8px;font-size:11px;color:var(--text-muted);letter-spacing:1px;">⚙️ 运营管理</div>
             <div class="nav-item" onclick="switchModule('tickets')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg><span>工单系统</span></div>
             <div class="nav-item" onclick="switchModule('permission')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg><span>权限管理</span></div>
@@ -5549,6 +5706,765 @@
                 </div>
             </div>
         </div>
+
+        <!-- ==================== AI工作流模块 ==================== -->
+        <div id="module-ai-workflow" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🔄 AI工作流可视化</h2>
+                    <p>可视化编排多Agent协作，实时追踪工作流执行状态</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="resetWorkflow()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        重置
+                    </button>
+                    <button class="btn btn-success" onclick="startWorkflowSimulation()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        启动模拟
+                    </button>
+                </div>
+            </div>
+
+            <!-- 工作流概览统计 -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <h3>今日执行</h3>
+                        <div class="stat-icon blue">⚡</div>
+                    </div>
+                    <div class="stat-value">128</div>
+                    <span class="stat-trend up">↑ 23.5%</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>成功率</h3>
+                        <div class="stat-icon green">✓</div>
+                    </div>
+                    <div class="stat-value">97.8%</div>
+                    <span class="stat-trend up">↑ 2.1%</span>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <h3>平均耗时</h3>
+                        <div class="stat-icon yellow">⏱️</div>
+                    </div>
+                    <div class="stat-value">2.3<span style="font-size:14px">秒</span></div>
+                    <span class="stat-trend neutral">优化中</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>节省人力</h3>
+                        <div class="stat-icon green">👤</div>
+                    </div>
+                    <div class="stat-value">12<span style="font-size:14px">人时/天</span></div>
+                    <span class="stat-trend up">自动化</span>
+                </div>
+            </div>
+
+            <!-- 核心工作流卡片 -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
+                <!-- 差评自动回复工作流 -->
+                <div class="content-card" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border: 2px solid #F59E0B;">
+                    <div class="card-header" style="border-bottom: 1px solid rgba(245, 158, 11, 0.2);">
+                        <h3>💬 差评自动回复</h3>
+                        <span class="tag tag-warning">5节点</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="workflow-review" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="workflow-node pending" id="wf-review-1" data-step="1">
+                                <div class="workflow-node-icon">📨</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">触发</div>
+                                    <div class="workflow-node-desc">接收差评通知</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-review-1"></div>
+                            <div class="workflow-node pending" id="wf-review-2" data-step="2">
+                                <div class="workflow-node-icon">🔍</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">分析</div>
+                                    <div class="workflow-node-desc">情绪分析与归类</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-review-2"></div>
+                            <div class="workflow-node pending" id="wf-review-3" data-step="3">
+                                <div class="workflow-node-icon">✍️</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">生成</div>
+                                    <div class="workflow-node-desc">AI生成3种回复方案</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-review-3"></div>
+                            <div class="workflow-node pending" id="wf-review-4" data-step="4">
+                                <div class="workflow-node-icon">👀</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">审核</div>
+                                    <div class="workflow-node-desc">人工确认/修改</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-review-4"></div>
+                            <div class="workflow-node pending" id="wf-review-5" data-step="5">
+                                <div class="workflow-node-icon">🚀</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">发送</div>
+                                    <div class="workflow-node-desc">一键发送到各平台</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 智能定价工作流 -->
+                <div class="content-card" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border: 2px solid #10B981;">
+                    <div class="card-header" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                        <h3>💰 智能定价</h3>
+                        <span class="tag tag-success">4节点</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="workflow-pricing" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="workflow-node pending" id="wf-pricing-1" data-step="1">
+                                <div class="workflow-node-icon">📊</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">竞品监控</div>
+                                    <div class="workflow-node-desc">实时采集竞品价格</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-pricing-1"></div>
+                            <div class="workflow-node pending" id="wf-pricing-2" data-step="2">
+                                <div class="workflow-node-icon">🧠</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">分析</div>
+                                    <div class="workflow-node-desc">多维度数据分析</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-pricing-2"></div>
+                            <div class="workflow-node pending" id="wf-pricing-3" data-step="3">
+                                <div class="workflow-node-icon">📈</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">决策</div>
+                                    <div class="workflow-node-desc">AI智能定价建议</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-pricing-3"></div>
+                            <div class="workflow-node pending" id="wf-pricing-4" data-step="4">
+                                <div class="workflow-node-icon">🔄</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">更新</div>
+                                    <div class="workflow-node-desc">自动同步到各平台</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 多平台同步工作流 -->
+                <div class="content-card" style="background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border: 2px solid #3B82F6;">
+                    <div class="card-header" style="border-bottom: 1px solid rgba(59, 130, 246, 0.2);">
+                        <h3>🌐 多平台同步</h3>
+                        <span class="tag tag-info">3节点</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="workflow-sync" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="workflow-node pending" id="wf-sync-1" data-step="1">
+                                <div class="workflow-node-icon">🎨</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">内容生成</div>
+                                    <div class="workflow-node-desc">AI批量生成内容</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-sync-1"></div>
+                            <div class="workflow-node pending" id="wf-sync-2" data-step="2">
+                                <div class="workflow-node-icon">✅</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">审核</div>
+                                    <div class="workflow-node-desc">质量检查与修改</div>
+                                </div>
+                            </div>
+                            <div class="workflow-arrow" id="wf-arrow-sync-2"></div>
+                            <div class="workflow-node pending" id="wf-sync-3" data-step="3">
+                                <div class="workflow-node-icon">📢</div>
+                                <div class="workflow-node-info">
+                                    <div class="workflow-node-title">发布</div>
+                                    <div class="workflow-node-desc">同步到多平台</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent协作可视化 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🤖 Agent协作网络</h3>
+                    <span class="tag tag-primary">5 Agent</span>
+                </div>
+                <div class="card-body">
+                    <div class="agent-network" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: var(--bg-light); border-radius: var(--radius);">
+                        <div class="agent-node" style="text-align: center;">
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">📡</div>
+                            <div style="font-weight: 600; font-size: 13px;">采集Agent</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">数据采集</div>
+                        </div>
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #3B82F6, #10B981); position: relative;">
+                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #10B981;"></div>
+                        </div>
+                        <div class="agent-node" style="text-align: center;">
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #34D399 0%, #10B981 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">🔬</div>
+                            <div style="font-weight: 600; font-size: 13px;">分析Agent</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">智能分析</div>
+                        </div>
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #10B981, #F59E0B); position: relative;">
+                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #F59E0B;"></div>
+                        </div>
+                        <div class="agent-node" style="text-align: center;">
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">💡</div>
+                            <div style="font-weight: 600; font-size: 13px;">决策Agent</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">策略决策</div>
+                        </div>
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #F59E0B, #EF4444); position: relative;">
+                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #EF4444;"></div>
+                        </div>
+                        <div class="agent-node" style="text-align: center;">
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #F87171 0%, #EF4444 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">⚡</div>
+                            <div style="font-weight: 600; font-size: 13px;">执行Agent</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">自动执行</div>
+                        </div>
+                        <div class="agent-arrow" style="width: 60px; height: 2px; background: linear-gradient(90deg, #EF4444, #8B5CF6); position: relative;">
+                            <div style="position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #8B5CF6;"></div>
+                        </div>
+                        <div class="agent-node" style="text-align: center;">
+                            <div class="agent-avatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 24px;">👁️</div>
+                            <div style="font-weight: 600; font-size: 13px;">监督Agent</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">质量监控</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">数据吞吐量</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--primary);">1,256 <span style="font-size: 12px; font-weight: 400;">条/分</span></div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">平均响应时间</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--success);">45 <span style="font-size: 12px; font-weight: 400;">毫秒</span></div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">并发处理</div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--warning);">32 <span style="font-size: 12px; font-weight: 400;">任务</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 执行日志 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📋 执行日志</h3>
+                    <button class="btn btn-outline btn-sm" onclick="clearWorkflowLogs()">清空日志</button>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div id="workflowLog" style="max-height: 200px; overflow-y: auto; padding: 16px; background: #1E293B; border-radius: 0 0 var(--radius) var(--radius); font-family: 'Monaco', 'Menlo', monospace; font-size: 12px;">
+                        <div style="color: #94A3B8;">[10:23:45] 系统启动，工作流引擎就绪</div>
+                        <div style="color: #10B981;">[10:23:46] ✓ 差评自动回复工作流已激活</div>
+                        <div style="color: #10B981;">[10:23:46] ✓ 智能定价工作流已激活</div>
+                        <div style="color: #10B981;">[10:23:47] ✓ 多平台同步工作流已激活</div>
+                        <div style="color: #60A5FA;">[10:23:48] → 采集Agent开始监控竞品数据</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 执行记录表格 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📊 最近执行记录</h3>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="reconciliation-table">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>工作流</th>
+                                <th>状态</th>
+                                <th>耗时</th>
+                                <th>结果</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workflowHistoryTable">
+                            <tr>
+                                <td>10:35:22</td>
+                                <td>💬 差评自动回复</td>
+                                <td><span class="tag tag-success">成功</span></td>
+                                <td>1.8秒</td>
+                                <td>回复已发送至美团、饿了么</td>
+                            </tr>
+                            <tr>
+                                <td>10:32:15</td>
+                                <td>💰 智能定价</td>
+                                <td><span class="tag tag-success">成功</span></td>
+                                <td>2.1秒</td>
+                                <td>已更新12个商品价格</td>
+                            </tr>
+                            <tr>
+                                <td>10:28:03</td>
+                                <td>🌐 多平台同步</td>
+                                <td><span class="tag tag-success">成功</span></td>
+                                <td>3.2秒</td>
+                                <td>内容已同步至5个平台</td>
+                            </tr>
+                            <tr>
+                                <td>10:25:41</td>
+                                <td>💬 差评自动回复</td>
+                                <td><span class="tag tag-warning">待审核</span></td>
+                                <td>1.5秒</td>
+                                <td>等待人工确认</td>
+                            </tr>
+                            <tr>
+                                <td>10:20:18</td>
+                                <td>💰 智能定价</td>
+                                <td><span class="tag tag-success">成功</span></td>
+                                <td>1.9秒</td>
+                                <td>竞品数据已更新</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 智能支付路由模块 ==================== -->
+        <div id="module-smart-route" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>💳 智能支付路由</h2>
+                    <p>AI智能选择最优支付渠道，降低手续费，提升支付成功率</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline" onclick="resetRouteSimulation()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        重置
+                    </button>
+                    <button class="btn btn-success" onclick="simulateTransaction()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        模拟交易
+                    </button>
+                </div>
+            </div>
+
+            <!-- 支付路由概览 -->
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>今日交易</h3>
+                        <div class="stat-icon green">💰</div>
+                    </div>
+                    <div class="stat-value">¥45,826</div>
+                    <span class="stat-trend up">↑ 12.3%</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>节省手续费</h3>
+                        <div class="stat-icon green">📈</div>
+                    </div>
+                    <div class="stat-value">¥286</div>
+                    <span class="stat-trend up">↑ 8.5%</span>
+                </div>
+                <div class="stat-card primary">
+                    <div class="stat-header">
+                        <h3>平均费率</h3>
+                        <div class="stat-icon blue">%</div>
+                    </div>
+                    <div class="stat-value">0.48%</div>
+                    <span class="stat-trend up">↓ 0.12%</span>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-header">
+                        <h3>支付成功率</h3>
+                        <div class="stat-icon green">✓</div>
+                    </div>
+                    <div class="stat-value">99.2%</div>
+                    <span class="stat-trend up">↑ 0.3%</span>
+                </div>
+            </div>
+
+            <!-- 支付渠道对比 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🏦 支付渠道对比</h3>
+                    <span class="tag tag-primary">5大渠道</span>
+                </div>
+                <div class="card-body">
+                    <table class="reconciliation-table">
+                        <thead>
+                            <tr>
+                                <th>渠道</th>
+                                <th>费率</th>
+                                <th>日交易限额</th>
+                                <th>到账时间</th>
+                                <th>成功率</th>
+                                <th>推荐场景</th>
+                            </tr>
+                        </thead>
+                        <tbody id="channelTable">
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><span style="font-size: 18px; margin-right: 8px;">💳</span><strong>随行付</strong><span class="tag tag-success" style="margin-left: 8px;">推荐</span></td>
+                                <td>0.38%</td>
+                                <td>¥50,000</td>
+                                <td>T+1</td>
+                                <td><span style="color: var(--success);">99.5%</span></td>
+                                <td>小额高频</td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-size: 18px; margin-right: 8px;">🔒</span><strong>天阙</strong></td>
+                                <td>0.45%</td>
+                                <td>¥100,000</td>
+                                <td>T+1</td>
+                                <td><span style="color: var(--success);">99.2%</span></td>
+                                <td>中额交易</td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-size: 18px; margin-right: 8px;">💚</span><strong>微信支付</strong></td>
+                                <td>0.55%</td>
+                                <td>¥20,000</td>
+                                <td>T+0</td>
+                                <td><span style="color: var(--success);">98.8%</span></td>
+                                <td>扫码支付</td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-size: 18px; margin-right: 8px;">💙</span><strong>支付宝</strong></td>
+                                <td>0.52%</td>
+                                <td>¥20,000</td>
+                                <td>T+0</td>
+                                <td><span style="color: var(--success);">99.1%</span></td>
+                                <td>扫码支付</td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-size: 18px; margin-right: 8px;">🏧</span><strong>银联</strong></td>
+                                <td>0.60%</td>
+                                <td>¥200,000</td>
+                                <td>T+1</td>
+                                <td><span style="color: var(--success);">99.0%</span></td>
+                                <td>大额交易</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 路由模拟器 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>🎯 路由模拟器</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showRouteHistory()">查看历史</button>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                        <div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">交易金额</label>
+                                <input type="number" id="simAmount" value="500" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 16px;" placeholder="请输入金额">
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">支付方式</label>
+                                <select id="simMethod" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px;">
+                                    <option value="auto">智能选择（推荐）</option>
+                                    <option value="sxf">随行付</option>
+                                    <option value="tianque">天阙</option>
+                                    <option value="wechat">微信支付</option>
+                                    <option value="alipay">支付宝</option>
+                                    <option value="unionpay">银联</option>
+                                </select>
+                            </div>
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; margin-bottom: 16px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">预估手续费</div>
+                                <div style="font-size: 28px; font-weight: 700; color: var(--primary);" id="simFee">¥1.90</div>
+                            </div>
+                            <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">节省手续费</div>
+                                <div style="font-size: 24px; font-weight: 700; color: var(--success);" id="simSavings">¥0.60</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 12px;">路由决策过程</div>
+                            <div id="routeDecision" style="background: #1E293B; border-radius: 8px; padding: 16px; font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; min-height: 200px;">
+                                <div style="color: #94A3B8;">[等待模拟...]</div>
+                                <div style="color: #64748B; margin-top: 8px;">输入交易金额并点击"模拟交易"查看路由决策过程</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 渠道管理面板 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>⚙️ 渠道管理</h3>
+                    <button class="btn btn-outline btn-sm" onclick="saveChannelConfig()">保存配置</button>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                        <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 20px;">💳</span>
+                                    <span style="font-weight: 600;">随行付</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked onchange="updateChannelStatus('sxf', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span>权重</span>
+                                    <span id="sxfWeight">60%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="60" style="width: 100%;" onchange="updateChannelWeight('sxf', this.value)">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">98%</div>
+                                </div>
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
+                                    <div style="font-size: 16px; font-weight: 700;">156</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 20px;">🔒</span>
+                                    <span style="font-weight: 600;">天阙</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked onchange="updateChannelStatus('tianque', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span>权重</span>
+                                    <span id="tianqueWeight">30%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="30" style="width: 100%;" onchange="updateChannelWeight('tianque', this.value)">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">96%</div>
+                                </div>
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
+                                    <div style="font-size: 16px; font-weight: 700;">89</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 20px;">💚</span>
+                                    <span style="font-weight: 600;">微信支付</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked onchange="updateChannelStatus('wechat', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span>权重</span>
+                                    <span id="wechatWeight">5%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="5" style="width: 100%;" onchange="updateChannelWeight('wechat', this.value)">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">95%</div>
+                                </div>
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
+                                    <div style="font-size: 16px; font-weight: 700;">42</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 20px;">💙</span>
+                                    <span style="font-weight: 600;">支付宝</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked onchange="updateChannelStatus('alipay', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span>权重</span>
+                                    <span id="alipayWeight">3%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="3" style="width: 100%;" onchange="updateChannelWeight('alipay', this.value)">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--success);">97%</div>
+                                </div>
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
+                                    <div style="font-size: 16px; font-weight: 700;">38</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; border: 2px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 20px;">🏧</span>
+                                    <span style="font-weight: 600;">银联</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" onchange="updateChannelStatus('unionpay', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span>权重</span>
+                                    <span id="unionpayWeight">2%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="2" style="width: 100%;" onchange="updateChannelWeight('unionpay', this.value)">
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">健康度</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--text-muted);">离线</div>
+                                </div>
+                                <div style="flex: 1; padding: 8px; background: white; border-radius: 4px; text-align: center;">
+                                    <div style="font-size: 11px; color: var(--text-secondary);">今日笔数</div>
+                                    <div style="font-size: 16px; font-weight: 700; color: var(--text-muted);">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 路由切换日志 -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📜 路由切换日志</h3>
+                    <button class="btn btn-outline btn-sm" onclick="exportRouteLogs()">导出日志</button>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="reconciliation-table">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>交易金额</th>
+                                <th>原渠道</th>
+                                <th>切换至</th>
+                                <th>节省费率</th>
+                                <th>原因</th>
+                            </tr>
+                        </thead>
+                        <tbody id="routeLogTable">
+                            <tr>
+                                <td>10:35:22</td>
+                                <td>¥500</td>
+                                <td>银联 0.60%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥1.10</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:32:15</td>
+                                <td>¥1,200</td>
+                                <td>微信 0.55%</td>
+                                <td><span class="tag tag-success">天阙 0.45%</span></td>
+                                <td style="color: var(--success);">¥1.20</td>
+                                <td>限额规避</td>
+                            </tr>
+                            <tr>
+                                <td>10:28:03</td>
+                                <td>¥280</td>
+                                <td>支付宝 0.52%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥0.39</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:25:41</td>
+                                <td>¥3,500</td>
+                                <td>微信 0.55%</td>
+                                <td><span class="tag tag-success">天阙 0.45%</span></td>
+                                <td style="color: var(--success);">¥3.50</td>
+                                <td>限额规避</td>
+                            </tr>
+                            <tr>
+                                <td>10:22:18</td>
+                                <td>¥680</td>
+                                <td>银联 0.60%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥1.50</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:18:55</td>
+                                <td>¥15,000</td>
+                                <td>随行付 0.38%</td>
+                                <td><span class="tag tag-success">天阙 0.45%</span></td>
+                                <td style="color: var(--success);">¥0</td>
+                                <td>渠道限额</td>
+                            </tr>
+                            <tr>
+                                <td>10:15:32</td>
+                                <td>¥420</td>
+                                <td>银联 0.60%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥0.92</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:12:09</td>
+                                <td>¥890</td>
+                                <td>支付宝 0.52%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥1.25</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:08:46</td>
+                                <td>¥2,100</td>
+                                <td>微信 0.55%</td>
+                                <td><span class="tag tag-success">天阙 0.45%</span></td>
+                                <td style="color: var(--success);">¥2.10</td>
+                                <td>费率最优</td>
+                            </tr>
+                            <tr>
+                                <td>10:05:23</td>
+                                <td>¥560</td>
+                                <td>银联 0.60%</td>
+                                <td><span class="tag tag-success">随行付 0.38%</span></td>
+                                <td style="color: var(--success);">¥1.23</td>
+                                <td>费率最优</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- ==================== 底部Agent状态条 ==================== -->
@@ -8233,6 +9149,215 @@
             const statusText = modeText + ' · ' + scenarioNames[currentScenario] + '场景 · ' + densities[currentDensity] + '密度 · ' + activeEvents.length + '个异常事件激活';
             
             document.getElementById('mockStatusText').innerText = statusText;
+        }
+        
+        // ==================== AI工作流模块函数 ====================
+        function startWorkflowSimulation() {
+            showToast('info', '正在启动工作流模拟...');
+            
+            const workflows = ['review', 'pricing', 'sync'];
+            const workflowNames = {
+                review: '差评自动回复',
+                pricing: '智能定价',
+                sync: '多平台同步'
+            };
+            
+            workflows.forEach((wf, wfIndex) => {
+                const steps = wf === 'review' ? 5 : (wf === 'pricing' ? 4 : 3);
+                
+                for (let i = 1; i <= steps; i++) {
+                    setTimeout(() => {
+                        // 激活当前节点
+                        const node = document.getElementById('wf-' + wf + '-' + i);
+                        if (node) {
+                            node.classList.remove('pending');
+                            node.classList.add('running');
+                        }
+                        
+                        // 激活箭头
+                        if (i < steps) {
+                            const arrow = document.getElementById('wf-arrow-' + wf + '-' + i);
+                            if (arrow) arrow.classList.add('active');
+                        }
+                        
+                        // 添加日志
+                        const log = document.getElementById('workflowLog');
+                        if (log) {
+                            const time = new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+                            const nodeTitle = node ? node.querySelector('.workflow-node-title').textContent : '';
+                            log.innerHTML += '<div style="color: #60A5FA;">[' + time + '] → ' + workflowNames[wf] + ' - ' + nodeTitle + ' 执行中</div>';
+                            log.scrollTop = log.scrollHeight;
+                        }
+                        
+                        // 节点完成
+                        setTimeout(() => {
+                            if (node) {
+                                node.classList.remove('running');
+                                node.classList.add('success');
+                            }
+                            
+                            // 添加完成日志
+                            if (log) {
+                                const time = new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+                                log.innerHTML += '<div style="color: #10B981;">[' + time + '] ✓ ' + workflowNames[wf] + ' - ' + nodeTitle + ' 完成</div>';
+                                log.scrollTop = log.scrollHeight;
+                            }
+                            
+                            // 全部完成
+                            if (i === steps && wfIndex === workflows.length - 1) {
+                                setTimeout(() => {
+                                    showToast('success', '✓ 所有工作流模拟执行完成！');
+                                }, 500);
+                            }
+                        }, 300);
+                    }, (wfIndex * steps + i) * 400);
+                }
+            });
+        }
+        
+        function resetWorkflow() {
+            const nodes = document.querySelectorAll('.workflow-node');
+            nodes.forEach(node => {
+                node.classList.remove('running', 'success');
+                node.classList.add('pending');
+            });
+            
+            const arrows = document.querySelectorAll('.workflow-arrow');
+            arrows.forEach(arrow => arrow.classList.remove('active'));
+            
+            const log = document.getElementById('workflowLog');
+            if (log) {
+                log.innerHTML = '<div style="color: #94A3B8;">[' + new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit', second: '2-digit'}) + '] 工作流已重置</div>';
+            }
+            
+            showToast('info', '工作流已重置');
+        }
+        
+        function clearWorkflowLogs() {
+            const log = document.getElementById('workflowLog');
+            if (log) {
+                log.innerHTML = '<div style="color: #94A3B8;">[' + new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit', second: '2-digit'}) + '] 日志已清空</div>';
+            }
+        }
+        
+        // ==================== 智能支付路由模块函数 ====================
+        const channelConfig = {
+            sxf: { enabled: true, rate: 0.0038, limit: 50000, weight: 60 },
+            tianque: { enabled: true, rate: 0.0045, limit: 100000, weight: 30 },
+            wechat: { enabled: true, rate: 0.0055, limit: 20000, weight: 5 },
+            alipay: { enabled: true, rate: 0.0052, limit: 20000, weight: 3 },
+            unionpay: { enabled: false, rate: 0.006, limit: 200000, weight: 2 }
+        };
+        
+        function simulateTransaction() {
+            const amount = parseFloat(document.getElementById('simAmount').value) || 500;
+            const method = document.getElementById('simMethod').value;
+            
+            // 计算最优路由
+            let selectedChannel = 'sxf';
+            let selectedRate = 0.0038;
+            let reason = '费率最优';
+            
+            if (method === 'auto') {
+                // 智能选择
+                const enabledChannels = Object.entries(channelConfig).filter(([key, config]) => config.enabled);
+                let minRate = Infinity;
+                
+                enabledChannels.forEach(([key, config]) => {
+                    // 检查是否超过限额
+                    if (amount <= config.limit && config.rate < minRate) {
+                        minRate = config.rate;
+                        selectedChannel = key;
+                        selectedRate = config.rate;
+                    }
+                });
+                
+                // 如果所有渠道都超限，选择限额最高的
+                if (minRate === Infinity) {
+                    selectedChannel = 'tianque';
+                    selectedRate = 0.0045;
+                    reason = '渠道限额';
+                }
+            } else {
+                selectedChannel = method;
+                selectedRate = channelConfig[method]?.rate || 0.005;
+            }
+            
+            // 计算费用
+            const fee = amount * selectedRate;
+            const defaultFee = amount * 0.006; // 银联费率
+            const savings = defaultFee - fee;
+            
+            // 更新UI
+            document.getElementById('simFee').textContent = '¥' + fee.toFixed(2);
+            document.getElementById('simSavings').textContent = '¥' + savings.toFixed(2);
+            
+            // 显示路由决策过程
+            const decision = document.getElementById('routeDecision');
+            const channelNames = {
+                sxf: '随行付',
+                tianque: '天阙',
+                wechat: '微信支付',
+                alipay: '支付宝',
+                unionpay: '银联'
+            };
+            
+            let logHtml = '<div class="route-log-entry"><span class="route-log-time">分析订单金额: ¥' + amount + '</span></div>';
+            logHtml += '<div class="route-log-entry"><span class="route-log-time">检查渠道限额...</span></div>';
+            
+            Object.entries(channelConfig).forEach(([key, config]) => {
+                const status = config.enabled ? (amount <= config.limit ? '✓' : '✗超限') : '✗禁用';
+                logHtml += '<div class="route-log-entry"><span class="route-log-time">' + channelNames[key] + ' (' + (config.rate * 100).toFixed(2) + '%): </span><span style="color: ' + (status.includes('✓') ? 'var(--success)' : 'var(--danger)') + '">' + status + '</span></div>';
+            });
+            
+            logHtml += '<div class="route-log-entry" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2);"><span class="route-log-channel">选择渠道: ' + channelNames[selectedChannel] + '</span> <span class="route-log-fee">手续费: ¥' + fee.toFixed(2) + '</span></div>';
+            logHtml += '<div class="route-log-entry"><span class="route-log-time">节省手续费: ¥' + savings.toFixed(2) + ' | 原因: ' + reason + '</span></div>';
+            
+            decision.innerHTML = logHtml;
+            
+            showToast('success', '模拟完成: ' + channelNames[selectedChannel] + ' | 节省 ¥' + savings.toFixed(2));
+        }
+        
+        function resetRouteSimulation() {
+            document.getElementById('simAmount').value = 500;
+            document.getElementById('simMethod').value = 'auto';
+            document.getElementById('simFee').textContent = '¥1.90';
+            document.getElementById('simSavings').textContent = '¥0.60';
+            document.getElementById('routeDecision').innerHTML = '<div style="color: #94A3B8;">[等待模拟...]</div><div style="color: #64748B; margin-top: 8px;">输入交易金额并点击"模拟交易"查看路由决策过程</div>';
+            showToast('info', '路由模拟器已重置');
+        }
+        
+        function updateChannelStatus(channel, enabled) {
+            channelConfig[channel].enabled = enabled;
+            showToast('info', (enabled ? '已启用' : '已禁用') + ' ' + getChannelName(channel));
+        }
+        
+        function updateChannelWeight(channel, weight) {
+            channelConfig[channel].weight = parseInt(weight);
+            document.getElementById(channel + 'Weight').textContent = weight + '%';
+        }
+        
+        function getChannelName(channel) {
+            const names = {
+                sxf: '随行付',
+                tianque: '天阙',
+                wechat: '微信支付',
+                alipay: '支付宝',
+                unionpay: '银联'
+            };
+            return names[channel] || channel;
+        }
+        
+        function saveChannelConfig() {
+            showToast('success', '渠道配置已保存');
+        }
+        
+        function showRouteHistory() {
+            showToast('info', '查看路由历史记录');
+        }
+        
+        function exportRouteLogs() {
+            showToast('success', '路由日志已导出');
         }
     </script>
 </body>
