@@ -1760,7 +1760,7 @@ function initOnboarding() {
 // ============================================
 // 海报生成器功能
 // ============================================
-let posterApiBase = 'http://localhost:8080';
+let posterApiBase = window.location.origin;
 let currentPosterUrl = null;
 let isPosterGenerating = false;
 
