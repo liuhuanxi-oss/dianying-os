@@ -22,6 +22,7 @@ const merchantMenuConfig = [
     icon: 'heart-pulse',
     items: [
       { id: 'merchant-health', name: '门店健康', icon: 'heart-pulse' },
+      { id: 'merchant-bi', name: 'BI分析', icon: 'bar-chart-2', link: 'dashboard-bi.html' },
       { id: 'merchant-calendar', name: '运营日历', icon: 'calendar' },
       { id: 'merchant-report-center', name: '报表中心', icon: 'file-spreadsheet' },
       { id: 'merchant-roi', name: 'ROI计算', icon: 'calculator' },
@@ -96,7 +97,8 @@ function renderMerchantSidebar() {
     
     section.items.forEach(item => {
       const isActive = currentMerchantPage === item.id ? 'active' : '';
-      html += `<div class="menu-item ${isActive}" onclick="navigateMerchant('${item.id}')">
+      const clickHandler = item.link ? `window.open('${item.link}', '_blank')` : `navigateMerchant('${item.id}')`;
+      html += `<div class="menu-item ${isActive}" onclick="${clickHandler}">
         <i data-lucide="${item.icon}"></i>
         <span>${item.name}</span>
       </div>`;

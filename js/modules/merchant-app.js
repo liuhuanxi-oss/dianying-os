@@ -24,6 +24,7 @@ const merchantMenuConfig = [
     icon: 'heart-pulse',
     items: [
       { id: 'merchant-health', name: '门店健康', icon: 'heart-pulse' },
+      { id: 'merchant-bi', name: 'BI分析', icon: 'bar-chart-2', link: 'dashboard-bi.html', external: true },
       { id: 'merchant-calendar', name: '运营日历', icon: 'calendar' },
       { id: 'merchant-report-center', name: '报表中心', icon: 'file-spreadsheet' },
       { id: 'merchant-roi', name: 'ROI计算', icon: 'calculator' },

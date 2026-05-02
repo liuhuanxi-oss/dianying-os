@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - BI智能分析</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <style>
+    /* ============================================
+       BI分析仪表盘 - Metabase风格深色主题
+       ============================================ */
+    :root {
+      --primary: #5094EF;
+      --primary-hover: #3B82F6;
+      --primary-bg: rgba(80, 148, 239, 0.1);
+      
+      --success: #88C75B;
+      --success-bg: rgba(136, 199, 91, 0.1);
+      --warning: #F5B041;
+      --warning-bg: rgba(245, 176, 65, 0.1);
+      --danger: #EE6B6E;
+      --danger-bg: rgba(238, 107, 110, 0.1);
+      --info: #7DAAF7;
+      
+      --bg-dark: #13131F;
+      --bg-card: #1A1A2E;
+      --bg-card-hover: #22223A;
+      --bg-input: #16162A;
+      
+      --border: #2D2D44;
+      --border-light: #3A3A52;
+      
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A0B0;
+      --text-muted: #6B6B7B;
+      
+      --shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-dark);
+      font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+    }
+
+    /* ============================================
+       顶部导航栏
+       ============================================ */
+    .bi-header {
+      height: 60px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: relative;
+      z-index: 100;
+    }
+
+    .bi-header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .bi-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .bi-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #7DAAF7);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .bi-logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .bi-nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .bi-nav-tab {
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+    }
+
+    .bi-nav-tab:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .bi-nav-tab.active {
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    .bi-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bi-time-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .bi-refresh-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .bi-refresh-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--primary);
+    }
+
+    .bi-refresh-btn.loading svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ============================================
+       主容器
+       ============================================ */
+    .bi-container {
+      width: 100%;
+      height: calc(100% - 60px);
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+
+    .bi-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .bi-container::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+
+    .bi-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    /* ============================================
+       KPI卡片区域
+       ============================================ */
+    .bi-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .bi-kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      animation: kpiFadeIn 0.5s ease-out both;
+    }
+
+    .bi-kpi-card:nth-child(1) { animation-delay: 0.05s; }
+    .bi-kpi-card:nth-child(2) { animation-delay: 0.1s; }
+    .bi-kpi-card:nth-child(3) { animation-delay: 0.15s; }
+    .bi-kpi-card:nth-child(4) { animation-delay: 0.2s; }
+    .bi-kpi-card:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes kpiFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bi-kpi-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .bi-kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .bi-kpi-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .bi-kpi-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bi-kpi-icon.blue { background: var(--primary-bg); color: var(--primary); }
+    .bi-kpi-icon.green { background: var(--success-bg); color: var(--success); }
+    .bi-kpi-icon.amber { background: var(--warning-bg); color: var(--warning); }
+    .bi-kpi-icon.red { background: var(--danger-bg); color: var(--danger); }
+    .bi-kpi-icon.purple { background: rgba(167, 139, 250, 0.1); color: #A78BFA; }
+
+    .bi-kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'DIN Alternate', 'Roboto Mono', monospace;
+      margin-bottom: 6px;
+    }
+
+    .bi-kpi-trend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .bi-kpi-trend.up { color: var(--success); }
+    .bi-kpi-trend.down { color: var(--danger); }
+
+    .bi-kpi-trend .compare {
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    /* ============================================
+       图表区域
+       ============================================ */
+    .bi-charts-grid {
+      display: grid;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .bi-chart-row-2 {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .bi-chart-row-equal {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .bi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: cardFadeIn 0.5s ease-out both;
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bi-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bi-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .bi-card-title .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    .bi-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .bi-card-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bi-card-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .bi-card-btn.active {
+      background: var(--primary-bg);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .bi-card-body {
+      padding: 16px 20px;
+    }
+
+    .bi-chart-container {
+      width: 100%;
+      height: 280px;
+    }
+
+    .bi-chart-container.large {
+      height: 320px;
+    }
+
+    .bi-chart-container.small {
+      height: 200px;
+    }
+
+    /* ============================================
+       AI问答模块
+       ============================================ */
+    .bi-ai-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: cardFadeIn 0.5s ease-out both;
+    }
+
+    .bi-ai-input-area {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bi-ai-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .bi-ai-input {
+      width: 100%;
+      padding: 14px 16px;
+      padding-left: 44px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .bi-ai-input:focus {
+      border-color: var(--primary);
+      background: var(--bg-card-hover);
+    }
+
+    .bi-ai-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .bi-ai-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .bi-ai-send-btn {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--primary), #7DAAF7);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bi-ai-send-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(80, 148, 239, 0.4);
+    }
+
+    .bi-ai-responses {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .bi-ai-response-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bi-ai-response-item:last-child {
+      border-bottom: none;
+    }
+
+    .bi-ai-question {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .bi-ai-question .q-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .bi-ai-question-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .bi-ai-answer {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--bg-card-hover);
+      border-radius: 10px;
+      margin-left: 34px;
+    }
+
+    .bi-ai-answer .a-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--success), #6DB76D);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    .bi-ai-answer-text {
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .bi-ai-answer-text .highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* 快速问题标签 */
+    .bi-quick-questions {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-input);
+    }
+
+    .bi-quick-questions-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bi-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .bi-quick-tag {
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bi-quick-tag:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* ============================================
+       评分趋势图样式
+       ============================================ */
+    .bi-rating-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .bi-rating-item {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg-card-hover);
+      border-radius: 8px;
+    }
+
+    .bi-rating-platform {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .bi-rating-score {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .bi-rating-stars {
+      color: var(--warning);
+      font-size: 12px;
+    }
+
+    .bi-rating-change {
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .bi-rating-change.up { color: var(--success); }
+    .bi-rating-change.down { color: var(--danger); }
+
+    /* ============================================
+       返回首页按钮
+       ============================================ */
+    .back-home-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .back-home-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================
+       响应式适配
+       ============================================ */
+    @media (max-width: 1400px) {
+      .bi-kpi-row { grid-template-columns: repeat(5, 1fr); }
+      .bi-kpi-value { font-size: 24px; }
+    }
+
+    @media (max-width: 1200px) {
+      .bi-kpi-row { grid-template-columns: repeat(3, 1fr); }
+      .bi-charts-grid.bi-chart-row-2 { grid-template-columns: 1fr; }
+      .bi-charts-grid.bi-chart-row-equal { grid-template-columns: 1fr 1fr; }
+      .bi-rating-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .bi-header { padding: 0 16px; }
+      .bi-nav-tabs { display: none; }
+      .bi-container { padding: 16px; }
+      .bi-kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .bi-charts-grid.bi-chart-row-equal { grid-template-columns: 1fr; }
+      .bi-rating-cards { grid-template-columns: repeat(2, 1fr); }
+      .bi-kpi-value { font-size: 22px; }
+    }
+
+    @media (max-width: 480px) {
+      .bi-kpi-row { grid-template-columns: 1fr; }
+      .bi-kpi-card { padding: 16px; }
+      .bi-kpi-value { font-size: 24px; }
+      .bi-chart-container { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="bi-header">
+    <div class="bi-header-left">
+      <a href="index.html" class="bi-logo">
+        <div class="bi-logo-icon">📊</div>
+        <span class="bi-logo-text">BI智能分析</span>
+      </a>
+      <nav class="bi-nav-tabs">
+        <button class="bi-nav-tab active" data-tab="dashboard">数据概览</button>
+        <button class="bi-nav-tab" data-tab="sales">销售分析</button>
+        <button class="bi-nav-tab" data-tab="customer">客户洞察</button>
+        <button class="bi-nav-tab" data-tab="inventory">库存管理</button>
+      </nav>
+    </div>
+    <div class="bi-header-right">
+      <div class="bi-time-filter" id="timeFilter">
+        <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+        <span>近30天</span>
+        <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
+      </div>
+      <button class="bi-refresh-btn" id="refreshBtn" title="刷新数据">
+        <i data-lucide="refresh-cw" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 返回首页 -->
+  <a href="index.html" class="back-home-btn">
+    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
+    返回首页
+  </a>
+
+  <!-- 主内容区 -->
+  <main class="bi-container">
+    <!-- ====== KPI指标卡片 ====== -->
+    <div class="bi-kpi-row">
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-header">
+          <span class="bi-kpi-label">本月营收</span>
+          <div class="bi-kpi-icon blue"><i data-lucide="trending-up"></i></div>
+        </div>
+        <div class="bi-kpi-value" id="kpiRevenue">¥0</div>
+        <div class="bi-kpi-trend up">
+          <i data-lucide="arrow-up" style="width:12px;height:12px;"></i>
+          <span>+18.5%</span>
+          <span class="compare">vs 上月</span>
+        </div>
+      </div>
+
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-header">
+          <span class="bi-kpi-label">订单总量</span>
+          <div class="bi-kpi-icon green"><i data-lucide="shopping-bag"></i></div>
+        </div>
+        <div class="bi-kpi-value" id="kpiOrders">0</div>
+        <div class="bi-kpi-trend up">
+          <i data-lucide="arrow-up" style="width:12px;height:12px;"></i>
+          <span>+12.3%</span>
+          <span class="compare">vs 上月</span>
+        </div>
+      </div>
+
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-header">
+          <span class="bi-kpi-label">平均客单价</span>
+          <div class="bi-kpi-icon amber"><i data-lucide="receipt"></i></div>
+        </div>
+        <div class="bi-kpi-value" id="kpiAvgOrder">¥0</div>
+        <div class="bi-kpi-trend down">
+          <i data-lucide="arrow-down" style="width:12px;height:12px;"></i>
+          <span>-3.2%</span>
+          <span class="compare">vs 上月</span>
+        </div>
+      </div>
+
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-header">
+          <span class="bi-kpi-label">综合评分</span>
+          <div class="bi-kpi-icon purple"><i data-lucide="star"></i></div>
+        </div>
+        <div class="bi-kpi-value" id="kpiRating">0.0</div>
+        <div class="bi-kpi-trend up">
+          <i data-lucide="arrow-up" style="width:12px;height:12px;"></i>
+          <span>+0.1</span>
+          <span class="compare">vs 上月</span>
+        </div>
+      </div>
+
+      <div class="bi-kpi-card">
+        <div class="bi-kpi-header">
+          <span class="bi-kpi-label">ROI投入产出比</span>
+          <div class="bi-kpi-icon red"><i data-lucide="calculator"></i></div>
+        </div>
+        <div class="bi-kpi-value" id="kpiRoi">0x</div>
+        <div class="bi-kpi-trend up">
+          <i data-lucide="arrow-up" style="width:12px;height:12px;"></i>
+          <span>+0.8x</span>
+          <span class="compare">vs 上月</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 图表区域第一行：营收趋势 + 订单分布 ====== -->
+    <div class="bi-charts-grid bi-chart-row-2">
+      <div class="bi-card">
+        <div class="bi-card-header">
+          <div class="bi-card-title">
+            <div class="icon"><i data-lucide="line-chart"></i></div>
+            <span>30天营收趋势</span>
+          </div>
+          <div class="bi-card-actions">
+            <button class="bi-card-btn active" data-period="30d">30天</button>
+            <button class="bi-card-btn" data-period="7d">7天</button>
+            <button class="bi-card-btn" data-period="90d">90天</button>
+          </div>
+        </div>
+        <div class="bi-card-body">
+          <div class="bi-chart-container large" id="revenueTrendChart"></div>
+        </div>
+      </div>
+
+      <div class="bi-card">
+        <div class="bi-card-header">
+          <div class="bi-card-title">
+            <div class="icon"><i data-lucide="pie-chart"></i></div>
+            <span>订单渠道分布</span>
+          </div>
+        </div>
+        <div class="bi-card-body">
+          <div class="bi-chart-container" id="orderDistChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 图表区域第二行：评分趋势 + 产品TOP + 库存预警 ====== -->
+    <div class="bi-charts-grid bi-chart-row-equal">
+      <div class="bi-card">
+        <div class="bi-card-header">
+          <div class="bi-card-title">
+            <div class="icon"><i data-lucide="star"></i></div>
+            <span>各平台评分趋势</span>
+          </div>
+        </div>
+        <div class="bi-card-body">
+          <div class="bi-rating-cards" id="ratingCards"></div>
+          <div class="bi-chart-container small" id="ratingTrendChart"></div>
+        </div>
+      </div>
+
+      <div class="bi-card">
+        <div class="bi-card-header">
+          <div class="bi-card-title">
+            <div class="icon"><i data-lucide="package"></i></div>
+            <span>热销产品TOP5</span>
+          </div>
+        </div>
+        <div class="bi-card-body">
+          <div class="bi-chart-container" id="productTopChart"></div>
+        </div>
+      </div>
+
+      <div class="bi-card">
+        <div class="bi-card-header">
+          <div class="bi-card-title">
+            <div class="icon"><i data-lucide="alert-triangle"></i></div>
+            <span>库存预警</span>
+          </div>
+          <span class="bi-card-btn" style="background:var(--danger-bg);color:var(--danger);border:none;">3项告警</span>
+        </div>
+        <div class="bi-card-body">
+          <div class="bi-chart-container" id="inventoryAlertChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== AI问答模块 ====== -->
+    <div class="bi-ai-section">
+      <div class="bi-card-header" style="border-bottom:none;">
+        <div class="bi-card-title">
+          <div class="icon"><i data-lucide="bot"></i></div>
+          <span>智能BI问答</span>
+          <span style="font-size:12px;color:var(--text-muted);font-weight:400;margin-left:8px;">基于数据分析的自然语言查询</span>
+        </div>
+      </div>
+      
+      <div class="bi-ai-input-area">
+        <div class="bi-ai-input-wrapper">
+          <i data-lucide="message-circle" class="bi-ai-input-icon" style="width:18px;height:18px;"></i>
+          <input type="text" class="bi-ai-input" id="aiQueryInput" placeholder="例如：本月哪些时段的订单量最高？或：本周的差评主要集中在哪些方面？">
+        </div>
+        <button class="bi-ai-send-btn" id="aiSendBtn">
+          <span>问AI</span>
+          <i data-lucide="send" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+
+      <div class="bi-ai-responses" id="aiResponses">
+        <!-- 预设问答将在这里显示 -->
+      </div>
+
+      <div class="bi-quick-questions">
+        <div class="bi-quick-questions-label">快捷问题</div>
+        <div class="bi-quick-tags">
+          <span class="bi-quick-tag" data-q="本月营收趋势如何？">本月营收趋势如何？</span>
+          <span class="bi-quick-tag" data-q="哪些时段订单量最高？">哪些时段订单量最高？</span>
+          <span class="bi-quick-tag" data-q="本周差评原因分析">本周差评原因分析</span>
+          <span class="bi-quick-tag" data-q="库存需要补货哪些？">库存需要补货哪些？</span>
+          <span class="bi-quick-tag" data-q="ROI最高的是哪个渠道？">ROI最高的是哪个渠道？</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ============================================
+    // BI分析仪表盘 - Mock数据
+    // ============================================
+    const BIData = {
+      // 30天营收数据
+      revenue30Days: (() => {
+        const data = [];
+        const base = 28000;
+        for (let i = 30; i >= 1; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+          const variance = (Math.random() - 0.5) * 8000;
+          data.push({
+            date: `${date.getMonth() + 1}/${date.getDate()}`,
+            revenue: Math.round(base + (isWeekend ? 5000 : 0) + variance),
+            orders: Math.round(150 + (isWeekend ? 40 : 0) + (Math.random() - 0.5) * 60)
+          });
+        }
+        return data;
+      })(),
+
+      // 订单渠道分布
+      orderChannels: [
+        { name: '堂食', value: 3856, color: '#5094EF' },
+        { name: '美团外卖', value: 2340, color: '#F5B041' },
+        { name: '饿了么', value: 1580, color: '#88C75B' },
+        { name: '小程序', value: 920, color: '#A78BFA' },
+        { name: '其他', value: 304, color: '#6B6B7B' }
+      ],
+
+      // 平台评分
+      platformRatings: [
+        { platform: '美团', score: 4.8, stars: 5, change: '+0.1', total: 2856 },
+        { platform: '大众点评', score: 4.7, stars: 5, change: '+0.2', total: 1832 },
+        { platform: '饿了么', score: 4.6, stars: 5, change: '0', total: 3421 },
+        { platform: '抖音', score: 4.9, stars: 5, change: '+0.3', total: 956 }
+      ],
+
+      // 评分趋势（30天）
+      ratingTrend30Days: (() => {
+        const data = { 美团: [], 大众点评: [], 饿了么: [] };
+        for (let i = 30; i >= 1; i--) {
+          data['美团'].push((4.6 + Math.random() * 0.3).toFixed(1));
+          data['大众点评'].push((4.5 + Math.random() * 0.3).toFixed(1));
+          data['饿了么'].push((4.4 + Math.random() * 0.3).toFixed(1));
+        }
+        return data;
+      })(),
+
+      // 热销产品TOP5
+      productTop: [
+        { name: '招牌毛血旺', sales: 2856, revenue: 85680, growth: 18.5 },
+        { name: '重庆小面', sales: 2340, revenue: 46800, growth: 12.3 },
+        { name: '水煮鱼片', sales: 1890, revenue: 75600, growth: 8.7 },
+        { name: '酸辣粉', sales: 1650, revenue: 24750, growth: -2.1 },
+        { name: '夫妻肺片', sales: 1420, revenue: 56800, growth: 5.4 }
+      ],
+
+      // 库存预警
+      inventoryAlerts: [
+        { name: '毛血旺底料', current: 15, min: 50, unit: '箱', urgency: 'high' },
+        { name: '鲜毛肚', current: 8, min: 30, unit: '斤', urgency: 'high' },
+        { name: '鸭血', current: 12, min: 40, unit: '份', urgency: 'medium' },
+        { name: '豆芽', current: 5, min: 20, unit: '斤', urgency: 'low' },
+        { name: '干辣椒', current: 3, min: 15, unit: '斤', urgency: 'high' }
+      ],
+
+      // KPI汇总
+      kpiSummary: {
+        revenue: 856420,
+        orders: 8990,
+        avgOrder: 95.3,
+        rating: 4.7,
+        roi: 3.8
+      }
+    };
+
+    // ============================================
+    // AI问答预设答案
+    // ============================================
+    const AIAnswers = {
+      '本月营收趋势如何？': {
+        answer: `根据30天数据分析，本月营收呈现<span class="highlight">稳步上升趋势</span>：
+
+• 本月累计营收 <span class="highlight">¥856,420</span>，较上月增长18.5%
+• 周末平均日营收约 ¥38,500，工作日约 ¥28,000
+• 峰值出现在母亲节当天，达 ¥52,800
+
+📈 **趋势预测**：预计本月可达成月度目标120万的71%，建议关注工作日午市转化率。`,
+        insights: ['周末营收比工作日高37%', '本月第3周环比增长最快']
+      },
+      '哪些时段订单量最高？': {
+        answer: `分析显示订单高峰集中在以下时段：
+
+• <span class="highlight">午市 11:30-13:00</span>：占总订单38%，客单价 ¥82
+• <span class="highlight">晚市 18:00-20:00</span>：占总订单42%，客单价 ¥118
+• 下午茶 14:00-16:00：仅占8%，建议针对性推出下午茶套餐
+
+💡 **优化建议**：午市翻台率有提升空间，可考虑增加预制菜比例。`,
+        insights: ['晚市客单价比午市高44%', '晚市订单量是午市的1.1倍']
+      },
+      '本周差评原因分析': {
+        answer: `本周共收到差评 <span class="highlight">12条</span>，主要集中在：
+
+| 问题类型 | 数量 | 占比 |
+|---------|------|------|
+| 等候时间长 | 5条 | 42% |
+| 菜品口味不符 | 3条 | 25% |
+| 服务态度 | 2条 | 17% |
+| 环境卫生 | 1条 | 8% |
+| 其他 | 1条 | 8% |
+
+⚠️ **紧急处理**：等候时间长主要集中在周六18:00-19:00，建议增加值班人手。`,
+        insights: ['等候时间是差评首要原因', '周六晚市是投诉高发时段']
+      },
+      '库存需要补货哪些？': {
+        answer: `当前库存低于安全线，需要立即补货：
+
+| 商品 | 当前库存 | 安全库存 | 缺口 | 紧急度 |
+|------|---------|---------|------|--------|
+| 干辣椒 | 3斤 | 15斤 | 12斤 | 🔴紧急 |
+| 鲜毛肚 | 8斤 | 30斤 | 22斤 | 🔴紧急 |
+| 毛血旺底料 | 15箱 | 50箱 | 35箱 | 🔴紧急 |
+
+📦 **建议**：本周内完成采购，避免影响周末高峰期供应。`,
+        insights: ['3种核心食材库存告急', '建议设置自动补货提醒']
+      },
+      'ROI最高的是哪个渠道？': {
+        answer: `各渠道ROI对比分析：
+
+| 渠道 | 投入成本 | 产出营收 | ROI |
+|------|---------|---------|-----|
+| 抖音短视频 | ¥8,500 | ¥52,000 | <span class="highlight">6.1x</span> |
+| 朋友圈广告 | ¥12,000 | ¥38,000 | 3.2x |
+| 大众点评推广 | ¥6,000 | ¥15,000 | 2.5x |
+| 美团广告 | ¥15,000 | ¥28,000 | 1.9x |
+
+🏆 **最优渠道**：抖音短视频ROI最高，建议增加该渠道投放预算30%。`,
+        insights: ['抖音ROI是大盘平均的1.6倍', '建议削减美团广告投放']
+      }
+    };
+
+    // ============================================
+    // 初始化函数
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化Lucide图标
+      lucide.createIcons();
+
+      // 初始化KPI数字动画
+      initKPICounters();
+
+      // 初始化图表
+      initCharts();
+
+      // 初始化评分卡片
+      initRatingCards();
+
+      // 初始化AI问答
+      initAIChat();
+
+      // 绑定事件
+      bindEvents();
+    });
+
+    // KPI数字递增动画
+    function initKPICounters() {
+      animateValue('kpiRevenue', 0, BIData.kpiSummary.revenue, 1500, '¥');
+      animateValue('kpiOrders', 0, BIData.kpiSummary.orders, 1200, '');
+      animateValue('kpiAvgOrder', 0, BIData.kpiSummary.avgOrder, 1000, '¥', 1);
+      animateValue('kpiRating', 0, BIData.kpiSummary.rating, 800, '', 1);
+      animateValue('kpiRoi', 0, BIData.kpiSummary.roi, 600, '', 1, 'x');
+    }
+
+    function animateValue(elementId, start, end, duration, prefix = '', decimals = 0, suffix = '') {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        const current = start + (end - start) * easeProgress;
+        
+        if (decimals > 0) {
+          element.textContent = prefix + current.toFixed(decimals) + suffix;
+        } else {
+          element.textContent = prefix + Math.round(current).toLocaleString() + suffix;
+        }
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+
+    // 初始化所有图表
+    function initCharts() {
+      initRevenueTrendChart();
+      initOrderDistChart();
+      initRatingTrendChart();
+      initProductTopChart();
+      initInventoryAlertChart();
+    }
+
+    // 30天营收趋势图
+    function initRevenueTrendChart() {
+      const chartDom = document.getElementById('revenueTrendChart');
+      if (!chartDom || !echarts) return;
+      
+      const chart = echarts.init(chartDom);
+      const data = BIData.revenue30Days;
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(26, 26, 46, 0.95)',
+          borderColor: '#2D2D44',
+          textStyle: { color: '#fff' },
+          formatter: function(params) {
+            const d = params[0];
+            return `<div style="font-size:12px;">
+              <div style="margin-bottom:4px;color:#A0A0B0;">${d.name}</div>
+              <div style="font-size:16px;font-weight:600;">¥${d.value.toLocaleString()}</div>
+            </div>`;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '10px',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: data.map(d => d.date),
+          axisLine: { lineStyle: { color: '#2D2D44' } },
+          axisLabel: { color: '#6B6B7B', fontSize: 11, interval: 4 },
+          splitLine: { show: false }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisLabel: { color: '#6B6B7B', fontSize: 11, formatter: v => '¥' + (v/1000).toFixed(0) + 'k' },
+          splitLine: { lineStyle: { color: '#1E1E2E' } }
+        },
+        series: [
+          {
+            name: '营收',
+            type: 'bar',
+            data: data.map(d => d.revenue),
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#5094EF' },
+                { offset: 1, color: '#7DAAF7' }
+              ]),
+              borderRadius: [4, 4, 0, 0]
+            },
+            barWidth: '60%'
+          },
+          {
+            name: '趋势线',
+            type: 'line',
+            data: data.map((d, i) => {
+              if (i < 7) return null;
+              const slice = data.slice(i - 7, i);
+              return Math.round(slice.reduce((a, b) => a + b.revenue, 0) / 7);
+            }),
+            smooth: true,
+            symbol: 'none',
+            lineStyle: { color: '#F5B041', width: 2, type: 'dashed' },
+            z: 10
+          }
+        ]
+      };
+      
+      chart.setOption(option);
+      window.addEventListener('resize', () => chart.resize());
+    }
+
+    // 订单渠道分布图
+    function initOrderDistChart() {
+      const chartDom = document.getElementById('orderDistChart');
+      if (!chartDom || !echarts) return;
+      
+      const chart = echarts.init(chartDom);
+      const total = BIData.orderChannels.reduce((a, b) => a + b.value, 0);
+      
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(26, 26, 46, 0.95)',
+          borderColor: '#2D2D44',
+          textStyle: { color: '#fff' },
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          right: '5%',
+          top: 'center',
+          textStyle: { color: '#A0A0B0', fontSize: 12 },
+          itemWidth: 10,
+          itemHeight: 10
+        },
+        series: [{
+          type: 'pie',
+          radius: ['50%', '75%'],
+          center: ['35%', '50%'],
+          avoidLabelOverlap: false,
+          label: { show: false },
+          labelLine: { show: false },
+          data: BIData.orderChannels.map(d => ({
+            ...d,
+            label: { show: false }
+          }))
+        }],
+        graphic: [{
+          type: 'text',
+          left: '28%',
+          top: '45%',
+          style: {
+            text: total.toLocaleString(),
+            textAlign: 'center',
+            fill: '#fff',
+            fontSize: 22,
+            fontWeight: 'bold'
+          }
+        }, {
+          type: 'text',
+          left: '28%',
+          top: '55%',
+          style: {
+            text: '总订单',
+            textAlign: 'center',
+            fill: '#6B6B7B',
+            fontSize: 12
+          }
+        }]
+      };
+      
+      chart.setOption(option);
+      window.addEventListener('resize', () => chart.resize());
+    }
+
+    // 评分趋势图
+    function initRatingTrendChart() {
+      const chartDom = document.getElementById('ratingTrendChart');
+      if (!chartDom || !echarts) return;
+      
+      const chart = echarts.init(chartDom);
+      const trend = BIData.ratingTrend30Days;
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(26, 26, 46, 0.95)',
+          borderColor: '#2D2D44',
+          textStyle: { color: '#fff' },
+          formatter: function(params) {
+            return params.map(p => `${p.marker} ${p.seriesName}: ${p.value}`).join('<br/>');
+          }
+        },
+        legend: {
+          show: false
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          top: '5px',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: BIData.revenue30Days.map(d => d.date),
+          axisLine: { lineStyle: { color: '#2D2D44' } },
+          axisLabel: { show: false },
+          splitLine: { show: false }
+        },
+        yAxis: {
+          type: 'value',
+          min: 4.0,
+          max: 5.0,
+          axisLine: { show: false },
+          axisLabel: { show: false },
+          splitLine: { show: false }
+        },
+        series: [
+          {
+            name: '美团',
+            type: 'line',
+            data: trend['美团'],
+            smooth: true,
+            symbol: 'none',
+            lineStyle: { color: '#5094EF', width: 2 },
+            areaStyle: { color: 'rgba(80, 148, 239, 0.1)' }
+          },
+          {
+            name: '大众点评',
+            type: 'line',
+            data: trend['大众点评'],
+            smooth: true,
+            symbol: 'none',
+            lineStyle: { color: '#88C75B', width: 2 },
+            areaStyle: { color: 'rgba(136, 199, 91, 0.1)' }
+          },
+          {
+            name: '饿了么',
+            type: 'line',
+            data: trend['饿了么'],
+            smooth: true,
+            symbol: 'none',
+            lineStyle: { color: '#F5B041', width: 2 },
+            areaStyle: { color: 'rgba(245, 176, 65, 0.1)' }
+          }
+        ]
+      };
+      
+      chart.setOption(option);
+      window.addEventListener('resize', () => chart.resize());
+    }
+
+    // 热销产品TOP5
+    function initProductTopChart() {
+      const chartDom = document.getElementById('productTopChart');
+      if (!chartDom || !echarts) return;
+      
+      const chart = echarts.init(chartDom);
+      const data = BIData.productTop;
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          backgroundColor: 'rgba(26, 26, 46, 0.95)',
+          borderColor: '#2D2D44',
+          textStyle: { color: '#fff' },
+          formatter: function(params) {
+            const d = data[params[0].dataIndex];
+            return `<div style="font-size:12px;">
+              <div style="font-weight:600;margin-bottom:4px;">${d.name}</div>
+              <div>销量: ${d.sales.toLocaleString()}份</div>
+              <div>营收: ¥${d.revenue.toLocaleString()}</div>
+              <div style="color:${d.growth >= 0 ? '#88C75B' : '#EE6B6E'}">
+                增长率: ${d.growth >= 0 ? '+' : ''}${d.growth}%
+              </div>
+            </div>`;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '12%',
+          bottom: '3%',
+          top: '5px',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisLabel: { show: false },
+          splitLine: { show: false }
+        },
+        yAxis: {
+          type: 'category',
+          data: data.map(d => d.name).reverse(),
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { color: '#A0A0B0', fontSize: 12 }
+        },
+        series: [{
+          type: 'bar',
+          data: data.map(d => ({
+            value: d.sales,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: '#5094EF' },
+                { offset: 1, color: '#7DAAF7' }
+              ]),
+              borderRadius: [0, 4, 4, 0]
+            }
+          })).reverse(),
+          barWidth: 20,
+          label: {
+            show: true,
+            position: 'right',
+            formatter: '{c}',
+            color: '#A0A0B0',
+            fontSize: 11
+          }
+        }]
+      };
+      
+      chart.setOption(option);
+      window.addEventListener('resize', () => chart.resize());
+    }
+
+    // 库存预警图
+    function initInventoryAlertChart() {
+      const chartDom = document.getElementById('inventoryAlertChart');
+      if (!chartDom || !echarts) return;
+      
+      const chart = echarts.init(chartDom);
+      const data = BIData.inventoryAlerts;
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          backgroundColor: 'rgba(26, 26, 46, 0.95)',
+          borderColor: '#2D2D44',
+          textStyle: { color: '#fff' },
+          formatter: function(params) {
+            const d = data[params[0].dataIndex];
+            const pct = Math.round(d.current / d.min * 100);
+            return `<div style="font-size:12px;">
+              <div style="font-weight:600;margin-bottom:4px;">${d.name}</div>
+              <div>当前: ${d.current}${d.unit} / 安全: ${d.min}${d.unit}</div>
+              <div style="color:${d.urgency === 'high' ? '#EE6B6E' : d.urgency === 'medium' ? '#F5B041' : '#88C75B'}">
+                库存率: ${pct}% ${d.urgency === 'high' ? '⚠️紧急' : ''}
+              </div>
+            </div>`;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '8%',
+          bottom: '3%',
+          top: '5px',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisLabel: { show: false },
+          splitLine: { show: false }
+        },
+        yAxis: {
+          type: 'category',
+          data: data.map(d => d.name).reverse(),
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { color: '#A0A0B0', fontSize: 11 }
+        },
+        series: [
+          {
+            name: '当前库存',
+            type: 'bar',
+            data: data.map(d => ({
+              value: d.current,
+              itemStyle: {
+                color: d.urgency === 'high' ? '#EE6B6E' : d.urgency === 'medium' ? '#F5B041' : '#88C75B',
+                borderRadius: [0, 4, 4, 0]
+              }
+            })).reverse(),
+            barWidth: 16,
+            label: {
+              show: true,
+              position: 'right',
+              formatter: function(p) {
+                const d = data[p.dataIndex];
+                return d.current + d.unit;
+              },
+              color: '#A0A0B0',
+              fontSize: 10
+            }
+          },
+          {
+            name: '安全线',
+            type: 'bar',
+            data: data.map(d => d.min).reverse(),
+            barWidth: 2,
+            itemStyle: { color: 'rgba(255,255,255,0.1)', borderRadius: [0, 4, 4, 0] },
+            z: -1
+          }
+        ]
+      };
+      
+      chart.setOption(option);
+      window.addEventListener('resize', () => chart.resize());
+    }
+
+    // 初始化评分卡片
+    function initRatingCards() {
+      const container = document.getElementById('ratingCards');
+      if (!container) return;
+      
+      container.innerHTML = BIData.platformRatings.map(r => `
+        <div class="bi-rating-item">
+          <div class="bi-rating-platform">${r.platform}</div>
+          <div class="bi-rating-score">${r.score}</div>
+          <div class="bi-rating-stars">${'★'.repeat(r.stars)}</div>
+          <div class="bi-rating-change ${r.change.startsWith('+') ? 'up' : r.change.startsWith('-') ? 'down' : ''}">
+            ${r.change.startsWith('+') ? '↑' : r.change.startsWith('-') ? '↓' : ''} ${r.total.toLocaleString()}条
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 初始化AI问答
+    function initAIChat() {
+      const responsesContainer = document.getElementById('aiResponses');
+      
+      // 添加预设问答
+      addAIResponse('本月营收趋势如何？', AIAnswers['本月营收趋势如何？']);
+      addAIResponse('哪些时段订单量最高？', AIAnswers['哪些时段订单量最高？']);
+    }
+
+    function addAIResponse(question, answer) {
+      const container = document.getElementById('aiResponses');
+      if (!container) return;
+      
+      const html = `
+        <div class="bi-ai-response-item">
+          <div class="bi-ai-question">
+            <div class="q-icon">Q</div>
+            <div class="bi-ai-question-text">${question}</div>
+          </div>
+          <div class="bi-ai-answer">
+            <div class="a-icon">A</div>
+            <div class="bi-ai-answer-text">${answer.answer}</div>
+          </div>
+        </div>
+      `;
+      
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    // 绑定事件
+    function bindEvents() {
+      // 刷新按钮
+      document.getElementById('refreshBtn').addEventListener('click', function() {
+        this.classList.add('loading');
+        setTimeout(() => {
+          this.classList.remove('loading');
+          // 重新初始化数据动画
+          initKPICounters();
+          // 刷新图表
+          initCharts();
+        }, 1000);
+      });
+
+      // AI发送按钮
+      document.getElementById('aiSendBtn').addEventListener('click', handleAIQuery);
+      
+      // AI输入框回车
+      document.getElementById('aiQueryInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleAIQuery();
+      });
+
+      // 快捷问题标签
+      document.querySelectorAll('.bi-quick-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+          const q = this.dataset.q;
+          document.getElementById('aiQueryInput').value = q;
+          handleAIQuery();
+        });
+      });
+
+      // 时间段切换
+      document.querySelectorAll('[data-period]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          // 模拟切换数据
+          const period = this.dataset.period;
+          updateChartData(period);
+        });
+      });
+
+      // Tab切换
+      document.querySelectorAll('.bi-nav-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.bi-nav-tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    }
+
+    // 处理AI查询
+    function handleAIQuery() {
+      const input = document.getElementById('aiQueryInput');
+      const question = input.value.trim();
+      
+      if (!question) return;
+      
+      // 检查是否有预设答案
+      let matchedAnswer = null;
+      for (const [key, value] of Object.entries(AIAnswers)) {
+        if (question.includes(key.split('？')[0]) || key.includes(question.split('？')[0])) {
+          matchedAnswer = value;
+          break;
+        }
+      }
+      
+      // 如果没有匹配，返回通用回答
+      if (!matchedAnswer) {
+        matchedAnswer = {
+          answer: `正在分析您的问题："<span class="highlight">${question}</span>"
+
+根据现有数据初步判断，您可能关注的是运营优化方向。建议：
+
+• 查看数据报表获取详细分析
+• 使用筛选功能精确定位问题
+• 联系客服获取专业指导
+
+如需深入分析，请提供更具体的问题描述。`,
+          insights: ['数据正在分析中', '建议细化查询条件']
+        };
+      }
+      
+      addAIResponse(question, matchedAnswer);
+      input.value = '';
+      
+      // 滚动到底部
+      const container = document.getElementById('aiResponses');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // 更新图表数据（模拟）
+    function updateChartData(period) {
+      // 简化实现：重新初始化图表即可
+      const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+      document.getElementById('revenueTrendChart').innerHTML = '';
+      initRevenueTrendChart();
+    }
+  </script>
+</body>
+</html>
