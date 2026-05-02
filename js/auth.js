@@ -180,6 +180,10 @@ class AuthManager {
 
   // 检查是否已登录
   isLoggedIn() {
+    // 如果未登录，自动以管理员身份登录（演示环境）
+    if (!this.currentUser) {
+      this.quickLogin(ROLES.ADMIN);
+    }
     return this.currentUser !== null;
   }
 
@@ -445,7 +449,7 @@ const LoginController = {
 // ============================================
 const AdminController = {
   init() {
-    // 检查登录状态
+    // 检查登录状态（isLoggedIn 已内置自动登录逻辑）
     if (!Auth.isLoggedIn()) {
       window.location.href = 'login.html';
       return;
@@ -453,7 +457,7 @@ const AdminController = {
 
     this.user = Auth.getCurrentUser();
     this.renderUserInfo();
-    this.renderSidebar();
+    // 侧边栏渲染由 admin-core.js 的 renderSidebar() 统一处理
     this.bindEvents();
   },
 
@@ -695,49 +699,10 @@ const AdminController = {
   },
 
   renderSidebar() {
-    const sidebarNav = document.getElementById('sidebarNav');
-    if (!sidebarNav) return;
-
-    const menuConfig = Auth.getFilteredMenuConfig();
-    
-    if (menuConfig.length === 0) {
-      sidebarNav.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">暂无菜单权限</div>';
-      return;
+    // 复用 admin-core.js 的 renderSidebar 函数，避免重复渲染和HTML结构不一致
+    if (typeof window.renderSidebar === 'function') {
+      window.renderSidebar();
     }
-
-    let html = '';
-    menuConfig.forEach(section => {
-      html += `
-        <div class="nav-section">
-          <div class="nav-section-header">
-            <i data-lucide="${section.icon}"></i>
-            <span>${section.section}</span>
-          </div>
-          <div class="nav-section-items">
-            ${section.items.map(item => `
-              <a href="#" class="nav-item" data-page="${item.id}">
-                <i data-lucide="${item.icon}"></i>
-                <span>${item.name}</span>
-              </a>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    });
-
-    sidebarNav.innerHTML = html;
-    lucide.createIcons();
-
-    // 绑定菜单点击事件
-    sidebarNav.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const page = item.dataset.page;
-        if (window.App && window.App.navigateTo) {
-          App.navigateTo(page);
-        }
-      });
-    });
   },
 
   bindEvents() {

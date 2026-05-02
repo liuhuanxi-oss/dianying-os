@@ -7,39 +7,100 @@
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
   <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-  <link rel="stylesheet" href="css/dashboard-dataease.css">
-  <link rel="stylesheet" href="css/mobile-responsive.css">
   <style>
-    /* 商户端布局容器 */
-    .left-column, .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .left-column::-webkit-scrollbar, .right-column::-webkit-scrollbar {
-      width: 3px;
-    }
-    .left-column::-webkit-scrollbar-thumb, .right-column::-webkit-scrollbar-thumb {
-      background: rgba(24,144,255,0.3);
-      border-radius: 3px;
-    }
-    /* 右侧栏独立滚动样式 */
-    .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .right-column::-webkit-scrollbar { width: 3px; }
-    .right-column::-webkit-scrollbar-thumb {
-      background: rgba(24,144,255,0.3);
-      border-radius: 3px;
+    /* ============================================
+       商户端门店运营看板 - 浅色简洁主题
+       参考连锁茶饮销售看板设计
+       ============================================ */
+    :root {
+      /* 主色 - 稳重蓝 */
+      --primary: #1E40AF;
+      --primary-light: #3B82F6;
+      --primary-lighter: #93C5FD;
+      --primary-bg: #EFF6FF;
+
+      /* 辅助色 */
+      --success: #22C55E;
+      --warning: #D97706;
+      --danger: #DC2626;
+      --info: #06B6D4;
+
+      /* 背景 */
+      --bg-main: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-hover: #F1F5F9;
+      --bg-muted: #E9EEF6;
+
+      /* 边框 */
+      --border-color: #DBEAFE;
+      --border-light: #E2E8F0;
+
+      /* 文字 */
+      --text-title: #1E3A8A;
+      --text-value: #0F172A;
+      --text-label: #64748B;
+      --text-muted: #94A3B8;
+      --text-dim: #CBD5E1;
+
+      /* 阴影 */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
     }
 
-    /* 商户端补充样式 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-main);
+      font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-value);
+    }
+
+    /* ============================================
+       顶部标题栏
+       ============================================ */
+    .header-bar {
+      height: 64px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      z-index: 100;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-title .icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    }
+
+    .header-title h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-title);
+      letter-spacing: 1px;
+    }
+
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -48,349 +109,705 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
     }
 
-    .status-badge.open {
-      background: rgba(82, 196, 26, 0.15);
-      color: #52c41a;
-      border: 1px solid rgba(82, 196, 26, 0.3);
+    .status-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
     }
 
-    .status-badge.closed {
-      background: rgba(255, 77, 79, 0.15);
-      color: #ff4d4f;
-      border: 1px solid rgba(255, 77, 79, 0.3);
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
 
-    .dish-grid {
-      display: grid;
-      gap: 8px;
-      max-height: 100%;
-      overflow-y: auto;
-    }
-
-    .dish-item {
+    .header-info {
       display: flex;
       align-items: center;
+      gap: 24px;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-label);
+    }
+
+    .header-time { text-align: right; }
+
+    .header-time .time {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-value);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+
+    .header-time .date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ============================================
+       主容器布局
+       ============================================ */
+    .dashboard-container {
+      width: 100%;
+      height: calc(100% - 64px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* 顶部KPI横排 */
+    .top-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px;
-      padding: 10px;
-      background: rgba(24, 144, 255, 0.05);
-      border-radius: 6px;
+      padding: 14px 16px 0;
+      flex-shrink: 0;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      animation: kpiSlideIn 0.6s ease-out both;
+    }
+    .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+    .kpi-card:nth-child(2) { animation-delay: 0.15s; }
+    .kpi-card:nth-child(3) { animation-delay: 0.2s; }
+    .kpi-card:nth-child(4) { animation-delay: 0.25s; }
+    .kpi-card:nth-child(5) { animation-delay: 0.3s; }
+
+    @keyframes kpiSlideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-lighter);
+    }
+
+    .kpi-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--primary-light); }
+    .kpi-icon.green { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+    .kpi-icon.amber { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+    .kpi-icon.cyan { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+    .kpi-icon.purple { background: rgba(139, 92, 246, 0.1); color: #8B5CF6; }
+
+    .kpi-info { flex: 1; min-width: 0; }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-label);
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-value);
+      font-family: 'Courier New', monospace;
+    }
+
+    .kpi-unit {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .kpi-trend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .kpi-trend.up { color: var(--success); }
+    .kpi-trend.down { color: var(--danger); }
+
+    /* 三栏主区域 */
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      gap: 12px;
+      padding: 12px 16px 16px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* 左右侧栏 */
+    .left-column, .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+    .left-column::-webkit-scrollbar, .right-column::-webkit-scrollbar { width: 3px; }
+    .left-column::-webkit-scrollbar-thumb, .right-column::-webkit-scrollbar-thumb {
+      background: rgba(30, 64, 175, 0.15);
+      border-radius: 3px;
+    }
+
+    /* 中间栏 */
+    .center-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    /* ============================================
+       卡片样式
+       ============================================ */
+    .de-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .de-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-lighter);
+    }
+
+    .de-card-header {
+      height: 42px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .de-card-header .icon {
+      color: var(--primary-light);
+      width: 16px;
+      height: 16px;
+    }
+
+    .de-card-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-title);
+      letter-spacing: 0.5px;
+    }
+
+    .de-card-header .badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      background: var(--primary-bg);
+      color: var(--primary-light);
+      font-size: 10px;
+      font-weight: 500;
+      border-radius: 10px;
+    }
+
+    .de-card-body {
+      padding: 12px;
+      height: calc(100% - 42px);
+      overflow: hidden;
+    }
+
+    /* ============================================
+       排行榜样式
+       ============================================ */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-main);
+      border-radius: 8px;
       transition: all 0.2s ease;
     }
 
-    .dish-item:hover {
-      background: rgba(24, 144, 255, 0.1);
+    .rank-item:hover {
+      background: var(--primary-bg);
     }
 
-    .dish-rank {
-      width: 24px;
-      height: 24px;
+    .rank-num {
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 4px;
-      font-size: 12px;
+      border-radius: 6px;
+      font-size: 11px;
       font-weight: 700;
+      flex-shrink: 0;
     }
 
-    .dish-rank.gold {
-      background: linear-gradient(135deg, #faad14, #d48806);
-      color: #fff;
+    .rank-item.top-1 .rank-num { background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; }
+    .rank-item.top-2 .rank-num { background: linear-gradient(135deg, #94A3B8, #64748B); color: #fff; }
+    .rank-item.top-3 .rank-num { background: linear-gradient(135deg, #D97706, #B45309); color: #fff; }
+    .rank-item:not(.top-1):not(.top-2):not(.top-3) .rank-num {
+      background: var(--bg-muted);
+      color: var(--text-label);
     }
 
-    .dish-rank.silver {
-      background: linear-gradient(135deg, #8c8c8c, #595959);
-      color: #fff;
-    }
-
-    .dish-rank.bronze {
-      background: linear-gradient(135deg, #d48806, #b35f00);
-      color: #fff;
-    }
-
-    .dish-rank.normal {
-      background: rgba(145, 213, 255, 0.2);
-      color: #91d5ff;
-    }
-
-    .dish-info {
+    .rank-name {
       flex: 1;
-    }
-
-    .dish-name {
       font-size: 13px;
       color: var(--text-value);
-      margin-bottom: 2px;
+      font-weight: 500;
     }
 
-    .dish-stats {
-      display: flex;
-      gap: 15px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .dish-amount {
-      font-size: 14px;
+    .rank-value {
+      font-size: 13px;
       font-weight: 600;
-      color: var(--primary-light);
+      color: var(--primary);
       font-family: 'Courier New', monospace;
     }
 
-    .usage-ring {
+    .rank-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-muted);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .rank-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--primary-light), var(--primary));
+      transition: width 0.8s ease;
+    }
+
+    /* ============================================
+       库存预警
+       ============================================ */
+    .alert-list {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+      gap: 8px;
     }
 
-    .usage-ring .value {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--primary-light);
+    .alert-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .alert-item.warning {
+      background: rgba(217, 119, 6, 0.06);
+      border-left: 3px solid var(--warning);
+    }
+
+    .alert-item.danger {
+      background: rgba(220, 38, 38, 0.06);
+      border-left: 3px solid var(--danger);
+    }
+
+    .alert-item .alert-content { flex: 1; }
+
+    .alert-item .alert-content .name {
+      color: var(--text-value);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .alert-item .alert-content .desc {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    /* ============================================
+       实时交易滚动
+       ============================================ */
+    .trade-scroll-container {
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .trade-scroll-list {
+      animation: scrollUp 25s linear infinite;
+    }
+
+    @keyframes scrollUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    .trade-scroll-list:hover { animation-play-state: paused; }
+
+    .trade-item-scroll {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12px;
+    }
+
+    .trade-item-scroll .time {
+      color: var(--text-muted);
+      min-width: 55px;
       font-family: 'Courier New', monospace;
     }
 
-    .usage-ring .label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 5px;
+    .trade-item-scroll .merchant {
+      flex: 1;
+      color: var(--text-value);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
+
+    .trade-item-scroll .amount {
+      color: var(--success);
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* 返回首页按钮 */
+    .back-home-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      color: var(--text-label);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .back-home-btn:hover {
+      background: var(--primary-bg);
+      border-color: var(--primary-lighter);
+      color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* 热力图网格 */
+    .heatmap-grid {
+      display: grid;
+      gap: 3px;
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .heatmap-cell:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 8px rgba(30, 64, 175, 0.3);
+    }
+
+    .heatmap-cell.level-0 { background: rgba(30, 64, 175, 0.08); }
+    .heatmap-cell.level-1 { background: rgba(30, 64, 175, 0.15); }
+    .heatmap-cell.level-2 { background: rgba(30, 64, 175, 0.28); }
+    .heatmap-cell.level-3 { background: rgba(30, 64, 175, 0.45); }
+    .heatmap-cell.level-4 { background: rgba(30, 64, 175, 0.65); }
+    .heatmap-cell.level-5 { background: rgba(30, 64, 175, 0.85); }
 
     .hour-label {
       font-size: 10px;
-      color: var(--text-dim);
+      color: var(--text-muted);
       text-align: center;
       margin-top: 4px;
     }
 
-    .member-pie-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* 图表容器 */
+    .chart-container {
+      width: 100%;
       height: 100%;
     }
 
-    .member-legend {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-left: 15px;
-    }
+    .center-top { flex: 1.3; }
+    .center-bottom { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-    .member-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
+    /* 响应式 */
+    @media (max-width: 1600px) {
+      .main-content { grid-template-columns: 240px 1fr 240px; }
+      .kpi-value { font-size: 20px; }
     }
-
-    .member-legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
+    @media (max-width: 1366px) {
+      .main-content { grid-template-columns: 220px 1fr 220px; }
+      .kpi-value { font-size: 18px; }
+      .center-bottom { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
-  <!-- 背景光晕 -->
-  <div class="bg-glow bg-glow-1"></div>
-  <div class="bg-glow bg-glow-2"></div>
-
   <!-- 顶部标题栏 -->
   <div class="header-bar">
     <div class="header-title">
       <div class="icon">🏪</div>
-      <h1 style="cursor: pointer;" onclick="window.location.href='index.html'" title="返回首页">重庆火锅店 - 门店运营看板</h1>
+      <h1 style="cursor: pointer;" onclick="window.location.href='index.html'" title="返回首页">重庆火锅店 · 门店运营看板</h1>
       <span class="status-badge open">
-        <span class="dot" style="width:6px;height:6px;background:#52c41a;border-radius:50%;"></span>
+        <span class="dot"></span>
         营业中
       </span>
     </div>
     <div class="header-info">
       <div class="header-status">
-        <i data-lucide="clock" style="width:16px;height:16px;color:#1890ff;"></i>
+        <i data-lucide="clock" style="width:16px;height:16px;color:var(--primary-light);"></i>
         <span>今日营业 8小时25分</span>
       </div>
       <div class="header-time">
         <div class="time" id="currentTime">00:00:00</div>
-        <div class="date" id="currentDate">2024年01月01日</div>
+        <div class="date" id="currentDate">2026年05月02日</div>
       </div>
     </div>
   </div>
 
+  <!-- 返回首页 -->
+  <a href="index.html" class="back-home-btn">
+    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
+    返回首页
+  </a>
+
   <!-- 主容器 -->
   <div class="dashboard-container">
-    <!-- 左侧栏 - KPI指标 -->
-    <div class="left-column kpi-grid">
-      <!-- KPI 1: 今日营业额 -->
+    <!-- ====== 顶部5个KPI横排 ====== -->
+    <div class="top-kpi-row">
       <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">今日营业额</span>
-          <div class="kpi-icon"><i data-lucide="wallet"></i></div>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="68542">0</span>
-          <span class="kpi-unit">元</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
-          <span>较昨日 +18.5%</span>
+        <div class="kpi-icon blue"><i data-lucide="wallet"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">今日营业额</div>
+          <div class="kpi-value-row">
+            <span class="kpi-value counting" data-target="68542">0</span>
+            <span class="kpi-unit">元</span>
+          </div>
+          <div class="kpi-trend up">
+            <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+            <span>较昨日 +18.5%</span>
+          </div>
         </div>
       </div>
 
-      <!-- KPI 2: 订单量 -->
       <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">今日订单量</span>
-          <div class="kpi-icon"><i data-lucide="shopping-cart"></i></div>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="486">0</span>
-          <span class="kpi-unit">单</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
-          <span>堂食 312 / 外卖 174</span>
+        <div class="kpi-icon green"><i data-lucide="shopping-cart"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">今日订单量</div>
+          <div class="kpi-value-row">
+            <span class="kpi-value counting" data-target="486">0</span>
+            <span class="kpi-unit">单</span>
+          </div>
+          <div class="kpi-trend up">
+            <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+            <span>堂食 312 / 外卖 174</span>
+          </div>
         </div>
       </div>
 
-      <!-- KPI 3: 客单价 -->
       <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">客单价</span>
-          <div class="kpi-icon"><i data-lucide="users"></i></div>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="141">0</span>
-          <span class="kpi-unit">元</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
-          <span>较上周 +5.2%</span>
+        <div class="kpi-icon amber"><i data-lucide="users"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">客单价</div>
+          <div class="kpi-value-row">
+            <span class="kpi-value counting" data-target="141">0</span>
+            <span class="kpi-unit">元</span>
+          </div>
+          <div class="kpi-trend up">
+            <i data-lucide="trending-up" style="width:12px;height:12px;"></i>
+            <span>较上周 +5.2%</span>
+          </div>
         </div>
       </div>
 
-      <!-- KPI 4: 翻台率 -->
       <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">翻台率</span>
-          <div class="kpi-icon"><i data-lucide="rotate-cw"></i></div>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="4.2">0</span>
-          <span class="kpi-unit">次</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="check" style="width:14px;height:14px;"></i>
-          <span>优秀水平</span>
+        <div class="kpi-icon cyan"><i data-lucide="rotate-cw"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">翻台率</div>
+          <div class="kpi-value-row">
+            <span class="kpi-value counting" data-target="4.2">0</span>
+            <span class="kpi-unit">次</span>
+          </div>
+          <div class="kpi-trend up">
+            <i data-lucide="check" style="width:12px;height:12px;"></i>
+            <span>优秀水平</span>
+          </div>
         </div>
       </div>
 
-      <!-- KPI 5: 好评率 -->
       <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">顾客好评率</span>
-          <div class="kpi-icon"><i data-lucide="star"></i></div>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="98.6">0</span>
-          <span class="kpi-unit">%</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="star" style="width:14px;height:14px;color:#faad14;"></i>
-          <span>4.9分 / 286条评价</span>
-        </div>
-      </div>
-
-      <!-- 菜品销量TOP8 -->
-      <div class="de-card" style="flex: 1.5;">
-        <div class="de-card-header">
-          <i data-lucide="utensils" class="icon"></i>
-          <h3>菜品销量TOP8</h3>
-          <span class="badge">实时</span>
-        </div>
-        <div class="de-card-body">
-          <div class="dish-grid" id="dishRank"></div>
+        <div class="kpi-icon purple"><i data-lucide="star"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-label">顾客好评率</div>
+          <div class="kpi-value-row">
+            <span class="kpi-value counting" data-target="98.6">0</span>
+            <span class="kpi-unit">%</span>
+          </div>
+          <div class="kpi-trend up">
+            <i data-lucide="star" style="width:12px;height:12px;color:#F59E0B;"></i>
+            <span>4.9分 / 286条评价</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 中间栏 - 核心图表区 -->
-    <div class="center-column">
-      <!-- 实时交易流水图 -->
-      <div class="de-card center-top">
-        <div class="de-card-header">
-          <i data-lucide="bar-chart-2" class="icon"></i>
-          <h3>今日实时交易流水</h3>
-          <span class="badge">每5分钟更新</span>
-        </div>
-        <div class="de-card-body" style="padding: 10px;">
-          <div id="realtimeTradeChart" class="chart-container"></div>
-        </div>
-      </div>
-
-      <!-- 中间图表区 -->
-      <div class="center-middle">
-        <!-- 桌台使用率 -->
-        <div class="de-card">
+    <!-- ====== 三栏主区域 ====== -->
+    <div class="main-content">
+      <!-- 左侧栏 -->
+      <div class="left-column">
+        <!-- 高销量菜品排行 -->
+        <div class="de-card" style="flex: 1.2;">
           <div class="de-card-header">
-            <i data-lucide="layout-grid" class="icon"></i>
-            <h3>实时桌台使用</h3>
+            <i data-lucide="utensils" class="icon"></i>
+            <h3>菜品销量排行</h3>
+            <span class="badge">实时</span>
           </div>
           <div class="de-card-body">
-            <div class="usage-ring">
-              <div id="usageChart" style="width: 140px; height: 140px;"></div>
-              <div class="value" id="usageValue">78%</div>
-              <div class="label">18桌使用中 / 共23桌</div>
-            </div>
+            <div class="rank-list" id="dishRank"></div>
           </div>
         </div>
 
-        <!-- 会员画像 -->
-        <div class="de-card">
+        <!-- 高规格排行 -->
+        <div class="de-card" style="flex: 0.8;">
           <div class="de-card-header">
-            <i data-lucide="user" class="icon"></i>
-            <h3>会员画像分析</h3>
+            <i data-lucide="package" class="icon"></i>
+            <h3>套餐规格排行</h3>
           </div>
           <div class="de-card-body">
-            <div class="member-pie-container">
-              <div id="memberChart" style="width: 130px; height: 130px;"></div>
-              <div class="member-legend" id="memberLegend"></div>
-            </div>
+            <div id="specChart" style="width:100%;height:100%;min-height:140px;"></div>
+          </div>
+        </div>
+
+        <!-- 时段热力 -->
+        <div class="de-card" style="flex: 1;">
+          <div class="de-card-header">
+            <i data-lucide="calendar" class="icon"></i>
+            <h3>一周时段热力</h3>
+          </div>
+          <div class="de-card-body" style="padding:10px;">
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+            <div class="hour-label">10:00 - 22:00 每小时</div>
           </div>
         </div>
       </div>
 
-      <!-- 底部三图表 -->
-      <div class="center-bottom">
-        <!-- 时段热力图 -->
-        <div class="de-card">
+      <!-- 中间栏 -->
+      <div class="center-column">
+        <!-- 多折线图 - 销售额/销量/成本 -->
+        <div class="de-card center-top">
           <div class="de-card-header">
-            <i data-lucide="thermometer" class="icon"></i>
-            <h3>时段销售热度</h3>
+            <i data-lucide="trending-up" class="icon"></i>
+            <h3>销售趋势分析</h3>
+            <span class="badge">今日</span>
           </div>
-          <div class="de-card-body">
-            <div id="heatmapChart" class="chart-container"></div>
+          <div class="de-card-body" style="padding: 10px;">
+            <div id="multiLineChart" class="chart-container"></div>
           </div>
         </div>
 
-        <!-- 订单来源 -->
-        <div class="de-card">
-          <div class="de-card-header">
-            <i data-lucide="radio" class="icon"></i>
-            <h3>订单来源分布</h3>
+        <!-- 底部三图表 -->
+        <div class="center-bottom">
+          <!-- 桌台使用率 -->
+          <div class="de-card">
+            <div class="de-card-header">
+              <i data-lucide="layout-grid" class="icon"></i>
+              <h3>桌台使用率</h3>
+            </div>
+            <div class="de-card-body" style="display:flex;align-items:center;justify-content:center;">
+              <div id="usageChart" style="width:140px;height:140px;"></div>
+            </div>
           </div>
-          <div class="de-card-body">
-            <div id="orderSourceChart" class="chart-container"></div>
+
+          <!-- 订单来源 -->
+          <div class="de-card">
+            <div class="de-card-header">
+              <i data-lucide="radio" class="icon"></i>
+              <h3>订单来源分布</h3>
+            </div>
+            <div class="de-card-body">
+              <div id="orderSourceChart" class="chart-container"></div>
+            </div>
+          </div>
+
+          <!-- 会员分析 -->
+          <div class="de-card">
+            <div class="de-card-header">
+              <i data-lucide="user" class="icon"></i>
+              <h3>会员等级分布</h3>
+            </div>
+            <div class="de-card-body">
+              <div id="memberChart" class="chart-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧栏 -->
+      <div class="right-column">
+        <!-- 商品排名横向条形图 -->
+        <div class="de-card" style="flex: 1;">
+          <div class="de-card-header">
+            <i data-lucide="bar-chart-2" class="icon"></i>
+            <h3>品类销售占比</h3>
+          </div>
+          <div class="de-card-body" style="padding:8px;">
+            <div id="categoryBarChart" style="width:100%;height:100%;min-height:150px;"></div>
           </div>
         </div>
 
-        <!-- 员工绩效 -->
-        <div class="de-card">
+        <!-- 店铺服务排名 -->
+        <div class="de-card" style="flex: 1;">
           <div class="de-card-header">
             <i data-lucide="award" class="icon"></i>
             <h3>服务绩效TOP5</h3>
@@ -399,61 +816,30 @@
             <div class="rank-list" id="staffRank"></div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 右侧栏 -->
-    <div class="right-column kpi-grid">
-      <!-- KPI 6: 在线等待 -->
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-label">当前等待桌数</span>
-          <div class="kpi-icon"><i data-lucide="users"></i></div>
+        <!-- 库存预警 -->
+        <div class="de-card" style="flex: 0.8;">
+          <div class="de-card-header">
+            <i data-lucide="alert-triangle" class="icon"></i>
+            <h3>库存预警</h3>
+            <span class="badge">3项</span>
+          </div>
+          <div class="de-card-body">
+            <div class="alert-list" id="alertList"></div>
+          </div>
         </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value counting" data-target="8">0</span>
-          <span class="kpi-unit">桌</span>
-        </div>
-        <div class="kpi-trend up">
-          <i data-lucide="clock" style="width:14px;height:14px;"></i>
-          <span>平均等待 12分钟</span>
-        </div>
-      </div>
 
-      <!-- 时段销售热力 -->
-      <div class="de-card" style="flex: 1;">
-        <div class="de-card-header">
-          <i data-lucide="calendar" class="icon"></i>
-          <h3>一周时段热力分布</h3>
-        </div>
-        <div class="de-card-body" style="padding: 10px;">
-          <div class="heatmap-grid" id="heatmapGrid"></div>
-          <div class="hour-label">10:00 - 22:00 每小时</div>
-        </div>
-      </div>
-
-      <!-- 库存预警 -->
-      <div class="de-card" style="flex: 1.2;">
-        <div class="de-card-header">
-          <i data-lucide="alert-triangle" class="icon"></i>
-          <h3>库存预警提醒</h3>
-          <span class="badge">3项待处理</span>
-        </div>
-        <div class="de-card-body">
-          <div class="alert-list" id="alertList"></div>
-        </div>
-      </div>
-
-      <!-- 实时订单滚动 -->
-      <div class="de-card" style="flex: 1.5;">
-        <div class="de-card-header">
-          <i data-lucide="activity" class="icon"></i>
-          <h3>实时订单流水</h3>
-          <span class="badge">LIVE</span>
-        </div>
-        <div class="de-card-body" style="padding: 10px 0;">
-          <div class="trade-scroll-container">
-            <div class="trade-scroll-list" id="orderScroll"></div>
+        <!-- 实时订单流 -->
+        <div class="de-card" style="flex: 1.2;">
+          <div class="de-card-header">
+            <i data-lucide="activity" class="icon"></i>
+            <h3>实时订单</h3>
+            <span class="badge">LIVE</span>
+          </div>
+          <div class="de-card-body" style="padding:0;">
+            <div class="trade-scroll-container">
+              <div class="trade-scroll-list" id="orderScroll"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -470,12 +856,11 @@
     // Mock数据
     // ============================================
     const mockData = {
-      // 时段交易数据
       hours: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'],
-      hourValues: [1200, 2800, 5200, 4800, 2100, 1500, 1800, 4200, 6800, 7200, 5800, 3200],
-      hourLastWeek: [1100, 2500, 4800, 4500, 1900, 1400, 1600, 3900, 6200, 6800, 5400, 2900],
+      revenue: [1200, 2800, 5200, 4800, 2100, 1500, 1800, 4200, 6800, 7200, 5800, 3200],
+      orders: [12, 28, 52, 48, 21, 15, 18, 42, 68, 72, 58, 32],
+      cost: [360, 840, 1560, 1440, 630, 450, 540, 1260, 2040, 2160, 1740, 960],
 
-      // 菜品销量排行
       dishes: [
         { name: '麻辣牛肉', sales: 328, amount: 13120 },
         { name: '鲜毛肚', sales: 286, amount: 11440 },
@@ -487,24 +872,29 @@
         { name: '贡菜', sales: 142, amount: 2840 }
       ],
 
-      // 订单来源
+      specs: [
+        { name: '双人套餐', value: 35, color: '#3B82F6' },
+        { name: '四人套餐', value: 28, color: '#1E40AF' },
+        { name: '单点', value: 22, color: '#06B6D4' },
+        { name: '六人套餐', value: 10, color: '#8B5CF6' },
+        { name: 'VIP定制', value: 5, color: '#D97706' }
+      ],
+
       orderSources: [
-        { name: '到店扫码', value: 45, color: '#1890ff' },
-        { name: '美团外卖', value: 22, color: '#ffd700' },
-        { name: '抖音团购', value: 18, color: '#fe2c55' },
-        { name: '大众点评', value: 10, color: '#ff6b6b' },
-        { name: '其他', value: 5, color: '#52c41a' }
+        { name: '到店扫码', value: 45, color: '#1E40AF' },
+        { name: '美团外卖', value: 22, color: '#D97706' },
+        { name: '抖音团购', value: 18, color: '#DC2626' },
+        { name: '大众点评', value: 10, color: '#3B82F6' },
+        { name: '其他', value: 5, color: '#22C55E' }
       ],
 
-      // 会员等级分布
       memberLevels: [
-        { name: '钻石会员', value: 8, color: '#b8b8c4' },
-        { name: '黄金会员', value: 25, color: '#faad14' },
-        { name: '白银会员', value: 35, color: '#8c8c8c' },
-        { name: '普通会员', value: 32, color: '#1890ff' }
+        { name: '钻石会员', value: 8, color: '#8B5CF6' },
+        { name: '黄金会员', value: 25, color: '#D97706' },
+        { name: '白银会员', value: 35, color: '#94A3B8' },
+        { name: '普通会员', value: 32, color: '#3B82F6' }
       ],
 
-      // 员工绩效
       staffRank: [
         { name: '张姐', score: 98.5, orders: 126 },
         { name: '李哥', score: 96.2, orders: 118 },
@@ -513,14 +903,12 @@
         { name: '陈丽', score: 93.2, orders: 102 }
       ],
 
-      // 库存预警
       alerts: [
         { type: 'warning', name: '鲜毛肚', desc: '库存不足，剩余23份', icon: 'alert-triangle' },
         { type: 'warning', name: '鸭肠', desc: '库存不足，剩余18份', icon: 'alert-triangle' },
         { type: 'danger', name: '黄喉', desc: '即将售罄，剩余5份', icon: 'x-circle' }
       ],
 
-      // 一周热力数据
       weekHeatmap: [
         [0.2, 0.3, 0.8, 0.9, 0.6, 0.3, 0.3, 0.5, 0.85, 0.95, 0.7, 0.4],
         [0.15, 0.25, 0.75, 0.85, 0.55, 0.25, 0.25, 0.45, 0.8, 0.9, 0.65, 0.35],
@@ -529,6 +917,14 @@
         [0.25, 0.38, 0.85, 0.95, 0.65, 0.35, 0.35, 0.55, 0.9, 1, 0.75, 0.45],
         [0.4, 0.5, 0.9, 1, 0.75, 0.45, 0.45, 0.65, 0.95, 1, 0.85, 0.55],
         [0.35, 0.45, 0.88, 0.98, 0.72, 0.42, 0.42, 0.62, 0.92, 0.98, 0.8, 0.5]
+      ],
+
+      categories: [
+        { name: '荤菜类', value: 42, color: '#1E40AF' },
+        { name: '素菜类', value: 18, color: '#3B82F6' },
+        { name: '海鲜类', value: 22, color: '#06B6D4' },
+        { name: '主食类', value: 10, color: '#8B5CF6' },
+        { name: '饮品类', value: 8, color: '#D97706' }
       ]
     };
 
@@ -537,15 +933,10 @@
     // ============================================
     function updateTime() {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
-      const dateStr = now.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long'
+      document.getElementById('currentTime').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-CN', {
+        year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
       });
-      document.getElementById('currentTime').textContent = timeStr;
-      document.getElementById('currentDate').textContent = dateStr;
     }
     setInterval(updateTime, 1000);
     updateTime();
@@ -559,22 +950,13 @@
         const isFloat = target < 100;
         const duration = 2000;
         const startTime = performance.now();
-
         function update(currentTime) {
           const elapsed = currentTime - startTime;
           const progress = Math.min(elapsed / duration, 1);
           const easeOut = 1 - Math.pow(1 - progress, 3);
           const current = target * easeOut;
-
-          if (isFloat) {
-            el.textContent = current.toFixed(1);
-          } else {
-            el.textContent = Math.floor(current).toLocaleString();
-          }
-
-          if (progress < 1) {
-            requestAnimationFrame(update);
-          }
+          el.textContent = isFloat ? current.toFixed(1) : Math.floor(current).toLocaleString();
+          if (progress < 1) requestAnimationFrame(update);
         }
         requestAnimationFrame(update);
       });
@@ -585,18 +967,22 @@
     // ============================================
     function renderDishRank() {
       const container = document.getElementById('dishRank');
+      const maxSales = Math.max(...mockData.dishes.map(d => d.sales));
       container.innerHTML = mockData.dishes.map((dish, index) => {
-        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'normal';
+        const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+        const barWidth = (dish.sales / maxSales * 100).toFixed(0);
         return `
-          <div class="dish-item">
-            <div class="dish-rank ${rankClass}">${index + 1}</div>
-            <div class="dish-info">
-              <div class="dish-name">${dish.name}</div>
-              <div class="dish-stats">
-                <span>销量 ${dish.sales} 份</span>
+          <div class="rank-item ${rankClass}">
+            <span class="rank-num">${index + 1}</span>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                <span style="font-size:12px;color:var(--text-value);font-weight:500;">${dish.name}</span>
+                <span style="font-size:12px;font-weight:600;color:var(--primary);font-family:'Courier New',monospace;">${dish.sales}份</span>
+              </div>
+              <div class="rank-bar-bg">
+                <div class="rank-bar-fill" style="width:${barWidth}%"></div>
               </div>
             </div>
-            <div class="dish-amount">¥${dish.amount.toLocaleString()}</div>
           </div>
         `;
       }).join('');
@@ -623,7 +1009,7 @@
       const container = document.getElementById('alertList');
       container.innerHTML = mockData.alerts.map(alert => `
         <div class="alert-item ${alert.type}">
-          <i data-lucide="${alert.icon}" style="width:20px;height:20px;"></i>
+          <i data-lucide="${alert.icon}" style="width:18px;height:18px;color:${alert.type === 'danger' ? 'var(--danger)' : 'var(--warning)'};"></i>
           <div class="alert-content">
             <div class="name">${alert.name}</div>
             <div class="desc">${alert.desc}</div>
@@ -633,23 +1019,21 @@
     }
 
     // ============================================
-    // 渲染一周热力图网格
+    // 渲染一周热力图
     // ============================================
     function renderHeatmapGrid() {
       const container = document.getElementById('heatmapGrid');
       const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
       let html = '<div style="display: grid; gap: 3px;">';
-
       mockData.weekHeatmap.forEach((day, dayIndex) => {
         html += '<div style="display: flex; gap: 3px; align-items: center;">';
-        html += `<span style="width: 30px; font-size: 10px; color: var(--text-muted);">${days[dayIndex]}</span>`;
-        day.forEach((value, hourIndex) => {
+        html += `<span style="width: 28px; font-size: 10px; color: var(--text-muted);">${days[dayIndex]}</span>`;
+        day.forEach((value) => {
           const level = Math.floor(value * 5);
-          html += `<div class="heatmap-cell level-${level}" style="width: 14px; height: 14px;" title="${days[dayIndex]} ${mockData.hours[hourIndex]}: ${(value * 100).toFixed(0)}%"></div>`;
+          html += `<div class="heatmap-cell level-${level}" style="width: 14px; height: 14px;" title="${(value * 100).toFixed(0)}%"></div>`;
         });
         html += '</div>';
       });
-
       html += '</div>';
       container.innerHTML = html;
     }
@@ -657,31 +1041,21 @@
     // ============================================
     // 渲染实时订单滚动
     // ============================================
-    function generateOrderItems() {
-      const tableNos = ['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'E1', 'E2', 'E3'];
+    function renderOrderScroll() {
+      const tableNos = ['A1', 'A2', 'A3', 'A5', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'E1'];
       const dishes = ['麻辣牛肉', '鲜毛肚', '千层肚', '鸭肠', '黄喉', '嫩牛肉', '虾滑', '鸳鸯锅'];
-      const items = [];
-
+      let html = '';
       for (let i = 0; i < 20; i++) {
         const table = tableNos[Math.floor(Math.random() * tableNos.length)];
         const dish = dishes[Math.floor(Math.random() * dishes.length)];
         const amount = (Math.random() * 300 + 80).toFixed(2);
         const time = new Date(Date.now() - i * 15000).toLocaleTimeString('zh-CN', { hour12: false });
-        items.push({ table, dish, amount, time });
+        html += `<div class="trade-item-scroll">
+          <span class="time">${time}</span>
+          <span class="merchant">${table}桌 · ${dish}</span>
+          <span class="amount">¥${amount}</span>
+        </div>`;
       }
-      return items;
-    }
-
-    function renderOrderScroll() {
-      const items = generateOrderItems();
-      const html = items.map(item => `
-        <div class="trade-item-scroll">
-          <span class="time">${item.time}</span>
-          <span class="merchant">${item.table}桌 - ${item.dish}</span>
-          <span class="amount">¥${item.amount}</span>
-        </div>
-      `).join('');
-
       document.getElementById('orderScroll').innerHTML = html + html;
     }
 
@@ -689,175 +1063,186 @@
     // 初始化图表
     // ============================================
     function initCharts() {
-      // 1. 今日实时交易流水图
-      charts.realtimeTrade = echarts.init(document.getElementById('realtimeTradeChart'));
-      charts.realtimeTrade.setOption({
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          borderColor: '#1890ff',
-          textStyle: { color: '#fff' }
-        },
+      const tooltipStyle = {
+        backgroundColor: 'rgba(255,255,255,0.98)',
+        borderColor: '#E2E8F0',
+        textStyle: { color: '#0F172A', fontSize: 12 },
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      };
+
+      // 1. 多折线图 - 销售额/订单/成本
+      charts.multiLine = echarts.init(document.getElementById('multiLineChart'));
+      charts.multiLine.setOption({
+        tooltip: { ...tooltipStyle, trigger: 'axis' },
         legend: {
-          data: ['今日', '上周同期'],
-          textStyle: { color: '#91d5ff', fontSize: 11 },
+          data: ['营业额', '订单量', '原料成本'],
+          textStyle: { color: '#64748B', fontSize: 11 },
           top: 5
         },
-        grid: { left: '5%', right: '5%', bottom: '10%', top: '18%' },
+        grid: { left: '5%', right: '8%', bottom: '10%', top: '18%' },
         xAxis: {
-          type: 'category',
-          data: mockData.hours,
-          axisLine: { lineStyle: { color: '#1890ff' } },
-          axisLabel: { color: '#91d5ff', fontSize: 10 }
+          type: 'category', data: mockData.hours,
+          axisLine: { lineStyle: { color: '#E2E8F0' } },
+          axisLabel: { color: '#64748B', fontSize: 10 }
         },
-        yAxis: {
-          type: 'value',
-          axisLine: { show: false },
-          splitLine: { lineStyle: { color: 'rgba(24, 144, 255, 0.15)' } },
-          axisLabel: { color: '#91d5ff', fontSize: 10 }
-        },
+        yAxis: [
+          {
+            type: 'value', name: '金额(元)',
+            axisLine: { show: false },
+            splitLine: { lineStyle: { color: '#F1F5F9' } },
+            axisLabel: { color: '#94A3B8', fontSize: 10 }
+          },
+          {
+            type: 'value', name: '订单量',
+            axisLine: { show: false },
+            splitLine: { show: false },
+            axisLabel: { color: '#94A3B8', fontSize: 10 }
+          }
+        ],
         series: [
           {
-            name: '今日',
-            type: 'bar',
-            data: mockData.hourValues,
-            barWidth: '40%',
-            itemStyle: {
+            name: '营业额', type: 'line', smooth: true,
+            data: mockData.revenue,
+            lineStyle: { color: '#1E40AF', width: 2.5 },
+            itemStyle: { color: '#1E40AF' },
+            symbol: 'circle', symbolSize: 5,
+            areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#40a9ff' },
-                { offset: 1, color: '#096dd9' }
-              ]),
-              borderRadius: [4, 4, 0, 0]
+                { offset: 0, color: 'rgba(30, 64, 175, 0.15)' },
+                { offset: 1, color: 'rgba(30, 64, 175, 0.01)' }
+              ])
             }
           },
           {
-            name: '上周同期',
-            type: 'line',
-            data: mockData.hourLastWeek,
-            smooth: true,
-            showSymbol: false,
-            lineStyle: { color: '#faad14', width: 2, type: 'dashed' }
+            name: '订单量', type: 'line', smooth: true, yAxisIndex: 1,
+            data: mockData.orders,
+            lineStyle: { color: '#22C55E', width: 2 },
+            itemStyle: { color: '#22C55E' },
+            symbol: 'diamond', symbolSize: 5
+          },
+          {
+            name: '原料成本', type: 'line', smooth: true,
+            data: mockData.cost,
+            lineStyle: { color: '#D97706', width: 2, type: 'dashed' },
+            itemStyle: { color: '#D97706' },
+            symbol: 'none'
           }
         ]
       });
 
-      // 2. 桌台使用率环形图
+      // 2. 桌台使用率
       charts.usageChart = echarts.init(document.getElementById('usageChart'));
       charts.usageChart.setOption({
         series: [{
           type: 'pie',
-          radius: ['65%', '85%'],
+          radius: ['60%', '82%'],
           center: ['50%', '50%'],
           startAngle: 90,
-          label: { show: false },
+          label: {
+            show: true, position: 'center',
+            formatter: '78%\n使用中',
+            fontSize: 14, fontWeight: '700',
+            color: '#1E40AF', lineHeight: 20
+          },
           data: [
-            { value: 78, itemStyle: { color: '#1890ff' } },
-            { value: 22, itemStyle: { color: 'rgba(24, 144, 255, 0.15)' } }
+            { value: 78, itemStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#3B82F6' },
+              { offset: 1, color: '#1E40AF' }
+            ])}},
+            { value: 22, itemStyle: { color: '#F1F5F9' } }
           ]
         }]
       });
 
-      // 3. 会员画像
-      charts.memberChart = echarts.init(document.getElementById('memberChart'));
-      charts.memberChart.setOption({
+      // 3. 订单来源
+      charts.orderSourceChart = echarts.init(document.getElementById('orderSourceChart'));
+      charts.orderSourceChart.setOption({
+        tooltip: { ...tooltipStyle, trigger: 'item' },
         series: [{
           type: 'pie',
-          radius: ['50%', '75%'],
+          radius: ['42%', '70%'],
           center: ['50%', '50%'],
-          label: { show: false },
+          label: { show: true, color: '#64748B', fontSize: 10, formatter: '{b}\n{d}%' },
+          labelLine: { lineStyle: { color: '#CBD5E1' } },
+          data: mockData.orderSources.map(s => ({
+            name: s.name, value: s.value,
+            itemStyle: { color: s.color }
+          }))
+        }]
+      });
+
+      // 4. 会员等级
+      charts.memberChart = echarts.init(document.getElementById('memberChart'));
+      charts.memberChart.setOption({
+        tooltip: { ...tooltipStyle, trigger: 'item' },
+        series: [{
+          type: 'pie',
+          radius: ['45%', '72%'],
+          center: ['50%', '50%'],
+          label: { show: true, color: '#64748B', fontSize: 10, formatter: '{b}\n{d}%' },
+          labelLine: { lineStyle: { color: '#CBD5E1' } },
           data: mockData.memberLevels.map(m => ({
-            name: m.name,
-            value: m.value,
+            name: m.name, value: m.value,
             itemStyle: { color: m.color }
           }))
         }]
       });
 
-      // 渲染会员图例
-      document.getElementById('memberLegend').innerHTML = mockData.memberLevels.map(m => `
-        <div class="member-legend-item">
-          <div class="member-legend-dot" style="background: ${m.color};"></div>
-          <span>${m.name} ${m.value}%</span>
-        </div>
-      `).join('');
-
-      // 4. 时段销售热力图
-      charts.heatmapChart = echarts.init(document.getElementById('heatmapChart'));
-      const heatmapData = [];
-      const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-      mockData.weekHeatmap.forEach((day, dayIndex) => {
-        day.forEach((value, hourIndex) => {
-          heatmapData.push([hourIndex, dayIndex, Math.round(value * 100)]);
-        });
-      });
-
-      charts.heatmapChart.setOption({
-        tooltip: {
-          position: 'top',
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          borderColor: '#1890ff',
-          textStyle: { color: '#fff' },
-          formatter: params => `${days[params.data[1]]} ${mockData.hours[params.data[0]]}<br/>热度: ${params.data[2]}%`
-        },
-        grid: { left: '18%', right: '5%', bottom: '15%', top: '5%' },
-        xAxis: {
-          type: 'category',
-          data: mockData.hours,
-          axisLine: { show: false },
-          axisLabel: { color: '#91d5ff', fontSize: 8, rotate: 45 }
-        },
-        yAxis: {
-          type: 'category',
-          data: days,
-          axisLine: { show: false },
-          axisLabel: { color: '#91d5ff', fontSize: 9 }
-        },
-        visualMap: {
-          min: 0,
-          max: 100,
-          calculable: true,
-          orient: 'horizontal',
-          left: 'center',
-          bottom: 0,
-          inRange: { color: ['#1e3a5f', '#2d5a8c', '#3d7ab8', '#4d9ae0', '#5db0ff'] },
-          textStyle: { color: '#91d5ff', fontSize: 9 },
-          show: false
+      // 5. 套餐规格饼图
+      charts.specChart = echarts.init(document.getElementById('specChart'));
+      charts.specChart.setOption({
+        tooltip: { ...tooltipStyle, trigger: 'item' },
+        legend: {
+          orient: 'vertical', right: '2%', top: 'center',
+          textStyle: { color: '#64748B', fontSize: 10 },
+          itemWidth: 10, itemHeight: 10
         },
         series: [{
-          type: 'heatmap',
-          data: heatmapData,
+          type: 'pie', radius: ['40%', '68%'], center: ['35%', '50%'],
           label: { show: false },
-          itemStyle: { borderWidth: 2, borderColor: '#0f172a' }
+          emphasis: {
+            label: { show: true, fontSize: 12, fontWeight: 'bold', color: '#0F172A' }
+          },
+          data: mockData.specs.map(s => ({
+            name: s.name, value: s.value,
+            itemStyle: { color: s.color }
+          }))
         }]
       });
 
-      // 5. 订单来源分布
-      charts.orderSourceChart = echarts.init(document.getElementById('orderSourceChart'));
-      charts.orderSourceChart.setOption({
-        tooltip: {
-          trigger: 'item',
-          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          borderColor: '#1890ff',
-          textStyle: { color: '#fff' }
+      // 6. 品类销售横向条形图
+      charts.categoryBar = echarts.init(document.getElementById('categoryBarChart'));
+      charts.categoryBar.setOption({
+        tooltip: { ...tooltipStyle, trigger: 'axis', axisPointer: { type: 'shadow' } },
+        grid: { left: '3%', right: '12%', bottom: '3%', top: '3%', containLabel: true },
+        xAxis: { type: 'value', show: false },
+        yAxis: {
+          type: 'category', data: mockData.categories.map(c => c.name).reverse(),
+          axisLine: { show: false }, axisTick: { show: false },
+          axisLabel: { color: '#64748B', fontSize: 11 }
         },
-        legend: { show: false },
         series: [{
-          type: 'pie',
-          radius: ['40%', '70%'],
-          center: ['50%', '50%'],
+          type: 'bar', barWidth: 14,
+          data: mockData.categories.map(c => ({
+            value: c.value,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: c.color },
+                { offset: 1, color: c.color + '88' }
+              ]),
+              borderRadius: [0, 7, 7, 0]
+            }
+          })).reverse(),
           label: {
-            show: true,
-            color: '#91d5ff',
-            fontSize: 10,
-            formatter: '{b}\n{d}%'
-          },
-          data: mockData.orderSources
+            show: true, position: 'right',
+            formatter: '{c}%', color: '#64748B', fontSize: 11
+          }
         }]
       });
     }
 
     // ============================================
-    // 窗口大小变化自适应
+    // 窗口自适应
     // ============================================
     window.addEventListener('resize', () => {
       Object.values(charts).forEach(chart => chart.resize());
@@ -879,12 +1264,12 @@
       }, 300);
     });
 
-    // 实时数据刷新模拟
+    // 实时数据刷新
     setInterval(() => {
-      mockData.hourValues = mockData.hourValues.map(v => v + Math.floor(Math.random() * 10 - 5));
-      charts.realtimeTrade.setOption({
-        series: [{ data: mockData.hourValues }]
-      });
+      mockData.revenue = mockData.revenue.map(v => v + Math.floor(Math.random() * 10 - 5));
+      if (charts.multiLine) {
+        charts.multiLine.setOption({ series: [{ data: mockData.revenue }] });
+      }
     }, 30000);
   </script>
 </body>

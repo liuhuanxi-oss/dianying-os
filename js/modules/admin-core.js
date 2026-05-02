@@ -10,7 +10,11 @@ const App = {
   currentPage: 'overview',
   sidebarCollapsed: false,
   charts: {},
-  data: {}
+  data: {},
+  // 暴露导航方法，供 auth.js 等模块调用
+  navigateTo: function(pageId, params) {
+    navigateTo(pageId, params);
+  }
 };
 
 // ============================================
@@ -150,6 +154,9 @@ const menuConfig = [
     ]
   }
 ];
+
+// 暴露到 window 上，供 auth.js 的 Auth.getFilteredMenuConfig() 访问
+window.menuConfig = menuConfig;
 
 // ============================================
 // Mock数据 - 商家
@@ -435,6 +442,10 @@ function navigateTo(pageId, params = {}) {
   document.getElementById('sidebar')?.classList.remove('mobile-open');
 }
 
+// 暴露到 window 供其他模块调用
+window.navigateTo = navigateTo;
+window.renderSidebar = renderSidebar;
+
 // ============================================
 // 面包屑导航
 // ============================================
@@ -460,11 +471,11 @@ function updateBreadcrumb(pageId) {
 // 页面加载器 - 按需加载模块
 // ============================================
 const pageModules = {
-  // 所有页面统一使用简化模块(包含所有页面渲染函数)
-  'overview': 'admin-merchant.js',
-  'industry-report': 'admin-merchant.js',
-  'ai-stats': 'admin-merchant.js',
-  'churn-warning': 'admin-merchant.js',
+  // 数据洞察模块
+  'overview': 'admin-analytics.js',
+  'industry-report': 'admin-analytics.js',
+  'ai-stats': 'admin-analytics.js',
+  'churn-warning': 'admin-analytics.js',
   'merchants': 'admin-merchant.js',
   'merchant-detail': 'admin-merchant.js',
   'merchant-upgrade': 'admin-merchant.js',
@@ -560,42 +571,68 @@ async function renderPage(pageId, params = {}) {
   if (navigationId !== currentNavigationId) return;
 
   const pages = {
-    'merchants': renderMerchantsPage, 'merchant-detail': renderMerchantDetailPage,
-    'merchant-upgrade': renderMerchantUpgradePage, 'merchant-permission': renderMerchantPermissionPage,
-    'merchant-audit': renderMerchantAuditPage,
-    'agents': renderAgentsPage, 'agent-merchants': renderAgentMerchantsPage,
-    'agent-commission': renderAgentCommissionPage, 'service-providers': renderServiceProvidersPage,
-    'agent-dashboard': renderAgentDashboardPage,
-    'sales': renderSalesPage, 'customer-assign': renderCustomerAssignPage,
-    'sales-performance': renderSalesPerformancePage, 'visit-records': renderVisitRecordsPage,
-    'revenue': renderRevenuePage, 'billing': renderBillingPage,
-    'refund': renderRefundPage, 'invoice': renderInvoicePage,
-    'knowledge-base': renderKnowledgeBasePage, 'ai-templates': renderAITemplatesPage,
-    'announcements': renderAnnouncementsPage, 'activities': renderActivitiesPage,
-    'overview': renderOverviewPage, 'industry-report': renderIndustryReportPage,
-    'ai-stats': renderAIStatsPage, 'churn-warning': renderChurnWarningPage,
-    'payment-channels': renderPaymentChannelsPage, 'transactions': renderTransactionsPage,
-    'fee-config': renderFeeConfigPage, 'split-payment': renderSplitPaymentPage,
-    'reconciliation': renderReconciliationPage,
-    'onboarding': renderOnboardingPage, 'health-score': renderHealthScorePage,
-    'renewal': renderRenewalPage, 'upgrade-funnel': renderUpgradeFunnelPage,
-    'wake-up': renderWakeUpPage,
-    'channel-analysis': renderChannelAnalysisPage, 'invite-fission': renderInviteFissionPage,
-    'trial': renderTrialPage, 'partners': renderPartnersPage,
-    'tickets': renderTicketsPage, 'faq': renderFAQPage, 'satisfaction': renderSatisfactionPage,
-    'feature-flags': renderFeatureFlagsPage, 'ab-test': renderABTestPage,
-    'requirements': renderRequirementsPage, 'version-management': renderVersionManagementPage,
-    'login-security': renderLoginSecurityPage, 'data-masking': renderDataMaskingPage,
-    'compliance': renderCompliancePage,
-    'roles': renderRolesPage, 'operation-logs': renderOperationLogsPage,
-    'pricing': renderPricingPage, 'notifications': renderNotificationsPage
+    'merchants': typeof renderMerchantsPage === 'function' ? renderMerchantsPage : null,
+    'merchant-detail': typeof renderMerchantDetailPage === 'function' ? renderMerchantDetailPage : null,
+    'merchant-upgrade': typeof renderMerchantUpgradePage === 'function' ? renderMerchantUpgradePage : null,
+    'merchant-permission': typeof renderMerchantPermissionPage === 'function' ? renderMerchantPermissionPage : null,
+    'merchant-audit': typeof renderMerchantAuditPage === 'function' ? renderMerchantAuditPage : null,
+    'agents': typeof renderAgentsPage === 'function' ? renderAgentsPage : null,
+    'agent-merchants': typeof renderAgentMerchantsPage === 'function' ? renderAgentMerchantsPage : null,
+    'agent-commission': typeof renderAgentCommissionPage === 'function' ? renderAgentCommissionPage : null,
+    'service-providers': typeof renderServiceProvidersPage === 'function' ? renderServiceProvidersPage : null,
+    'agent-dashboard': typeof renderAgentDashboardPage === 'function' ? renderAgentDashboardPage : null,
+    'sales': typeof renderSalesPage === 'function' ? renderSalesPage : null,
+    'customer-assign': typeof renderCustomerAssignPage === 'function' ? renderCustomerAssignPage : null,
+    'sales-performance': typeof renderSalesPerformancePage === 'function' ? renderSalesPerformancePage : null,
+    'visit-records': typeof renderVisitRecordsPage === 'function' ? renderVisitRecordsPage : null,
+    'revenue': typeof renderRevenuePage === 'function' ? renderRevenuePage : null,
+    'billing': typeof renderBillingPage === 'function' ? renderBillingPage : null,
+    'refund': typeof renderRefundPage === 'function' ? renderRefundPage : null,
+    'invoice': typeof renderInvoicePage === 'function' ? renderInvoicePage : null,
+    'knowledge-base': typeof renderKnowledgeBasePage === 'function' ? renderKnowledgeBasePage : null,
+    'ai-templates': typeof renderAITemplatesPage === 'function' ? renderAITemplatesPage : null,
+    'announcements': typeof renderAnnouncementsPage === 'function' ? renderAnnouncementsPage : null,
+    'activities': typeof renderActivitiesPage === 'function' ? renderActivitiesPage : null,
+    'overview': typeof renderOverviewPage === 'function' ? renderOverviewPage : null,
+    'industry-report': typeof renderIndustryReportPage === 'function' ? renderIndustryReportPage : null,
+    'ai-stats': typeof renderAIStatsPage === 'function' ? renderAIStatsPage : null,
+    'churn-warning': typeof renderChurnWarningPage === 'function' ? renderChurnWarningPage : null,
+    'payment-channels': typeof renderPaymentChannelsPage === 'function' ? renderPaymentChannelsPage : null,
+    'transactions': typeof renderTransactionsPage === 'function' ? renderTransactionsPage : null,
+    'fee-config': typeof renderFeeConfigPage === 'function' ? renderFeeConfigPage : null,
+    'split-payment': typeof renderSplitPaymentPage === 'function' ? renderSplitPaymentPage : null,
+    'reconciliation': typeof renderReconciliationPage === 'function' ? renderReconciliationPage : null,
+    'onboarding': typeof renderOnboardingPage === 'function' ? renderOnboardingPage : null,
+    'health-score': typeof renderHealthScorePage === 'function' ? renderHealthScorePage : null,
+    'renewal': typeof renderRenewalPage === 'function' ? renderRenewalPage : null,
+    'upgrade-funnel': typeof renderUpgradeFunnelPage === 'function' ? renderUpgradeFunnelPage : null,
+    'wake-up': typeof renderWakeUpPage === 'function' ? renderWakeUpPage : null,
+    'channel-analysis': typeof renderChannelAnalysisPage === 'function' ? renderChannelAnalysisPage : null,
+    'invite-fission': typeof renderInviteFissionPage === 'function' ? renderInviteFissionPage : null,
+    'trial': typeof renderTrialPage === 'function' ? renderTrialPage : null,
+    'partners': typeof renderPartnersPage === 'function' ? renderPartnersPage : null,
+    'tickets': typeof renderTicketsPage === 'function' ? renderTicketsPage : null,
+    'faq': typeof renderFAQPage === 'function' ? renderFAQPage : null,
+    'satisfaction': typeof renderSatisfactionPage === 'function' ? renderSatisfactionPage : null,
+    'feature-flags': typeof renderFeatureFlagsPage === 'function' ? renderFeatureFlagsPage : null,
+    'ab-test': typeof renderABTestPage === 'function' ? renderABTestPage : null,
+    'requirements': typeof renderRequirementsPage === 'function' ? renderRequirementsPage : null,
+    'version-management': typeof renderVersionManagementPage === 'function' ? renderVersionManagementPage : null,
+    'login-security': typeof renderLoginSecurityPage === 'function' ? renderLoginSecurityPage : null,
+    'data-masking': typeof renderDataMaskingPage === 'function' ? renderDataMaskingPage : null,
+    'compliance': typeof renderCompliancePage === 'function' ? renderCompliancePage : null,
+    'roles': typeof renderRolesPage === 'function' ? renderRolesPage : null,
+    'operation-logs': typeof renderOperationLogsPage === 'function' ? renderOperationLogsPage : null,
+    'pricing': typeof renderPricingPage === 'function' ? renderPricingPage : null,
+    'notifications': typeof renderNotificationsPage === 'function' ? renderNotificationsPage : null
   };
 
   content.innerHTML = '<div class="page-content">';
-  if (pages[pageId]) {
+  if (pages[pageId] && typeof pages[pageId] === 'function') {
     pages[pageId](content, params);
   } else {
-    content.innerHTML += '<div class="empty-state"><div class="empty-icon"><i data-lucide="layout-dashboard"></i></div><h3 class="empty-title">页面开发中</h3></div>';
+    content.innerHTML += '<div class="empty-state"><div class="empty-icon"><i data-lucide="layout-dashboard"></i></div><h3 class="empty-title">页面开发中</h3><p class="empty-description">该功能模块正在建设中，敬请期待</p></div>';
+    console.warn(`[店赢OS] 页面渲染函数未找到: ${pageId}`);
   }
   content.innerHTML += '</div>';
 

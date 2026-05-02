@@ -1897,3 +1897,240 @@ textarea.form-input {
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+/* ============================================
+   Activity List (Overview Page)
+   ============================================ */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-icon i {
+  width: 16px;
+  height: 16px;
+}
+
+.activity-icon.success { background: rgba(16,185,129,0.15); color: var(--success); }
+.activity-icon.primary { background: rgba(94,106,210,0.15); color: var(--primary); }
+.activity-icon.warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+.activity-icon.danger { background: rgba(239,68,68,0.15); color: var(--danger); }
+.activity-icon.accent { background: rgba(0,184,204,0.15); color: var(--accent); }
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.activity-text strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ============================================
+   Top Merchants (Overview Page)
+   ============================================ */
+.top-merchants {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.top-merchant-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.top-merchant-item .rank {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--bg);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.top-merchant-item .rank.gold {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #333;
+}
+
+.top-merchant-item .rank.silver {
+  background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+  color: #333;
+}
+
+.top-merchant-item .rank.bronze {
+  background: linear-gradient(135deg, #cd7f32, #b8680e);
+  color: white;
+}
+
+.merchant-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 0;
+}
+
+.merchant-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.merchant-gmv {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+/* ============================================
+   Chart Actions / Buttons
+   ============================================ */
+.chart-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.chart-btn {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chart-btn:hover {
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
+.chart-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* ============================================
+   Stat Change - positive class alias
+   ============================================ */
+.stat-change.positive { color: var(--success); }
+.stat-change.negative { color: var(--danger); }
+
+/* ============================================
+   Font Mono
+   ============================================ */
+.font-mono {
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85em;
+}
+
+/* ============================================
+   FAQ Item
+   ============================================ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.faq-q {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.faq-a {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   Permission Item (Feature Flags / Notifications)
+   ============================================ */
+.permission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.permission-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.permission-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.permission-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.permission-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

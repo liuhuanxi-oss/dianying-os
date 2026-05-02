@@ -548,7 +548,7 @@
   <script>
     // 🔥 同步执行，不要延迟，避免和 admin-core.js 冲突
     (function() {
-      // 检查登录状态
+      // 检查登录状态（isLoggedIn 已内置自动登录逻辑）
       if (typeof Auth !== 'undefined') {
         if (!Auth.isLoggedIn()) {
           window.location.href = 'login.html';
@@ -561,11 +561,6 @@
           const adminRole = document.querySelector('.admin-role');
           if (adminName) adminName.textContent = user.name;
           if (adminRole) adminRole.textContent = user.roleConfig.displayName;
-          
-          // 根据角色过滤菜单
-          if (typeof filterMenuByRole === 'function') {
-            filterMenuByRole(user.role);
-          }
         }
       }
     })();
