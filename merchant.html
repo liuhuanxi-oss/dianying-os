@@ -2012,6 +2012,976 @@
                 </div>
             </div>
         </div>
+
+        
+        <!-- ========== 报表中心 ========== -->
+        <div id="module-report-center" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>📊 报表中心</h2>
+                    <p>多维度数据报表，洞察经营全貌</p>
+                </div>
+                <div class="page-actions">
+                    <select class="btn btn-outline btn-sm" style="background: white;">
+                        <option>今日</option><option>本周</option><option>本月</option><option>本季</option><option>本年</option>
+                    </select>
+                    <button class="btn btn-outline btn-sm" onclick="showToast('info', '正在导出报表...')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        导出
+                    </button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card success"><div class="stat-header"><h3>总营收</h3><div class="stat-icon green">💰</div></div><div class="stat-value">¥356,842</div><span class="stat-trend up">↑ 12.5%</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>订单量</h3><div class="stat-icon blue">📦</div></div><div class="stat-value">4,285</div><span class="stat-trend up">↑ 8.3%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>客单价</h3><div class="stat-icon yellow">👤</div></div><div class="stat-value">¥83.2</div><span class="stat-trend up">↑ 3.8%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>退单率</h3><div class="stat-icon red">↩️</div></div><div class="stat-value">1.2%</div><span class="stat-trend down">↓ 0.3%</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>📈 营收趋势</h3></div>
+                <div class="card-body">
+                    <div id="reportRevenueChart" style="height: 280px; display: flex; align-items: flex-end; gap: 8px; padding: 20px 0;"></div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="content-card">
+                    <div class="card-header"><h3>🍽️ 品类销售排行</h3></div>
+                    <div class="card-body">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 24px; font-weight: bold; color: var(--primary);">1</span><span style="flex: 1;">招牌川菜系列</span><span style="color: var(--primary); font-weight: 600;">¥89,420</span><span class="tag tag-success">+15%</span></div>
+                            <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 24px; font-weight: bold; color: var(--secondary);">2</span><span style="flex: 1;">时令蔬菜</span><span style="color: var(--primary); font-weight: 600;">¥52,180</span><span class="tag tag-success">+8%</span></div>
+                            <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 24px; font-weight: bold; color: var(--warning);">3</span><span style="flex: 1;">凉菜小食</span><span style="color: var(--primary); font-weight: 600;">¥38,560</span><span class="tag tag-warning">+2%</span></div>
+                            <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 24px; font-weight: bold; color: var(--text-secondary);">4</span><span style="flex: 1;">汤品主食</span><span style="color: var(--primary); font-weight: 600;">¥28,940</span><span class="tag tag-danger">-5%</span></div>
+                            <div style="display: flex; align-items: center; gap: 12px;"><span style="width: 24px; font-weight: bold; color: var(--text-secondary);">5</span><span style="flex: 1;">饮品酒水</span><span style="color: var(--primary); font-weight: 600;">¥21,320</span><span class="tag tag-success">+12%</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-header"><h3>⏰ 时段分析热力图</h3></div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: 60px repeat(7, 1fr); gap: 4px; text-align: center; font-size: 11px;">
+                            <div></div><div>周一</div><div>周二</div><div>周三</div><div>周四</div><div>周五</div><div>周六</div><div>周日</div>
+                            <div style="font-weight: 500;">11:00</div><div style="background:#FEE2E2;padding:8px;border-radius:4px;">1.2</div><div style="background:#FEF3C7;padding:8px;border-radius:4px;">1.5</div><div style="background:#D1FAE5;padding:8px;border-radius:4px;">2.1</div><div style="background:#DBEAFE;padding:8px;border-radius:4px;">1.8</div><div style="background:#EDE9FE;padding:8px;border-radius:4px;">2.5</div><div style="background:#FECACA;padding:8px;border-radius:4px;">3.2</div><div style="background:#FCA5A5;padding:8px;border-radius:4px;">3.5</div>
+                            <div style="font-weight: 500;">13:00</div><div style="background:#FEF3C7;padding:8px;border-radius:4px;">2.5</div><div style="background:#D1FAE5;padding:8px;border-radius:4px;">2.8</div><div style="background:#DBEAFE;padding:8px;border-radius:4px;">2.4</div><div style="background:#EDE9FE;padding:8px;border-radius:4px;">3.0</div><div style="background:#C4B5FD;padding:8px;border-radius:4px;">3.8</div><div style="background:#FCA5A5;padding:8px;border-radius:4px;">4.2</div><div style="background:#F87171;padding:8px;border-radius:4px;">4.5</div>
+                            <div style="font-weight: 500;">18:00</div><div style="background:#DBEAFE;padding:8px;border-radius:4px;">3.5</div><div style="background:#EDE9FE;padding:8px;border-radius:4px;">3.8</div><div style="background:#C4B5FD;padding:8px;border-radius:4px;">3.6</div><div style="background:#A78BFA;padding:8px;border-radius:4px;">4.2</div><div style="background:#8B5CF6;padding:8px;border-radius:4px;color:white;">5.0</div><div style="background:#7C3AED;padding:8px;border-radius:4px;color:white;">5.5</div><div style="background:#6D28D9;padding:8px;border-radius:4px;color:white;">5.8</div>
+                            <div style="font-weight: 500;">21:00</div><div style="background:#FEF3C7;padding:8px;border-radius:4px;">2.0</div><div style="background:#D1FAE5;padding:8px;border-radius:4px;">2.2</div><div style="background:#DBEAFE;padding:8px;border-radius:4px;">1.9</div><div style="background:#EDE9FE;padding:8px;border-radius:4px;">2.5</div><div style="background:#C4B5FD;padding:8px;border-radius:4px;">3.2</div><div style="background:#A78BFA;padding:8px;border-radius:4px;">3.8</div><div style="background:#8B5CF6;padding:8px;border-radius:4px;color:white;">4.0</div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; font-size: 11px;">
+                            <span>📕 低</span><span>📗 中</span><span>📙 高</span><span>📓 爆满</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-card" style="margin-top: 20px;">
+                <div class="card-header"><h3>📋 同比/环比分析</h3></div>
+                <div class="card-body">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr style="border-bottom: 1px solid var(--border);"><th style="text-align: left; padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">指标</th><th style="padding: 12px 8px; text-align: right; color: var(--text-secondary); font-size: 12px;">本期</th><th style="padding: 12px 8px; text-align: right; color: var(--text-secondary); font-size: 12px;">上期</th><th style="padding: 12px 8px; text-align: right; color: var(--text-secondary); font-size: 12px;">同比</th><th style="padding: 12px 8px; text-align: right; color: var(--text-secondary); font-size: 12px;">环比</th></tr></thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">营业收入</td><td style="padding: 12px 8px; text-align: right;">¥89,420</td><td style="padding: 12px 8px; text-align: right;">¥82,150</td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+8.8%</span></td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+5.2%</span></td></tr>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">订单数量</td><td style="padding: 12px 8px; text-align: right;">1,245</td><td style="padding: 12px 8px; text-align: right;">1,168</td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+6.6%</span></td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+3.8%</span></td></tr>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">客单价</td><td style="padding: 12px 8px; text-align: right;">¥71.82</td><td style="padding: 12px 8px; text-align: right;">¥70.33</td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+2.1%</span></td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-warning">-1.2%</span></td></tr>
+                            <tr><td style="padding: 12px 8px; font-weight: 500;">毛利率</td><td style="padding: 12px 8px; text-align: right;">68.5%</td><td style="padding: 12px 8px; text-align: right;">65.2%</td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+3.3%</span></td><td style="padding: 12px 8px; text-align: right;"><span class="tag tag-success">+1.5%</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 库存预警 ========== -->
+        <div id="module-inventory" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>📦 库存预警</h2>
+                    <p>智能库存管理，AI预测补货需求</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-success btn-sm" onclick="showToast('success', '采购单已自动生成!')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        生成采购单
+                    </button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card danger"><div class="stat-header"><h3>库存不足</h3><div class="stat-icon red">⚠️</div></div><div class="stat-value">8</div><span class="stat-trend down">需紧急补货</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>即将售罄</h3><div class="stat-icon yellow">🔴</div></div><div class="stat-value">15</div><span class="stat-trend neutral">24小时内</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>本周预测销量</h3><div class="stat-icon blue">📈</div></div><div class="stat-value">2,845</div><span class="stat-trend up">件商品</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>周转天数</h3><div class="stat-icon green">📅</div></div><div class="stat-value">4.2</div><span class="stat-trend neutral">天</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>🔴 库存不足预警</h3><span class="tag tag-danger">8项</span></div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEE2E2; border-radius: 8px;">
+                            <div style="flex: 1;"><div style="font-weight: 600;">精品五花肉</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 2kg | 安全库存: 10kg</div></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--danger);">-80%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEE2E2; border-radius: 8px;">
+                            <div style="flex: 1;"><div style="font-weight: 600;">新鲜蔬菜拼盘</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 5份 | 安全库存: 30份</div></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--danger);">-83%</div><button class="btn btn-danger btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #FEF3C7; border-radius: 8px;">
+                            <div style="flex: 1;"><div style="font-weight: 600;">食用油(5L)</div><div style="font-size: 12px; color: var(--text-secondary);">当前库存: 3桶 | 安全库存: 10桶</div></div>
+                            <div style="text-align: right;"><div style="font-size: 20px; font-weight: 700; color: var(--warning);">-70%</div><button class="btn btn-outline btn-sm" onclick="showToast('success', '已加入采购单')">补货</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-card" style="margin-top: 20px;">
+                <div class="card-header"><h3>🤖 AI销量预测 (未来7天)</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; text-align: center;">
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">今天</div><div style="font-size: 24px; font-weight: 700; color: var(--primary);">285</div><div style="font-size: 11px;">件</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">明天</div><div style="font-size: 24px; font-weight: 700;">312</div><div style="font-size: 11px;">件 ↑9%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周三</div><div style="font-size: 24px; font-weight: 700;">298</div><div style="font-size: 11px;">件 ↑5%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周四</div><div style="font-size: 24px; font-weight: 700;">325</div><div style="font-size: 11px;">件 ↑14%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周五</div><div style="font-size: 24px; font-weight: 700; color: var(--secondary);">385</div><div style="font-size: 11px;">件 ↑35%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周六</div><div style="font-size: 24px; font-weight: 700; color: var(--secondary);">420</div><div style="font-size: 11px;">件 ↑47%</div></div>
+                        <div><div style="font-size: 12px; color: var(--text-secondary);">周日</div><div style="font-size: 24px; font-weight: 700;">380</div><div style="font-size: 11px;">件 ↑33%</div></div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 8px;">
+                        <div style="font-weight: 600; color: var(--primary-dark); margin-bottom: 8px;">💡 AI建议</div>
+                        <p style="font-size: 13px; color: var(--text-secondary);">根据历史数据和近期趋势预测，周末销量将增长47%。建议在周五前备足库存，重点关注「精品五花肉」「新鲜蔬菜拼盘」等热销品。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 门店数字孪生 ========== -->
+        <div id="module-digital-twin" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🎯 门店数字孪生</h2>
+                    <p>3D可视化模拟，AI优化运营策略</p>
+                </div>
+                <div class="page-actions">
+                    <select class="btn btn-outline btn-sm" style="background: white;">
+                        <option>策略A: 节能模式</option>
+                        <option>策略B: 效率优先</option>
+                        <option>策略C: 均衡模式</option>
+                    </select>
+                    <button class="btn btn-success btn-sm" onclick="showToast('success', 'AI策略已应用!')">应用策略</button>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 320px; gap: 20px;">
+                <div class="content-card">
+                    <div class="card-header"><h3>🏪 门店3D布局</h3></div>
+                    <div class="card-body" style="padding: 0;">
+                        <div style="background: linear-gradient(135deg, #1E293B 0%, #334155 100%); padding: 40px; min-height: 400px; position: relative;">
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                <div style="display: flex; gap: 20px;">
+                                    <div style="background: rgba(99,102,241,0.3); border: 2px solid var(--primary); border-radius: 8px; padding: 20px; flex: 1; text-align: center;">
+                                        <div style="color: white; font-size: 12px; margin-bottom: 8px;">入口区</div>
+                                        <div style="color: var(--primary-light); font-size: 24px;">🚪</div>
+                                    </div>
+                                    <div style="background: rgba(16,185,129,0.3); border: 2px solid var(--secondary); border-radius: 8px; padding: 20px; flex: 2; text-align: center;">
+                                        <div style="color: white; font-size: 12px; margin-bottom: 8px;">用餐区 (32座位)</div>
+                                        <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                                            <span style="color: var(--secondary); font-size: 20px;">🪑</span><span style="color: var(--secondary); font-size: 20px;">🪑</span><span style="color: var(--secondary); font-size: 20px;">🪑</span><span style="color: var(--secondary); font-size: 20px;">🪑</span><span style="color: #FEF3C7; font-size: 20px;">🪑</span><span style="color: #FEF3C7; font-size: 20px;">🪑</span><span style="color: var(--danger); font-size: 20px;">🪑</span><span style="color: var(--danger); font-size: 20px;">🪑</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 20px;">
+                                    <div style="background: rgba(245,158,11,0.3); border: 2px solid var(--warning); border-radius: 8px; padding: 20px; flex: 1; text-align: center;">
+                                        <div style="color: white; font-size: 12px; margin-bottom: 8px;">后厨区</div>
+                                        <div style="color: var(--warning); font-size: 24px;">👨‍🍳</div>
+                                        <div style="color: white; font-size: 11px; margin-top: 8px;">利用率 85%</div>
+                                    </div>
+                                    <div style="background: rgba(239,68,68,0.3); border: 2px solid var(--danger); border-radius: 8px; padding: 20px; flex: 1; text-align: center;">
+                                        <div style="color: white; font-size: 12px; margin-bottom: 8px;">收银台</div>
+                                        <div style="color: var(--danger); font-size: 24px;">💰</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7); padding: 12px; border-radius: 8px;">
+                                <div style="color: white; font-size: 12px; margin-bottom: 8px;">客流热力</div>
+                                <div style="width: 80px; height: 80px; background: radial-gradient(circle, rgba(239,68,68,0.8) 0%, rgba(245,158,11,0.5) 50%, rgba(16,185,129,0.3) 100%); border-radius: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="content-card">
+                        <div class="card-header"><h3>📊 实时指标</h3></div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">当前客流</div><div style="font-size: 28px; font-weight: 700;">28<span style="font-size: 14px; color: var(--text-secondary);">人/小时</span></div></div>
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">桌位利用率</div><div style="font-size: 28px; font-weight: 700; color: var(--warning);">78%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 78%; background: var(--warning); border-radius: 2px;"></div></div></div>
+                                <div><div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">员工效率</div><div style="font-size: 28px; font-weight: 700; color: var(--secondary);">92%</div><div style="height: 4px; background: var(--border); border-radius: 2px; margin-top: 4px;"><div style="height: 100%; width: 92%; background: var(--secondary); border-radius: 2px;"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-card">
+                        <div class="card-header"><h3>⚙️ 参数调节</h3></div>
+                        <div class="card-body">
+                            <div style="margin-bottom: 16px;"><label style="font-size: 12px; color: var(--text-secondary);">员工数量</label><input type="range" min="5" max="15" value="10" style="width: 100%; margin-top: 8px;"><div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);"><span>5人</span><span style="color: var(--primary); font-weight: 600;">10人</span><span>15人</span></div></div>
+                            <div style="margin-bottom: 16px;"><label style="font-size: 12px; color: var(--text-secondary);">座位数</label><input type="range" min="20" max="60" value="32" style="width: 100%; margin-top: 8px;"><div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary);"><span>20座</span><span style="color: var(--primary); font-weight: 600;">32座</span><span>60座</span></div></div>
+                        </div>
+                    </div>
+                    <div class="content-card" style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 1px solid var(--primary-light);">
+                        <div class="card-body">
+                            <div style="text-align: center;"><div style="font-size: 32px; margin-bottom: 8px;">💡</div><div style="font-weight: 600; color: var(--primary-dark); margin-bottom: 8px;">AI策略推荐</div><p style="font-size: 12px; color: var(--text-secondary);">增加晚高峰座位至40座，配置12名员工，预计提升营收18%</p><button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="showToast('success', '策略已应用!')">应用推荐</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 语音交互 ========== -->
+        <div id="module-voice" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🎤 语音交互</h2>
+                    <p>语音唤醒智能助手，一句话搞定运营</p>
+                </div>
+            </div>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="content-card">
+                    <div class="card-header"><h3>🤖 AI语音助手</h3><span class="tag tag-success">在线</span></div>
+                    <div class="card-body" style="text-align: center; padding: 40px;">
+                        <div id="voiceVisualizer" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;" onclick="toggleVoice()">
+                            <svg width="48" height="48" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 24px;">点击按钮或说"小赢小赢"唤醒助手</p>
+                        <div id="voiceStatus" style="padding: 16px; background: var(--bg-light); border-radius: 8px; margin-bottom: 24px;">等待唤醒...</div>
+                        <div id="voiceResult" style="min-height: 100px; padding: 16px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 8px; text-align: left;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">💬 AI回复</div>
+                            <p>您好！我是店赢AI助手。请问有什么可以帮助您的？您可以问我"今天营收怎么样"、"帮我处理差评"或"调整价格"等。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card" style="margin-top: 20px;">
+                    <div class="card-header"><h3>📝 常用语音指令</h3></div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="executeVoiceCommand('今天营收怎么样')"><div style="font-weight: 600;">"今天营收怎么样"</div><div style="font-size: 12px; color: var(--text-secondary);">查询今日营业数据</div></div>
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="executeVoiceCommand('帮我处理差评')"><div style="font-weight: 600;">"帮我处理差评"</div><div style="font-size: 12px; color: var(--text-secondary);">跳转差评处理页面</div></div>
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="executeVoiceCommand('调整菜品价格')"><div style="font-weight: 600;">"调整菜品价格"</div><div style="font-size: 12px; color: var(--text-secondary);">打开智能定价模块</div></div>
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="executeVoiceCommand('查看会员数据')"><div style="font-weight: 600;">"查看会员数据"</div><div style="font-size: 12px; color: var(--text-secondary);">打开会员分析报表</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== AI支付宝 ========== -->
+        <div id="module-alipay" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>💳 AI支付宝</h2>
+                    <p>支付宝生态全链路运营管理</p>
+                </div>
+                <div class="page-actions">
+                    <span class="tag tag-success">已连接</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card success"><div class="stat-header"><h3>本月支付宝营收</h3><div class="stat-icon green">💰</div></div><div class="stat-value">¥48,520</div><span class="stat-trend up">↑ 15.2%</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>芝麻信用订单</h3><div class="stat-icon blue">📊</div></div><div class="stat-value">326</div><span class="stat-trend up">↑ 8.5%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>生活号粉丝</h3><div class="stat-icon yellow">👥</div></div><div class="stat-value">2,845</div><span class="stat-trend up">↑ 3.2%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>营销活动</h3><div class="stat-icon red">🎁</div></div><div class="stat-value">5</div><span class="stat-trend neutral">进行中</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div class="content-card">
+                    <div class="card-header"><h3>🐜 支付宝小程序</h3></div>
+                    <div class="card-body">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                            <div style="width: 60px; height: 60px; background: #1677FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🐜</div>
+                            <div><div style="font-weight: 600;">老王家常菜</div><div style="font-size: 12px; color: var(--text-secondary);">小程序已上线 · v2.1.0</div></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; margin-bottom: 20px;">
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--primary);">1,258</div><div style="font-size: 11px; color: var(--text-secondary);">访问量</div></div>
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--secondary);">86</div><div style="font-size: 11px; color: var(--text-secondary);">下单数</div></div>
+                            <div style="padding: 12px; background: var(--bg-light); border-radius: 8px;"><div style="font-size: 20px; font-weight: 700; color: var(--warning);">6.8%</div><div style="font-size: 11px; color: var(--text-secondary);">转化率</div></div>
+                        </div>
+                        <button class="btn btn-outline" style="width: 100%;" onclick="showToast('info', '跳转到支付宝小程序后台')">管理小程序</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-header"><h3>🔐 芝麻信用免押</h3></div>
+                    <div class="card-body">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1677FF 0%, #0984E3 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;"><svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+                            <div><div style="font-weight: 600;">信用免押服务</div><div style="font-size: 12px; color: var(--text-secondary);">提升用户信任度</div></div>
+                        </div>
+                        <div style="padding: 16px; background: #E6F7FF; border-radius: 8px; margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span style="font-size: 12px; color: var(--text-secondary);">本月免押订单</span><span style="font-weight: 600;">326笔</span></div>
+                            <div style="display: flex; justify-content: space-between;"><span style="font-size: 12px; color: var(--text-secondary);">免押金额</span><span style="font-weight: 600; color: var(--primary);">¥28,450</span></div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showToast('success', '芝麻信用服务已开启')">开启服务</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 工单系统 ========== -->
+        <div id="module-tickets" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🎫 工单系统</h2>
+                    <p>智能工单分配，全流程追踪管理</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '工单已创建')">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        创建工单
+                    </button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card danger"><div class="stat-header"><h3>待处理</h3><div class="stat-icon red">⏳</div></div><div class="stat-value">5</div><span class="stat-trend neutral">需及时处理</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>处理中</h3><div class="stat-icon yellow">🔧</div></div><div class="stat-value">8</div><span class="stat-trend neutral">进行中</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>已完成</h3><div class="stat-icon green">✅</div></div><div class="stat-value">156</div><span class="stat-trend up">本月</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>平均响应</h3><div class="stat-icon blue">⏱️</div></div><div class="stat-value">2.3<span style="font-size: 14px;">小时</span></div><span class="stat-trend up">↓ 15%</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>📋 工单列表</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <span class="tag tag-danger">待处理(5)</span>
+                        <span class="tag tag-warning">处理中(8)</span>
+                        <span class="tag tag-success">已完成(156)</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 16px; background: #FEE2E2; border-radius: 8px; border-left: 4px solid var(--danger);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div><span style="font-weight: 600;">设备故障 - 收银机无法打印</span><span class="tag tag-danger" style="margin-left: 8px;">紧急</span></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">10分钟前</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">3号收银机小票打印机故障，无法正常出票。顾客等待时间较长，急需处理。</p>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-danger btn-sm" onclick="showToast('success', '已接单处理')">接单</button>
+                                <button class="btn btn-outline btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid var(--warning);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div><span style="font-weight: 600;">客户投诉 - 服务态度</span><span class="tag tag-warning" style="margin-left: 8px;">重要</span></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">1小时前</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">顾客反馈服务员态度不佳，要求道歉并给予补偿。</p>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-warning btn-sm" onclick="showToast('success', '已接单处理')">接单</button>
+                                <button class="btn btn-outline btn-sm">查看详情</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 权限管理 ========== -->
+        <div id="module-permission" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🛡️ 权限管理</h2>
+                    <p>细粒度权限控制，保障数据安全</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '角色已创建')">+ 新建角色</button>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 20px;">
+                <div class="content-card">
+                    <div class="card-header"><h3>👥 角色列表</h3></div>
+                    <div class="card-body" style="padding: 8px;">
+                        <div style="padding: 12px; background: #EEF2FF; border-radius: 8px; margin-bottom: 8px; cursor: pointer;">
+                            <div style="font-weight: 600;">👑 店长</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">拥有全部权限</div>
+                        </div>
+                        <div style="padding: 12px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; cursor: pointer;">
+                            <div style="font-weight: 600;">📋 经理</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">运营管理权限</div>
+                        </div>
+                        <div style="padding: 12px; background: var(--bg-light); border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600;">👤 员工</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">基础操作权限</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-header"><h3>⚙️ 权限矩阵 - 店长</h3></div>
+                    <div class="card-body">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead><tr style="border-bottom: 1px solid var(--border);"><th style="text-align: left; padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">功能模块</th><th style="padding: 12px; text-align: center; color: var(--text-secondary); font-size: 12px;">查看</th><th style="padding: 12px; text-align: center; color: var(--text-secondary); font-size: 12px;">编辑</th><th style="padding: 12px; text-align: center; color: var(--text-secondary); font-size: 12px;">删除</th><th style="padding: 12px; text-align: center; color: var(--text-secondary); font-size: 12px;">导出</th></tr></thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">数据报表</td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td></tr>
+                                <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">差评处理</td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td></tr>
+                                <tr><td style="padding: 12px 8px; font-weight: 500;">智能定价</td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td><td style="padding: 12px; text-align: center;"><span style="color: var(--success);">✓</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 消息通知 ========== -->
+        <div id="module-notify" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🔔 消息通知</h2>
+                    <p>统一消息中心，重要信息不错过</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline btn-sm" onclick="showToast('success', '全部已标记已读')">全部已读</button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                <span class="tag tag-danger" style="cursor: pointer;">全部(12)</span>
+                <span class="tag" style="cursor: pointer;">未读(5)</span>
+                <span class="tag" style="cursor: pointer;">预警提醒</span>
+                <span class="tag" style="cursor: pointer;">营销活动</span>
+            </div>
+            <div class="content-card">
+                <div class="card-body" style="padding: 0;">
+                    <div style="display: flex; flex-direction: column;">
+                        <div style="padding: 16px; border-bottom: 1px solid var(--border); background: #EEF2FF;">
+                            <div style="display: flex; gap: 12px;">
+                                <div style="width: 40px; height: 40px; background: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">⚠️</div>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span style="font-weight: 600;">库存不足预警</span><span style="font-size: 12px; color: var(--text-secondary);">刚刚</span></div>
+                                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">「精品五花肉」库存仅剩2kg，低于安全库存10kg，请及时补货。</p>
+                                    <span class="tag tag-danger">紧急</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; border-bottom: 1px solid var(--border);">
+                            <div style="display: flex; gap: 12px;">
+                                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">📊</div>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span style="font-weight: 600;">AI洞察日报</span><span style="font-size: 12px; color: var(--text-secondary);">30分钟前</span></div>
+                                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">您的门店今日营收¥12,856，较昨日增长18.5%。详细分析报告已生成。</p>
+                                    <span class="tag tag-info">日报</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 多门店管理 ========== -->
+        <div id="module-multi-store" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🏪 多门店管理</h2>
+                    <p>一屏掌控所有门店，跨店经验共享</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '新增门店向导已打开')">+ 新增门店</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>门店总数</h3><div class="stat-icon blue">🏢</div></div><div class="stat-value">3</div><span class="stat-trend neutral">覆盖3个区域</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>本月总营收</h3><div class="stat-icon green">💰</div></div><div class="stat-value">¥892K</div><span class="stat-trend up">↑ 12.5%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>平均评分</h3><div class="stat-icon yellow">⭐</div></div><div class="stat-value">4.5</div><span class="stat-trend up">↑ 0.2</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>待处理问题</h3><div class="stat-icon red">⚠️</div></div><div class="stat-value">5</div><span class="stat-trend neutral">需关注</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>📍 门店列表</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="padding: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 12px; color: white;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <div style="font-size: 20px; font-weight: 700;">望京SOHO店</div>
+                                <span style="padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 11px;">旗舰店</span>
+                            </div>
+                            <div style="font-size: 12px; opacity: 0.8; margin-bottom: 12px;">朝阳区望京SOHO T3-B座</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">¥35.6K</div><div style="font-size: 10px; opacity: 0.8;">今日营收</div></div>
+                                <div style="text-align: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">4.6⭐</div><div style="font-size: 10px; opacity: 0.8;">评分</div></div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 8px; background: rgba(16,185,129,0.3); border-radius: 6px; text-align: center; font-size: 12px;">🟢 营业中</div>
+                        </div>
+                        <div style="padding: 20px; background: var(--bg-light); border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <div style="font-size: 20px; font-weight: 700;">国贸CBD店</div>
+                                <span style="padding: 2px 8px; background: var(--bg-light); border-radius: 4px; font-size: 11px; color: var(--text-secondary);">标准店</span>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">朝阳区国贸三期B1层</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">¥28.4K</div><div style="font-size: 10px; color: var(--text-secondary);">今日营收</div></div>
+                                <div style="text-align: center; padding: 8px; background: white; border-radius: 6px;"><div style="font-size: 18px; font-weight: 700;">4.4⭐</div><div style="font-size: 10px; color: var(--text-secondary);">评分</div></div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 8px; background: #D1FAE5; border-radius: 6px; text-align: center; font-size: 12px; color: #065F46;">🟢 营业中</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 会员体系 ========== -->
+        <div id="module-member" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>👥 会员体系</h2>
+                    <p>精细化会员运营，提升复购率</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '会员卡已创建')">+ 创建会员卡</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>会员总数</h3><div class="stat-icon blue">👥</div></div><div class="stat-value">12,856</div><span class="stat-trend up">↑ 8.5%</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>本月新增</h3><div class="stat-icon green">➕</div></div><div class="stat-value">386</div><span class="stat-trend up">↑ 15.2%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>会员复购率</h3><div class="stat-icon yellow">🔄</div></div><div class="stat-value">68%</div><span class="stat-trend up">↑ 3.5%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>流失预警</h3><div class="stat-icon red">⚠️</div></div><div class="stat-value">28</div><span class="stat-trend neutral">需召回</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>🏆 会员等级分布</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">💎</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #92400E;">328</div>
+                            <div style="font-size: 12px; color: #92400E;">钻石会员</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🥇</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #065F46;">1,258</div>
+                            <div style="font-size: 12px; color: #065F46;">黄金会员</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🥈</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #1E40AF;">3,456</div>
+                            <div style="font-size: 12px; color: #1E40AF;">白银会员</div>
+                        </div>
+                        <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🥉</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #475569;">7,814</div>
+                            <div style="font-size: 12px; color: #475569;">普通会员</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 支付分账 ========== -->
+        <div id="module-payment" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>💳 支付分账</h2>
+                    <p>多通道收款，智能分账结算</p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card success"><div class="stat-header"><h3>今日交易额</h3><div class="stat-icon green">💰</div></div><div class="stat-value">¥12,856</div><span class="stat-trend up">↑ 18.5%</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>待结算金额</h3><div class="stat-icon blue">⏳</div></div><div class="stat-value">¥8,542</div><span class="stat-trend neutral">预计明日到账</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>本月提现</h3><div class="stat-icon yellow">🏧</div></div><div class="stat-value">¥285K</div><span class="stat-trend up">↑ 12.3%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>手续费率</h3><div class="stat-icon red">📊</div></div><div class="stat-value">0.38%</div><span class="stat-trend neutral">平均</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>💳 支付通道状态</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="padding: 20px; background: #F6FFED; border-radius: 12px; border: 1px solid #B7EB8F;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <div style="font-size: 28px;">💚</div>
+                                <span class="tag tag-success">正常</span>
+                            </div>
+                            <div style="font-weight: 600; margin-bottom: 12px;">微信支付</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">今日交易 ¥6,580 (156笔)</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">费率 0.38%</div>
+                        </div>
+                        <div style="padding: 20px; background: #E6F7FF; border-radius: 12px; border: 1px solid #91CAFF;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <div style="font-size: 28px;">🔵</div>
+                                <span class="tag tag-success">正常</span>
+                            </div>
+                            <div style="font-weight: 600; margin-bottom: 12px;">支付宝</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">今日交易 ¥4,280 (98笔)</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">费率 0.38%</div>
+                        </div>
+                        <div style="padding: 20px; background: #F1F5F9; border-radius: 12px; border: 1px solid #D9D9D9;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                <div style="font-size: 28px;">💳</div>
+                                <span class="tag tag-warning">维护中</span>
+                            </div>
+                            <div style="font-weight: 600; margin-bottom: 12px;">银联云闪付</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">今日交易 ¥1,996 (42笔)</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">费率 0.35%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 供应链管理 ========== -->
+        <div id="module-supply" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🚚 供应链管理</h2>
+                    <p>供应商协同，采购流程优化</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '采购单已创建')">+ 新建采购单</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>供应商</h3><div class="stat-icon blue">🏭</div></div><div class="stat-value">12</div><span class="stat-trend neutral">合作中</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>本月采购</h3><div class="stat-icon green">📦</div></div><div class="stat-value">¥48.5K</div><span class="stat-trend up">↑ 8.2%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>待发货</h3><div class="stat-icon yellow">⏳</div></div><div class="stat-value">5</div><span class="stat-trend neutral">订单</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>待对账</h3><div class="stat-icon red">📋</div></div><div class="stat-value">3</div><span class="stat-trend neutral">供应商</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>🏭 供应商列表</h3><button class="btn btn-outline btn-sm" onclick="showToast('success', '供应商已添加')">+ 添加供应商</button></div>
+                <div class="card-body">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr style="border-bottom: 1px solid var(--border);"><th style="text-align: left; padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">供应商</th><th style="padding: 12px 8px; text-align: left; color: var(--text-secondary); font-size: 12px;">主营</th><th style="padding: 12px 8px; text-align: center; color: var(--text-secondary); font-size: 12px;">评级</th><th style="padding: 12px 8px; text-align: right; color: var(--text-secondary); font-size: 12px;">本月采购</th></tr></thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">🥬 永辉生鲜</td><td style="padding: 12px 8px;">蔬菜肉类</td><td style="padding: 12px 8px; text-align: center;"><span style="color: var(--warning);">★★★★★</span></td><td style="padding: 12px 8px; text-align: right;">¥18,520</td></tr>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">🐟 东海海鲜</td><td style="padding: 12px 8px;">海鲜水产</td><td style="padding: 12px 8px; text-align: center;"><span style="color: var(--warning);">★★★★☆</span></td><td style="padding: 12px 8px; text-align: right;">¥12,480</td></tr>
+                            <tr><td style="padding: 12px 8px; font-weight: 500;">🧴 调味世界</td><td style="padding: 12px 8px;">调料干货</td><td style="padding: 12px 8px; text-align: center;"><span style="color: var(--warning);">★★★★☆</span></td><td style="padding: 12px 8px; text-align: right;">¥8,650</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 智能预警 ========== -->
+        <div id="module-alert" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🚨 智能预警</h2>
+                    <p>全方位风险监控，AI智能建议</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline btn-sm" onclick="showToast('info', '规则配置已打开')">⚙️ 配置规则</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card danger"><div class="stat-header"><h3>紧急预警</h3><div class="stat-icon red">🔴</div></div><div class="stat-value">2</div><span class="stat-trend neutral">需立即处理</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>重要预警</h3><div class="stat-icon yellow">🟡</div></div><div class="stat-value">5</div><span class="stat-trend neutral">处理中</span></div>
+                <div class="stat-card primary"><div class="stat-header"><h3>一般预警</h3><div class="stat-icon blue">🔵</div></div><div class="stat-value">12</div><span class="stat-trend neutral">已处理</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>预警准确率</h3><div class="stat-icon green">✓</div></div><div class="stat-value">94%</div><span class="stat-trend up">↑ 2.3%</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>⚠️ 当前活跃预警</h3></div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 16px; background: #FEE2E2; border-radius: 8px; border-left: 4px solid var(--danger);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <div><span class="tag tag-danger">紧急</span><span style="font-weight: 600; margin-left: 8px;">食品安全风险</span></div>
+                                <span style="font-size: 12px; color: var(--text-secondary);">10分钟前</span>
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">冷库温度异常，当前温度4°C，超出安全范围(0-2°C)，可能导致食材变质。</p>
+                            <div style="padding: 12px; background: white; border-radius: 6px; margin-bottom: 12px;">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">🤖 AI建议</div>
+                                <p style="font-size: 13px;">立即检查冷库制冷设备，评估食材状态。</p>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="showToast('success', '已处理预警')">处理</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 门店巡检 ========== -->
+        <div id="module-inspect" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>✅ 门店巡检</h2>
+                    <p>标准化巡检流程，AI发现问题</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '巡检任务已创建')">+ 新建巡检</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>本月巡检</h3><div class="stat-icon blue">📋</div></div><div class="stat-value">28</div><span class="stat-trend neutral">次</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>平均得分</h3><div class="stat-icon green">⭐</div></div><div class="stat-value">92.5</div><span class="stat-trend up">↑ 2.3</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>待整改</h3><div class="stat-icon yellow">🔧</div></div><div class="stat-value">5</div><span class="stat-trend neutral">问题</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>逾期未改</h3><div class="stat-icon red">⚠️</div></div><div class="stat-value">2</div><span class="stat-trend down">需关注</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>📋 巡检任务列表</h3></div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 16px; background: #FEE2E2; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <div><span style="font-weight: 600;">日常巡检 - 望京SOHO店</span></div>
+                                <span class="tag tag-danger">逾期未改</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 12px; color: var(--text-secondary);">
+                                <div>📅 计划: 01-14</div>
+                                <div>👤 执行人: 张厨师</div>
+                                <div>⭐ 得分: 78分</div>
+                                <div>🔴 问题: 3项</div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: #D1FAE5; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <div><span style="font-weight: 600;">日常巡检 - 望京SOHO店</span></div>
+                                <span class="tag tag-success">已完成</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 12px; color: var(--text-secondary);">
+                                <div>📅 完成: 01-12</div>
+                                <div>👤 执行人: 王店长</div>
+                                <div>⭐ 得分: 95分</div>
+                                <div>✅ 问题: 0项</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 更新日志 ========== -->
+        <div id="module-changelog" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>📝 更新日志</h2>
+                    <p>版本迭代记录，新功能一览</p>
+                </div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>🚀 最新版本 v2.3.0</h3><span class="tag tag-success">最新</span><span style="margin-left: 8px; font-size: 12px; color: var(--text-secondary);">2024-01-15</span></div>
+                <div class="card-body">
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-weight: 600; margin-bottom: 12px;">✨ 新增功能</div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="color: var(--secondary);">✓</span><span>新增「门店数字孪生」模块，支持3D可视化运营模拟</span></div>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="color: var(--secondary);">✓</span><span>新增「AI语音交互」功能，一句话搞定运营操作</span></div>
+                            <div style="display: flex; gap: 8px; align-items: flex-start;"><span style="color: var(--secondary);">✓</span><span>新增「多门店管理」跨店知识迁移功能</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 私有化部署 ========== -->
+        <div id="module-deploy" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🖥️ 私有化部署</h2>
+                    <p>灵活部署方案，数据安全可控</p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>当前版本</h3><div class="stat-icon blue">📦</div></div><div class="stat-value">v2.3.0</div><span class="stat-trend neutral">SaaS版</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>运行时间</h3><div class="stat-icon green">⏱️</div></div><div class="stat-value">99.9%</div><span class="stat-trend up">↑ 0.1%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>数据存储</h3><div class="stat-icon yellow">💾</div></div><div class="stat-value">256GB</div><span class="stat-trend neutral">已用45%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>API调用</h3><div class="stat-icon red">🔗</div></div><div class="stat-value">1.2M</div><span class="stat-trend neutral">本月</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>🚀 部署方式选择</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="padding: 24px; background: #E6F7FF; border-radius: 12px; border: 2px solid #91CAFF; cursor: pointer;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">☁️</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">SaaS云端版</div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">即开即用，自动升级</div>
+                                <div style="font-size: 20px; font-weight: 700; color: var(--primary);">¥299/月</div>
+                            </div>
+                        </div>
+                        <div style="padding: 24px; background: #F6FFED; border-radius: 12px; border: 2px solid var(--secondary); cursor: pointer;" onclick="showToast('info', '私有化部署需联系销售')">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">🏢</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">私有化部署</div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">数据本地存储，完全可控</div>
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary);">¥29,800/年</div>
+                            </div>
+                        </div>
+                        <div style="padding: 24px; background: #FFF7E6; border-radius: 12px; border: 2px solid var(--warning); cursor: pointer;" onclick="showToast('info', '混合部署需联系销售')">
+                            <div style="text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 12px;">🔀</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">混合部署</div>
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">核心数据本地，AI云端</div>
+                                <div style="font-size: 20px; font-weight: 700; color: var(--warning);">¥9,800/年</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 数据导出 ========== -->
+        <div id="module-data-export" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>📤 数据导出</h2>
+                    <p>多格式导出，灵活定时任务</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showToast('success', '导出任务已创建')">+ 新建导出任务</button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>总导出</h3><div class="stat-icon blue">📊</div></div><div class="stat-value">1,286</div><span class="stat-trend neutral">历史累计</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>本月导出</h3><div class="stat-icon green">📅</div></div><div class="stat-value">48</div><span class="stat-trend up">↑ 12%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>定时任务</h3><div class="stat-icon yellow">⏰</div></div><div class="stat-value">3</div><span class="stat-trend neutral">进行中</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>存储使用</h3><div class="stat-icon red">💾</div></div><div class="stat-value">2.5GB</div><span class="stat-trend neutral">导出文件</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>📋 导出历史</h3></div>
+                <div class="card-body">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr style="border-bottom: 1px solid var(--border);"><th style="text-align: left; padding: 12px 8px; color: var(--text-secondary); font-size: 12px;">文件名</th><th style="padding: 12px 8px; text-align: left; color: var(--text-secondary); font-size: 12px;">类型</th><th style="padding: 12px 8px; text-align: left; color: var(--text-secondary); font-size: 12px;">数据范围</th><th style="padding: 12px 8px; text-align: left; color: var(--text-secondary); font-size: 12px;">时间</th></tr></thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">营收报表_2024年1月.xlsx</td><td style="padding: 12px 8px;"><span class="tag tag-info">Excel</span></td><td style="padding: 12px 8px;">2024-01</td><td style="padding: 12px 8px;">2024-01-15 14:32</td></tr>
+                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 12px 8px; font-weight: 500;">差评记录_1月第一周.pdf</td><td style="padding: 12px 8px;"><span class="tag tag-danger">PDF</span></td><td style="padding: 12px 8px;">01.01-01.07</td><td style="padding: 12px 8px;">2024-01-08 09:15</td></tr>
+                            <tr><td style="padding: 12px 8px; font-weight: 500;">会员数据_导出.csv</td><td style="padding: 12px 8px;"><span class="tag tag-success">CSV</span></td><td style="padding: 12px 8px;">全部会员</td><td style="padding: 12px 8px;">2024-01-10 16:45</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== KK命令面板 ========== -->
+        <div id="module-kk-command" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>⌨️ KK命令面板</h2>
+                    <p>快捷键Ctrl+K唤起，快速操作一切</p>
+                </div>
+            </div>
+            <div style="max-width: 700px; margin: 0 auto;">
+                <div class="content-card">
+                    <div class="card-header"><h3>🔍 快速搜索</h3></div>
+                    <div class="card-body">
+                        <div style="position: relative;">
+                            <input type="text" placeholder="输入关键词搜索功能、设置、数据..." style="width: 100%; padding: 16px 16px 16px 48px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px;">
+                            <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 20px;">🔍</span>
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px;">
+                                <kbd style="padding: 4px 8px; background: var(--bg-light); border-radius: 4px; font-size: 11px; color: var(--text-secondary);">Ctrl</kbd>
+                                <kbd style="padding: 4px 8px; background: var(--bg-light); border-radius: 4px; font-size: 11px; color: var(--text-secondary);">K</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card" style="margin-top: 20px;">
+                    <div class="card-header"><h3>⚡ 常用命令</h3></div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('report-center'); showToast('info', '已跳转报表中心')">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;"><span style="font-size: 20px;">📈</span><span style="font-weight: 600;">查看今日报表</span></div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">快捷键: R</div>
+                            </div>
+                            <div style="padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('inventory'); showToast('info', '已跳转库存预警')">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;"><span style="font-size: 20px;">📦</span><span style="font-weight: 600;">检查库存状态</span></div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">快捷键: I</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 新手引导 ========== -->
+        <div id="module-onboarding" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>🎓 新手引导</h2>
+                    <p>快速上手店赢OS，玩转智能运营</p>
+                </div>
+            </div>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="content-card" style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border: 1px solid var(--primary-light);">
+                    <div class="card-body" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🚀</div>
+                        <h3 style="font-size: 24px; margin-bottom: 8px;">欢迎使用店赢OS!</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 24px;">我们准备了简短的新手教程，助您快速上手</p>
+                        <div style="display: flex; gap: 12px; justify-content: center;">
+                            <button class="btn btn-primary" onclick="startOnboarding()">开始引导</button>
+                            <button class="btn btn-outline" onclick="showToast('info', '引导已跳过')">跳过引导</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card" style="margin-top: 20px;">
+                    <div class="card-header"><h3>📚 快速入门</h3></div>
+                    <div class="card-body">
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('report'); showToast('info', '已学习：查看数据报表')">
+                                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">1</div>
+                                <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">查看数据报表</div><div style="font-size: 13px; color: var(--text-secondary);">了解门店运营数据，掌握经营全貌</div></div>
+                                <span style="color: var(--text-secondary);">→</span>
+                            </div>
+                            <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('review'); showToast('info', '已学习：处理差评')">
+                                <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">2</div>
+                                <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">处理差评</div><div style="font-size: 13px; color: var(--text-secondary);">AI智能分析，一键回复各平台差评</div></div>
+                                <span style="color: var(--text-secondary);">→</span>
+                            </div>
+                            <div style="display: flex; gap: 16px; padding: 16px; background: var(--bg-light); border-radius: 8px; cursor: pointer;" onclick="switchModule('pricing'); showToast('info', '已学习：智能定价')">
+                                <div style="width: 40px; height: 40px; background: var(--warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">3</div>
+                                <div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">智能定价</div><div style="font-size: 13px; color: var(--text-secondary);">AI推荐最优定价策略，提升营收</div></div>
+                                <span style="color: var(--text-secondary);">→</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 差评全自动处理 ========== -->
+        <div id="module-bad-review-full" class="module-content">
+            <div class="page-header">
+                <div>
+                    <h2>⚡ 差评全自动处理</h2>
+                    <p>5大Agent协同工作流，7x24小时智能监控</p>
+                </div>
+                <div class="page-actions">
+                    <span class="tag tag-success">🟢 全自动运行中</span>
+                </div>
+            </div>
+            <div class="content-card" style="background: linear-gradient(135deg, #1E293B 0%, #334155 100%); border: none;">
+                <div class="card-header" style="background: transparent; border-color: rgba(255,255,255,0.1);"><h3 style="color: white;">🔄 5大Agent协同工作流</h3></div>
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div style="text-align: center; padding: 20px; background: rgba(99,102,241,0.3); border-radius: 12px; min-width: 150px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+                            <div style="color: white; font-weight: 600;">监控Agent</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">实时监控8大平台</div>
+                            <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
+                        </div>
+                        <div style="color: white; font-size: 24px;">→</div>
+                        <div style="text-align: center; padding: 20px; background: rgba(16,185,129,0.3); border-radius: 12px; min-width: 150px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🧠</div>
+                            <div style="color: white; font-weight: 600;">分析Agent</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">AI情绪+关键词</div>
+                            <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
+                        </div>
+                        <div style="color: white; font-size: 24px;">→</div>
+                        <div style="text-align: center; padding: 20px; background: rgba(245,158,11,0.3); border-radius: 12px; min-width: 150px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">✍️</div>
+                            <div style="color: white; font-weight: 600;">生成Agent</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">3套回复方案</div>
+                            <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
+                        </div>
+                        <div style="color: white; font-size: 24px;">→</div>
+                        <div style="text-align: center; padding: 20px; background: rgba(239,68,68,0.3); border-radius: 12px; min-width: 150px;">
+                            <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
+                            <div style="color: white; font-weight: 600;">执行Agent</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px;">一键发送各平台</div>
+                            <div style="margin-top: 8px; padding: 4px 8px; background: var(--success); border-radius: 4px; font-size: 11px; color: white;">运行中</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card primary"><div class="stat-header"><h3>监控平台</h3><div class="stat-icon blue">🌐</div></div><div class="stat-value">8</div><span class="stat-trend neutral">全平台覆盖</span></div>
+                <div class="stat-card success"><div class="stat-header"><h3>本月处理</h3><div class="stat-icon green">✅</div></div><div class="stat-value">86</div><span class="stat-trend up">↑ 35%</span></div>
+                <div class="stat-card warning"><div class="stat-header"><h3>挽损金额</h3><div class="stat-icon yellow">💰</div></div><div class="stat-value">¥12.8K</div><span class="stat-trend up">↑ 28%</span></div>
+                <div class="stat-card danger"><div class="stat-header"><h3>解决率</h3><div class="stat-icon red">📈</div></div><div class="stat-value">92%</div><span class="stat-trend up">↑ 5%</span></div>
+            </div>
+            <div class="content-card">
+                <div class="card-header"><h3>📡 8大平台实时监控</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                        <div style="padding: 16px; background: #FFF7E6; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">🍜</div><div style="font-weight: 600;">美团</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #FFF7E6; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">🛵</div><div style="font-weight: 600;">饿了么</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #FFF7E6; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">🎵</div><div style="font-weight: 600;">抖音</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #F1F5F9; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">⭐</div><div style="font-weight: 600;">大众点评</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #F1F5F9; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">📍</div><div style="font-weight: 600;">小红书</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #F6FFED; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">🐦</div><div style="font-weight: 600;">微博</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #E6F7FF; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">💬</div><div style="font-weight: 600;">口碑</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                        <div style="padding: 16px; background: #EDE9FE; border-radius: 8px; text-align: center;"><div style="font-size: 24px; margin-bottom: 4px;">🌐</div><div style="font-weight: 600;">自有APP</div><div style="font-size: 11px; color: var(--success);">● 已连接</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- ==================== 底部Agent状态条 ==================== -->
@@ -4240,6 +5210,94 @@
         // ==================== 权限管理 ====================
         function showRoleDetail(roleId) {
             showToast('info', `正在加载 ${roleId} 角色详情...`);
+        }
+
+        // ==================== 新手引导 ====================
+        function startOnboarding() {
+            showToast('info', '新手引导已启动');
+        }
+
+
+
+        // ==================== 报表中心 ====================
+        function initReportCenterChart() {
+            const container = document.getElementById('reportRevenueChart');
+            if (!container) return;
+            
+            const data = [
+                { label: '周一', value: 8500 },
+                { label: '周二', value: 9200 },
+                { label: '周三', value: 8800 },
+                { label: '周四', value: 10500 },
+                { label: '周五', value: 12800 },
+                { label: '周六', value: 15600 },
+                { label: '周日', value: 14200 }
+            ];
+            
+            const max = Math.max(...data.map(d => d.value));
+            let html = '';
+            data.forEach(item => {
+                const height = (item.value / max) * 200;
+                html += '<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">';
+                html += '<div style="width: 100%; background: var(--bg-light); border-radius: 8px 8px 0 0; height: 200px; display: flex; align-items: flex-end; padding: 4px;">';
+                html += '<div style="width: 100%; background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 8px 8px 0 0; height: ' + height + 'px; transition: height 0.5s ease;"></div>';
+                html += '</div>';
+                html += '<span style="font-size: 11px; color: var(--text-secondary);">' + item.label + '</span>';
+                html += '<span style="font-size: 12px; font-weight: 600;">¥' + (item.value/1000).toFixed(1) + 'K</span>';
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+
+        // ==================== 语音交互 ====================
+        let voiceActive = false;
+        function toggleVoice() {
+            const viz = document.getElementById('voiceVisualizer');
+            const status = document.getElementById('voiceStatus');
+            
+            if (!viz || !status) return;
+            
+            voiceActive = !voiceActive;
+            if (voiceActive) {
+                viz.style.background = 'linear-gradient(135deg, var(--danger) 0%, #DC2626 100%)';
+                viz.style.transform = 'scale(1.1)';
+                viz.innerHTML = '<svg width="48" height="48" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path></svg>';
+                status.innerHTML = '<span style="color: var(--danger);">●</span> 正在聆听...';
+                showToast('info', '请说出您的指令');
+            } else {
+                viz.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+                viz.style.transform = 'scale(1)';
+                viz.innerHTML = '<svg width="48" height="48" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>';
+                status.innerHTML = '处理中...';
+                showToast('success', '已识别您的指令');
+                setTimeout(() => {
+                    status.innerHTML = '等待唤醒...';
+                }, 2000);
+            }
+        }
+        
+        function executeVoiceCommand(command) {
+            showToast('info', '正在执行: ' + command);
+            const result = document.getElementById('voiceResult');
+            if (!result) return;
+            
+            setTimeout(() => {
+                let response = '';
+                if (command === '今天营收怎么样') {
+                    response = '根据最新数据，今日营收¥12,856，较昨日增长18.5%。其中午餐时段营收¥4,280，晚餐时段营收¥8,576。目前订单量186笔，客单价约¥69元。';
+                } else if (command === '帮我处理差评') {
+                    response = '好的，正在跳转差评处理页面。当前有3条待处理差评，建议优先处理。';
+                    setTimeout(() => switchModule('review'), 1000);
+                } else if (command === '调整菜品价格') {
+                    response = '已打开智能定价模块。根据今日成本分析，有5款菜品建议调整价格。';
+                    setTimeout(() => switchModule('pricing'), 1000);
+                } else if (command === '查看会员数据') {
+                    response = '当前会员总数12,856人，本月新增386人。复购率68%，有28名会员流失风险较高。';
+                } else {
+                    response = '已收到指令: ' + command + '。正在处理中...';
+                }
+                result.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">💬 AI回复</div><p>' + response + '</p>';
+            }, 1500);
         }
 
         // ==================== 新手引导 ====================
