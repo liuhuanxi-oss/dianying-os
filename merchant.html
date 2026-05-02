@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - 商家端</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/mobile-responsive.css">
+  <style>
+    /* 商家端特定样式 */
+    .role-badge {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    /* KK命令面板 */
+    .kk-command-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 100px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+    
+    .kk-command-modal.active {
+      display: flex;
+    }
+    
+    .kk-command-container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .kk-command-input-wrapper {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .kk-command-input-wrapper .kk-icon {
+      color: var(--accent);
+      margin-right: 12px;
+    }
+    
+    .kk-command-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+    
+    .kk-command-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    
+    .kk-commands-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .kk-command-section {
+      padding: 12px 20px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .kk-command-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    
+    .kk-command-item:hover {
+      background: var(--bg-card-hover);
+    }
+    
+    .kk-command-item i {
+      color: var(--accent);
+      width: 18px;
+      height: 18px;
+    }
+    
+    .kk-command-content {
+      flex: 1;
+    }
+    
+    .kk-command-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .kk-command-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .kk-command-shortcut {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 2px 6px;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    
+    /* 新手引导 */
+    .onboarding-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    
+    .onboarding-overlay.active {
+      display: block;
+    }
+    
+    .onboarding-tooltip {
+      position: fixed;
+      z-index: 1000;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      max-width: 320px;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .onboarding-step {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    
+    .onboarding-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .onboarding-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    
+    .onboarding-actions {
+      display: flex;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 商家端主容器 -->
+  <div class="admin-container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <img src="assets/logo.svg" alt="店赢OS">
+          <span class="sidebar-title">商家端</span>
+        </a>
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+      
+      <!-- Sidebar Search -->
+      <div class="sidebar-search">
+        <div class="sidebar-search-wrapper">
+          <i data-lucide="search"></i>
+          <input type="text" class="sidebar-search-input" placeholder="搜索功能..." id="sidebarSearch">
+        </div>
+      </div>
+      
+      <div class="sidebar-back-link">
+        <a href="index.html" class="back-link">
+          <i data-lucide="arrow-left"></i>
+          <span>返回首页</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- 侧边栏菜单将由JS动态生成 -->
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="admin-user">
+          <div class="admin-avatar">
+            <i data-lucide="store"></i>
+          </div>
+          <div class="admin-info">
+            <span class="admin-name">北京湘菜馆</span>
+            <span class="admin-role"><span class="role-badge">旗舰版</span></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 顶部导航 -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item">首页</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-search-btn" id="kkCommandBtn" title="KK命令面板 (Ctrl+/)">
+            <i data-lucide="terminal"></i>
+          </button>
+          <button class="topbar-btn" title="消息">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="topbar-btn" id="helpBtn" title="新手引导">
+            <i data-lucide="compass"></i>
+          </button>
+        </div>
+      </header>
+      
+      <!-- 内容区域 -->
+      <div class="content-area" id="contentArea">
+        <!-- 动态加载的页面内容 -->
+      </div>
+    </main>
+    
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="mobile-bottom-nav-items">
+        <div class="mobile-bottom-nav-item active" data-page="merchant-overview">
+          <i data-lucide="layout-dashboard"></i>
+          <span>首页</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="merchant-ai">
+          <i data-lucide="bot"></i>
+          <span>AI</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="merchant-report">
+          <i data-lucide="bar-chart"></i>
+          <span>报表</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="merchant-marketing">
+          <i data-lucide="megaphone"></i>
+          <span>营销</span>
+        </div>
+      </div>
+    </nav>
+  </div>
+  
+  <!-- KK命令面板 -->
+  <div class="kk-command-modal" id="kkCommandModal">
+    <div class="kk-command-container">
+      <div class="kk-command-input-wrapper">
+        <i data-lucide="terminal" class="kk-icon"></i>
+        <input type="text" class="kk-command-input" placeholder="输入命令或搜索功能..." id="kkCommandInput" autocomplete="off">
+        <span class="kk-command-hint">ESC 关闭</span>
+      </div>
+      <div class="kk-commands-list" id="kkCommandsList">
+        <div class="kk-command-section">快捷操作</div>
+        <div class="kk-command-item" data-page="merchant-overview">
+          <i data-lucide="layout-dashboard"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">运营概览</div>
+            <div class="kk-command-desc">查看今日经营数据</div>
+          </div>
+          <span class="kk-command-shortcut">Ctrl+1</span>
+        </div>
+        <div class="kk-command-item" data-page="merchant-ai-chat">
+          <i data-lucide="bot"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">AI对话</div>
+            <div class="kk-command-desc">智能助手答疑解惑</div>
+          </div>
+          <span class="kk-command-shortcut">Ctrl+2</span>
+        </div>
+        <div class="kk-command-item" data-page="merchant-report">
+          <i data-lucide="bar-chart"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">数据报表</div>
+            <div class="kk-command-desc">查看详细经营报表</div>
+          </div>
+          <span class="kk-command-shortcut">Ctrl+3</span>
+        </div>
+        <div class="kk-command-item" data-page="merchant-health">
+          <i data-lucide="heart-pulse"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">门店健康</div>
+            <div class="kk-command-desc">门店健康度诊断</div>
+          </div>
+        </div>
+        <div class="kk-command-item" data-page="merchant-marketing">
+          <i data-lucide="sparkles"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">AI内容创作</div>
+            <div class="kk-command-desc">智能生成营销内容</div>
+          </div>
+        </div>
+        <div class="kk-command-item" data-page="merchant-knowledge">
+          <i data-lucide="book-open"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">知识库</div>
+            <div class="kk-command-desc">查看操作指南</div>
+          </div>
+        </div>
+        <div class="kk-command-item" data-page="merchant-tickets">
+          <i data-lucide="ticket"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">工单系统</div>
+            <div class="kk-command-desc">提交和处理工单</div>
+          </div>
+        </div>
+        <div class="kk-command-item" data-page="merchant-member">
+          <i data-lucide="users"></i>
+          <div class="kk-command-content">
+            <div class="kk-command-title">会员体系</div>
+            <div class="kk-command-desc">会员管理</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast容器 -->
+  <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;"></div>
+  
+  <!-- 确认对话框 -->
+  <div class="modal-overlay" id="confirmDialog">
+    <div class="confirm-dialog">
+      <div class="confirm-title" id="confirmTitle">确认操作</div>
+      <div class="confirm-message" id="confirmMessage">确定要执行此操作吗？</div>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="confirmCancel">取消</button>
+        <button class="btn btn-primary" id="confirmOk">确定</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 模态框容器 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container" id="modalContainer"></div>
+  </div>
+  
+  <!-- 加载核心JS -->
+  <script src="js/modules/admin-core.js"></script>
+  <script src="js/modules/merchant-app.js"></script>
+  
+  <script>
+    // 商家端初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 设置商家端标识
+      window.APP_ROLE = 'merchant';
+      
+      // 初始化KK命令面板
+      initKKCommand();
+      
+      console.log('店赢OS商家端初始化完成');
+    });
+    
+    // KK命令面板
+    function initKKCommand() {
+      const modal = document.getElementById('kkCommandModal');
+      const input = document.getElementById('kkCommandInput');
+      const list = document.getElementById('kkCommandsList');
+      
+      // 快捷键 Ctrl+/
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+          e.preventDefault();
+          modal.classList.add('active');
+          input.focus();
+          renderKKCommands('');
+        }
+      });
+      
+      // 点击按钮打开
+      document.getElementById('kkCommandBtn')?.addEventListener('click', () => {
+        modal.classList.add('active');
+        input.focus();
+        renderKKCommands('');
+      });
+      
+      // ESC关闭
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') modal.classList.remove('active');
+      });
+      
+      // 点击外部关闭
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      });
+      
+      // 搜索过滤
+      input.addEventListener('input', (e) => {
+        renderKKCommands(e.target.value);
+      });
+      
+      // 点击命令项
+      list.addEventListener('click', (e) => {
+        const item = e.target.closest('.kk-command-item');
+        if (item) {
+          const page = item.dataset.page;
+          navigateTo(page);
+          modal.classList.remove('active');
+        }
+      });
+    }
+    
+    function renderKKCommands(query) {
+      const list = document.getElementById('kkCommandsList');
+      const commands = [
+        { id: 'merchant-overview', name: '运营概览', desc: '查看今日经营数据', icon: 'layout-dashboard' },
+        { id: 'merchant-ai-chat', name: 'AI对话', desc: '智能助手答疑解惑', icon: 'bot' },
+        { id: 'merchant-report', name: '数据报表', desc: '查看详细经营报表', icon: 'bar-chart' },
+        { id: 'merchant-health', name: '门店健康', desc: '门店健康度诊断', icon: 'heart-pulse' },
+        { id: 'merchant-marketing', name: 'AI内容创作', desc: '智能生成营销内容', icon: 'sparkles' },
+        { id: 'merchant-knowledge', name: '知识库', desc: '查看操作指南', icon: 'book-open' },
+        { id: 'merchant-tickets', name: '工单系统', desc: '提交和处理工单', icon: 'ticket' },
+        { id: 'merchant-member', name: '会员体系', desc: '会员管理', icon: 'users' },
+        { id: 'merchant-multi-store', name: '多门店管理', desc: '管理多家门店', icon: 'building-2' },
+        { id: 'merchant-payment', name: '支付分账', desc: '查看支付流水', icon: 'credit-card' },
+        { id: 'merchant-inventory', name: '库存预警', desc: '库存监控提醒', icon: 'package' },
+        { id: 'merchant-roi', name: 'ROI计算', desc: '营销效果分析', icon: 'calculator' },
+        { id: 'merchant-alert', name: '智能预警', desc: '异常情况提醒', icon: 'alert-triangle' },
+        { id: 'merchant-calendar', name: '运营日历', desc: '重要日程提醒', icon: 'calendar' },
+        { id: 'merchant-inspect', name: '门店巡检', desc: '门店巡查记录', icon: 'clipboard-check' },
+        { id: 'merchant-insight', name: 'AI洞察日报', desc: '每日经营分析', icon: 'newspaper' },
+        { id: 'merchant-digital', name: '数字孪生', desc: '门店数字化模拟', icon: 'scan' },
+        { id: 'merchant-voice', name: '语音交互', desc: '语音控制助手', icon: 'mic' },
+        { id: 'merchant-competitor', name: '竞品监控', desc: '竞品动态追踪', icon: 'radar' },
+        { id: 'merchant-pricing', name: '智能定价', desc: 'AI价格建议', icon: 'tag' },
+        { id: 'merchant-supply', name: '供应链管理', desc: '采购和库存', icon: 'truck' },
+        { id: 'merchant-log', name: '决策日志', desc: '操作记录追踪', icon: 'history' },
+        { id: 'merchant-export', name: '数据导出', desc: '导出经营数据', icon: 'download' },
+        { id: 'merchant-changelog', name: '更新日志', desc: '查看产品更新', icon: 'git-commit' },
+        { id: 'merchant-notify', name: '消息通知', desc: '系统消息', icon: 'bell-ring' },
+        { id: 'merchant-permission', name: '权限管理', desc: '员工权限配置', icon: 'shield' },
+        { id: 'merchant-settings', name: '系统设置', desc: '基本设置', icon: 'settings' }
+      ];
+      
+      const filtered = query ? commands.filter(c => 
+        c.name.includes(query) || c.desc.includes(query)
+      ) : commands;
+      
+      let html = '<div class="kk-command-section">快捷操作</div>';
+      filtered.forEach(cmd => {
+        html += `
+          <div class="kk-command-item" data-page="${cmd.id}">
+            <i data-lucide="${cmd.icon}"></i>
+            <div class="kk-command-content">
+              <div class="kk-command-title">${cmd.name}</div>
+              <div class="kk-command-desc">${cmd.desc}</div>
+            </div>
+          </div>
+        `;
+      });
+      
+      if (filtered.length === 0) {
+        html += '<div style="padding:20px;text-align:center;color:var(--text-muted)">未找到匹配命令</div>';
+      }
+      
+      list.innerHTML = html;
+      lucide.createIcons();
+    }
+    
+    // 新手引导
+    document.getElementById('helpBtn')?.addEventListener('click', () => {
+      startOnboarding();
+    });
+    
+    function startOnboarding() {
+      Toast.info('新手引导', '即将启动引导教程');
+      // 引导逻辑可以后续完善
+    }
+  </script>
+</body>
+</html>

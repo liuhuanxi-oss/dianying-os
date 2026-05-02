@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>店赢OS - 平台端</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/mobile-responsive.css">
+  <style>
+    .role-badge {
+      background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- 平台端主容器 -->
+  <div class="admin-container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <img src="assets/logo.svg" alt="店赢OS">
+          <span class="sidebar-title">平台管理</span>
+        </a>
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-search">
+        <div class="sidebar-search-wrapper">
+          <i data-lucide="search"></i>
+          <input type="text" class="sidebar-search-input" placeholder="搜索功能..." id="sidebarSearch">
+        </div>
+      </div>
+      
+      <div class="sidebar-back-link">
+        <a href="index.html" class="back-link">
+          <i data-lucide="arrow-left"></i>
+          <span>返回首页</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- 动态生成 -->
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="admin-user">
+          <div class="admin-avatar">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div class="admin-info">
+            <span class="admin-name">超级管理员</span>
+            <span class="admin-role"><span class="role-badge">平台运营</span></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item">首页</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-search-btn" id="globalSearchBtn" title="全局搜索 (Ctrl+K)">
+            <i data-lucide="search"></i>
+          </button>
+          <button class="topbar-btn" title="消息">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="topbar-btn" title="帮助">
+            <i data-lucide="help-circle"></i>
+          </button>
+        </div>
+      </header>
+      
+      <div class="content-area" id="contentArea"></div>
+    </main>
+    
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+      <div class="mobile-bottom-nav-items">
+        <div class="mobile-bottom-nav-item active" data-page="platform-overview">
+          <i data-lucide="layout-dashboard"></i>
+          <span>首页</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="platform-merchants">
+          <i data-lucide="store"></i>
+          <span>商家</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="platform-finance">
+          <i data-lucide="wallet"></i>
+          <span>财务</span>
+        </div>
+        <div class="mobile-bottom-nav-item" data-page="platform-settings">
+          <i data-lucide="settings"></i>
+          <span>设置</span>
+        </div>
+      </div>
+    </nav>
+  </div>
+  
+  <!-- Global Search Modal -->
+  <div class="global-search-modal" id="globalSearchModal">
+    <div class="global-search-container">
+      <div class="global-search-input-wrapper">
+        <i data-lucide="search"></i>
+        <input type="text" class="global-search-input" placeholder="搜索功能、商家、操作..." id="searchInput" autocomplete="off">
+        <span class="global-search-hint">ESC 关闭</span>
+      </div>
+      <div class="global-search-results" id="searchResults"></div>
+    </div>
+  </div>
+  
+  <!-- Toast容器 -->
+  <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;"></div>
+  
+  <!-- 确认对话框 -->
+  <div class="modal-overlay" id="confirmDialog">
+    <div class="confirm-dialog">
+      <div class="confirm-title" id="confirmTitle">确认操作</div>
+      <div class="confirm-message" id="confirmMessage">确定要执行此操作吗？</div>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="confirmCancel">取消</button>
+        <button class="btn btn-primary" id="confirmOk">确定</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 模态框容器 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container" id="modalContainer"></div>
+  </div>
+  
+  <script src="js/modules/admin-core.js"></script>
+  <script src="js/modules/platform-app.js"></script>
+</body>
+</html>
