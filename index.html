@@ -39,6 +39,11 @@
         <a href="#platforms">支持平台</a>
         <a href="#pricing">价格方案</a>
         <a href="admin.html">管理后台</a>
+        <div class="demo-nav" style="display: flex; gap: 8px; margin-left: 8px;">
+          <a href="merchant.html?demo=true" style="background: #10B981; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">商家端</a>
+          <a href="platform.html?demo=true" style="background: #3B82F6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">平台端</a>
+          <a href="agent.html?demo=true" style="background: #8B5CF6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">代理商</a>
+        </div>
         <a href="login.html" class="btn-glow" style="padding: 10px 20px; font-size: 0.9rem;">
           立即体验
         </a>
@@ -69,6 +74,10 @@
         <a href="ai-demo.html" class="btn-outline">
           <i data-lucide="play-circle" style="width: 18px; height: 18px; margin-right: 8px;"></i>
           观看AI演示
+        </a>
+        <a href="merchant.html?demo=true" class="btn-demo" style="background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.3s;">
+          <i data-lucide="presentation" style="width: 18px; height: 18px;"></i>
+          WAIC演示入口
         </a>
       </div>
       <div class="hero-stats">
@@ -148,6 +157,13 @@
         </div>
         <h3 class="feature-title">BI智能分析 <span style="font-size:12px;color:var(--primary);font-weight:600;">NEW</span></h3>
         <p class="feature-desc">Metabase风格嵌入式BI仪表盘，30天趋势、渠道分布、AI问答，自然语言查询数据</p>
+      </div>
+      <div class="feature-card" onclick="window.location.href='merchant.html?demo=true'" style="cursor:pointer; border: 2px solid #10B981;">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+          <i data-lucide="presentation"></i>
+        </div>
+        <h3 class="feature-title">WAIC演示模式 <span style="font-size:12px;color:#10B981;font-weight:600;">🔥</span></h3>
+        <p class="feature-desc">一键进入演示模式，预填充Mock数据，支持时间加速，完整模拟AI运营效果</p>
       </div>
     </div>
   </section>

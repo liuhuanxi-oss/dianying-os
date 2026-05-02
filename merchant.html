@@ -1722,6 +1722,13 @@
     </style>
 </head>
 <body>
+<!-- WAIC演示进度指示器 -->
+<div id="demoProgressBar" style="display:none; position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #E5E7EB; z-index: 9999;">
+    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); width: 0%; transition: width 0.5s ease;"></div>
+</div>
+<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+    🎬 WAIC演示模式
+</div>
     <!-- ==================== 顶部导航栏 ==================== -->
     <header class="topbar">
         <div class="topbar-left">
@@ -7177,6 +7184,16 @@
 
         // ==================== 初始化 ====================
         document.addEventListener('DOMContentLoaded', function() {
+            // WAIC演示模式检测
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('demo') === 'true') {
+                updateDemoProgress(10);
+                setTimeout(function() {
+                    showToast('info', '🎬 WAIC演示模式已开启');
+                    switchModule('dashboard');
+                    updateDemoProgress(15);
+                }, 500);
+            }
             initCharts();
             initReviewList();
             initPlatformGrid();
@@ -9359,6 +9376,41 @@
         function exportRouteLogs() {
             showToast('success', '路由日志已导出');
         }
-    </script>
+    
+// ==================== WAIC演示模式 ====================
+function updateDemoProgress(percent) {
+    const bar = document.getElementById('demoProgressBar');
+    const progress = document.getElementById('demoProgress');
+    const hint = document.getElementById('demoHint');
+    if (bar && progress) {
+        bar.style.display = 'block';
+        hint.style.display = 'block';
+        progress.style.width = percent + '%';
+    }
+}
+
+function hideDemoProgress() {
+    const bar = document.getElementById('demoProgressBar');
+    const hint = document.getElementById('demoHint');
+    if (bar && hint) {
+        bar.style.display = 'none';
+        hint.style.display = 'none';
+    }
+}
+
+// 演示进度更新示例：switchModule时自动更新
+const originalSwitchModule = window.switchModule;
+if (originalSwitchModule) {
+    window.switchModule = function(moduleName) {
+        const modules = ['dashboard', 'review', 'ai-workflow', 'pricing', 'cli-hub', 'time-machine', 'report'];
+        const index = modules.indexOf(moduleName);
+        if (index >= 0) {
+            updateDemoProgress(Math.round((index + 1) / modules.length * 100));
+        }
+        return originalSwitchModule.apply(this, arguments);
+    };
+}
+
+</script>
 </body>
 </html>

@@ -366,6 +366,13 @@
     </style>
 </head>
 <body>
+<!-- WAIC演示进度指示器 -->
+<div id="demoProgressBar" style="display:none; position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #E5E7EB; z-index: 9999;">
+    <div id="demoProgress" style="height: 100%; background: linear-gradient(90deg, #10B981, #059669); width: 0%; transition: width 0.5s ease;"></div>
+</div>
+<div id="demoHint" style="display:none; position: fixed; top: 12px; right: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; z-index: 9998; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+    🎬 平台端演示模式
+</div>
     <div class="layout">
         <!-- 侧边栏 -->
         <aside class="sidebar">
@@ -3065,6 +3072,38 @@
                 }
             });
         });
-    </script>
+    
+// ==================== WAIC演示模式 ====================
+(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('demo') === 'true') {
+        const bar = document.getElementById('demoProgressBar');
+        const hint = document.getElementById('demoHint');
+        if (bar && hint) {
+            bar.style.display = 'block';
+            hint.style.display = 'block';
+        }
+    }
+    
+    // 拦截switchModule更新进度
+    if (typeof switchModule === 'function') {
+        const originalFn = switchModule;
+        window.switchModule = function(moduleName) {
+            const modules = ['dashboard', 'payment', 'analytics', 'merchant-mgmt', 'finance'];
+            const index = modules.indexOf(moduleName);
+            if (index >= 0) {
+                const bar = document.getElementById('demoProgressBar');
+                const progress = document.getElementById('demoProgress');
+                if (bar && progress) {
+                    bar.style.display = 'block';
+                    progress.style.width = ((index + 1) / modules.length * 100) + '%';
+                }
+            }
+            return originalFn.apply(this, arguments);
+        };
+    }
+})();
+
+</script>
 </body>
 </html>
