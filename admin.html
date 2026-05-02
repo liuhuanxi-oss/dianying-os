@@ -546,46 +546,27 @@
   
   <!-- Permission check and user info update -->
   <script>
-    // 等待页面加载后执行权限检查
-    document.addEventListener('DOMContentLoaded', function() {
-      // 延迟执行确保DOM已完全加载
-      setTimeout(function() {
-        // 检查登录状态
-        if (typeof Auth !== 'undefined') {
-          if (!Auth.isLoggedIn()) {
-            // 未登录，跳转到登录页
-            window.location.href = 'login.html';
-            return;
-          }
+    // 🔥 同步执行，不要延迟，避免和 admin-core.js 冲突
+    (function() {
+      // 检查登录状态
+      if (typeof Auth !== 'undefined') {
+        if (!Auth.isLoggedIn()) {
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        const user = Auth.getCurrentUser();
+        if (user) {
+          const adminName = document.querySelector('.admin-name');
+          const adminRole = document.querySelector('.admin-role');
+          if (adminName) adminName.textContent = user.name;
+          if (adminRole) adminRole.textContent = user.roleConfig.displayName;
           
-          // 更新当前用户信息到侧边栏
-          const user = Auth.getCurrentUser();
-          if (user) {
-            // 更新侧边栏用户信息
-            const adminName = document.querySelector('.admin-name');
-            const adminRole = document.querySelector('.admin-role');
-            
-            if (adminName) adminName.textContent = user.name;
-            if (adminRole) adminRole.textContent = user.roleConfig.displayName;
-            
-            // 更新用户角色颜色
-            const adminAvatar = document.querySelector('.admin-avatar');
-            if (adminAvatar) {
-              adminAvatar.style.background = user.roleConfig.color + '20';
-              adminAvatar.style.color = user.roleConfig.color;
-            }
-          }
-          
-          // 过滤菜单权限
-          if (typeof menuConfig !== 'undefined') {
-            window.menuConfig = menuConfig; // 保存原始配置
-            const filteredMenu = Auth.getFilteredMenuConfig();
-            // 替换全局menuConfig
-            window.menuConfig = filteredMenu;
+          // 根据角色过滤菜单
+          if (typeof filterMenuByRole === 'function') {
+            filterMenuByRole(user.role);
           }
         }
-      }, 100);
-    });
+      }
+    })();
   </script>
-</body>
-</html>
