@@ -817,20 +817,104 @@
         .toast-desc { font-size: 12px; color: var(--text-secondary); }
 
         /* ==================== 响应式 ==================== */
-        @media (max-width: 1200px) {
+        /* 平板端适配 - 768px - 1199px */
+        @media (max-width: 1199px) {
             .pricing-grid { grid-template-columns: 1fr; }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 280px;
+                max-width: 85vw;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+            }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 16px;
+            }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .platform-grid { grid-template-columns: repeat(2, 1fr); }
+            .module-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: repeat(2, 1fr); }
+            .ai-analysis-grid { grid-template-columns: repeat(2, 1fr); }
+            .table-container,
+            .reconciliation-table { overflow-x: auto; display: block; min-width: 600px; }
         }
-        @media (max-width: 1024px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
-            .module-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        
+        /* 手机端适配 - <768px */
+        @media (max-width: 767px) {
+            .topbar { height: 56px; padding: 0 12px; }
+            .topbar-left { gap: 8px; }
+            .store-logo { width: 36px; height: 36px; font-size: 16px; }
+            .store-info h1 { font-size: 14px; }
+            .store-info span { display: none; }
+            .agent-status { display: none; }
+            .topbar-right { gap: 8px; }
+            .topbar-btn { width: 36px; height: 36px; }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 280px;
+                max-width: 85vw;
+                z-index: 1000;
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open { transform: translateX(0); }
+            
+            .main-content {
+                margin-left: 0 !important;
+                margin-top: 56px;
+                margin-bottom: 70px;
+                padding: 12px;
+            }
+            
+            .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .page-header h2 { font-size: 20px; }
+            .page-actions { width: 100%; flex-wrap: wrap; }
+            
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .stat-card { padding: 14px; }
+            .stat-value { font-size: 22px; }
+            .stat-icon { width: 32px; height: 32px; }
+            
+            .content-card { margin-bottom: 16px; }
+            .card-header { padding: 12px 16px; flex-direction: column; }
+            .card-body { padding: 16px; }
+            
             .platform-grid { grid-template-columns: 1fr; }
+            .module-grid { grid-template-columns: 1fr; }
+            .module-card { padding: 16px; flex-direction: column; }
+            
             .form-row { grid-template-columns: 1fr; }
-            .agent-list { gap: 16px; flex-wrap: wrap; }
+            .form-input { padding: 10px 12px; }
+            
+            .btn { padding: 10px 16px; font-size: 13px; min-height: 44px; }
+            .btn-sm { padding: 8px 12px; }
+            
+            .reconciliation-table { font-size: 12px; }
+            .reconciliation-table th, .reconciliation-table td { padding: 10px 8px; }
+            
+            .ai-analysis-grid { grid-template-columns: 1fr; }
+            .modal { max-width: 95%; max-height: 90vh; }
+            .modal-header { padding: 16px; }
+            .modal-body { padding: 16px; max-height: calc(90vh - 120px); }
+            .modal-footer { padding: 12px 16px; flex-wrap: wrap; }
+            
+            .toast-container { top: 70px; right: 12px; left: 12px; }
+            .toast { min-width: auto; width: 100%; }
+            
+            .agent-status-bar { height: auto; min-height: 60px; padding: 12px; flex-direction: column; }
+            .agent-list { width: 100%; justify-content: space-between; gap: 8px; }
+            .agent-item { flex-direction: column; gap: 4px; text-align: center; }
+            .agent-progress { display: none; }
         }
 
         /* ==================== 隐藏模块 ==================== */
@@ -1730,8 +1814,16 @@
     🎬 WAIC演示模式
 </div>
     <!-- ==================== 顶部导航栏 ==================== -->
-    <header class="topbar">
+    <!-- 移动端菜单遮罩 -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<header class="topbar">
         <div class="topbar-left">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="打开菜单">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
             <div class="store-logo">店</div>
             <div class="store-info">
                 <h1>老王家常菜(望京店)</h1>
@@ -9409,6 +9501,48 @@ if (originalSwitchModule) {
         }
         return originalSwitchModule.apply(this, arguments);
     };
+}
+
+// ==================== 移动端菜单功能 ====================
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('mobileOverlay');
+    
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+        if (overlay) {
+            overlay.classList.toggle('active');
+        }
+    }
+}
+
+// 监听窗口大小变化
+window.addEventListener('resize', function() {
+    const sidebar = document.querySelector('.sidebar');
+    if (window.innerWidth >= 1200) {
+        if (sidebar) {
+            sidebar.classList.remove('mobile-open');
+        }
+        const overlay = document.getElementById('mobileOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+    }
+});
+
+// ==================== ECharts响应式重绘 ====================
+// 为所有ECharts容器添加resize监听
+if (typeof window !== 'undefined') {
+    let chartResizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(chartResizeTimeout);
+        chartResizeTimeout = setTimeout(function() {
+            // 触发所有图表重绘
+            if (window.dispatchEvent) {
+                window.dispatchEvent(new Event('resize'));
+            }
+        }, 250);
+    });
 }
 
 </script>

@@ -53,6 +53,16 @@
     /* ============================================
        顶部导航栏
        ============================================ */
+    /* 移动端菜单遮罩 */
+    .bi-mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 99;
+    }
+    .bi-mobile-overlay.active { display: block; }
+    
     .bi-header {
       height: 60px;
       background: var(--bg-card);
@@ -649,33 +659,54 @@
     }
 
     @media (max-width: 1200px) {
-      .bi-kpi-row { grid-template-columns: repeat(3, 1fr); }
+      .bi-kpi-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .bi-kpi-value { font-size: 22px; }
       .bi-charts-grid.bi-chart-row-2 { grid-template-columns: 1fr; }
       .bi-charts-grid.bi-chart-row-equal { grid-template-columns: 1fr 1fr; }
       .bi-rating-cards { grid-template-columns: repeat(2, 1fr); }
+      .bi-chart-container { height: 260px; }
     }
 
     @media (max-width: 768px) {
-      .bi-header { padding: 0 16px; }
+      .bi-header { padding: 0 12px; }
       .bi-nav-tabs { display: none; }
-      .bi-container { padding: 16px; }
-      .bi-kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .bi-container { padding: 12px; }
+      .bi-kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .bi-kpi-card { padding: 14px; }
+      .bi-kpi-value { font-size: 20px; }
+      .bi-kpi-label { font-size: 12px; }
+      .bi-kpi-icon { width: 28px; height: 28px; }
+      .bi-charts-grid { gap: 12px; }
       .bi-charts-grid.bi-chart-row-equal { grid-template-columns: 1fr; }
       .bi-rating-cards { grid-template-columns: repeat(2, 1fr); }
-      .bi-kpi-value { font-size: 22px; }
+      .bi-card-header { padding: 12px 14px; flex-wrap: wrap; gap: 8px; }
+      .bi-card-title { font-size: 14px; }
+      .bi-chart-container { height: 220px; }
+      .bi-chart-container.large { height: 260px; }
+      .bi-card-actions { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+      .bi-card-btn { white-space: nowrap; }
+      .bi-ai-input-area { flex-direction: column; padding: 14px; }
+      .bi-ai-input { width: 100%; }
+      .bi-quick-tags { flex-wrap: wrap; }
+      .back-home-btn { top: auto; bottom: 16px; left: 16px; padding: 8px 12px; font-size: 12px; }
     }
 
     @media (max-width: 480px) {
       .bi-kpi-row { grid-template-columns: 1fr; }
-      .bi-kpi-card { padding: 16px; }
-      .bi-kpi-value { font-size: 24px; }
-      .bi-chart-container { height: 220px; }
+      .bi-kpi-card { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+      .bi-kpi-header { margin-bottom: 0; }
+      .bi-kpi-trend { justify-content: flex-end; }
+      .bi-chart-container { height: 200px; }
+      .bi-ai-section { margin-top: 16px; }
     }
   </style>
 </head>
 <body>
   <!-- 顶部导航 -->
-  <header class="bi-header">
+  <!-- 移动端遮罩 -->
+    <div class="bi-mobile-overlay" id="biMobileOverlay"></div>
+
+    <header class="bi-header">
     <div class="bi-header-left">
       <a href="index.html" class="bi-logo">
         <div class="bi-logo-icon">📊</div>
@@ -892,19 +923,40 @@
     // BI分析仪表盘 - Mock数据
     // ============================================
     const BIData = {
-      // 30天营收数据
+      // 30天营收数据 - 真实场景模拟
+      // 差评数量：第1-5天高（问题暴露）→ 第6-30天下降（AI处理生效）
+      // 营收曲线：前10天下降 → 第11-20天回升 → 第21-30天稳定增长
       revenue30Days: (() => {
         const data = [];
-        const base = 28000;
+        const baseRevenue = 32000; // 基础营收
         for (let i = 30; i >= 1; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);
           const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-          const variance = (Math.random() - 0.5) * 8000;
+          
+          // 模拟真实趋势：前10天下跌（差评影响），第11-20天回升，第21-30天稳定增长
+          let trendMultiplier = 1;
+          if (i > 20) {
+            // 第1-10天（前10天）：差评影响，营收下降
+            trendMultiplier = 0.85 + (Math.random() * 0.1);
+          } else if (i > 10) {
+            // 第11-20天：AI介入，逐步回升
+            const recovery = (20 - i) / 10;
+            trendMultiplier = 0.9 + (recovery * 0.15) + (Math.random() * 0.05);
+          } else {
+            // 第21-30天：稳定增长
+            const growth = (30 - i) / 10;
+            trendMultiplier = 1.05 + (growth * 0.1) + (Math.random() * 0.05);
+          }
+          
+          const baseAmount = baseRevenue * trendMultiplier;
+          const weekendBonus = isWeekend ? 6000 : 0;
+          const variance = (Math.random() - 0.5) * 4000;
+          
           data.push({
             date: `${date.getMonth() + 1}/${date.getDate()}`,
-            revenue: Math.round(base + (isWeekend ? 5000 : 0) + variance),
-            orders: Math.round(150 + (isWeekend ? 40 : 0) + (Math.random() - 0.5) * 60)
+            revenue: Math.round(baseAmount + weekendBonus + variance),
+            orders: Math.round(160 * trendMultiplier + (isWeekend ? 45 : 0) + (Math.random() - 0.5) * 30)
           });
         }
         return data;
@@ -927,13 +979,35 @@
         { platform: '抖音', score: 4.9, stars: 5, change: '+0.3', total: 956 }
       ],
 
-      // 评分趋势（30天）
+      // 评分趋势（30天）- 模拟评分变化故事
+      // 4.8 → 4.2（差评打击）→ 4.7（AI回复挽回）
       ratingTrend30Days: (() => {
         const data = { 美团: [], 大众点评: [], 饿了么: [] };
         for (let i = 30; i >= 1; i--) {
-          data['美团'].push((4.6 + Math.random() * 0.3).toFixed(1));
-          data['大众点评'].push((4.5 + Math.random() * 0.3).toFixed(1));
-          data['饿了么'].push((4.4 + Math.random() * 0.3).toFixed(1));
+          let meituanRating, dianpingRating, eleRating;
+          
+          if (i > 20) {
+            // 第1-10天：差评影响，评分下降
+            const drop = (20 - i) * 0.06;
+            meituanRating = (4.8 - drop + Math.random() * 0.1).toFixed(1);
+            dianpingRating = (4.7 - drop * 0.8 + Math.random() * 0.1).toFixed(1);
+            eleRating = (4.6 - drop * 0.9 + Math.random() * 0.1).toFixed(1);
+          } else if (i > 10) {
+            // 第11-20天：AI介入，评分回升
+            const recovery = (20 - i) / 10;
+            meituanRating = (4.2 + recovery * 0.5 + Math.random() * 0.05).toFixed(1);
+            dianpingRating = (4.3 + recovery * 0.4 + Math.random() * 0.05).toFixed(1);
+            eleRating = (4.2 + recovery * 0.4 + Math.random() * 0.05).toFixed(1);
+          } else {
+            // 第21-30天：稳定高分
+            meituanRating = (4.7 + Math.random() * 0.1).toFixed(1);
+            dianpingRating = (4.7 + Math.random() * 0.1).toFixed(1);
+            eleRating = (4.6 + Math.random() * 0.1).toFixed(1);
+          }
+          
+          data['美团'].push(meituanRating);
+          data['大众点评'].push(dianpingRating);
+          data['饿了么'].push(eleRating);
         }
         return data;
       })(),
@@ -956,13 +1030,13 @@
         { name: '干辣椒', current: 3, min: 15, unit: '斤', urgency: 'high' }
       ],
 
-      // KPI汇总
+      // KPI汇总 - 本月数据
       kpiSummary: {
-        revenue: 856420,
-        orders: 8990,
-        avgOrder: 95.3,
-        rating: 4.7,
-        roi: 3.8
+        revenue: 368542,      // 本月营收
+        orders: 12847,        // 订单量
+        avgOrder: 28.7,       // 客单价
+        rating: 4.7,          // 综合评分
+        roi: 2.8              // ROI
       }
     };
 
@@ -971,14 +1045,15 @@
     // ============================================
     const AIAnswers = {
       '本月营收趋势如何？': {
-        answer: `根据30天数据分析，本月营收呈现<span class="highlight">稳步上升趋势</span>：
+        answer: `根据30天数据分析，本月营收呈现<span class="highlight">先抑后扬趋势</span>：
 
-• 本月累计营收 <span class="highlight">¥856,420</span>，较上月增长18.5%
-• 周末平均日营收约 ¥38,500，工作日约 ¥28,000
-• 峰值出现在母亲节当天，达 ¥52,800
+• 本月累计营收 <span class="highlight">¥368,542</span>
+• 前10天受差评影响营收下滑约15%
+• AI介入后第11天起逐步回升
+• 近10天营收稳定增长，日均 ¥13,200
 
-📈 **趋势预测**：预计本月可达成月度目标120万的71%，建议关注工作日午市转化率。`,
-        insights: ['周末营收比工作日高37%', '本月第3周环比增长最快']
+📈 **趋势预测**：预计本月可达成月度目标的92%，AI差评处理挽回损失约 ¥12,860。`,
+        insights: ['AI介入后营收恢复速度加快', '周末营收比工作日高45%', '智能定价提升利润率5.2%']
       },
       '哪些时段订单量最高？': {
         answer: `分析显示订单高峰集中在以下时段：
