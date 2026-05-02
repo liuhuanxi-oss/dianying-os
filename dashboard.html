@@ -3,524 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>店赢OS 运营监控中心</title>
+    <title>店赢OS 运营监控中心 · WAIC 2026</title>
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/map/js/china.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/dashboard-dataease.css">
     <link rel="stylesheet" href="css/mobile-responsive.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ============================================
+           WAIC 比赛级视觉增强
+           ============================================ */
 
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-card: #141420;
-            --bg-card-hover: #1a1a2e;
-            --color-primary: #5e6ad2;
-            --color-secondary: #00b8cc;
-            --color-glow: rgba(94, 106, 210, 0.5);
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --border-color: rgba(94, 106, 210, 0.3);
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            color: var(--text-primary);
-        }
-
-        body::before {
-            content: '';
+        /* 粒子背景容器 */
+        #particles-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(94, 106, 210, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(0, 184, 204, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(94, 106, 210, 0.05) 0%, transparent 70%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 浮动光球装饰 */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
             pointer-events: none;
             z-index: 0;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .floating-orb.orb-1 {
+            width: 500px; height: 500px;
+            background: #1890ff;
+            top: -100px; left: -100px;
+            animation-delay: 0s;
+        }
+        .floating-orb.orb-2 {
+            width: 400px; height: 400px;
+            background: #13c2c2;
+            bottom: -80px; right: -80px;
+            animation-delay: -7s;
+            animation-duration: 25s;
+        }
+        .floating-orb.orb-3 {
+            width: 300px; height: 300px;
+            background: #722ed1;
+            top: 50%; left: 60%;
+            animation-delay: -12s;
+            animation-duration: 22s;
+            opacity: 0.1;
         }
 
-        .dashboard {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            gap: 10px;
-            position: relative;
-            z-index: 1;
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.05); }
+            50% { transform: translate(-20px, 30px) scale(0.95); }
+            75% { transform: translate(20px, 20px) scale(1.02); }
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 15px 30px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 0 30px rgba(94, 106, 210, 0.1);
+        /* 顶部 header 呼吸灯边框 */
+        .header-bar {
+            animation: headerGlow 4s ease-in-out infinite;
+        }
+        @keyframes headerGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(24,144,255,0.15); }
+            50% { box-shadow: 0 0 40px rgba(24,144,255,0.3), 0 0 80px rgba(24,144,255,0.1); }
         }
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        /* KPI 卡片入场动画 */
+        .kpi-card {
+            animation: kpiSlideIn 0.6s ease-out both;
+        }
+        .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.2s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.3s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.4s; }
+        .kpi-card:nth-child(5) { animation-delay: 0.5s; }
+        .kpi-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes kpiSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .header-title h1 {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        /* KPI 数字放大特效 */
+        .kpi-value {
+            background: linear-gradient(135deg, #fff 0%, #91d5ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: 2px;
+            text-shadow: none;
+            filter: drop-shadow(0 0 8px rgba(24,144,255,0.4));
         }
 
-        .header-title .logo {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
+        /* 卡片统一增强 */
+        .de-card {
+            animation: cardFadeIn 0.8s ease-out both;
+        }
+        .de-card:nth-child(1) { animation-delay: 0.3s; }
+        .de-card:nth-child(2) { animation-delay: 0.5s; }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .header-time {
-            text-align: right;
-            font-size: 14px;
-            color: var(--text-secondary);
+        /* 图表卡片悬停发光 */
+        .de-card:hover {
+            box-shadow: 0 0 30px rgba(24,144,255,0.2), inset 0 0 30px rgba(24,144,255,0.05);
         }
 
-        .header-time .time {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--color-secondary);
-            font-family: 'Courier New', monospace;
-        }
-
-        .header-time .date {
-            margin-top: 2px;
-        }
-
-        .kpi-bar {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
-        }
-
-        .kpi-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 18px 20px;
-            border: 1px solid var(--border-color);
-            text-align: center;
+        /* 中国地图容器增强 */
+        .map-wrapper {
             position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 25px rgba(94, 106, 210, 0.2);
-        }
-
-        .kpi-card .label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .kpi-card .value {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-family: 'Courier New', monospace;
-        }
-
-        .kpi-card .unit {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-left: 4px;
-        }
-
-        .kpi-card .change {
-            font-size: 12px;
-            margin-top: 6px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        .kpi-card .change.up {
-            color: #52c41a;
-            background: rgba(82, 196, 26, 0.15);
-        }
-
-        .kpi-card .change.down {
-            color: #ff4d4f;
-            background: rgba(255, 77, 79, 0.15);
-        }
-
-        .main-content {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 300px 1fr 320px;
-            gap: 15px;
-            min-height: 0;
-        }
-
-        .left-column, .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .center-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 12px;
-            pointer-events: none;
-            box-shadow: inset 0 0 30px rgba(94, 106, 210, 0.05);
-        }
-
-        .card-header {
-            padding: 15px 18px;
-            border-bottom: 1px solid rgba(94, 106, 210, 0.15);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-header h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-header h3 .icon {
-            font-size: 18px;
-        }
-
-        .card-header .badge {
-            font-size: 11px;
-            padding: 3px 10px;
-            background: rgba(94, 106, 210, 0.2);
-            color: var(--color-primary);
-            border-radius: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .card-body {
-            padding: 15px;
-        }
-
-        .chart-container {
             width: 100%;
             height: 100%;
+            min-height: 300px;
         }
-
-        .trade-flow {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-
-        .trade-list {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            height: calc(100% - 70px);
-        }
-
-        .trade-scroll {
-            animation: scrollUp 15s linear infinite;
-            display: flex;
-            flex-direction: column;
-        }
-
-        @keyframes scrollUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-
-        .trade-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: rgba(94, 106, 210, 0.08);
-            border-radius: 8px;
-            border-left: 3px solid var(--color-primary);
-            transition: all 0.3s ease;
-        }
-
-        .trade-item:hover {
-            background: rgba(94, 106, 210, 0.15);
-            transform: translateX(5px);
-        }
-
-        .trade-item .merchant {
-            font-size: 13px;
-            color: var(--text-primary);
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .trade-item .amount {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--color-secondary);
-        }
-
-        .trade-item .time {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-left: 10px;
-        }
-
-        .map-container {
-            flex: 1.2;
-        }
-
-        #chinaMap {
-            width: 100%;
-            height: 100%;
-        }
-
-        .trend-container {
-            flex: 0.8;
-        }
-
-        #trendChart {
-            width: 100%;
-            height: 100%;
-        }
-
-        .pie-container {
-            height: 200px;
-        }
-
-        #pieChart {
-            width: 100%;
-            height: 100%;
-        }
-
-        .ai-insight {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            min-height: 200px;
-        }
-
-        .insight-cards {
-            position: relative;
-            height: calc(100% - 50px);
-        }
-
-        .insight-card {
+        .map-stats-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: 15px;
-            opacity: 0;
-            transform: translateX(30px);
-            transition: all 0.5s ease;
+            top: 10px;
+            right: 10px;
             display: flex;
             flex-direction: column;
-        }
-
-        .insight-card.active {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .insight-card .insight-icon {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .insight-card .insight-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--color-secondary);
-            margin-bottom: 8px;
-        }
-
-        .insight-card .insight-content {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .insight-card .insight-tip {
-            margin-top: auto;
-            padding-top: 10px;
-            font-size: 12px;
-            color: var(--color-primary);
-            border-top: 1px dashed rgba(94, 106, 210, 0.3);
-        }
-
-        .insight-dots {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
             gap: 6px;
             z-index: 10;
         }
-
-        .insight-dots .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(94, 106, 210, 0.3);
-            transition: all 0.3s ease;
+        .map-stat-chip {
+            padding: 4px 12px;
+            background: rgba(15,23,42,0.85);
+            border: 1px solid rgba(24,144,255,0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #91d5ff;
+            backdrop-filter: blur(4px);
         }
 
-        .insight-dots .dot.active {
-            background: var(--color-primary);
-            width: 18px;
-            border-radius: 3px;
-        }
-
-        .split-container {
-            height: 180px;
-        }
-
-        #splitChart {
-            width: 100%;
+        /* AI 洞察卡片增强 */
+        .ai-insight-card {
+            position: relative;
             height: 100%;
-        }
-
-        @keyframes borderGlow {
-            0%, 100% {
-                box-shadow: 0 0 5px var(--color-primary), 0 0 10px rgba(94, 106, 210, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 15px var(--color-primary), 0 0 25px rgba(94, 106, 210, 0.5);
-            }
-        }
-
-        .glow-border {
-            animation: borderGlow 3s ease-in-out infinite;
-        }
-
-        @media (max-width: 1366px) {
-            .kpi-bar {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .main-content {
-                grid-template-columns: 260px 1fr 280px;
-            }
-            
-            .kpi-card .value {
-                font-size: 26px;
-            }
-            
-            .header-title h1 {
-                font-size: 22px;
-            }
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-primary);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            flex-direction: column;
+        }
+        .insight-card.active {
+            animation: insightSlideIn 0.5s ease-out;
+        }
+        @keyframes insightSlideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(94, 106, 210, 0.2);
-            border-top-color: var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .counting {
-            display: inline-block;
-        }
-
+        /* 返回首页按钮增强 */
         .back-home-btn {
             position: fixed;
             top: 20px;
@@ -530,173 +166,355 @@
             align-items: center;
             gap: 8px;
             padding: 10px 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(24,144,255,0.3);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: #e6f7ff;
             text-decoration: none;
             font-size: 0.875rem;
             font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .back-home-btn:hover {
+            background: rgba(24,144,255,0.2);
+            border-color: #1890ff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(24,144,255,0.3);
         }
 
-        .back-home-btn:hover {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(94, 106, 210, 0.3);
+        /* 加载动画增强 */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0a0a0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 30px;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(24,144,255,0.1);
+            border-top-color: #1890ff;
+            border-right-color: #13c2c2;
+            animation: spin 1.2s linear infinite;
+            box-shadow: 0 0 30px rgba(24,144,255,0.3);
+        }
+        .loader-text {
+            color: #91d5ff;
+            font-size: 14px;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        /* 主布局调整 */
+        .dashboard-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 70px);
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 15px;
+            padding: 15px;
+            z-index: 1;
+        }
+
+        /* 左侧 KPI 滚动区 */
+        .left-kpi-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .left-kpi-column::-webkit-scrollbar { width: 3px; }
+        .left-kpi-column::-webkit-scrollbar-thumb { background: rgba(24,144,255,0.3); border-radius: 3px; }
+
+        /* 中间图表区 */
+        .center-charts {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .center-charts .de-card:nth-child(1) { flex: 1.2; }
+        .center-charts .de-card:nth-child(2) { flex: 0.8; }
+
+        /* 右侧栏 */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1600px) {
+            .dashboard-container { grid-template-columns: 250px 1fr 250px; }
+        }
+        @media (max-width: 1366px) {
+            .dashboard-container { grid-template-columns: 220px 1fr 220px; }
+            .kpi-value { font-size: 24px; }
+        }
+
+        /* 五星评级可视化 */
+        .star-rating-visual {
+            display: flex;
+            gap: 2px;
         }
     </style>
 </head>
 <body>
+    <!-- 粒子背景 Canvas -->
+    <canvas id="particles-bg"></canvas>
+
+    <!-- 浮动光球 -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- 返回首页 -->
     <a href="index.html" class="back-home-btn">
-        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+        <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
         返回首页
     </a>
-    <div class="loading-overlay hidden" id="loadingOverlay">
-        <div class="loader"></div>
+
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader-ring"></div>
+        <div class="loader-text">店赢OS · 加载中</div>
     </div>
 
-    <div class="dashboard">
-        <div class="header">
-            <div class="header-title">
-                <div class="logo">店</div>
-                <h1>店赢OS 运营监控中心</h1>
+    <!-- 顶部标题栏 -->
+    <div class="header-bar">
+        <div class="header-title">
+            <div class="icon">📊</div>
+            <h1 style="cursor:pointer;" onclick="window.location.href='index.html'" title="返回首页">店赢OS · 运营监控中心</h1>
+            <span class="badge" style="margin-left:12px;animation:blink 2s infinite;">LIVE 实时监控</span>
+        </div>
+        <div class="header-info">
+            <div class="header-status">
+                <div class="dot"></div>
+                <span>系统正常运行</span>
             </div>
             <div class="header-time">
                 <div class="time" id="currentTime">00:00:00</div>
-                <div class="date" id="currentDate">2024年01月01日</div>
+                <div class="date" id="currentDate">2026年05月02日 星期六</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="dashboard-container">
+        <!-- ====== 左侧栏 ====== -->
+        <div class="left-kpi-column">
+            <!-- KPI 1 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">GMV总量</span>
+                    <div class="kpi-icon"><i data-lucide="trending-up"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="126.8" data-suffix="亿">0</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+                    <span>同比 +23.5%</span>
+                </div>
+                <div class="kpi-mini-chart" id="miniChart1" style="height:35px;margin-top:8px;"></div>
+            </div>
+
+            <!-- KPI 2 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">商户总数</span>
+                    <div class="kpi-icon"><i data-lucide="store"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="58642" data-suffix="">0</span>
+                    <span class="kpi-unit">家</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="user-plus" style="width:14px;height:14px;"></i>
+                    <span>本月新增 1,258</span>
+                </div>
+            </div>
+
+            <!-- KPI 3 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">今日交易笔数</span>
+                    <div class="kpi-icon"><i data-lucide="receipt"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="328947" data-suffix="">0</span>
+                    <span class="kpi-unit">笔</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+                    <span>较昨日 +12.3%</span>
+                </div>
+            </div>
+
+            <!-- KPI 4 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">今日交易金额</span>
+                    <div class="kpi-icon"><i data-lucide="wallet"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="2847.6" data-suffix="万">0</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="trending-up" style="width:14px;height:14px;"></i>
+                    <span>较昨日 +8.7%</span>
+                </div>
+            </div>
+
+            <!-- KPI 5 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">平均星级</span>
+                    <div class="kpi-icon"><i data-lucide="star"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="4.72" data-suffix="">0</span>
+                    <span class="kpi-unit">分</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="star" style="width:14px;height:14px;color:#faad14;"></i>
+                    <span>较上月 +0.15</span>
+                </div>
+            </div>
+
+            <!-- KPI 6 -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">在线商户</span>
+                    <div class="kpi-icon"><i data-lucide="wifi"></i></div>
+                </div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value counting" data-target="54286" data-suffix="">0</span>
+                    <span class="kpi-unit">家</span>
+                </div>
+                <div class="kpi-trend up">
+                    <i data-lucide="activity" style="width:14px;height:14px;"></i>
+                    <span>在线率 92.5%</span>
+                </div>
+            </div>
+
+            <!-- 行业营收排行 -->
+            <div class="de-card" style="flex:1; min-height:220px;">
+                <div class="de-card-header">
+                    <i data-lucide="bar-chart-2" class="icon"></i>
+                    <h3>行业营收排行</h3>
+                    <span class="badge">实时</span>
+                </div>
+                <div class="de-card-body" style="padding:10px;">
+                    <div id="rankChart" style="width:100%;height:100%;min-height:180px;"></div>
+                </div>
             </div>
         </div>
 
-        <div class="kpi-bar">
-            <div class="kpi-card glow-border">
-                <div class="label">GMV总量</div>
-                <div class="value"><span class="counting" data-target="126.8" data-suffix="亿">0</span><span class="unit">元</span></div>
-                <div class="change up">↑ 23.5%</div>
+        <!-- ====== 中间栏 ====== -->
+        <div class="center-charts">
+            <!-- 全国商户分布热力图 -->
+            <div class="de-card">
+                <div class="de-card-header">
+                    <i data-lucide="map" class="icon"></i>
+                    <h3>全国商户分布热力图</h3>
+                    <span class="badge">每10秒刷新</span>
+                </div>
+                <div class="de-card-body" style="padding:10px;position:relative;">
+                    <div class="map-stats-overlay">
+                        <div class="map-stat-chip">📍 覆盖 31 省</div>
+                        <div class="map-stat-chip">🔥 广东最热</div>
+                        <div class="map-stat-chip">📈 今日 +128</div>
+                    </div>
+                    <div id="chinaMap" style="width:100%;height:100%;min-height:320px;"></div>
+                </div>
             </div>
-            <div class="kpi-card">
-                <div class="label">商户总数</div>
-                <div class="value"><span class="counting" data-target="58642" data-suffix="">0</span><span class="unit">家</span></div>
-                <div class="change up">↑ 1,258</div>
-            </div>
-            <div class="kpi-card">
-                <div class="label">今日交易笔数</div>
-                <div class="value"><span class="counting" data-target="328947" data-suffix="">0</span><span class="unit">笔</span></div>
-                <div class="change up">↑ 12.3%</div>
-            </div>
-            <div class="kpi-card">
-                <div class="label">今日交易金额</div>
-                <div class="value"><span class="counting" data-target="2847.6" data-suffix="万">0</span><span class="unit">元</span></div>
-                <div class="change up">↑ 8.7%</div>
-            </div>
-            <div class="kpi-card">
-                <div class="label">平均星级</div>
-                <div class="value"><span class="counting" data-target="4.72" data-suffix="">0</span><span class="unit">分</span></div>
-                <div class="change up">↑ 0.15</div>
-            </div>
-            <div class="kpi-card">
-                <div class="label">在线商户</div>
-                <div class="value"><span class="counting" data-target="54286" data-suffix="">0</span><span class="unit">家</span></div>
-                <div class="change up">92.5%</div>
+
+            <!-- 7日交易趋势 -->
+            <div class="de-card">
+                <div class="de-card-header">
+                    <i data-lucide="trending-up" class="icon"></i>
+                    <h3>7日交易趋势</h3>
+                    <div style="margin-left:auto;display:flex;gap:15px;font-size:11px;">
+                        <span style="color:#1890ff;">● 实际</span>
+                        <span style="color:#faad14;">— 预测</span>
+                    </div>
+                </div>
+                <div class="de-card-body" style="padding:10px;">
+                    <div id="trendChart" style="width:100%;height:100%;min-height:200px;"></div>
+                </div>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="left-column">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><span class="icon">📊</span> 行业营收排行</h3>
-                        <span class="badge">实时</span>
-                    </div>
-                    <div class="card-body">
-                        <div id="rankChart" class="chart-container" style="height: 220px;"></div>
-                    </div>
+        <!-- ====== 右侧栏 ====== -->
+        <div class="right-column">
+            <!-- 商户星级分布 -->
+            <div class="de-card" style="flex:1;">
+                <div class="de-card-header">
+                    <i data-lucide="star" class="icon"></i>
+                    <h3>商户星级分布</h3>
                 </div>
-
-                <div class="card trade-flow">
-                    <div class="card-header">
-                        <h3><span class="icon">💰</span> 实时交易流</h3>
-                        <span class="badge">LIVE</span>
-                    </div>
-                    <div class="card-body" style="padding: 10px;">
-                        <div class="trade-list">
-                            <div class="trade-scroll" id="tradeScroll"></div>
-                        </div>
-                    </div>
+                <div class="de-card-body" style="display:flex;align-items:center;justify-content:center;">
+                    <div id="pieChart" style="width:100%;height:100%;min-height:160px;"></div>
                 </div>
             </div>
 
-            <div class="center-column">
-                <div class="card map-container">
-                    <div class="card-header">
-                        <h3><span class="icon">🗺️</span> 全国商户分布热力图</h3>
-                        <span class="badge">数据每10秒刷新</span>
-                    </div>
-                    <div class="card-body">
-                        <div id="chinaMap" style="height: 100%;"></div>
-                    </div>
+            <!-- AI 运营洞察 -->
+            <div class="de-card ai-insight-card" style="flex:1.2;">
+                <div class="de-card-header">
+                    <i data-lucide="brain" class="icon"></i>
+                    <h3>AI 运营洞察</h3>
+                    <span class="badge" style="animation:pulse 2s infinite;">AI 分析中</span>
                 </div>
-
-                <div class="card trend-container">
-                    <div class="card-header">
-                        <h3><span class="icon">📈</span> 7日交易趋势</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="trendChart" style="height: 100%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="right-column">
-                <div class="card pie-container">
-                    <div class="card-header">
-                        <h3><span class="icon">⭐</span> 商户星级分布</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="pieChart" class="chart-container"></div>
-                    </div>
-                </div>
-
-                <div class="card ai-insight">
-                    <div class="card-header">
-                        <h3><span class="icon">🤖</span> AI运营洞察</h3>
-                    </div>
+                <div class="de-card-body" style="position:relative;overflow:hidden;">
                     <div class="insight-cards" id="insightCards">
                         <div class="insight-card active">
-                            <div class="insight-icon">🚀</div>
-                            <div class="insight-title">增长机会发现</div>
-                            <div class="insight-content">餐饮行业本周交易额环比上涨18.7%，建议加大节假日营销力度，预计可提升15%GMV</div>
-                            <div class="insight-tip">💡 建议立即配置限时优惠活动</div>
+                            <div style="font-size:28px;margin-bottom:10px;">🚀</div>
+                            <div style="font-size:14px;font-weight:600;color:#40a9ff;margin-bottom:8px;">增长机会发现</div>
+                            <div style="font-size:12px;color:#91d5ff;line-height:1.6;">餐饮行业本周交易额环比上涨18.7%，建议加大节假日营销力度，预计可提升15% GMV</div>
+                            <div style="margin-top:auto;padding-top:10px;font-size:11px;color:#1890ff;border-top:1px dashed rgba(24,144,255,0.3);">💡 建议立即配置限时优惠活动</div>
                         </div>
                         <div class="insight-card">
-                            <div class="insight-icon">⚠️</div>
-                            <div class="insight-title">风险预警</div>
-                            <div class="insight-content">检测到32家商户连续3日评分下降，已触发黄色预警，建议运营人员关注</div>
-                            <div class="insight-tip">💡 建议启动商户关怀计划</div>
+                            <div style="font-size:28px;margin-bottom:10px;">⚠️</div>
+                            <div style="font-size:14px;font-weight:600;color:#faad14;margin-bottom:8px;">风险预警</div>
+                            <div style="font-size:12px;color:#91d5ff;line-height:1.6;">检测到32家商户连续3日评分下降，已触发黄色预警，建议运营人员重点关注</div>
+                            <div style="margin-top:auto;padding-top:10px;font-size:11px;color:#faad14;border-top:1px dashed rgba(250,173,20,0.3);">💡 建议启动商户关怀计划</div>
                         </div>
                         <div class="insight-card">
-                            <div class="insight-icon">🔥</div>
-                            <div class="insight-title">爆款预测</div>
-                            <div class="insight-content">基于历史数据预测，零售行业即将迎来销售高峰，建议提前备货200%库存</div>
-                            <div class="insight-tip">💡 已自动通知供应商系统</div>
+                            <div style="font-size:28px;margin-bottom:10px;">🔥</div>
+                            <div style="font-size:14px;font-weight:600;color:#ff7c6e;margin-bottom:8px;">爆款预测</div>
+                            <div style="font-size:12px;color:#91d5ff;line-height:1.6;">基于历史数据预测，零售行业即将迎来销售高峰，建议提前备货200%库存</div>
+                            <div style="margin-top:auto;padding-top:10px;font-size:11px;color:#ff7c6e;border-top:1px dashed rgba(255,124,110,0.3);">💡 已自动通知供应商系统</div>
                         </div>
                         <div class="insight-card">
-                            <div class="insight-icon">🎯</div>
-                            <div class="insight-title">效率优化</div>
-                            <div class="insight-content">加油站行业平均结算时长高于均值35%，建议接入智能分账系统</div>
-                            <div class="insight-tip">💡 点击查看优化方案</div>
+                            <div style="font-size:28px;margin-bottom:10px;">🎯</div>
+                            <div style="font-size:14px;font-weight:600;color:#52c41a;margin-bottom:8px;">效率优化</div>
+                            <div style="font-size:12px;color:#91d5ff;line-height:1.6;">加油站行业平均结算时长高于均值35%，建议接入智能分账系统提升效率</div>
+                            <div style="margin-top:auto;padding-top:10px;font-size:11px;color:#52c41a;border-top:1px dashed rgba(82,196,26,0.3);">💡 点击查看优化方案</div>
                         </div>
                         <div class="insight-card">
-                            <div class="insight-icon">📱</div>
-                            <div class="insight-title">用户行为分析</div>
-                            <div class="insight-content">移动端支付占比已达78.3%，建议优化小程序用户体验，提升转化率</div>
-                            <div class="insight-tip">💡 已生成用户体验报告</div>
+                            <div style="font-size:28px;margin-bottom:10px;">📱</div>
+                            <div style="font-size:14px;font-weight:600;color:#722ed1;margin-bottom:8px;">用户行为分析</div>
+                            <div style="font-size:12px;color:#91d5ff;line-height:1.6;">移动端支付占比已达78.3%，建议优化小程序用户体验，进一步提升转化率</div>
+                            <div style="margin-top:auto;padding-top:10px;font-size:11px;color:#722ed1;border-top:1px dashed rgba(114,46,209,0.3);">💡 已生成用户体验报告</div>
                         </div>
                     </div>
-                    <div class="insight-dots" id="insightDots">
+                    <div class="insight-dots" id="insightDots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;">
                         <div class="dot active"></div>
                         <div class="dot"></div>
                         <div class="dot"></div>
@@ -704,13 +522,29 @@
                         <div class="dot"></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="card split-container">
-                    <div class="card-header">
-                        <h3><span class="icon">💳</span> 分账金额统计</h3>
-                    </div>
-                    <div class="card-body">
-                        <div id="splitChart" class="chart-container"></div>
+            <!-- 分账金额统计 -->
+            <div class="de-card" style="flex:0.8;">
+                <div class="de-card-header">
+                    <i data-lucide="pie-chart" class="icon"></i>
+                    <h3>分账金额统计</h3>
+                </div>
+                <div class="de-card-body" style="padding:10px;">
+                    <div id="splitChart" style="width:100%;height:100%;min-height:150px;"></div>
+                </div>
+            </div>
+
+            <!-- 实时交易流 -->
+            <div class="de-card" style="flex:1.2;">
+                <div class="de-card-header">
+                    <i data-lucide="activity" class="icon"></i>
+                    <h3>实时交易流</h3>
+                    <span class="badge">LIVE</span>
+                </div>
+                <div class="de-card-body" style="padding:5px 0;">
+                    <div class="trade-scroll-container">
+                        <div class="trade-scroll-list" id="tradeScroll"></div>
                     </div>
                 </div>
             </div>
@@ -718,416 +552,452 @@
     </div>
 
     <script>
-        const mockData = {
-            industries: [
-                { name: '餐饮', value: 2865, color: '#5e6ad2' },
-                { name: '零售', value: 2340, color: '#00b8cc' },
-                { name: '休娱', value: 1890, color: '#ff7c6e' },
-                { name: '加油站', value: 1650, color: '#f7ba1e' },
-                { name: '旅游', value: 1280, color: '#9d65c9' },
-                { name: '物业', value: 980, color: '#52c41a' },
-                { name: '教育', value: 750, color: '#1890ff' }
-            ],
-            trend: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-            trendData: [820, 932, 901, 1034, 1290, 1530, 1680],
-            stars: [
-                { name: '五星', value: 28456, color: '#f7ba1e' },
-                { name: '四星', value: 18234, color: '#5e6ad2' },
-                { name: '三星', value: 8245, color: '#00b8cc' },
-                { name: '二星', value: 2890, color: '#ff7c6e' },
-                { name: '一星', value: 817, color: '#9d65c9' }
-            ],
-            split: [
-                { name: '平台服务费', value: 856 },
-                { name: '商户结算', value: 15892 },
-                { name: '分润分成', value: 2845 },
-                { name: '提现手续费', value: 234 }
-            ]
-        };
+    // ============================================
+    // 粒子背景动画
+    // ============================================
+    (function initParticles() {
+        const canvas = document.getElementById('particles-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 60;
 
-        const provinceData = [
-            { name: '北京', value: 3500 },
-            { name: '上海', value: 4200 },
-            { name: '广东', value: 5800 },
-            { name: '浙江', value: 3800 },
-            { name: '江苏', value: 3200 },
-            { name: '四川', value: 2100 },
-            { name: '湖北', value: 1800 },
-            { name: '陕西', value: 1500 },
-            { name: '山东', value: 2600 },
-            { name: '河南', value: 1900 },
-            { name: '河北', value: 1400 },
-            { name: '湖南', value: 1700 },
-            { name: '福建', value: 2100 },
-            { name: '辽宁', value: 1600 },
-            { name: '重庆', value: 1900 },
-            { name: '天津', value: 1200 },
-            { name: '安徽', value: 1500 },
-            { name: '江西', value: 1300 },
-            { name: '广西', value: 1100 },
-            { name: '云南', value: 900 },
-            { name: '贵州', value: 800 },
-            { name: '山西', value: 1100 },
-            { name: '内蒙古', value: 700 },
-            { name: '新疆', value: 500 },
-            { name: '甘肃', value: 400 },
-            { name: '海南', value: 600 },
-            { name: '黑龙江', value: 800 },
-            { name: '吉林', value: 900 },
-            { name: '西藏', value: 200 },
-            { name: '青海', value: 300 },
-            { name: '宁夏', value: 350 }
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.4 + 0.1;
+                this.color = ['#1890ff', '#13c2c2', '#40a9ff'][Math.floor(Math.random() * 3)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+
+            // 画连线
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = '#1890ff';
+                        ctx.globalAlpha = 0.08 * (1 - dist / 120);
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+
+    // ============================================
+    // 全局 Mock 数据
+    // ============================================
+    const mockData = {
+        industries: [
+            { name: '餐饮', value: 2865, color: '#1890ff' },
+            { name: '零售', value: 2340, color: '#13c2c2' },
+            { name: '休娱', value: 1890, color: '#ff7c6e' },
+            { name: '加油站', value: 1650, color: '#faad14' },
+            { name: '旅游', value: 1280, color: '#722ed1' },
+            { name: '物业', value: 980, color: '#52c41a' },
+            { name: '教育', value: 750, color: '#40a9ff' }
+        ],
+        trend: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        trendData: [820, 932, 901, 1034, 1290, 1530, 1680],
+        trendPrediction: [800, 910, 920, 1050, 1310, 1480, 1620],
+        stars: [
+            { name: '五星', value: 28456, color: '#faad14' },
+            { name: '四星', value: 18234, color: '#1890ff' },
+            { name: '三星', value: 8245, color: '#13c2c2' },
+            { name: '二星', value: 2890, color: '#ff7c6e' },
+            { name: '一星', value: 817, color: '#722ed1' }
+        ],
+        split: [
+            { name: '平台服务费', value: 856 },
+            { name: '商户结算', value: 15892 },
+            { name: '分润分成', value: 2845 },
+            { name: '提现手续费', value: 234 }
+        ]
+    };
+
+    const provinceData = [
+        { name: '北京', value: 3500 }, { name: '上海', value: 4200 },
+        { name: '广东', value: 5800 }, { name: '浙江', value: 3800 },
+        { name: '江苏', value: 3200 }, { name: '四川', value: 2100 },
+        { name: '湖北', value: 1800 }, { name: '陕西', value: 1500 },
+        { name: '山东', value: 2600 }, { name: '河南', value: 1900 },
+        { name: '河北', value: 1400 }, { name: '湖南', value: 1700 },
+        { name: '福建', value: 2100 }, { name: '辽宁', value: 1600 },
+        { name: '重庆', value: 1900 }, { name: '天津', value: 1200 },
+        { name: '安徽', value: 1500 }, { name: '江西', value: 1300 },
+        { name: '广西', value: 1100 }, { name: '云南', value: 900 },
+        { name: '贵州', value: 800 }, { name: '山西', value: 1100 },
+        { name: '内蒙古', value: 700 }, { name: '新疆', value: 500 },
+        { name: '甘肃', value: 400 }, { name: '海南', value: 600 },
+        { name: '黑龙江', value: 800 }, { name: '吉林', value: 900 },
+        { name: '西藏', value: 200 }, { name: '青海', value: 300 },
+        { name: '宁夏', value: 350 }
+    ];
+
+    // ============================================
+    // 时间更新
+    // ============================================
+    function updateTime() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+        const dateStr = now.toLocaleDateString('zh-CN', {
+            year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+        });
+        const elTime = document.getElementById('currentTime');
+        const elDate = document.getElementById('currentDate');
+        if (elTime) elTime.textContent = timeStr;
+        if (elDate) elDate.textContent = dateStr;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // ============================================
+    // 数字滚动动画（增强版）
+    // ============================================
+    function animateValue(el, start, end, duration) {
+        const isFloat = String(end).includes('.');
+        const startTime = performance.now();
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeOut = 1 - Math.pow(1 - progress, 4);
+            const current = start + (end - start) * easeOut;
+            el.textContent = isFloat ? current.toFixed(2) : Math.floor(current).toLocaleString();
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    function initCounting() {
+        document.querySelectorAll('.counting').forEach(el => {
+            const target = parseFloat(el.dataset.target);
+            animateValue(el, 0, target, 2200);
+        });
+    }
+
+    // ============================================
+    // 实时交易流
+    // ============================================
+    function initTradeFlow() {
+        const container = document.getElementById('tradeScroll');
+        if (!container) return;
+        const merchantNames = [
+            '北京朝阳店', '上海浦东店', '深圳南山店', '杭州西湖店', '广州天河店',
+            '成都锦江店', '武汉江汉店', '西安雁塔店', '南京鼓楼店', '重庆渝北店',
+            '苏州园区店', '天津河西店', '长沙岳麓店', '青岛崂山店', '沈阳铁西店',
+            '大连中山店', '哈尔滨南岗店', '长春朝阳店', '济南历下店', '郑州金水店'
         ];
-
-        function updateTime() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
-            const dateStr = now.toLocaleDateString('zh-CN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                weekday: 'long'
-            });
-            document.getElementById('currentTime').textContent = timeStr;
-            document.getElementById('currentDate').textContent = dateStr;
+        function createItem() {
+            const name = merchantNames[Math.floor(Math.random() * merchantNames.length)];
+            const amount = (Math.random() * 500 + 10).toFixed(0);
+            return `<div class="trade-item-scroll">
+                <span class="time">刚刚</span>
+                <span class="merchant">${name}</span>
+                <span class="amount">¥${amount}</span>
+            </div>`;
         }
-        updateTime();
-        setInterval(updateTime, 1000);
+        let html = '';
+        for (let i = 0; i < 15; i++) {
+            const name = merchantNames[Math.floor(Math.random() * merchantNames.length)];
+            const amount = (Math.random() * 500 + 10).toFixed(0);
+            html += `<div class="trade-item-scroll">
+                <span class="time">${i * 3}秒前</span>
+                <span class="merchant">${name}</span>
+                <span class="amount">¥${amount}</span>
+            </div>`;
+        }
+        container.innerHTML = html + html;
 
-        function animateValue(element, start, end, duration) {
-            const isFloat = String(end).includes('.');
-            const startTime = performance.now();
-            
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const current = start + (end - start) * easeOut;
-                
-                if (isFloat) {
-                    element.textContent = current.toFixed(2);
-                } else {
-                    element.textContent = Math.floor(current).toLocaleString();
-                }
-                
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                }
+        setInterval(() => {
+            const newItem = createItem();
+            container.insertAdjacentHTML('afterbegin', newItem);
+            const items = container.querySelectorAll('.trade-item-scroll');
+            if (items.length > 30) {
+                items[items.length - 1].remove();
+                items[items.length - 2].remove();
             }
-            requestAnimationFrame(update);
-        }
-
-        function initCounting() {
-            document.querySelectorAll('.counting').forEach(el => {
-                const target = parseFloat(el.dataset.target);
-                animateValue(el, 0, target, 2000);
+            container.querySelectorAll('.trade-item-scroll .time').forEach((el, i) => {
+                if (i > 0) el.textContent = `${i * 3}秒前`;
             });
-        }
+        }, 2000);
+    }
 
-        function initTradeFlow() {
-            const container = document.getElementById('tradeScroll');
-            const merchantNames = [
-                '北京朝阳店', '上海浦东店', '深圳南山店', '杭州西湖店', '广州天河店',
-                '成都锦江店', '武汉江汉店', '西安雁塔店', '南京鼓楼店', '重庆渝北店',
-                '苏州园区店', '天津河西店', '长沙岳麓店', '青岛崂山店', '沈阳铁西店',
-                '大连中山店', '哈尔滨南岗店', '长春朝阳店', '济南历下店', '郑州金水店'
-            ];
-            
-            function createTradeItem() {
-                const name = merchantNames[Math.floor(Math.random() * merchantNames.length)];
-                const amount = (Math.random() * 500 + 10).toFixed(0);
-                return `
-                    <div class="trade-item">
-                        <span class="merchant">${name}</span>
-                        <span class="amount">¥${amount}</span>
-                        <span class="time">刚刚</span>
-                    </div>
-                `;
-            }
-            
-            let items = [];
-            for (let i = 0; i < 10; i++) {
-                const name = merchantNames[Math.floor(Math.random() * merchantNames.length)];
-                const amount = (Math.random() * 500 + 10).toFixed(0);
-                items.push(`
-                    <div class="trade-item">
-                        <span class="merchant">${name}</span>
-                        <span class="amount">¥${amount}</span>
-                        <span class="time">${i}秒前</span>
-                    </div>
-                `);
-            }
-            container.innerHTML = items.join('') + items.join('');
-            
-            setInterval(() => {
-                const newItem = createTradeItem();
-                container.insertAdjacentHTML('afterbegin', newItem);
-                const lastItems = container.querySelectorAll('.trade-item');
-                if (lastItems.length > 20) {
-                    lastItems[lastItems.length - 1].remove();
-                    lastItems[lastItems.length - 2].remove();
-                }
-                container.querySelectorAll('.trade-item .time').forEach((timeEl, i) => {
-                    if (i > 0) {
-                        timeEl.textContent = `${i}秒前`;
-                    }
-                });
-            }, 1500);
-        }
+    // ============================================
+    // AI 洞察轮播
+    // ============================================
+    function initInsightCarousel() {
+        const cards = document.querySelectorAll('.insight-card');
+        const dots = document.querySelectorAll('#insightDots .dot');
+        if (!cards.length) return;
+        let current = 0;
+        setInterval(() => {
+            cards[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (current + 1) % cards.length;
+            cards[current].classList.add('active');
+            dots[current].classList.add('active');
+        }, 5000);
+    }
 
-        function initInsightCarousel() {
-            const cards = document.querySelectorAll('.insight-card');
-            const dots = document.querySelectorAll('.insight-dots .dot');
-            let currentIndex = 0;
-            
-            setInterval(() => {
-                cards[currentIndex].classList.remove('active');
-                dots[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex + 1) % cards.length;
-                cards[currentIndex].classList.add('active');
-                dots[currentIndex].classList.add('active');
-            }, 5000);
-        }
-
-        function initCharts() {
-            const rankChart = echarts.init(document.getElementById('rankChart'));
-            rankChart.setOption({
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: { type: 'shadow' },
-                    formatter: '{b}: {c}万',
-                    backgroundColor: 'rgba(20, 20, 32, 0.95)',
-                    borderColor: '#3a4a7a',
-                    textStyle: { color: '#fff' }
-                },
-                grid: { left: '3%', right: '15%', bottom: '3%', top: '3%', containLabel: true },
-                xAxis: { type: 'value', show: false },
-                yAxis: {
-                    type: 'category',
-                    data: mockData.industries.map(i => i.name),
-                    axisLine: { show: false },
-                    axisTick: { show: false },
-                    axisLabel: { color: '#a0a0b0', fontSize: 12 }
-                },
-                series: [{
-                    type: 'bar',
-                    data: mockData.industries.map(i => ({
-                        value: i.value,
-                        itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                                { offset: 0, color: i.color },
-                                { offset: 1, color: i.color + '80' }
-                            ]),
-                            borderRadius: [0, 4, 4, 0]
-                        }
-                    })),
-                    barWidth: 18,
-                    label: {
-                        show: true,
-                        position: 'right',
-                        formatter: '{c}万',
-                        color: '#a0a0b0',
-                        fontSize: 11
-                    }
-                }]
-            });
-
-            const mapChart = echarts.init(document.getElementById('chinaMap'));
-            mapChart.setOption({
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{b}: {c}家商户',
-                    backgroundColor: 'rgba(20, 20, 32, 0.95)',
-                    borderColor: '#3a4a7a',
-                    textStyle: { color: '#fff' }
-                },
-                visualMap: {
-                    min: 0,
-                    max: 6000,
-                    left: 'left',
-                    top: 'bottom',
-                    text: ['高', '低'],
-                    inRange: {
-                        color: ['#1a1a2e', '#2d3a6e', '#4a5eb8', '#6e7fd6', '#9da5e8', '#c5cafc']
-                    },
-                    calculable: true,
-                    textStyle: { color: '#a0a0b0' }
-                },
-                geo: {
-                    map: 'china',
-                    roam: false,
-                    zoom: 1.2,
-                    center: [105, 36],
+    // ============================================
+    // 图表初始化（WAIC 比赛级视觉效果）
+    // ============================================
+    function initCharts() {
+        // —— 1. 行业排行图 ——
+        const rankChart = echarts.init(document.getElementById('rankChart'));
+        rankChart.setOption({
+            tooltip: {
+                trigger: 'axis', axisPointer: { type: 'shadow' },
+                formatter: '{b}: {c}万',
+                backgroundColor: 'rgba(15,23,42,0.95)', borderColor: '#1890ff',
+                textStyle: { color: '#fff', fontSize: 12 }
+            },
+            grid: { left: '3%', right: '15%', bottom: '3%', top: '3%', containLabel: true },
+            xAxis: { type: 'value', show: false },
+            yAxis: {
+                type: 'category', data: mockData.industries.map(i => i.name),
+                axisLine: { show: false }, axisTick: { show: false },
+                axisLabel: { color: '#91d5ff', fontSize: 12, fontWeight: 500 }
+            },
+            series: [{
+                type: 'bar', barWidth: 16,
+                data: mockData.industries.map(i => ({
+                    value: i.value,
                     itemStyle: {
-                        areaColor: '#1a1a2e',
-                        borderColor: '#3a4a7a',
-                        borderWidth: 1
-                    },
-                    emphasis: {
-                        itemStyle: {
-                            areaColor: '#4a5eb8'
-                        },
-                        label: { show: false }
+                        color: new echarts.graphic.LinearGradient(0,0,1,0,[
+                            { offset: 0, color: i.color },
+                            { offset: 1, color: i.color + '80' }
+                        ]),
+                        borderRadius: [0, 6, 6, 0],
+                        shadowColor: i.color + '40',
+                        shadowBlur: 6
                     }
-                },
-                series: [{
-                    name: '商户数量',
-                    type: 'map',
-                    geoIndex: 0,
-                    data: provinceData
-                }]
-            });
+                })),
+                label: {
+                    show: true, position: 'right',
+                    formatter: '{c}万', color: '#91d5ff', fontSize: 11
+                }
+            }]
+        });
 
-            const trendChart = echarts.init(document.getElementById('trendChart'));
-            trendChart.setOption({
-                tooltip: {
-                    trigger: 'axis',
-                    backgroundColor: 'rgba(20, 20, 32, 0.95)',
-                    borderColor: '#3a4a7a',
-                    textStyle: { color: '#fff' }
+        // —— 2. 中国地图 ——
+        const mapChart = echarts.init(document.getElementById('chinaMap'));
+        mapChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c} 家商户',
+                backgroundColor: 'rgba(15,23,42,0.95)', borderColor: '#1890ff',
+                textStyle: { color: '#fff' }
+            },
+            visualMap: {
+                min: 0, max: 6000, left: 'left', top: 'bottom',
+                text: ['高', '低'], textStyle: { color: '#91d5ff', fontSize: 10 },
+                inRange: { color: ['#0f172a', '#1a2a4a', '#1e3a5f', '#1890ff55', '#1890ff99', '#1890ff'] },
+                calculable: true
+            },
+            geo: {
+                map: 'china', roam: false, zoom: 1.2, center: [105, 36],
+                itemStyle: {
+                    areaColor: '#1a1a2e', borderColor: '#1890ff55', borderWidth: 1
                 },
-                grid: { left: '3%', right: '4%', bottom: '10%', top: '10%', containLabel: true },
-                xAxis: {
-                    type: 'category',
-                    data: mockData.trend,
-                    axisLine: { lineStyle: { color: '#3a4a7a' } },
-                    axisLabel: { color: '#a0a0b0' }
-                },
-                yAxis: {
-                    type: 'value',
-                    axisLine: { show: false },
-                    splitLine: { lineStyle: { color: '#2a2a3e' } },
-                    axisLabel: { color: '#a0a0b0' }
-                },
-                series: [{
-                    name: '交易额',
-                    type: 'line',
+                emphasis: {
+                    itemStyle: { areaColor: '#1890ff44', borderColor: '#1890ff' }
+                }
+            },
+            series: [{
+                name: '商户数量', type: 'map', geoIndex: 0, data: provinceData,
+                label: { show: false },
+                emphasis: {
+                    label: { show: true, color: '#fff', fontSize: 10 },
+                    itemStyle: { areaColor: '#1890ff66' }
+                }
+            }]
+        });
+
+        // —— 3. 7日趋势图 ——
+        const trendChart = echarts.init(document.getElementById('trendChart'));
+        trendChart.setOption({
+            tooltip: {
+                trigger: 'axis', backgroundColor: 'rgba(15,23,42,0.95)',
+                borderColor: '#1890ff', textStyle: { color: '#fff' }
+            },
+            legend: {
+                data: ['实际', '预测'], top: 5,
+                textStyle: { color: '#91d5ff', fontSize: 11 }
+            },
+            grid: { left: '5%', right: '3%', bottom: '10%', top: '18%', containLabel: true },
+            xAxis: {
+                type: 'category', data: mockData.trend,
+                axisLine: { lineStyle: { color: '#1890ff55' } },
+                axisLabel: { color: '#91d5ff', fontSize: 11 }
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: { show: false },
+                splitLine: { lineStyle: { color: '#1890ff15' } },
+                axisLabel: { color: '#91d5ff', fontSize: 10 }
+            },
+            series: [
+                {
+                    name: '实际', type: 'line', smooth: true,
                     data: mockData.trendData,
-                    smooth: true,
-                    symbol: 'circle',
-                    symbolSize: 8,
-                    lineStyle: {
-                        color: '#5e6ad2',
-                        width: 3
-                    },
-                    itemStyle: {
-                        color: '#5e6ad2',
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    },
+                    symbol: 'circle', symbolSize: 8,
+                    lineStyle: { color: '#1890ff', width: 3, shadowColor: '#1890ff55', shadowBlur: 10 },
+                    itemStyle: { color: '#1890ff', borderColor: '#fff', borderWidth: 2 },
                     areaStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: 'rgba(94, 106, 210, 0.4)' },
-                            { offset: 1, color: 'rgba(94, 106, 210, 0)' }
+                        color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                            { offset: 0, color: '#1890ff44' },
+                            { offset: 1, color: '#1890ff05' }
                         ])
                     }
-                }]
-            });
+                },
+                {
+                    name: '预测', type: 'line', smooth: true,
+                    data: mockData.trendPrediction,
+                    symbol: 'none', lineStyle: { color: '#faad14', width: 2, type: 'dashed' }
+                }
+            ]
+        });
 
-            const pieChart = echarts.init(document.getElementById('pieChart'));
-            pieChart.setOption({
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{b}: {c}家 ({d}%)',
-                    backgroundColor: 'rgba(20, 20, 32, 0.95)',
-                    borderColor: '#3a4a7a',
-                    textStyle: { color: '#fff' }
+        // —— 4. 星级分布饼图 ——
+        const pieChart = echarts.init(document.getElementById('pieChart'));
+        pieChart.setOption({
+            tooltip: {
+                trigger: 'item', formatter: '{b}: {c}家 ({d}%)',
+                backgroundColor: 'rgba(15,23,42,0.95)', borderColor: '#1890ff',
+                textStyle: { color: '#fff' }
+            },
+            legend: {
+                orient: 'vertical', right: '2%', top: 'center',
+                textStyle: { color: '#91d5ff', fontSize: 10 },
+                itemWidth: 10, itemHeight: 10
+            },
+            series: [{
+                type: 'pie', radius: ['45%', '72%'], center: ['38%', '50%'],
+                avoidLabelOverlap: false,
+                label: { show: false },
+                emphasis: {
+                    label: { show: true, fontSize: 12, fontWeight: 'bold', color: '#e6f7ff' },
+                    itemStyle: { shadowBlur: 20, shadowColor: 'rgba(24,144,255,0.5)' }
                 },
-                legend: {
-                    orient: 'vertical',
-                    right: '5%',
-                    top: 'center',
-                    textStyle: { color: '#a0a0b0' },
-                    itemWidth: 10,
-                    itemHeight: 10
-                },
-                series: [{
-                    type: 'pie',
-                    radius: ['45%', '75%'],
-                    center: ['35%', '50%'],
-                    avoidLabelOverlap: false,
-                    label: { show: false },
-                    data: mockData.stars.map(s => ({
-                        name: s.name,
-                        value: s.value,
-                        itemStyle: { color: s.color }
-                    }))
-                }]
-            });
+                data: mockData.stars.map(s => ({
+                    name: s.name, value: s.value,
+                    itemStyle: { color: s.color, borderColor: '#0f172a', borderWidth: 3 }
+                }))
+            }]
+        });
 
-            const splitChart = echarts.init(document.getElementById('splitChart'));
-            splitChart.setOption({
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: { type: 'shadow' },
-                    formatter: '{b}: {c}万',
-                    backgroundColor: 'rgba(20, 20, 32, 0.95)',
-                    borderColor: '#3a4a7a',
-                    textStyle: { color: '#fff' }
-                },
-                grid: { left: '3%', right: '4%', bottom: '15%', top: '5%', containLabel: true },
-                xAxis: {
-                    type: 'category',
-                    data: mockData.split.map(s => s.name),
-                    axisLine: { lineStyle: { color: '#3a4a7a' } },
-                    axisLabel: { 
-                        color: '#a0a0b0',
-                        fontSize: 10,
-                        rotate: 15
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    axisLine: { show: false },
-                    splitLine: { lineStyle: { color: '#2a2a3e' } },
-                    axisLabel: { color: '#a0a0b0' }
-                },
-                series: [{
-                    type: 'bar',
-                    data: mockData.split.map((s, i) => ({
+        // —— 5. 分账统计 ——
+        const splitChart = echarts.init(document.getElementById('splitChart'));
+        splitChart.setOption({
+            tooltip: {
+                trigger: 'axis', axisPointer: { type: 'shadow' },
+                formatter: '{b}: {c}万',
+                backgroundColor: 'rgba(15,23,42,0.95)', borderColor: '#1890ff',
+                textStyle: { color: '#fff' }
+            },
+            grid: { left: '5%', right: '5%', bottom: '15%', top: '5%', containLabel: true },
+            xAxis: {
+                type: 'category', data: mockData.split.map(s => s.name),
+                axisLine: { lineStyle: { color: '#1890ff55' } },
+                axisLabel: { color: '#91d5ff', fontSize: 9, rotate: 15 }
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: { show: false },
+                splitLine: { lineStyle: { color: '#1890ff15' } },
+                axisLabel: { color: '#91d5ff', fontSize: 10 }
+            },
+            series: [{
+                type: 'bar', barWidth: '45%',
+                data: mockData.split.map((s, i) => {
+                    const colors = ['#1890ff', '#13c2c2', '#ff7c6e', '#faad14'];
+                    return {
                         value: s.value,
                         itemStyle: {
-                            color: ['#5e6ad2', '#00b8cc', '#ff7c6e', '#f7ba1e'][i],
-                            borderRadius: [4, 4, 0, 0]
+                            color: new echarts.graphic.LinearGradient(0,0,0,1,[
+                                { offset: 0, color: colors[i] },
+                                { offset: 1, color: colors[i] + '55' }
+                            ]),
+                            borderRadius: [6, 6, 0, 0],
+                            shadowColor: colors[i] + '44',
+                            shadowBlur: 8
                         }
-                    })),
-                    barWidth: '50%'
-                }]
-            });
-
-            setInterval(() => {
-                mockData.trendData = mockData.trendData.map(v => v + Math.floor(Math.random() * 100 - 50));
-                trendChart.setOption({
-                    series: [{ data: mockData.trendData }]
-                });
-                
-                provinceData.forEach(p => {
-                    p.value = Math.floor(p.value * (0.95 + Math.random() * 0.1));
-                });
-                mapChart.setOption({
-                    series: [{ data: provinceData }]
-                });
-            }, 10000);
-
-            window.addEventListener('resize', () => {
-                rankChart.resize();
-                mapChart.resize();
-                trendChart.resize();
-                pieChart.resize();
-                splitChart.resize();
-            });
-        }
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loadingOverlay').classList.add('hidden');
-                lucide.createIcons();
-                initCounting();
-                initTradeFlow();
-                initInsightCarousel();
-                initCharts();
-            }, 500);
+                    };
+                })
+            }]
         });
+
+        // —— 实时数据刷新 ——
+        setInterval(() => {
+            mockData.trendData = mockData.trendData.map(v => v + Math.floor(Math.random() * 60 - 25));
+            trendChart.setOption({ series: [{ data: mockData.trendData }] });
+
+            provinceData.forEach(p => {
+                p.value = Math.max(100, Math.floor(p.value * (0.98 + Math.random() * 0.04)));
+            });
+            mapChart.setOption({ series: [{ data: provinceData }] });
+        }, 10000);
+
+        // —— 自适应 ——
+        window.addEventListener('resize', () => {
+            rankChart.resize(); mapChart.resize(); trendChart.resize(); pieChart.resize(); splitChart.resize();
+        });
+    }
+
+    // ============================================
+    // 页面初始化
+    // ============================================
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            lucide.createIcons();
+            initCounting();
+            initTradeFlow();
+            initInsightCarousel();
+            initCharts();
+        }, 800);
+    });
     </script>
 </body>
 </html>
