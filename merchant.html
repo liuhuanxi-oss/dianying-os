@@ -4151,6 +4151,102 @@
                 }
             });
         });
+
+
+        // ==================== 报表中心 ====================
+        function initReportCenterChart() {
+            const container = document.getElementById('reportRevenueChart');
+            if (!container) return;
+            
+            const data = [
+                { label: '周一', value: 8500 },
+                { label: '周二', value: 9200 },
+                { label: '周三', value: 8800 },
+                { label: '周四', value: 10500 },
+                { label: '周五', value: 12800 },
+                { label: '周六', value: 15600 },
+                { label: '周日', value: 14200 }
+            ];
+            
+            const max = Math.max(...data.map(d => d.value));
+            let html = '';
+            data.forEach(item => {
+                const height = (item.value / max) * 200;
+                html += `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="width: 100%; background: var(--bg-light); border-radius: 8px 8px 0 0; height: 200px; display: flex; align-items: flex-end; padding: 4px;">
+                            <div style="width: 100%; background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 8px 8px 0 0; height: ${height}px; transition: height 0.5s ease;"></div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary);">${item.label}</span>
+                        <span style="font-size: 12px; font-weight: 600;">¥${(item.value/1000).toFixed(1)}K</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ==================== 语音交互 ====================
+        let voiceActive = false;
+        function toggleVoice() {
+            const viz = document.getElementById('voiceVisualizer');
+            const status = document.getElementById('voiceStatus');
+            
+            voiceActive = !voiceActive;
+            if (voiceActive) {
+                viz.style.background = 'linear-gradient(135deg, var(--danger) 0%, #DC2626 100%)';
+                viz.style.transform = 'scale(1.1)';
+                viz.innerHTML = '<svg width="48" height="48" fill="white" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path></svg>';
+                status.innerHTML = '<span style="color: var(--danger);">●</span> 正在聆听...';
+                showToast('info', '请说出您的指令');
+            } else {
+                viz.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+                viz.style.transform = 'scale(1)';
+                viz.innerHTML = '<svg width="48" height="48" fill="none" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>';
+                status.innerHTML = '处理中...';
+                showToast('success', '已识别您的指令');
+                setTimeout(() => {
+                    status.innerHTML = '等待唤醒...';
+                }, 2000);
+            }
+        }
+        
+        function executeVoiceCommand(command) {
+            showToast('info', `正在执行: ${command}`);
+            const result = document.getElementById('voiceResult');
+            setTimeout(() => {
+                let response = '';
+                if (command === '今天营收怎么样') {
+                    response = '根据最新数据，今日营收¥12,856，较昨日增长18.5%。其中午餐时段营收¥4,280，晚餐时段营收¥8,576。目前订单量186笔，客单价约¥69元。';
+                } else if (command === '帮我处理差评') {
+                    response = '好的，正在跳转差评处理页面。当前有3条待处理差评，其中美团2条、大众点评1条，建议优先处理美团差评。';
+                    setTimeout(() => switchModule('review'), 1000);
+                } else if (command === '调整菜品价格') {
+                    response = '已打开智能定价模块。根据今日成本分析，有5款菜品建议调整价格，预计可提升营收5%。是否需要查看详细方案？';
+                    setTimeout(() => switchModule('pricing'), 1000);
+                } else if (command === '查看会员数据') {
+                    response = '当前会员总数12,856人，本月新增386人。复购率68%，平均客单价¥86.5元。有28名会员流失风险较高，建议发送召回券。';
+                } else if (command === '生成运营报告') {
+                    response = '正在为您生成今日运营日报，预计30秒完成。报告将包含营收分析、差评处理情况、会员运营数据等内容。';
+                } else if (command === '检查库存状态') {
+                    response = '库存预警提醒：精品五花肉库存仅剩2kg，新鲜蔬菜拼盘仅剩5份，建议立即补货。另外有15款食材即将售罄。';
+                    setTimeout(() => switchModule('inventory'), 1000);
+                } else {
+                    response = `已收到指令: ${command}。正在处理中...`;
+                }
+                result.innerHTML = `<div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">💬 AI回复</div><p>${response}</p>`;
+            }, 1500);
+        }
+
+        // ==================== 权限管理 ====================
+        function showRoleDetail(roleId) {
+            showToast('info', `正在加载 ${roleId} 角色详情...`);
+        }
+
+        // ==================== 新手引导 ====================
+        function startOnboarding() {
+            showToast('info', '新手引导已启动');
+        }
+
     </script>
 </body>
 </html>
