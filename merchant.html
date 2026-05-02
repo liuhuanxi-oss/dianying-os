@@ -817,6 +817,11 @@
         .toast-desc { font-size: 12px; color: var(--text-secondary); }
 
         /* ==================== 响应式 ==================== */
+        .mobile-menu-toggle { display: none; background: transparent; border: none; color: white; width: 40px; height: 40px; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; }
+        .mobile-menu-toggle:hover { background: rgba(255,255,255,0.1); }
+        .mobile-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        .mobile-overlay.active { display: block; }
+        @media (max-width: 1199px) { .mobile-menu-toggle { display: flex; } }
         /* 平板端适配 - 768px - 1199px */
         @media (max-width: 1199px) {
             .pricing-grid { grid-template-columns: 1fr; }
@@ -9504,7 +9509,7 @@ if (originalSwitchModule) {
 }
 
 // ==================== 移动端菜单功能 ====================
-function toggleMobileMenu() {
+function toggleMobileMenu() { const overlay = document.getElementById("mobileOverlay"); if (overlay) overlay.classList.toggle("active"); 
     const sidebar = document.querySelector('.sidebar');
     const overlay = document.getElementById('mobileOverlay');
     
