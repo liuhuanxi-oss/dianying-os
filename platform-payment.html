@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进件审核管理 - 平台端 - 店赢OS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .logo .platform-badge {
+            display: inline-block;
+            background: var(--warning);
+            color: #1e1b4b;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 8px 24px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        .nav-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 3px solid var(--warning);
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
+        }
+
+        /* 主内容区 */
+        .main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 统计概览 */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .overview-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overview-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, transparent 50%, rgba(67, 97, 238, 0.05) 50%);
+            border-radius: 0 0 0 80px;
+        }
+
+        .overview-card.green { border-top-color: var(--secondary); }
+        .overview-card.orange { border-top-color: var(--warning); }
+        .overview-card.red { border-top-color: var(--danger); }
+        .overview-card.purple { border-top-color: #8b5cf6; }
+
+        .overview-card h3 {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .overview-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .overview-card .sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Tab 切换 */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .filter-select, .filter-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 130px;
+            background: white;
+        }
+
+        .filter-input {
+            min-width: 180px;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+            margin: 0 8px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-left: auto;
+        }
+
+        .search-wrapper input {
+            padding: 8px 12px 8px 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            width: 260px;
+            background: var(--bg-light);
+        }
+
+        .search-wrapper svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* 批量操作 */
+        .batch-bar {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .batch-bar.show {
+            display: flex;
+        }
+
+        .batch-bar span {
+            font-size: 14px;
+        }
+
+        .batch-bar strong {
+            font-size: 18px;
+        }
+
+        .batch-bar button {
+            margin-left: auto;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .batch-bar .btn-cancel {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .batch-bar .btn-approve {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .batch-bar .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* 表格 */
+        .table-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-light);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 状态徽章 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.reviewing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* 代理商标签 */
+        .agent-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            background: #ede9fe;
+            color: #6d28d9;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 操作按钮 */
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination-btns button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .pagination-btns button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .pagination-btns button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 统计图表区 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .stats-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .stats-body {
+            padding: 24px;
+        }
+
+        /* 柱状图模拟 */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 200px;
+            padding: 20px 0;
+            gap: 12px;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            max-width: 50px;
+            background: linear-gradient(to top, var(--primary), var(--secondary));
+            border-radius: 6px 6px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 排行榜 */
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rank-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .rank-num.top1 { background: #fbbf24; color: #78350f; }
+        .rank-num.top2 { background: #9ca3af; color: #374151; }
+        .rank-num.top3 { background: #d97706; color: white; }
+        .rank-num.normal { background: var(--bg-light); color: var(--text-secondary); }
+
+        .rank-info {
+            flex: 1;
+        }
+
+        .rank-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .rank-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .rank-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* 配置面板 */
+        .config-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .config-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .config-body {
+            padding: 24px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .config-item {
+            background: var(--bg-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .config-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rate-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .rate-input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .rate-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* 通道开关 */
+        .channel-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .channel-toggle:last-child {
+            border-bottom: none;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .channel-info svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--secondary);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* 限额配置 */
+        .limit-config {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .limit-item {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .limit-item label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .limit-item input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-light);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        /* 详情信息 */
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-item .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .detail-item .value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .detail-images {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .detail-image {
+            width: 140px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            position: relative;
+        }
+
+        .detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .detail-image span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 11px;
+            text-align: center;
+            padding: 4px;
+        }
+
+        /* 驳回原因输入 */
+        .reject-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .reject-form label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .reject-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .reject-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .toast.success .toast-icon {
+            color: var(--secondary);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 图片预览模态框 */
+        .image-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .image-preview-modal.show {
+            display: flex;
+        }
+
+        .image-preview-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .image-preview-modal .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .overview-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .config-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 侧边栏 -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h1>店赢OS<span class="platform-badge">平台</span></h1>
+                <span>运营管理后台</span>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">运营管理</div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    工作台首页
+                </div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    商户管理
+                </div>
+                <div class="nav-item active">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    支付管理
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">代理商</div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    代理商列表
+                </div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    分润管理
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">系统</div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                    费率配置
+                </div>
+                <div class="nav-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    密钥管理
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容 -->
+        <main class="main">
+            <div class="page-header">
+                <div>
+                    <h2>进件审核管理</h2>
+                    <p>审核商户支付通道开通申请</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        导出数据
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计概览 -->
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <h3>今日进件</h3>
+                    <div class="value">48</div>
+                    <div class="sub">较昨日 +12</div>
+                </div>
+                <div class="overview-card green">
+                    <h3>待审核</h3>
+                    <div class="value">23</div>
+                    <div class="sub">需尽快处理</div>
+                </div>
+                <div class="overview-card orange">
+                    <h3>本月累计</h3>
+                    <div class="value">1,286</div>
+                    <div class="sub">已通过 1,148</div>
+                </div>
+                <div class="overview-card red">
+                    <h3>已驳回</h3>
+                    <div class="value">138</div>
+                    <div class="sub">通过率 89.3%</div>
+                </div>
+                <div class="overview-card purple">
+                    <h3>平均时长</h3>
+                    <div class="value">1.2天</div>
+                    <div class="sub">较上月缩短 0.3天</div>
+                </div>
+            </div>
+
+            <!-- Tab 切换 -->
+            <div class="tabs">
+                <div class="tab active" data-tab="audit">进件审核</div>
+                <div class="tab" data-tab="stats">进件统计</div>
+                <div class="tab" data-tab="config">通道配置</div>
+            </div>
+
+            <!-- 进件审核 -->
+            <div class="tab-content active" id="tab-audit">
+                <!-- 批量操作栏 -->
+                <div class="batch-bar" id="batchBar">
+                    <span>已选择 <strong id="selectedCount">0</strong> 项</span>
+                    <button class="btn-approve" onclick="batchApprove()">批量通过</button>
+                    <button class="btn-reject" onclick="batchReject()">批量驳回</button>
+                    <button class="btn-cancel" onclick="clearSelection()">取消</button>
+                </div>
+
+                <!-- 筛选栏 -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>审核状态</label>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="">全部状态</option>
+                            <option value="pending">待审核</option>
+                            <option value="reviewing">审核中</option>
+                            <option value="approved">已通过</option>
+                            <option value="rejected">已驳回</option>
+                        </select>
+                    </div>
+                    <div class="filter-divider"></div>
+                    <div class="filter-group">
+                        <label>代理商</label>
+                        <select class="filter-select" id="agentFilter">
+                            <option value="">全部代理商</option>
+                            <option value="1">华东代理商</option>
+                            <option value="2">华南代理商</option>
+                            <option value="3">华北代理商</option>
+                        </select>
+                    </div>
+                    <div class="filter-divider"></div>
+                    <div class="filter-group">
+                        <label>所属行业</label>
+                        <select class="filter-select">
+                            <option value="">全部行业</option>
+                            <option value="catering">餐饮</option>
+                            <option value="retail">零售</option>
+                            <option value="entertainment">休闲娱乐</option>
+                            <option value="hotel">酒店住宿</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="search-wrapper">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="搜索商户名称或手机号" id="searchInput">
+                    </div>
+                </div>
+
+                <!-- 表格 -->
+                <div class="table-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                                    <th>商户信息</th>
+                                    <th>代理商</th>
+                                    <th>行业</th>
+                                    <th>提交方式</th>
+                                    <th>提交时间</th>
+                                    <th>审核状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTable">
+                                <tr data-id="1">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>
+                                        <div style="font-weight: 500;">北京味道餐厅</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">张经理 · 138****1234</div>
+                                    </td>
+                                    <td><span class="agent-tag">华东代理商</span></td>
+                                    <td>餐饮</td>
+                                    <td>代理商代提交</td>
+                                    <td>2024-01-15 10:30</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-success btn-small" onclick="approveItem(1)">通过</button>
+                                            <button class="btn btn-danger btn-small" onclick="rejectItem(1)">驳回</button>
+                                            <button class="btn btn-secondary btn-small" onclick="viewDetail(1)">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-id="2">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>
+                                        <div style="font-weight: 500;">上海优品超市</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">李老板 · 139****5678</div>
+                                    </td>
+                                    <td><span class="agent-tag">华东代理商</span></td>
+                                    <td>零售</td>
+                                    <td>商户自提交</td>
+                                    <td>2024-01-14 15:22</td>
+                                    <td><span class="status-badge approved">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(2)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="3">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>
+                                        <div style="font-weight: 500;">杭州休闲会所</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">王总 · 158****9012</div>
+                                    </td>
+                                    <td><span class="agent-tag">华南代理商</span></td>
+                                    <td>休闲娱乐</td>
+                                    <td>商户自提交</td>
+                                    <td>2024-01-13 09:15</td>
+                                    <td><span class="status-badge rejected">已驳回<div style="font-size: 11px; margin-top: 2px;">营业执照不清晰</div></span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(3)">详情</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="4">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>
+                                        <div style="font-weight: 500;">广州美食坊</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">陈经理 · 136****3456</div>
+                                    </td>
+                                    <td><span class="agent-tag">华南代理商</span></td>
+                                    <td>餐饮</td>
+                                    <td>代理商代提交</td>
+                                    <td>2024-01-12 14:40</td>
+                                    <td><span class="status-badge reviewing">审核中</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-success btn-small" onclick="approveItem(4)">通过</button>
+                                            <button class="btn btn-danger btn-small" onclick="rejectItem(4)">驳回</button>
+                                            <button class="btn btn-secondary btn-small" onclick="viewDetail(4)">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-id="5">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>
+                                        <div style="font-weight: 500;">深圳便利小店</div>
+                                        <div style="font-size: 12px; color: var(--text-secondary);">刘店长 · 137****7890</div>
+                                    </td>
+                                    <td><span class="agent-tag">华南代理商</span></td>
+                                    <td>零售</td>
+                                    <td>商户自提交</td>
+                                    <td>2024-01-11 11:20</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-success btn-small" onclick="approveItem(5)">通过</button>
+                                            <button class="btn btn-danger btn-small" onclick="rejectItem(5)">驳回</button>
+                                            <button class="btn btn-secondary btn-small" onclick="viewDetail(5)">详情</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            共 23 条记录，当前第 1/3 页
+                        </div>
+                        <div class="pagination-btns">
+                            <button>&lt;</button>
+                            <button class="active">1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button>&gt;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 进件统计 -->
+            <div class="tab-content" id="tab-stats">
+                <div class="stats-row">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3>近30天进件趋势</h3>
+                            <select class="filter-select" style="min-width: 100px;">
+                                <option>近30天</option>
+                                <option>近7天</option>
+                                <option>本月</option>
+                            </select>
+                        </div>
+                        <div class="stats-body">
+                            <div class="bar-chart">
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 80px;"></div>
+                                    <span class="bar-label">1日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 60px;"></div>
+                                    <span class="bar-label">5日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 120px;"></div>
+                                    <span class="bar-label">10日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 90px;"></div>
+                                    <span class="bar-label">15日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 150px;"></div>
+                                    <span class="bar-label">20日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 110px;"></div>
+                                    <span class="bar-label">25日</span>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar" style="height: 180px;"></div>
+                                    <span class="bar-label">30日</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3>代理商排行</h3>
+                        </div>
+                        <div class="stats-body">
+                            <div class="rank-list">
+                                <div class="rank-item">
+                                    <span class="rank-num top1">1</span>
+                                    <div class="rank-info">
+                                        <h4>华东代理商</h4>
+                                        <p>本月进件 486 件</p>
+                                    </div>
+                                    <span class="rank-value">486</span>
+                                </div>
+                                <div class="rank-item">
+                                    <span class="rank-num top2">2</span>
+                                    <div class="rank-info">
+                                        <h4>华南代理商</h4>
+                                        <p>本月进件 412 件</p>
+                                    </div>
+                                    <span class="rank-value">412</span>
+                                </div>
+                                <div class="rank-item">
+                                    <span class="rank-num top3">3</span>
+                                    <div class="rank-info">
+                                        <h4>华北代理商</h4>
+                                        <p>本月进件 388 件</p>
+                                    </div>
+                                    <span class="rank-value">388</span>
+                                </div>
+                                <div class="rank-item">
+                                    <span class="rank-num normal">4</span>
+                                    <div class="rank-info">
+                                        <h4>西南代理商</h4>
+                                        <p>本月进件 156 件</p>
+                                    </div>
+                                    <span class="rank-value">156</span>
+                                </div>
+                                <div class="rank-item">
+                                    <span class="rank-num normal">5</span>
+                                    <div class="rank-info">
+                                        <h4>西北代理商</h4>
+                                        <p>本月进件 98 件</p>
+                                    </div>
+                                    <span class="rank-value">98</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <h3>驳回原因 TOP5</h3>
+                    </div>
+                    <div class="stats-body">
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
+                            <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px;">
+                                <div style="font-size: 36px; font-weight: 700; color: var(--danger);">38%</div>
+                                <div style="font-size: 14px; color: #991b1b; margin-top: 8px;">营业执照不清晰</div>
+                                <div style="font-size: 12px; color: #991b1b; opacity: 0.8;">52 件</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px;">
+                                <div style="font-size: 36px; font-weight: 700; color: #92400e;">25%</div>
+                                <div style="font-size: 14px; color: #92400e; margin-top: 8px;">法人信息不一致</div>
+                                <div style="font-size: 12px; color: #92400e; opacity: 0.8;">35 件</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px;">
+                                <div style="font-size: 36px; font-weight: 700; color: #1e40af;">18%</div>
+                                <div style="font-size: 14px; color: #1e40af; margin-top: 8px;">银行卡信息错误</div>
+                                <div style="font-size: 12px; color: #1e40af; opacity: 0.8;">25 件</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 12px;">
+                                <div style="font-size: 36px; font-weight: 700; color: #065f46;">12%</div>
+                                <div style="font-size: 14px; color: #065f46; margin-top: 8px;">身份证照片模糊</div>
+                                <div style="font-size: 12px; color: #065f46; opacity: 0.8;">17 件</div>
+                            </div>
+                            <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 12px;">
+                                <div style="font-size: 36px; font-weight: 700; color: #3730a3;">7%</div>
+                                <div style="font-size: 14px; color: #3730a3; margin-top: 8px;">其他原因</div>
+                                <div style="font-size: 12px; color: #3730a3; opacity: 0.8;">9 件</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通道配置 -->
+            <div class="tab-content" id="tab-config">
+                <div class="config-section">
+                    <div class="config-header">
+                        <h3>行业基准费率配置</h3>
+                        <button class="btn btn-primary btn-small">保存配置</button>
+                    </div>
+                    <div class="config-body">
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <h4>
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                    餐饮行业
+                                </h4>
+                                <div class="rate-input-group">
+                                    <label class="form-label">微信/支付宝</label>
+                                    <input type="text" class="rate-input" value="0.6">
+                                    <span class="rate-label">%</span>
+                                </div>
+                                <div class="rate-input-group">
+                                    <label class="form-label">银联云闪付</label>
+                                    <input type="text" class="rate-input" value="0.38">
+                                    <span class="rate-label">%</span>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <h4>
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                    零售行业
+                                </h4>
+                                <div class="rate-input-group">
+                                    <label class="form-label">微信/支付宝</label>
+                                    <input type="text" class="rate-input" value="0.6">
+                                    <span class="rate-label">%</span>
+                                </div>
+                                <div class="rate-input-group">
+                                    <label class="form-label">银联云闪付</label>
+                                    <input type="text" class="rate-input" value="0.38">
+                                    <span class="rate-label">%</span>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <h4>
+                                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    休闲娱乐
+                                </h4>
+                                <div class="rate-input-group">
+                                    <label class="form-label">微信/支付宝</label>
+                                    <input type="text" class="rate-input" value="0.6">
+                                    <span class="rate-label">%</span>
+                                </div>
+                                <div class="rate-input-group">
+                                    <label class="form-label">银联云闪付</label>
+                                    <input type="text" class="rate-input" value="0.38">
+                                    <span class="rate-label">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-header">
+                        <h3>支付通道开关</h3>
+                    </div>
+                    <div class="config-body">
+                        <div style="max-width: 500px;">
+                            <div class="channel-toggle">
+                                <div class="channel-info">
+                                    <svg viewBox="0 0 24 24" fill="#07C160"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg>
+                                    <span>微信支付</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="channel-toggle">
+                                <div class="channel-info">
+                                    <svg viewBox="0 0 24 24" fill="#1677FF"><path d="M9.75 0C4.35 0 0 4.35 0 9.75v4.5c0 5.4 4.35 9.75 9.75 9.75h4.5c5.4 0 9.75-4.35 9.75-9.75v-4.5C24 4.35 19.65 0 14.25 0h-4.5z"/></svg>
+                                    <span>支付宝</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="channel-toggle">
+                                <div class="channel-info">
+                                    <svg viewBox="0 0 24 24" fill="#1A73E8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                    <span>银联云闪付</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-header">
+                        <h3>交易限额配置</h3>
+                    </div>
+                    <div class="config-body">
+                        <div class="limit-config">
+                            <div class="limit-item">
+                                <label>单笔交易限额（元）</label>
+                                <input type="text" value="50000" placeholder="请输入金额">
+                            </div>
+                            <div class="limit-item">
+                                <label>单日累计限额（元）</label>
+                                <input type="text" value="200000" placeholder="请输入金额">
+                            </div>
+                            <div class="limit-item">
+                                <label>单月累计限额（元）</label>
+                                <input type="text" value="1000000" placeholder="请输入金额">
+                            </div>
+                            <div class="limit-item">
+                                <label>单日最大交易笔数</label>
+                                <input type="text" value="1000" placeholder="请输入笔数">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 20px;">保存限额配置</button>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-header">
+                        <h3>代理商分润比例配置</h3>
+                        <button class="btn btn-secondary btn-small">批量设置</button>
+                    </div>
+                    <div class="config-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>代理商名称</th>
+                                        <th>代理等级</th>
+                                        <th>餐饮分润</th>
+                                        <th>零售分润</th>
+                                        <th>其他分润</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>华东代理商</td>
+                                        <td><span class="status-badge" style="background:#fef3c7;color:#92400e;">金牌</span></td>
+                                        <td>0.12%</td>
+                                        <td>0.10%</td>
+                                        <td>0.08%</td>
+                                        <td><button class="btn btn-secondary btn-small">编辑</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>华南代理商</td>
+                                        <td><span class="status-badge" style="background:#dbeafe;color:#1e40af;">银牌</span></td>
+                                        <td>0.10%</td>
+                                        <td>0.08%</td>
+                                        <td>0.06%</td>
+                                        <td><button class="btn btn-secondary btn-small">编辑</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>华北代理商</td>
+                                        <td><span class="status-badge" style="background:#e0e7ff;color:#3730a3;">铜牌</span></td>
+                                        <td>0.08%</td>
+                                        <td>0.06%</td>
+                                        <td>0.05%</td>
+                                        <td><button class="btn btn-secondary btn-small">编辑</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 详情模态框 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>进件详情</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="detailContent">
+                <!-- 动态内容 -->
+            </div>
+            <div class="modal-footer" id="detailFooter">
+                <!-- 动态按钮 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 驳回原因模态框 -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>驳回申请</h3>
+                <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px; color: var(--text-secondary);">请填写驳回原因，以便商户修改后重新提交</p>
+                <div class="reject-form" style="margin-top: 0; padding-top: 0; border-top: none;">
+                    <label>驳回原因 <span style="color: var(--danger);">*</span></label>
+                    <textarea id="rejectReason" placeholder="请输入驳回原因（必填）"></textarea>
+                    <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button class="btn btn-secondary btn-small" onclick="setRejectReason('营业执照不清晰或过期')">营业执照不清晰或过期</button>
+                        <button class="btn btn-secondary btn-small" onclick="setRejectReason('法人信息与证件不一致')">法人信息与证件不一致</button>
+                        <button class="btn btn-secondary btn-small" onclick="setRejectReason('银行卡信息填写错误')">银行卡信息填写错误</button>
+                        <button class="btn btn-secondary btn-small" onclick="setRejectReason('身份证照片模糊或缺角')">身份证照片模糊或缺角</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRejectModal()">取消</button>
+                <button class="btn btn-danger" onclick="confirmReject()">确认驳回</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片预览 -->
+    <div class="image-preview-modal" id="imagePreview">
+        <button class="close-btn" onclick="closeImagePreview()">&times;</button>
+        <img id="previewImage" src="" alt="预览">
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg class="toast-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <span id="toastMessage">操作成功</span>
+    </div>
+
+    <script>
+        // Tab 切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // 详情数据
+        const detailsData = {
+            1: { name: '北京味道餐厅', industry: '餐饮', contact: '张经理', phone: '13812341234', agent: '华东代理商', submitType: '代理商代提交', submitTime: '2024-01-15 10:30', status: 'pending', creditCode: '91110000XXXXXXXX', legalName: '张伟', idCard: '110101199001011234', bankName: '中国工商银行', bankBranch: '北京朝阳支行', bankCard: '6222021234567890', address: '北京市朝阳区建国路88号' },
+            2: { name: '上海优品超市', industry: '零售', contact: '李老板', phone: '13956785678', agent: '华东代理商', submitType: '商户自提交', submitTime: '2024-01-14 15:22', status: 'approved', creditCode: '91310000XXXXXXXX', legalName: '李明', idCard: '310101199002022345', bankName: '中国建设银行', bankBranch: '上海浦东支行', bankCard: '6217001234567890', address: '上海市浦东新区张江路100号' },
+            3: { name: '杭州休闲会所', industry: '休闲娱乐', contact: '王总', phone: '15890129012', agent: '华南代理商', submitType: '商户自提交', submitTime: '2024-01-13 09:15', status: 'rejected', rejectReason: '营业执照不清晰', creditCode: '91330000XXXXXXXX', legalName: '王强', idCard: '330101199003033456', bankName: '招商银行', bankBranch: '杭州西湖支行', bankCard: '6226091234567890', address: '杭州市西湖区文三路200号' },
+            4: { name: '广州美食坊', industry: '餐饮', contact: '陈经理', phone: '13634563456', agent: '华南代理商', submitType: '代理商代提交', submitTime: '2024-01-12 14:40', status: 'reviewing', creditCode: '91440000XXXXXXXX', legalName: '陈静', idCard: '440101199004044567', bankName: '中国农业银行', bankBranch: '广州天河支行', bankCard: '6228481234567890', address: '广州市天河区珠江新城100号' },
+            5: { name: '深圳便利小店', industry: '零售', contact: '刘店长', phone: '13778907890', agent: '华南代理商', submitType: '商户自提交', submitTime: '2024-01-11 11:20', status: 'pending', creditCode: '91440000XXXXXXXX', legalName: '刘洋', idCard: '440301199005055678', bankName: '交通银行', bankBranch: '深圳南山支行', bankCard: '6222601234567890', address: '深圳市南山区科技园北路50号' }
+        };
+
+        let currentRejectId = null;
+
+        // 查看详情
+        function viewDetail(id) {
+            const d = detailsData[id];
+            const statusMap = { pending: '待审核', reviewing: '审核中', approved: '已通过', rejected: '已驳回' };
+            const statusClass = d.status;
+
+            let footerBtns = '<button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>';
+            if (d.status === 'pending' || d.status === 'reviewing') {
+                footerBtns = `
+                    <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                    <button class="btn btn-danger" onclick="closeDetailModal(); rejectItem(${id})">驳回</button>
+                    <button class="btn btn-success" onclick="approveItem(${id})">通过</button>
+                `;
+            }
+
+            document.getElementById('detailContent').innerHTML = `
+                <div class="detail-section">
+                    <h4>基本信息</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">商户名称</span>
+                            <span class="value">${d.name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">所属行业</span>
+                            <span class="value">${d.industry}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">门店地址</span>
+                            <span class="value">${d.address}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">联系人</span>
+                            <span class="value">${d.contact} ${d.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>营业执照</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">统一社会信用代码</span>
+                            <span class="value">${d.creditCode}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">法人姓名</span>
+                            <span class="value">${d.legalName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">法人身份证号</span>
+                            <span class="value">${d.idCard.replace(/(\d{4})\d{10}(\d{4})/, '$1**********$2')}</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <p class="label" style="margin-bottom: 8px;">证照图片</p>
+                        <div class="detail-images">
+                            <div class="detail-image" onclick="previewImage('https://via.placeholder.com/300x200?text=营业执照')">
+                                <img src="https://via.placeholder.com/300x200?text=营业执照" alt="营业执照">
+                                <span>营业执照</span>
+                            </div>
+                            <div class="detail-image" onclick="previewImage('https://via.placeholder.com/200x300?text=身份证正面')">
+                                <img src="https://via.placeholder.com/200x300?text=身份证正面" alt="身份证正面">
+                                <span>身份证正面</span>
+                            </div>
+                            <div class="detail-image" onclick="previewImage('https://via.placeholder.com/200x300?text=身份证背面')">
+                                <img src="https://via.placeholder.com/200x300?text=身份证背面" alt="身份证背面">
+                                <span>身份证背面</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>结算信息</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">开户银行</span>
+                            <span class="value">${d.bankName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">开户支行</span>
+                            <span class="value">${d.bankBranch}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">银行卡号</span>
+                            <span class="value">${d.bankCard.replace(/(\d{4})\d{8}(\d{4})/, '$1********$2')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4>审核状态</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="label">当前状态</span>
+                            <span class="status-badge ${statusClass}">${statusMap[d.status]}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">代理商</span>
+                            <span class="agent-tag">${d.agent}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">提交方式</span>
+                            <span class="value">${d.submitType}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">提交时间</span>
+                            <span class="value">${d.submitTime}</span>
+                        </div>
+                        ${d.rejectReason ? `
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <span class="label" style="color: var(--danger);">驳回原因</span>
+                            <span class="value" style="color: var(--danger);">${d.rejectReason}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailFooter').innerHTML = footerBtns;
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        // 通过
+        function approveItem(id) {
+            showToast('已通过进件申请，支付通道已开通', 'success');
+            closeDetailModal();
+        }
+
+        // 驳回
+        function rejectItem(id) {
+            currentRejectId = id;
+            document.getElementById('rejectModal').classList.add('show');
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').classList.remove('show');
+            currentRejectId = null;
+        }
+
+        function setRejectReason(reason) {
+            document.getElementById('rejectReason').value = reason;
+        }
+
+        function confirmReject() {
+            const reason = document.getElementById('rejectReason').value.trim();
+            if (!reason) {
+                showToast('请填写驳回原因', 'error');
+                return;
+            }
+            closeRejectModal();
+            showToast('已驳回申请，商户将收到通知', 'success');
+        }
+
+        // 图片预览
+        function previewImage(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('imagePreview').classList.add('show');
+        }
+
+        function closeImagePreview() {
+            document.getElementById('imagePreview').classList.remove('show');
+        }
+
+        // 批量选择
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = checked);
+            updateBatchBar();
+        }
+
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateBatchBar);
+        });
+
+        function updateBatchBar() {
+            const selected = document.querySelectorAll('.row-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = selected;
+            document.getElementById('batchBar').classList.toggle('show', selected > 0);
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAll').checked = false;
+            updateBatchBar();
+        }
+
+        function batchApprove() {
+            const count = document.querySelectorAll('.row-checkbox:checked').length;
+            showToast(`已批量通过 ${count} 项申请`, 'success');
+            clearSelection();
+        }
+
+        function batchReject() {
+            currentRejectId = 'batch';
+            document.getElementById('rejectModal').classList.add('show');
+        }
+
+        // 导出数据
+        function exportData() {
+            showToast('数据导出中，请稍候...', 'success');
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+
+            const icon = type === 'success'
+                ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>'
+                : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
+            toast.querySelector('.toast-icon').innerHTML = icon;
+
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const keyword = this.value.toLowerCase();
+            document.querySelectorAll('#auditTable tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(keyword) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

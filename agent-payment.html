@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商户进件管理 - 代理商端 - 店赢OS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .logo .agent-badge {
+            display: inline-block;
+            background: var(--secondary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 主内容区 */
+        .main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-card .icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .stat-card .icon.blue { background: var(--primary); }
+        .stat-card .icon.green { background: var(--secondary); }
+        .stat-card .icon.orange { background: var(--warning); }
+        .stat-card .icon.red { background: var(--danger); }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card .trend {
+            font-size: 13px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-card .trend.up { color: var(--secondary); }
+        .stat-card .trend.down { color: var(--danger); }
+
+        /* 图表区域 */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-light);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        /* 状态徽章 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.reviewing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* 操作按钮 */
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .filter-select, .filter-input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 140px;
+        }
+
+        .filter-input {
+            min-width: 200px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .search-box input {
+            padding: 8px 12px 8px 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            width: 280px;
+            background: var(--bg-light);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 12px;
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Tab 切换 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 分润卡片 */
+        .profit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .profit-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: white;
+        }
+
+        .profit-card.green {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+        }
+
+        .profit-card.orange {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+        }
+
+        .profit-card h4 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .profit-card .amount {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .profit-card .sub {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        /* 分润列表 */
+        .profit-list {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .profit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profit-item:last-child {
+            border-bottom: none;
+        }
+
+        .profit-info h4 {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .profit-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .profit-rate {
+            text-align: right;
+        }
+
+        .profit-rate .rate {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .profit-rate .desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-light);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        /* 表单 */
+        .form-section {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-section h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-label .required {
+            color: var(--danger);
+        }
+
+        .form-input, .form-select {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* 图片上传 */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-area svg {
+            width: 32px;
+            height: 32px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .upload-area .highlight {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .upload-preview {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .preview-thumb {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-thumb .remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 驳回原因标签 */
+        .reject-reason {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 4px;
+        }
+
+        /* 批量操作 */
+        .batch-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .batch-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .batch-info strong {
+            color: var(--primary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            .profit-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 侧边栏 -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h1>店赢OS<span class="agent-badge">代理商</span></h1>
+                <span>代理商管理系统</span>
+            </div>
+            <div class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                首页概览
+            </div>
+            <div class="nav-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                支付服务
+            </div>
+            <div class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                商户管理
+            </div>
+            <div class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                分润结算
+            </div>
+            <div class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                数据分析
+            </div>
+            <div class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                设置
+            </div>
+        </nav>
+
+        <!-- 主内容 -->
+        <main class="main">
+            <div class="page-header">
+                <div>
+                    <h2>商户进件管理</h2>
+                    <p>管理下级商户的支付进件申请</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openApplyModal()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        代商户提交
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3>今日提交</h3>
+                    <div class="value">12</div>
+                    <div class="trend up">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                        较昨日 +3
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3>本月累计</h3>
+                    <div class="value">156</div>
+                    <div class="trend up">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                        较上月 +28
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon orange">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <h3>审核通过率</h3>
+                    <div class="value">89.2%</div>
+                    <div class="trend up">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                        较上月 +5.3%
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon red">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3>平均审核时长</h3>
+                    <div class="value">1.2天</div>
+                    <div class="trend down">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                        较上月 -0.3天
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 切换 -->
+            <div class="tabs">
+                <div class="tab active" data-tab="list">进件列表</div>
+                <div class="tab" data-tab="stats">进件统计</div>
+                <div class="tab" data-tab="profit">分润配置</div>
+            </div>
+
+            <!-- 进件列表 -->
+            <div class="tab-content active" id="tab-list">
+                <!-- 筛选栏 -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>状态筛选</label>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="">全部状态</option>
+                            <option value="pending">未提交</option>
+                            <option value="reviewing">审核中</option>
+                            <option value="approved">已通过</option>
+                            <option value="rejected">已驳回</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>行业</label>
+                        <select class="filter-select" id="industryFilter">
+                            <option value="">全部行业</option>
+                            <option value="catering">餐饮</option>
+                            <option value="retail">零售</option>
+                            <option value="entertainment">休闲娱乐</option>
+                            <option value="hotel">酒店住宿</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>提交方式</label>
+                        <select class="filter-select">
+                            <option value="">全部</option>
+                            <option value="self">商户自提交</option>
+                            <option value="agent">代理商代提交</option>
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="搜索商户名称或手机号" id="searchInput">
+                    </div>
+                </div>
+
+                <!-- 批量操作栏 -->
+                <div class="batch-actions" id="batchActions" style="display: none;">
+                    <span class="batch-info">已选择 <strong id="selectedCount">0</strong> 项</span>
+                    <button class="btn btn-success btn-small" onclick="batchApprove()">批量通过</button>
+                    <button class="btn btn-secondary btn-small" onclick="clearSelection()">取消选择</button>
+                </div>
+
+                <!-- 表格 -->
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                                    <th>商户名称</th>
+                                    <th>行业</th>
+                                    <th>联系人</th>
+                                    <th>提交方式</th>
+                                    <th>提交时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="merchantTable">
+                                <tr data-id="1">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>北京味道餐厅</td>
+                                    <td>餐饮</td>
+                                    <td>张经理 138****1234</td>
+                                    <td><span class="status-badge" style="background:#e0e7ff;color:#3730a3;">商户自提交</span></td>
+                                    <td>2024-01-15 10:30</td>
+                                    <td><span class="status-badge reviewing">审核中</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(1)">查看</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="2">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>上海优品超市</td>
+                                    <td>零售</td>
+                                    <td>李老板 139****5678</td>
+                                    <td><span class="status-badge" style="background:#d1fae5;color:#065f46;">代理商代提交</span></td>
+                                    <td>2024-01-14 15:22</td>
+                                    <td><span class="status-badge approved">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(2)">查看</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="3">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>杭州休闲会所</td>
+                                    <td>休闲娱乐</td>
+                                    <td>王总 158****9012</td>
+                                    <td><span class="status-badge" style="background:#d1fae5;color:#065f46;">代理商代提交</span></td>
+                                    <td>2024-01-13 09:15</td>
+                                    <td><span class="status-badge rejected">已驳回<span class="reject-reason"><br>营业执照不清晰</span></span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(3)">查看</button>
+                                        <button class="btn btn-primary btn-small" onclick="reSubmit(3)">重新提交</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="4">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>广州美食坊</td>
+                                    <td>餐饮</td>
+                                    <td>陈经理 136****3456</td>
+                                    <td><span class="status-badge" style="background:#e0e7ff;color:#3730a3;">商户自提交</span></td>
+                                    <td>2024-01-12 14:40</td>
+                                    <td><span class="status-badge approved">已通过</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(4)">查看</button>
+                                    </td>
+                                </tr>
+                                <tr data-id="5">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>深圳便利小店</td>
+                                    <td>零售</td>
+                                    <td>刘店长 137****7890</td>
+                                    <td><span class="status-badge" style="background:#d1fae5;color:#065f46;">代理商代提交</span></td>
+                                    <td>2024-01-11 11:20</td>
+                                    <td><span class="status-badge pending">未提交</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small" onclick="viewDetail(5)">查看</button>
+                                        <button class="btn btn-primary btn-small" onclick="continueSubmit(5)">继续提交</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 进件统计 -->
+            <div class="tab-content" id="tab-stats">
+                <div class="charts-row">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>近30天进件趋势</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px; display: flex; align-items: flex-end; gap: 8px; padding: 20px 0;">
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 120px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">1日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 85px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">5日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 150px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">10日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 100px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">15日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 180px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">20日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 140px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">25日</span>
+                                </div>
+                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="background: linear-gradient(to top, var(--primary), var(--secondary)); width: 100%; height: 200px; border-radius: 6px 6px 0 0;"></div>
+                                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;">30日</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>行业分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span style="font-size: 14px;">餐饮</span>
+                                        <span style="font-size: 14px; font-weight: 600;">45%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: 45%; background: var(--primary); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span style="font-size: 14px;">零售</span>
+                                        <span style="font-size: 14px; font-weight: 600;">30%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: 30%; background: var(--secondary); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span style="font-size: 14px;">休闲娱乐</span>
+                                        <span style="font-size: 14px; font-weight: 600;">15%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: 15%; background: var(--warning); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                        <span style="font-size: 14px;">其他</span>
+                                        <span style="font-size: 14px; font-weight: 600;">10%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: 10%; background: var(--text-secondary); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>驳回原因统计 TOP5</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
+                            <div style="text-align: center; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--danger);">38%</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">营业执照不清晰</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--danger);">25%</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">法人信息不一致</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--danger);">18%</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">银行卡信息错误</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--danger);">12%</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">身份证照片模糊</div>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--danger);">7%</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">其他原因</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分润配置 -->
+            <div class="tab-content" id="tab-profit">
+                <div class="profit-grid">
+                    <div class="profit-card">
+                        <h4>本月预估分润</h4>
+                        <div class="amount">¥12,580.00</div>
+                        <div class="sub">基于本月交易额估算</div>
+                    </div>
+                    <div class="profit-card green">
+                        <h4>累计已结算</h4>
+                        <div class="amount">¥89,230.00</div>
+                        <div class="sub">已到账分润金额</div>
+                    </div>
+                    <div class="profit-card orange">
+                        <h4>待结算金额</h4>
+                        <div class="amount">¥12,580.00</div>
+                        <div class="sub">本月交易完成后结算</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3>下级商户费率配置</h3>
+                        <button class="btn btn-secondary btn-small">批量设置</button>
+                    </div>
+                    <div class="profit-list">
+                        <div class="profit-item">
+                            <div class="profit-info">
+                                <h4>北京味道餐厅</h4>
+                                <p>餐饮行业 · 微信/支付宝/银联</p>
+                            </div>
+                            <div class="profit-rate">
+                                <div class="rate">0.6%</div>
+                                <div class="desc">代理分润: 0.1%</div>
+                            </div>
+                        </div>
+                        <div class="profit-item">
+                            <div class="profit-info">
+                                <h4>上海优品超市</h4>
+                                <p>零售行业 · 微信/支付宝/银联</p>
+                            </div>
+                            <div class="profit-rate">
+                                <div class="rate">0.6%</div>
+                                <div class="desc">代理分润: 0.12%</div>
+                            </div>
+                        </div>
+                        <div class="profit-item">
+                            <div class="profit-info">
+                                <h4>广州美食坊</h4>
+                                <p>餐饮行业 · 微信/支付宝</p>
+                            </div>
+                            <div class="profit-rate">
+                                <div class="rate">0.6%</div>
+                                <div class="desc">代理分润: 0.08%</div>
+                            </div>
+                        </div>
+                        <div class="profit-item">
+                            <div class="profit-info">
+                                <h4>深圳便利小店</h4>
+                                <p>零售行业 · 微信/支付宝/银联</p>
+                            </div>
+                            <div class="profit-rate">
+                                <div class="rate">0.55%</div>
+                                <div class="desc">代理分润: 0.1%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 代提交模态框 -->
+    <div class="modal-overlay" id="applyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>代商户提交进件</h3>
+                <button class="modal-close" onclick="closeApplyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h4>选择商户</h4>
+                    <div class="form-group">
+                        <label class="form-label">选择要代提交的商户 <span class="required">*</span></label>
+                        <select class="form-select" id="selectMerchant">
+                            <option value="">请选择商户</option>
+                            <option value="1">北京味道餐厅 - 张经理</option>
+                            <option value="2">上海优品超市 - 李老板</option>
+                            <option value="3">杭州休闲会所 - 王总</option>
+                            <option value="5">深圳便利小店 - 刘店长</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>基本信息</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">商户名称</label>
+                            <input type="text" class="form-input" id="merchantName" placeholder="商户全称">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">所属行业</label>
+                            <select class="form-select" id="industry">
+                                <option value="">请选择</option>
+                                <option value="catering">餐饮</option>
+                                <option value="retail">零售</option>
+                                <option value="entertainment">休闲娱乐</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label">门店地址</label>
+                            <input type="text" class="form-input" placeholder="详细地址">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">联系人</label>
+                            <input type="text" class="form-input" placeholder="联系人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">手机号</label>
+                            <input type="tel" class="form-input" placeholder="手机号">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>营业执照</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">营业执照照片</label>
+                            <div class="upload-area" onclick="document.getElementById('licenseUpload').click()">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <p>点击上传 <span class="highlight">营业执照</span></p>
+                                <input type="file" id="licenseUpload" accept="image/*" style="display:none">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">统一社会信用代码</label>
+                            <input type="text" class="form-input" placeholder="18位代码">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">法人姓名</label>
+                            <input type="text" class="form-input" placeholder="法人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">有效期至</label>
+                            <input type="date" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>法人信息</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">身份证正面</label>
+                            <div class="upload-area" onclick="document.getElementById('idFrontUpload').click()">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <p>点击上传 <span class="highlight">身份证正面</span></p>
+                                <input type="file" id="idFrontUpload" accept="image/*" style="display:none">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">身份证背面</label>
+                            <div class="upload-area" onclick="document.getElementById('idBackUpload').click()">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <p>点击上传 <span class="highlight">身份证背面</span></p>
+                                <input type="file" id="idBackUpload" accept="image/*" style="display:none">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">身份证号</label>
+                            <input type="text" class="form-input" placeholder="18位身份证号">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">法人手机</label>
+                            <input type="tel" class="form-input" placeholder="手机号">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>结算信息</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">银行卡号</label>
+                            <input type="text" class="form-input" placeholder="银行卡号">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">开户银行</label>
+                            <select class="form-select">
+                                <option value="">请选择</option>
+                                <option>中国工商银行</option>
+                                <option>中国农业银行</option>
+                                <option>中国银行</option>
+                                <option>中国建设银行</option>
+                                <option>招商银行</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">开户支行</label>
+                            <input type="text" class="form-input" placeholder="支行名称">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">户名</label>
+                            <input type="text" class="form-input" placeholder="必须与法人一致">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeApplyModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitAgentApply()">提交审核</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情模态框 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>进件详情</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="detailContent">
+                <!-- 动态内容 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastMessage">操作成功</span>
+    </div>
+
+    <script>
+        // Tab 切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // 打开代提交模态框
+        function openApplyModal() {
+            document.getElementById('applyModal').classList.add('show');
+        }
+
+        function closeApplyModal() {
+            document.getElementById('applyModal').classList.remove('show');
+        }
+
+        // 提交代理商申请
+        function submitAgentApply() {
+            closeApplyModal();
+            showToast('提交成功！已进入审核队列', 'success');
+        }
+
+        // 查看详情
+        function viewDetail(id) {
+            const details = {
+                1: { name: '北京味道餐厅', industry: '餐饮', contact: '张经理', phone: '13812341234', status: '审核中', submitType: '商户自提交', submitTime: '2024-01-15 10:30' },
+                2: { name: '上海优品超市', industry: '零售', contact: '李老板', phone: '13956785678', status: '已通过', submitType: '代理商代提交', submitTime: '2024-01-14 15:22' },
+                3: { name: '杭州休闲会所', industry: '休闲娱乐', contact: '王总', phone: '15890129012', status: '已驳回', submitType: '代理商代提交', submitTime: '2024-01-13 09:15', rejectReason: '营业执照不清晰' },
+                4: { name: '广州美食坊', industry: '餐饮', contact: '陈经理', phone: '13634563456', status: '已通过', submitType: '商户自提交', submitTime: '2024-01-12 14:40' },
+                5: { name: '深圳便利小店', industry: '零售', contact: '刘店长', phone: '13778907890', status: '未提交', submitType: '代理商代提交', submitTime: '-' }
+            };
+
+            const detail = details[id];
+            const statusClass = detail.status === '已通过' ? 'approved' : detail.status === '已驳回' ? 'rejected' : detail.status === '审核中' ? 'reviewing' : 'pending';
+
+            document.getElementById('detailContent').innerHTML = `
+                <div class="form-section">
+                    <h4>基本信息</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">商户名称</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.name}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">所属行业</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.industry}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">联系人</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.contact}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">手机号</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h4>审核状态</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">状态</label>
+                            <div style="padding: 10px 0;"><span class="status-badge ${statusClass}">${detail.status}</span></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">提交方式</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.submitType}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">提交时间</label>
+                            <div style="padding: 10px 0; font-weight: 500;">${detail.submitTime}</div>
+                        </div>
+                        ${detail.rejectReason ? `
+                        <div class="form-group full">
+                            <label class="form-label" style="color: var(--danger);">驳回原因</label>
+                            <div style="padding: 10px 0; color: var(--danger); font-weight: 500;">${detail.rejectReason}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                ${detail.status === '已通过' ? `
+                <div class="form-section">
+                    <h4>支付通道</h4>
+                    <div style="display: flex; gap: 12px;">
+                        <span class="status-badge approved" style="padding: 8px 16px;">微信支付 已开通</span>
+                        <span class="status-badge approved" style="padding: 8px 16px;">支付宝 已开通</span>
+                        <span class="status-badge approved" style="padding: 8px 16px;">银联云闪付 已开通</span>
+                    </div>
+                </div>
+                ` : ''}
+            `;
+
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        // 重新提交
+        function reSubmit(id) {
+            showToast('已加载历史数据，请修改后重新提交', 'success');
+        }
+
+        // 继续提交
+        function continueSubmit(id) {
+            showToast('已加载未完成的表单数据', 'success');
+        }
+
+        // 批量选择
+        function toggleSelectAll() {
+            const checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = checked);
+            updateBatchActions();
+        }
+
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateBatchActions);
+        });
+
+        function updateBatchActions() {
+            const selected = document.querySelectorAll('.row-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = selected;
+            document.getElementById('batchActions').style.display = selected > 0 ? 'flex' : 'none';
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAll').checked = false;
+            updateBatchActions();
+        }
+
+        function batchApprove() {
+            const selected = document.querySelectorAll('.row-checkbox:checked').length;
+            showToast(`已批量通过 ${selected} 项申请`, 'success');
+            clearSelection();
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const keyword = this.value.toLowerCase();
+            document.querySelectorAll('#merchantTable tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(keyword) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
