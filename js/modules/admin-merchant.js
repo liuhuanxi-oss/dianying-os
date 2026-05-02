@@ -105,12 +105,12 @@ function renderMerchantsPage(container) {
       </div>
     </div>
   `;
-  
+
   setTimeout(() => {
     document.getElementById('filterVersion')?.addEventListener('change', filterMerchants);
     document.getElementById('filterStatus')?.addEventListener('change', filterMerchants);
     document.getElementById('searchMerchant')?.addEventListener('input', filterMerchants);
-    
+
     // Animate stat values
     document.querySelectorAll('.stat-value[data-animate]').forEach(el => {
       animateStatValue(el, parseInt(el.dataset.animate));
@@ -162,7 +162,6 @@ function filterMerchants() {
   });
   
   document.getElementById('merchantsTableBody').innerHTML = renderMerchantsTable(filtered);
-  lucide.createIcons();
 }
 
 function showAddMerchantModal() {

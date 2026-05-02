@@ -518,17 +518,25 @@ const pageModules = {
 };
 
 let loadedModules = new Set();
+let currentNavigationId = 0;
+let pendingNavigation = null;
 
-async function loadModule(pageId) {
+async function loadModule(pageId, navigationId) {
   const module = pageModules[pageId];
   if (module && !loadedModules.has(module)) {
     await new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = `js/modules/${module}`;
-      script.onload = () => { loadedModules.add(module); resolve(); };
+      script.onload = () => {
+        loadedModules.add(module);
+        resolve();
+      };
       script.onerror = reject;
       document.head.appendChild(script);
     });
+  }
+  if (navigationId !== currentNavigationId) {
+    throw new Error('Navigation cancelled');
   }
 }
 
@@ -536,17 +544,21 @@ async function loadModule(pageId) {
 // 页面渲染入口
 // ============================================
 async function renderPage(pageId, params = {}) {
+  const navigationId = ++currentNavigationId;
   const content = document.getElementById('contentArea');
   if (!content) return;
-  
-  // Add page transition animation
+
   content.innerHTML = '<div class="page-content" style="animation:fadeIn 0.3s ease"><div class="loading-spinner"><i data-lucide="loader-2" class="animate-spin"></i> 加载中...</div></div>';
   lucide.createIcons();
-  
-  // Load required module
-  await loadModule(pageId);
-  
-  // Page renderers map
+
+  try {
+    await loadModule(pageId, navigationId);
+  } catch (e) {
+    return;
+  }
+
+  if (navigationId !== currentNavigationId) return;
+
   const pages = {
     'merchants': renderMerchantsPage, 'merchant-detail': renderMerchantDetailPage,
     'merchant-upgrade': renderMerchantUpgradePage, 'merchant-permission': renderMerchantPermissionPage,
@@ -578,7 +590,7 @@ async function renderPage(pageId, params = {}) {
     'roles': renderRolesPage, 'operation-logs': renderOperationLogsPage,
     'pricing': renderPricingPage, 'notifications': renderNotificationsPage
   };
-  
+
   content.innerHTML = '<div class="page-content">';
   if (pages[pageId]) {
     pages[pageId](content, params);
@@ -586,7 +598,9 @@ async function renderPage(pageId, params = {}) {
     content.innerHTML += '<div class="empty-state"><div class="empty-icon"><i data-lucide="layout-dashboard"></i></div><h3 class="empty-title">页面开发中</h3></div>';
   }
   content.innerHTML += '</div>';
-  lucide.createIcons();
+
+  // 统一初始化所有图标 - 只需调用一次
+  setTimeout(() => lucide.createIcons(), 0);
 }
 
 // ============================================

@@ -125,7 +125,6 @@ function renderOverviewPage(container) {
       </div>
     </div>
   `;
-  
   setTimeout(() => {
     // Animate stat values
     document.querySelectorAll('.stat-value[data-animate]').forEach(el => {
@@ -211,7 +210,6 @@ function renderIndustryReportPage(container) {
       </div>
     </div>
   `;
-  
   setTimeout(() => {
     new Chart(document.getElementById('radarChart'), {
       type: 'radar',
@@ -258,7 +256,6 @@ function renderAIStatsPage(container) {
       <div class="chart-wrapper" style="height:300px"><canvas id="tokenTrendChart"></canvas></div>
     </div>
   `;
-  
   setTimeout(() => {
     document.querySelectorAll('.stat-value[data-animate]').forEach(el => {
       animateStatValue(el, parseInt(el.dataset.animate));
