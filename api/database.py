@@ -2,10 +2,19 @@
 店赢OS管理后台API - 数据库管理
 """
 import sqlite3
+import os
 from typing import Optional, Dict, List, Any
 
 # 使用文件数据库以支持跨连接共享
-DATABASE_PATH = "/tmp/dyos_admin.db"
+def _get_db_path():
+    """获取数据库路径，支持环境变量配置"""
+    env_path = os.environ.get('DYOS_DB_PATH')
+    if env_path:
+        return env_path
+    db_dir = os.environ.get('DYOS_DB_DIR', '/tmp')
+    return os.path.join(db_dir, 'dyos_admin.db')
+
+DATABASE_PATH = _get_db_path()
 
 
 def get_db():

@@ -3,14 +3,19 @@
 FastAPI HTTP服务，用于接收Bot请求并生成海报
 
 启动方式:
-    cd demo-server
-    pip install fastapi uvicorn
+    cd api
+    pip install -r requirements.txt
     python server.py
 
 API端点:
     POST /api/generate-poster  - 生成海报
     GET  /api/health           - 健康检查
 """
+
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +24,6 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
-import os
 
 from generators import PosterGenerator
 
