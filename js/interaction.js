@@ -412,6 +412,46 @@
     }
     
     // ========================================
+    // switchModule 增强 - 覆盖HTML中的原始函数
+    // 解决inline onclick中event.currentTarget不可靠的问题
+    // ========================================
+    function patchSwitchModule() {
+        window.switchModule = function(moduleName, clickedElement) {
+            // 如果没传入clickedElement，尝试从调用栈推断
+            if (!clickedElement) {
+                try {
+                    clickedElement = (typeof event !== 'undefined' && event) ? event.currentTarget : null;
+                } catch(e) {
+                    clickedElement = null;
+                }
+            }
+            
+            // 高亮当前nav-item
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (clickedElement && clickedElement.classList) {
+                clickedElement.classList.add('active');
+            } else {
+                // 通过onclick内容匹配nav-item
+                const navItem = document.querySelector('.nav-item[onclick*="switchModule(\'' + moduleName + '\')"]');
+                if (navItem) navItem.classList.add('active');
+            }
+            
+            // 切换模块显示
+            document.querySelectorAll('.module-content').forEach(content => content.classList.remove('active'));
+            const targetModule = document.getElementById('module-' + moduleName);
+            if (targetModule) {
+                targetModule.classList.add('active');
+            }
+            
+            // 更新当前模块变量（如果存在）
+            try { if (typeof currentModule !== 'undefined') currentModule = moduleName; } catch(e) {}
+            
+            // 同步URL hash
+            try { history.pushState(null, '', '#' + moduleName); } catch(e) {}
+        };
+    }
+
+    // ========================================
     // 3. 侧边栏导航增强
     // ========================================
     
@@ -423,35 +463,35 @@
         const currentPath = window.location.pathname;
         
         navItems.forEach(item => {
-            const href = item.getAttribute('href');
-            const hash = item.getAttribute('data-hash');
-            
             // 高亮当前页面
+            const href = item.getAttribute('href');
             if (href && (currentPath.endsWith(href) || currentPath.endsWith(href.replace('.html', '')))) {
-                item.classList.add('active');
-            } else if (hash && window.location.hash === hash) {
                 item.classList.add('active');
             }
             
-            // 添加点击事件
-            item.addEventListener('click', (e) => {
-                // 移除其他active
-                navItems.forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-                
-                // 同步URL hash
-                if (hash) {
-                    history.pushState(null, '', hash);
+            // URL hash支持 - 根据hash激活对应模块
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const onclickAttr = item.getAttribute('onclick') || '';
+                if (onclickAttr.includes("switchModule('" + hash + "')")) {
+                    navItems.forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
                 }
-            });
+            }
         });
         
         // 浏览器前进后退支持
         window.addEventListener('popstate', () => {
-            const hash = window.location.hash || '#dashboard';
+            const hash = window.location.hash.replace('#', '') || 'dashboard';
             navItems.forEach(item => {
-                item.classList.toggle('active', item.getAttribute('data-hash') === hash);
+                const onclickAttr = item.getAttribute('onclick') || '';
+                const isActive = onclickAttr.includes("switchModule('" + hash + "')");
+                item.classList.toggle('active', isActive);
             });
+            // 同时切换模块内容
+            document.querySelectorAll('.module-content').forEach(c => c.classList.remove('active'));
+            const target = document.getElementById('module-' + hash);
+            if (target) target.classList.add('active');
         });
         
         // 移动端菜单
@@ -1458,6 +1498,9 @@
         // 检测当前页面类型
         const pathname = window.location.pathname;
         const pageName = pathname.split('/').pop().replace('.html', '') || 'index';
+        
+        // 0. 优先修补switchModule（三端核心交互）
+        patchSwitchModule();
         
         // 1. Toast通知 - 如果页面已有函数则不覆盖
         if (typeof window.showToast !== 'function') {
