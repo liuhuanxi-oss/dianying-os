@@ -29,7 +29,7 @@
    Mobile Menu Button
    ============================================ */
 .mobile-menu-toggle {
-  display: none !important;
+  display: none;
   width: 44px;
   height: 44px;
   min-width: 44px;
@@ -137,6 +137,11 @@
    Mobile Main Content
    ============================================ */
 @media (max-width: 768px) {
+  /* 显示汉堡菜单按钮 */
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+  
   .main-content {
     margin-left: 0 !important;
     padding-bottom: 80px;

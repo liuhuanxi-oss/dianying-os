@@ -1,0 +1,20 @@
+# FastAPI Web框架
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# 数据库ORM
+sqlalchemy==2.0.25
+
+# JWT认证
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+
+# 文件上传
+python-multipart==0.0.6
+
+# 数据验证
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# HTTP客户端
+httpx==0.26.0

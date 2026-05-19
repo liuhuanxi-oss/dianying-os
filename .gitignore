@@ -41,3 +41,17 @@ __pycache__/
 # Generated posters
 api/public/posters/*.png
 
+
+# Database
+*.db
+*.sqlite
+
+# Backend uploads
+backend/uploads/
+
+# Python venv
+venv/
+.venv/
+
+# MOBILE_FIX_REPORT
+MOBILE_FIX_REPORT.md
