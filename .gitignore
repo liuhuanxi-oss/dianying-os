@@ -1,0 +1,74 @@
+# 环境配置（含敏感信息）
+.env
+.env.*
+*.env
+.env.local
+.env.*.local
+
+# 编译产物
+*.exe
+*.bin
+dyos-server
+dyos-go-server
+server.exe
+
+# 临时文件
+seed_data.sql
+seed_gen.py
+*.tmp
+*.bak
+*.log
+
+# Go 工具链
+tools/go-cache/
+tools/go1.22.12/
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories
+*.iml
+
+# Optional npm cache
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated posters
+api/public/posters/*.png
+
+# Database
+*.db
+*.sqlite
+
+# Backend uploads
+backend/uploads/
+
+# Python venv
+venv/
+.venv/
+
+# MOBILE_FIX_REPORT
+MOBILE_FIX_REPORT.md
