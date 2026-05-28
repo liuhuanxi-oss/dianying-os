@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>店赢OS — 商户小程序</title>
+<link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+<script src="https://unpkg.com/element-plus/dist/index.full.min.js"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{--primary:#1E3A5F;--gold:#F59E0B;--green:#10B981;--red:#EF4444;--bg:#f5f5f5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:#333;-webkit-tap-highlight-color:transparent}
+#app{min-height:100vh;min-height:100dvh}
+
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a1628,#1E3A5F);padding:20px}
+.login-box{width:100%;max-width:360px;background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-box h2{text-align:center;color:#1E3A5F;font-size:24px;margin-bottom:4px}
+.login-box .sub{text-align:center;color:#999;font-size:13px;margin-bottom:24px}
+
+/* Bottom Nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;font-size:10px;color:#999;cursor:pointer;transition:.2s}
+.bnav-item.ac{color:var(--primary);font-weight:600}
+.bnav-item .ico{font-size:22px;margin-bottom:2px}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#0a1628,#1E3A5F);color:#fff;padding:20px 16px 16px;position:sticky;top:0;z-index:50}
+.hdr-row{display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:18px;font-weight:600}.hdr span{color:var(--gold)}
+.hdr .usr{font-size:12px;opacity:.8;display:flex;align-items:center;gap:8px}
+
+/* Content */
+.pg{padding:16px 16px 80px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.st{background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.st .st-l{font-size:12px;color:#999;margin-bottom:4px}
+.st .st-v{font-size:22px;font-weight:700;color:#1E3A5F}
+.st .st-s{font-size:11px;color:#999;margin-top:2px}
+
+/* Card */
+.card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:14px}
+.card h3{font-size:15px;font-weight:600;color:#1E3A5F;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3:before{content:"";width:3px;height:14px;background:var(--gold);border-radius:2px;display:inline-block}
+
+/* Review item for mobile */
+.rv-item{padding:14px 0;border-bottom:1px solid #f0f0f0}
+.rv-item:last-child{border-bottom:none}
+.rv-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rv-platform{font-size:11px;color:var(--gold);font-weight:600}
+.rv-rating{font-size:13px;font-weight:700}
+.rv-content{font-size:13px;color:#333;line-height:1.6;margin-bottom:8px}
+.rv-ai{font-size:12px;color:var(--green);background:#f0fdf4;padding:8px 12px;border-radius:8px;line-height:1.5}
+.rv-actions{display:flex;gap:8px;margin-top:8px}
+
+.tag-g{color:var(--green)}.tag-r{color:var(--red)}.tag-y{color:var(--gold)}
+.pull-refresh{text-align:center;padding:12px;color:#999;font-size:12px}
+</style>
+</head>
+<body>
+<div id="app"><router-view></router-view></div>
+<script>
+const { createApp, ref, reactive, computed, onMounted, nextTick } = Vue
+const { createRouter, createWebHashHistory } = VueRouter
+const { ElMessage, ElMessageBox } = ElementPlus
+
+const TOKEN_KEY = 'dyos_miniapp_token'
+const USER_KEY = 'dyos_miniapp_user'
+let _token = localStorage.getItem(TOKEN_KEY) || ''
+let _user = (()=>{try{return JSON.parse(localStorage.getItem(USER_KEY))||{}}catch(e){return{}}})()
+
+const http = axios.create({baseURL:'/api/merchant',timeout:15000})
+http.interceptors.request.use(c=>{
+  if(_token){c.headers.Authorization='Bearer '+_token}
+  return c
+})
+http.interceptors.response.use(r=>{
+  const d=r.data
+  if(d&&d.code===0)return d.data!==undefined?d.data:d
+  throw new Error((d&&d.message)||'请求失败')
+},err=>{
+  if(err.response&&err.response.status===401){doLogout();ElMessage.error('登录已过期')}
+  return Promise.reject(err)
+})
+function setAuth(token,user){
+  _token=token;_user=user
+  localStorage.setItem(TOKEN_KEY,token)
+  localStorage.setItem(USER_KEY,JSON.stringify(user))
+}
+function doLogout(){
+  _token='';_user={}
+  localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(USER_KEY)
+}
+
+// ======================== 登录 ========================
+const LoginPage = {
+  template:`
+<div class="login-wrap">
+  <div class="login-box">
+    <h2>店赢<span style="color:var(--gold)">OS</span></h2>
+    <p class="sub">{{_user.store_name||'商户管理中心'}}</p>
+    <el-form :model="f" @submit.prevent="login">
+      <el-form-item><el-input v-model="f.username" placeholder="商户账号" size="large" @keyup.enter="login"/></el-form-item>
+      <el-form-item><el-input v-model="f.password" type="password" placeholder="密码" size="large" show-password @keyup.enter="login"/></el-form-item>
+      <el-button type="primary" size="large" @click="login" :loading="loading" style="width:100%;background:var(--primary);border-color:var(--primary);height:44px">登 录</el-button>
+    </el-form>
+    <div style="text-align:center;margin-top:12px">
+      <el-button size="small" text @click="ql('owner')">快速登录(商户)</el-button>
+    </div>
+  </div>
+</div>`,
+  setup(){
+    const f=reactive({username:'',password:''}),loading=ref(false)
+    const router=VueRouter.useRouter()
+    const login=async()=>{
+      if(!f.username||!f.password){ElMessage.warning('请输入账号和密码');return}
+      loading.value=true
+      try{
+        const r=await axios.post('/api/login',{username:f.username,password:f.password})
+        const d=r.data
+        if(d.code===0&&d.data&&d.data.token){
+          setAuth(d.data.token,d.data.user)
+          router.push('/home')
+          ElMessage.success('登录成功')
+        }else{ElMessage.error(d.message||'登录失败')}
+      }catch(e){ElMessage.error(e.message||'登录失败')}
+      finally{loading.value=false}
+    }
+    const ql=(r)=>{f.username=r;f.password='123456';login()}
+    return {f,loading,login,ql}
+  }
+}
+
+// ======================== 主布局（底部Tab导航） ========================
+const MainLayout = {
+  template:`
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-row">
+      <h1>店赢<span>OS</span></h1>
+      <div class="usr" @click="logout"><span>{{_user.name||'商户'}}</span><el-icon><SwitchButton/></el-icon></div>
+    </div>
+    <div style="font-size:11px;opacity:.6;margin-top:4px">{{pageTitle}}</div>
+  </div>
+  <div class="pg"><router-view></router-view></div>
+  <div class="bnav">
+    <div class="bnav-item" :class="{ac:$route.path==='/home'}" @click="$router.push('/home')">
+      <el-icon class="ico"><Odometer/></el-icon><span>概览</span>
+    </div>
+    <div class="bnav-item" :class="{ac:$route.path==='/reviews'}" @click="$router.push('/reviews')">
+      <el-icon class="ico"><ChatDotRound/></el-icon><span>评价</span>
+    </div>
+    <div class="bnav-item" :class="{ac:$route.path==='/reports'}" @click="$router.push('/reports')">
+      <el-icon class="ico"><Document/></el-icon><span>报表</span>
+    </div>
+    <div class="bnav-item" :class="{ac:$route.path==='/me'}" @click="$router.push('/me')">
+      <el-icon class="ico"><User/></el-icon><span>我的</span>
+    </div>
+  </div>
+</div>`,
+  setup(){
+    const route=VueRouter.useRoute();const router=VueRouter.useRouter()
+    const pageTitle=computed(()=>{
+      const m={home:'数据概览',reviews:'评价管理',reports:'报表中心',me:'个人中心'}
+      return m[route.path.substring(1)]||'店赢OS'
+    })
+    const logout=()=>{doLogout();router.push('/login')}
+    onMounted(()=>{if(!_token){router.push('/login')}})
+    return {pageTitle,logout,_user}
+  }
+}
+
+// ======================== 数据概览 ========================
+const Home = {
+  template:`
+<div>
+  <div class="stats">
+    <div class="st"><div class="st-l">好评率</div><div class="st-v tag-g">{{kpi.good_rate||'--'}}%</div><div class="st-s">较上周+{{kpi.rate_change||'--'}}%</div></div>
+    <div class="st"><div class="st-l">差评数</div><div class="st-v tag-r">{{kpi.bad_count||0}}</div><div class="st-s">待处理{{kpi.pending||0}}条</div></div>
+    <div class="st"><div class="st-l">7日GMV</div><div class="st-v">{{fmtMoney(kpi.gmv||0)}}</div><div class="st-s">{{kpi.orders||0}}笔订单</div></div>
+    <div class="st"><div class="st-l">AI回复率</div><div class="st-v tag-y">{{kpi.reply_rate||'--'}}%</div><div class="st-s">自动回复</div></div>
+  </div>
+  <div class="card"><h3>近7日趋势</h3><div ref="chartRef" style="height:220px"></div></div>
+  <div class="card">
+    <h3>最新评价</h3>
+    <div v-for="r in recentReviews" :key="r.id" class="rv-item">
+      <div class="rv-meta"><span class="rv-platform">{{r.platform}}</span><span class="rv-rating" :style="{color:r.rating>=4?'var(--green)':r.rating<=2?'var(--red)':'var(--gold)'}">{{r.rating}}分</span></div>
+      <div class="rv-content">{{r.content}}</div>
+      <div class="rv-ai" v-if="r.ai_reply">🤖 {{r.ai_reply}}</div>
+      <div class="rv-actions" v-if="!r.ai_reply"><el-button size="small" type="primary" @click="genReply(r)">AI回复</el-button></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>实时预警</h3>
+    <div v-for="a in alerts" :key="a.id" style="padding:10px 0;border-bottom:1px solid #f0f0f0">
+      <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600">{{a.type||'差评预警'}}</span><span style="color:var(--red);font-size:12px">{{a.level||'紧急'}}</span></div>
+      <div style="font-size:12px;color:#999;margin-top:4px">{{a.content}}</div>
+    </div>
+    <el-empty v-if="!alerts.length" description="暂无预警" :image-size="40"/>
+  </div>
+</div>`,
+  setup(){
+    const kpi=reactive({good_rate:0,rate_change:0,bad_count:0,pending:0,gmv:0,orders:0,reply_rate:0})
+    const recentReviews=ref([]),alerts=ref([]),chartRef=ref(null)
+    const fmtMoney=v=>v>=10000?'¥'+(v/10000).toFixed(1)+'万':'¥'+(v||0).toLocaleString()
+    const genReply=async(r)=>{try{await http.post('/reviews/'+r.id+'/reply');r.ai_reply='AI回复已生成';ElMessage.success('回复已同步')}catch(e){}}
+    onMounted(async()=>{
+      try{
+        const r=await http.get('/overview')
+        kpi.good_rate=r.good_rate||0;kpi.rate_change=r.rate_change||0
+        kpi.bad_count=r.bad_count||0;kpi.pending=r.pending||0
+        kpi.gmv=r.gmv||0;kpi.orders=r.orders||0;kpi.reply_rate=r.reply_rate||0
+      }catch(e){}
+      try{
+        const r=await http.get('/reviews',{params:{page:1,size:5}})
+        recentReviews.value=r.items||[]
+      }catch(e){}
+      try{
+        const r=await http.get('/miniprogram/alerts')
+        alerts.value=r||[]
+      }catch(e){}
+      nextTick(()=>{if(chartRef.value){
+        const ch=echarts.init(chartRef.value)
+        ch.setOption({grid:{top:10,right:10,bottom:20,left:40},tooltip:{trigger:'axis'},xAxis:{type:'category',data:['5/21','5/22','5/23','5/24','5/25','5/26','5/27']},yAxis:{type:'value'},series:[{type:'line',data:[3200,3800,3400,4200,3900,4500,4100],smooth:true,areaStyle:{opacity:.1},lineStyle:{color:'#F59E0B'},itemStyle:{color:'#F59E0B'}}]})
+      }})
+    })
+    return {kpi,recentReviews,alerts,chartRef,fmtMoney,genReply}
+  }
+}
+
+// ======================== 评价管理 ========================
+const Reviews = {
+  template:`
+<div>
+  <div class="stats" style="grid-template-columns:1fr 1fr">
+    <div class="st"><div class="st-l">总评价</div><div class="st-v">{{total}}</div></div>
+    <div class="st"><div class="st-l">好评率</div><div class="st-v tag-g">{{goodRate}}%</div></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <el-input v-model="kw" placeholder="搜索评价..." size="small" clearable @clear="s" @keyup.enter="s"/>
+    <el-select v-model="rating" placeholder="评分" size="small" style="width:80px" @change="s">
+      <el-option label="5★" value="5"/><el-option label="4★" value="4"/><el-option label="3★" value="3"/><el-option label="2★" value="2"/><el-option label="1★" value="1"/>
+    </el-select>
+  </div>
+  <div class="card" v-for="r in items" :key="r.id" style="padding:12px 14px">
+    <div class="rv-item" style="padding-top:0">
+      <div class="rv-meta"><span class="rv-platform">{{r.platform}}</span><span class="rv-rating" :style="{color:r.rating>=4?'var(--green)':r.rating<=2?'var(--red)':'var(--gold)'}">{{'★'.repeat(r.rating)}}{{5-r.rating>0?'☆'.repeat(5-r.rating):''}}</span></div>
+      <div class="rv-content">{{r.content}}</div>
+      <div class="rv-ai" v-if="r.ai_reply">🤖 {{r.ai_reply}}</div>
+      <div class="rv-actions" v-if="!r.ai_reply">
+        <el-button size="small" type="primary" @click="genReply(r)">AI生成回复</el-button>
+        <el-button size="small" type="success" @click="syncReply(r)">同步</el-button>
+      </div>
+    </div>
+  </div>
+  <el-empty v-if="!loading&&!items.length" description="暂无评价"/>
+  <div class="pull-refresh" @click="load">点击加载更多...</div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),kw=ref(''),rating=ref('')
+    const goodRate=ref(0)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/reviews',{params:{page:page.value,size:10,keyword:kw.value,rating:rating.value}});items.value=page.value===1?r.items||[]:[...items.value,...r.items||[]];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    const genReply=async(r)=>{try{await http.post('/reviews/ai-reply',{id:r.id});ElMessage.success('AI回复已生成');load()}catch(e){}}
+    const syncReply=async(r)=>{try{await http.post('/reviews/'+r.id+'/sync');ElMessage.success('已同步到平台')}catch(e){}}
+    onMounted(async()=>{
+      load()
+      try{const r=await http.get('/reviews/stats');goodRate.value=r.good_rate||0;total.value=r.total||0}catch(e){}
+    })
+    return {items,loading,total,kw,rating,goodRate,load,s,genReply,syncReply}
+  }
+}
+
+// ======================== 报表中心 ========================
+const Reports = {
+  template:`
+<div>
+  <div class="stats" style="grid-template-columns:1fr 1fr">
+    <div class="st" @click="quickReport('daily')" style="cursor:pointer"><div class="st-l">日报</div><div class="st-v tag-g">一键生成</div></div>
+    <div class="st" @click="quickReport('weekly')" style="cursor:pointer"><div class="st-l">周报</div><div class="st-v tag-y">含趋势</div></div>
+  </div>
+  <div class="card">
+    <h3>报表列表</h3>
+    <div v-for="r in items" :key="r.id" @click="preview(r)" style="padding:12px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:14px;font-weight:500">{{r.name||r.title}}</div>
+        <div style="font-size:11px;color:#999">{{r.period}} · {{r.created_at}}</div>
+      </div>
+      <el-button size="small" type="primary" link>查看</el-button>
+    </div>
+    <el-empty v-if="!items.length" description="暂无报表" :image-size="40"/>
+  </div>
+</div>`,
+  setup(){
+    const items=ref([])
+    const quickReport=async(type)=>{try{await http.post('/reports/quick',{type});ElMessage.success('报告已生成');load()}catch(e){}}
+    const preview=(r)=>{ElMessage.success('查看: '+r.name)}
+    const load=async()=>{try{const r=await http.get('/reports');items.value=r.items||r||[]}catch(e){}}
+    onMounted(load)
+    return {items,quickReport,preview}
+  }
+}
+
+// ======================== 我的 ========================
+const Me = {
+  template:`
+<div>
+  <div class="card" style="text-align:center;padding:24px">
+    <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;margin:0 auto">{{(_user.name||'商')[0]}}</div>
+    <div style="font-size:16px;font-weight:600;margin-top:12px">{{_user.name||'商户'}}</div>
+    <div style="font-size:12px;color:#999">{{_user.store_name||''}}</div>
+  </div>
+  <div class="card">
+    <div style="padding:12px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;cursor:pointer" @click="nav('pricing')"><span>智能定价</span><el-icon><ArrowRight/></el-icon></div>
+    <div style="padding:12px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;cursor:pointer" @click="nav('members')"><span>会员管理</span><el-icon><ArrowRight/></el-icon></div>
+    <div style="padding:12px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;cursor:pointer" @click="nav('complaints')"><span>投诉记录</span><el-icon><ArrowRight/></el-icon></div>
+    <div style="padding:12px 0;display:flex;justify-content:space-between;cursor:pointer" @click="nav('settings')"><span>账户设置</span><el-icon><ArrowRight/></el-icon></div>
+  </div>
+  <el-button type="danger" size="large" @click="logout" style="width:100%;margin-top:16px;border-radius:12px">退出登录</el-button>
+</div>`,
+  setup(){
+    const router=VueRouter.useRouter()
+    const nav=(page)=>{ElMessage.info('跳转: '+page)}
+    const logout=()=>{doLogout();router.push('/login')}
+    return {_user,nav,logout}
+  }
+}
+
+// ======================== 路由 ========================
+const routes = [
+  {path:'/',redirect:'/home'},
+  {path:'/login',component:LoginPage},
+  {path:'/',component:MainLayout,children:[
+    {path:'home',component:Home},
+    {path:'reviews',component:Reviews},
+    {path:'reports',component:Reports},
+    {path:'me',component:Me},
+  ]}
+]
+
+const router = createRouter({history:createWebHashHistory(),routes})
+router.beforeEach((to,from)=>{
+  if(to.path!=='/login'&&!_token)return'/login'
+})
+
+const app = createApp({})
+app.use(router)
+app.use(ElementPlus)
+for(const [k,c] of Object.entries(ElementPlusIconsVue)){app.component(k,c)}
+app.mount('#app')
+</script>
+</body>
+</html>

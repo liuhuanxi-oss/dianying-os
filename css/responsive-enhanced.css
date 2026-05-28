@@ -1,0 +1,901 @@
+/**
+ * 店赢OS - 完整响应式适配增强
+ * 断点定义：
+ * - 桌面端：≥1200px (4列布局，侧边栏完整展开)
+ * - 平板端：768-1199px (2-3列布局，侧边栏可折叠)
+ * - 手机端：<768px (1列布局，侧边栏隐藏，汉堡菜单)
+ */
+
+/* ============================================
+   商家端 (merchant.html) 响应式增强
+   ============================================ */
+
+/* 平板端适配 - 768px - 1199px */
+@media (max-width: 1199px) {
+    /* 侧边栏适配 */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+    
+    /* 主内容区适配 */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 16px;
+    }
+    
+    /* 统计卡片适配 - 3列 */
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* 定价看板适配 */
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* 平台卡片适配 - 2列 */
+    .platform-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 模块卡片适配 */
+    .module-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 表单适配 */
+    .form-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* AI分析卡片适配 */
+    .ai-analysis-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 批量操作栏适配 */
+    .batch-action-bar {
+        flex-wrap: wrap;
+    }
+    .batch-action-btn {
+        flex: 1 1 calc(50% - 6px);
+    }
+    
+    /* 表格横向滚动 */
+    .table-container,
+    .reconciliation-table {
+        overflow-x: auto;
+        display: block;
+    }
+    .reconciliation-table {
+        min-width: 600px;
+    }
+    
+    /* 弹窗适配 */
+    .modal {
+        max-width: 90%;
+    }
+    
+    /* 底部状态栏 */
+    .agent-status-bar {
+        padding: 0 16px;
+        overflow-x: auto;
+    }
+    .agent-list {
+        gap: 16px;
+        flex-wrap: nowrap;
+    }
+}
+
+/* 手机端适配 - <768px */
+@media (max-width: 767px) {
+    /* 顶部导航适配 */
+    .topbar {
+        height: 56px;
+        padding: 0 12px;
+    }
+    .topbar-left {
+        gap: 8px;
+    }
+    .store-logo {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    .store-info h1 {
+        font-size: 14px;
+    }
+    .store-info span {
+        display: none;
+    }
+    .agent-status {
+        display: none;
+    }
+    .topbar-right {
+        gap: 8px;
+    }
+    .topbar-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    /* 侧边栏完全隐藏 */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        max-width: 85vw;
+        z-index: 1000;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    /* 主内容区 */
+    .main-content {
+        margin-left: 0 !important;
+        margin-top: 56px;
+        margin-bottom: 70px;
+        padding: 12px;
+        min-height: calc(100vh - 126px);
+    }
+    
+    /* 汉堡菜单按钮 */
+    .mobile-menu-toggle {
+        display: flex !important;
+    }
+    
+    /* 页面标题 */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .page-header h2 {
+        font-size: 20px;
+    }
+    .page-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    /* 统计卡片 - 2列 */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .stat-card {
+        padding: 14px;
+    }
+    .stat-value {
+        font-size: 22px;
+    }
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+    }
+    .stat-trend {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+    
+    /* 内容卡片 */
+    .content-card {
+        margin-bottom: 16px;
+        border-radius: var(--radius);
+    }
+    .card-header {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .card-body {
+        padding: 16px;
+    }
+    
+    /* 平台卡片 - 单列 */
+    .platform-grid {
+        grid-template-columns: 1fr;
+    }
+    .platform-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* 模块卡片 - 单列 */
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
+    .module-card {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .module-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+    
+    /* 表单适配 - 单列 */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .form-group {
+        margin-bottom: 14px;
+    }
+    .form-input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    /* 按钮适配 */
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 44px;
+        min-width: 44px;
+    }
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    /* 表格适配 */
+    .reconciliation-table {
+        font-size: 12px;
+    }
+    .reconciliation-table th,
+    .reconciliation-table td {
+        padding: 10px 8px;
+    }
+    
+    /* AI分析卡片 */
+    .ai-analysis-grid {
+        grid-template-columns: 1fr;
+    }
+    .ai-analysis-item {
+        padding: 10px;
+    }
+    
+    /* 批量操作栏 */
+    .batch-action-btn {
+        flex: 1 1 100%;
+    }
+    
+    /* 弹窗适配 */
+    .modal {
+        max-width: 95%;
+        max-height: 90vh;
+    }
+    .modal-header {
+        padding: 16px;
+    }
+    .modal-body {
+        padding: 16px;
+        max-height: calc(90vh - 120px);
+    }
+    .modal-footer {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+    }
+    
+    /* Toast适配 */
+    .toast-container {
+        top: 70px;
+        right: 12px;
+        left: 12px;
+    }
+    .toast {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    /* 底部状态栏 */
+    .agent-status-bar {
+        height: auto;
+        min-height: 60px;
+        padding: 12px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .agent-status-bar h4 {
+        margin-right: 0;
+        font-size: 11px;
+    }
+    .agent-list {
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .agent-item {
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
+    .agent-progress {
+        display: none;
+    }
+    
+    /* 差评列表 */
+    .review-item {
+        padding: 14px;
+    }
+    .review-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .review-meta {
+        text-align: left;
+    }
+    .review-actions {
+        flex-wrap: wrap;
+    }
+    
+    /* 图表容器 */
+    .chart-container {
+        padding: 12px;
+    }
+    .simple-chart {
+        height: 100px;
+    }
+    
+    /* 进度追踪 */
+    .progress-tracker {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .progress-step {
+        width: 100%;
+    }
+    .step-line {
+        display: none;
+    }
+}
+
+/* ============================================
+   平台端 (platform.html) 响应式增强
+   ============================================ */
+
+@media (max-width: 1199px) {
+    .layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 260px;
+        height: 100vh;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .main {
+        margin-left: 0;
+        padding: 24px;
+    }
+    .rating-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .reserve-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .churn-analysis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .ab-test {
+        grid-template-columns: 1fr;
+    }
+    .data-table {
+        overflow-x: auto;
+        display: block;
+    }
+    .module-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+    }
+    .module-tab {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidebar {
+        width: 280px;
+        max-width: 85vw;
+    }
+    .main {
+        padding: 16px;
+        padding-bottom: 80px;
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .page-header h2 {
+        font-size: 22px;
+    }
+    .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .stat-card {
+        padding: 16px;
+    }
+    .stat-card .value {
+        font-size: 26px;
+    }
+    .content-card {
+        margin-bottom: 16px;
+    }
+    .card-header {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .card-body {
+        padding: 16px;
+    }
+    .rating-grid {
+        grid-template-columns: 1fr;
+    }
+    .reserve-overview {
+        grid-template-columns: 1fr;
+    }
+    .churn-analysis {
+        grid-template-columns: 1fr;
+    }
+    .funnel-step {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .funnel-label,
+    .funnel-rate {
+        text-align: center;
+    }
+    .nps-display {
+        flex-direction: column;
+        padding: 24px;
+        gap: 24px;
+    }
+    .nps-score .number {
+        font-size: 48px;
+    }
+    .nps-legend {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .dispute-flow {
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+    }
+    .flow-step::before,
+    .flow-step::after {
+        display: none;
+    }
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    .modal {
+        max-width: 95%;
+    }
+    .modal-header {
+        padding: 16px;
+    }
+    .modal-body {
+        padding: 16px;
+    }
+}
+
+/* ============================================
+   代理商端 (agent.html) 响应式增强
+   ============================================ */
+
+@media (max-width: 1199px) {
+    .layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 260px;
+        height: 100vh;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .main {
+        margin-left: 0;
+        padding: 24px;
+    }
+    .team-tree {
+        padding: 20px;
+    }
+    .team-children {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .material-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .course-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .customer-table {
+        overflow-x: auto;
+        display: block;
+    }
+    .leaderboard-stats {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .sidebar {
+        width: 280px;
+        max-width: 85vw;
+    }
+    .main {
+        padding: 16px;
+        padding-bottom: 80px;
+    }
+    .page-header h2 {
+        font-size: 22px;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .stat-card {
+        padding: 16px;
+    }
+    .stat-card .value {
+        font-size: 26px;
+    }
+    .content-card {
+        margin-bottom: 16px;
+    }
+    .card-header {
+        padding: 16px;
+    }
+    .card-body {
+        padding: 16px;
+    }
+    .team-node {
+        width: 100%;
+    }
+    .material-grid {
+        grid-template-columns: 1fr;
+    }
+    .course-grid {
+        grid-template-columns: 1fr;
+    }
+    .profit-notification {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    .profit-amount {
+        font-size: 28px;
+    }
+    .honor-gallery {
+        grid-template-columns: 1fr 1fr;
+    }
+    .crm-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+    }
+    .filter-tag {
+        white-space: nowrap;
+    }
+    .visit-timeline {
+        padding-left: 24px;
+    }
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    .modal {
+        max-width: 95%;
+    }
+    .leaderboard-stats {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* ============================================
+   BI仪表盘 (dashboard-bi.html) 响应式增强
+   ============================================ */
+
+@media (max-width: 1199px) {
+    .bi-kpi-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .bi-charts-grid.bi-chart-row-2 {
+        grid-template-columns: 1fr;
+    }
+    .bi-charts-grid.bi-chart-row-equal {
+        grid-template-columns: 1fr 1fr;
+    }
+    .bi-rating-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .bi-kpi-value {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 767px) {
+    .bi-header {
+        padding: 0 12px;
+    }
+    .bi-nav-tabs {
+        display: none;
+    }
+    .bi-container {
+        padding: 12px;
+    }
+    .bi-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .bi-kpi-card {
+        padding: 14px;
+    }
+    .bi-kpi-value {
+        font-size: 20px;
+    }
+    .bi-kpi-label {
+        font-size: 12px;
+    }
+    .bi-kpi-icon {
+        width: 28px;
+        height: 28px;
+    }
+    .bi-charts-grid {
+        gap: 12px;
+    }
+    .bi-charts-grid.bi-chart-row-equal {
+        grid-template-columns: 1fr;
+    }
+    .bi-card-header {
+        padding: 12px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .bi-card-title {
+        font-size: 14px;
+    }
+    .bi-chart-container {
+        height: 220px;
+    }
+    .bi-chart-container.large {
+        height: 260px;
+    }
+    .bi-card-actions {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+    .bi-card-btn {
+        white-space: nowrap;
+    }
+    .bi-ai-input-area {
+        flex-direction: column;
+        padding: 14px;
+    }
+    .bi-ai-input {
+        width: 100%;
+    }
+    .bi-quick-tags {
+        flex-wrap: wrap;
+    }
+    .back-home-btn {
+        top: auto;
+        bottom: 16px;
+        left: 16px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bi-kpi-row {
+        grid-template-columns: 1fr;
+    }
+    .bi-kpi-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .bi-kpi-header {
+        margin-bottom: 0;
+    }
+    .bi-kpi-trend {
+        justify-content: flex-end;
+    }
+    .bi-chart-container {
+        height: 200px;
+    }
+}
+
+/* ============================================
+   共享响应式组件
+   ============================================ */
+
+/* 移动端菜单遮罩层 */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.mobile-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* 移动端汉堡菜单按钮 */
+.mobile-menu-toggle {
+    display: none !important;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:active {
+    background: var(--bg-light);
+}
+
+.mobile-menu-toggle i {
+    width: 24px;
+    height: 24px;
+}
+
+/* 表格响应式容器 */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+    min-width: 600px;
+}
+
+/* 触摸友好的点击区域 */
+@media (max-width: 767px) {
+    .nav-item,
+    .topbar-btn,
+    .btn,
+    .filter-tag,
+    .module-tab,
+    .batch-action-btn,
+    .reply-option {
+        min-height: 44px;
+        -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+    }
+    
+    /* 禁用hover效果在触摸设备上 */
+    .stat-card:hover,
+    .module-card:hover,
+    .feature-card:hover,
+    .material-card:hover {
+        transform: none;
+    }
+    
+    /* 保持阴影效果 */
+    .stat-card:active,
+    .module-card:active,
+    .feature-card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* ============================================
+   ECharts图表响应式
+   ============================================ */
+
+/* 确保所有图表容器响应式 */
+.chart-wrapper,
+.echart-container,
+[data-chart] {
+    width: 100%;
+    min-height: 200px;
+}
+
+/* 图表加载状态 */
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: var(--bg-light);
+    border-radius: var(--radius);
+}
+
+.chart-loading::after {
+    content: '加载中...';
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* ============================================
+   打印样式优化
+   ============================================ */
+
+@media print {
+    .sidebar,
+    .topbar,
+    .mobile-menu-toggle,
+    .mobile-overlay,
+    .agent-status-bar,
+    .back-home-btn {
+        display: none !important;
+    }
+    
+    .main-content,
+    .main {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .content-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    .stat-card,
+    .bi-kpi-card {
+        break-inside: avoid;
+    }
+}

@@ -1,0 +1,749 @@
+/**
+ * 店赢OS - 落地页手机端响应式适配
+ * 目标：375px (iPhone SE/12 mini/13 mini)
+ * 兼容：390px (iPhone 14/15)、430px (iPhone 14 Pro Max)
+ */
+
+/* ============================================
+   Base Mobile Styles
+   ============================================ */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* 防止横向溢出 */
+  .landing-page,
+  .hero,
+  .metrics-grid,
+  .features-section,
+  .platform-section,
+  .pricing-section,
+  .footer-content {
+    overflow-x: hidden;
+  }
+}
+
+/* ============================================
+   Mobile Navigation - Hamburger Menu
+   ============================================ */
+@media (max-width: 768px) {
+  .navbar {
+    height: 56px;
+  }
+  
+  .navbar-inner {
+    padding: 12px 16px;
+  }
+  
+  .navbar-logo img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .navbar-logo span {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-links {
+    display: none;
+  }
+  
+  .navbar-actions {
+    gap: 8px;
+  }
+  
+  .navbar-actions .btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+  
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: flex !important;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background: var(--bg-card-hover);
+  }
+  
+  .mobile-menu-toggle i {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .mobile-menu-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+  
+  /* Mobile Menu Panel */
+  .mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    background: var(--bg-sidebar, var(--bg-card));
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .mobile-menu-panel.active {
+    transform: translateX(0);
+  }
+  
+  .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .mobile-menu-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  
+  .mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .mobile-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .mobile-menu-link:hover,
+  .mobile-menu-link.active {
+    background: var(--bg);
+    color: var(--text);
+  }
+  
+  .mobile-menu-link i {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .mobile-menu-actions {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .mobile-menu-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Hero Section
+   ============================================ */
+@media (max-width: 768px) {
+  .hero {
+    padding: 80px 16px 60px;
+  }
+  
+  .hero::before {
+    height: 400px;
+  }
+  
+  .hero-badge {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    margin-bottom: 16px;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding: 0 10px;
+  }
+  
+  .hero-cta {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .hero-cta .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+  }
+  
+  .hero-cta .btn-secondary {
+    padding: 12px 24px;
+  }
+}
+
+/* ============================================
+   Mobile Metrics / Stats
+   ============================================ */
+@media (max-width: 768px) {
+  .metrics-section {
+    padding: 40px 16px;
+  }
+  
+  .metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .metric-card {
+    padding: 16px !important;
+    border-radius: 12px;
+  }
+  
+  .metric-value {
+    font-size: 1.5rem !important;
+  }
+  
+  .metric-label {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* ============================================
+   Mobile Features Section
+   ============================================ */
+@media (max-width: 768px) {
+  .features-section {
+    padding: 60px 16px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 8px;
+  }
+  
+  .section-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  .feature-card {
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.25rem;
+    margin-bottom: 14px;
+  }
+  
+  .feature-title {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .feature-desc {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+/* ============================================
+   Mobile Platform Section (Logos)
+   ============================================ */
+@media (max-width: 768px) {
+  .platform-section {
+    padding: 40px 16px;
+  }
+  
+  .platform-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .platform-logo {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  
+  .platform-logo img {
+    max-width: 60px;
+    height: auto;
+  }
+}
+
+/* ============================================
+   Mobile Architecture Section
+   ============================================ */
+@media (max-width: 768px) {
+  .architecture-section {
+    padding: 60px 16px;
+  }
+  
+  .architecture-diagram {
+    padding: 20px;
+  }
+  
+  .arch-flow {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .arch-step {
+    padding: 16px;
+    border-radius: 10px;
+    width: 100%;
+  }
+  
+  .arch-step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .arch-step-title {
+    font-size: 0.95rem;
+  }
+  
+  .arch-arrow {
+    display: none;
+  }
+}
+
+/* ============================================
+   Mobile Pricing Section
+   ============================================ */
+@media (max-width: 768px) {
+  .pricing-section {
+    padding: 60px 16px;
+  }
+  
+  .pricing-tabs {
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .pricing-tab {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .pricing-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 16px !important;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .pricing-card {
+    min-width: 280px;
+    scroll-snap-align: center;
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+  
+  .pricing-card.featured {
+    padding: 28px 16px;
+  }
+  
+  .pricing-header {
+    margin-bottom: 20px;
+  }
+  
+  .pricing-name {
+    font-size: 1rem;
+  }
+  
+  .pricing-price {
+    font-size: 2rem;
+  }
+  
+  .pricing-features {
+    margin: 20px 0;
+  }
+  
+  .pricing-features li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+  }
+  
+  .pricing-features li i {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ============================================
+   Mobile CTA Section
+   ============================================ */
+@media (max-width: 768px) {
+  .cta-section {
+    padding: 60px 16px;
+    margin: 0 16px 40px;
+    border-radius: 20px;
+  }
+  
+  .cta-title {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .cta-desc {
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .cta-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Mobile Footer
+   ============================================ */
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 16px 100px;
+  }
+  
+  .footer-main {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+  }
+  
+  .footer-brand {
+    text-align: center;
+  }
+  
+  .footer-logo {
+    justify-content: center;
+  }
+  
+  .footer-desc {
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+  
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .footer-column {
+    text-align: left;
+  }
+  
+  .footer-column-title {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  
+  .footer-column ul li {
+    margin-bottom: 8px;
+  }
+  
+  .footer-column ul li a {
+    font-size: 0.85rem;
+  }
+  
+  .footer-bottom {
+    margin-top: 32px;
+    padding-top: 24px;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .footer-copyright {
+    font-size: 0.8rem;
+  }
+  
+  .footer-social {
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .social-link {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* ============================================
+   Mobile Logo Carousel (if any)
+   ============================================ */
+@media (max-width: 768px) {
+  .logo-carousel {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    display: flex;
+    gap: 24px;
+    padding: 0 16px;
+  }
+  
+  .logo-carousel-item {
+    flex-shrink: 0;
+    scroll-snap-align: center;
+  }
+}
+
+/* ============================================
+   Mobile Industry Tabs
+   ============================================ */
+@media (max-width: 768px) {
+  .industry-tabs-section {
+    padding: 40px 16px;
+  }
+  
+  .industry-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .industry-tab {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+  
+  .industry-showcase {
+    padding: 24px 16px;
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+/* ============================================
+   Mobile Buttons - Touch Friendly
+   ============================================ */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+  
+  .btn-primary {
+    padding: 14px 24px;
+  }
+  
+  .btn-secondary {
+    padding: 12px 20px;
+  }
+  
+  .btn-lg {
+    min-height: 52px;
+    padding: 16px 28px;
+    font-size: 1rem;
+  }
+}
+
+/* ============================================
+   Mobile 480px - Extra Small
+   ============================================ */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem !important;
+  }
+  
+  .metrics-grid {
+    gap: 10px !important;
+  }
+  
+  .metric-card {
+    padding: 14px !important;
+  }
+  
+  .metric-value {
+    font-size: 1.25rem !important;
+  }
+  
+  .pricing-card {
+    min-width: 260px;
+    padding: 20px 12px;
+  }
+  
+  .footer-links {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .footer-column {
+    text-align: center;
+  }
+}
+
+/* ============================================
+   Landscape Mode
+   ============================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    padding: 60px 24px 40px;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .cta-section {
+    margin: 0 24px 40px;
+  }
+}
+
+/* ============================================
+   Animation Improvements for Mobile
+   ============================================ */
+@media (max-width: 768px) {
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease;
+  }
+}
+
+/* ============================================
+   Safe Area Support (iPhone X and later)
+   ============================================ */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .footer {
+      padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
+/* ============================================
+   Hide Elements on Mobile
+   ============================================ */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .show-mobile {
+    display: block !important;
+  }
+  
+  .show-mobile-flex {
+    display: flex !important;
+  }
+}
+
+/* ============================================
+   Touch-Friendly Improvements
+   ============================================ */
+@media (max-width: 768px) {
+  /* Increase touch targets */
+  a,
+  button,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove tap highlight on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+}

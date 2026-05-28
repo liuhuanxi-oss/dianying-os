@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店赢OS — 平台管理后台</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{--bg:#0b1120;--bg2:#111827;--bg3:#1a2332;--bg4:#1f2b3d;--border:rgba(255,255,255,.06);--primary:#1E3A5F;--gold:#F59E0B;--text:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--green:#10b981;--red:#ef4444;--blue:#3b82f6;--r:8px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sb{width:232px;min-width:232px;background:linear-gradient(180deg,#0b1320,#0f1b2d);display:flex;flex-direction:column;border-right:1px solid var(--border);z-index:100}
+.sb-logo{padding:20px 20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.sb-logo i{width:34px;height:34px;background:var(--gold);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:16px;color:#000}
+.sb-logo b{font-size:16px;color:#fff;display:block}.sb-logo span{font-size:10px;color:var(--t3)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sb-nav .sg{padding:14px 20px 4px;font-size:10px;letter-spacing:1px;color:var(--t3);font-weight:600;text-transform:uppercase}
+.sb-nav a{display:flex;align-items:center;gap:10px;padding:9px 20px;color:var(--t2);font-size:13px;text-decoration:none;border-left:3px solid transparent;margin:1px 0;cursor:pointer;transition:.15s}
+.sb-nav a:hover{background:rgba(255,255,255,.03);color:#fff}
+.sb-nav a.ac{background:rgba(245,158,11,.1);color:var(--gold);border-left-color:var(--gold);font-weight:600}
+.sb-nav a .ic{font-size:15px;width:20px}
+.sb-nav a .b{background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:auto;font-weight:600}
+.sb-ft{padding:14px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t3)}
+
+/* MAIN */
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tb{height:52px;min-height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px}
+.tb h1{font-size:15px;font-weight:600;color:#fff}
+.tb .tb-sub{font-size:11px;color:var(--t3);margin-left:4px}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:14px}
+.tb-r .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.tb-r .usr{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--t2)}
+.tb-r .av{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.ct{flex:1;overflow-y:auto;padding:20px 24px}
+
+/* CARDS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:20px}
+.sc{background:var(--bg2);border-radius:var(--r);padding:18px 20px;border:1px solid var(--border);transition:.2s}
+.sc:hover{border-color:rgba(255,255,255,.1)}
+.sc .sl{font-size:12px;color:var(--t3);margin-bottom:6px}
+.sc .sv{font-size:26px;font-weight:700;color:#fff}
+.sc .ss{font-size:11px;color:var(--t2);margin-top:4px}
+.sc.g .sv{color:var(--gold)}
+
+/* PANELS */
+.pn{background:var(--bg2);border-radius:var(--r);padding:20px;border:1px solid var(--border);margin-bottom:16px}
+.pn-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pn-h h2{font-size:15px;font-weight:600;color:#fff}
+.pn-h .pn-sub{font-size:11px;color:var(--t3)}
+
+/* TABLE */
+.tb-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:var(--t3);font-weight:600;font-size:11px;letter-spacing:.3px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.015);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.03)}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+
+/* TAGS */
+.tg{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;line-height:1.6}
+.tg-ok{background:rgba(16,185,129,.12);color:var(--green)}
+.tg-w{background:rgba(245,158,11,.12);color:var(--gold)}
+.tg-e{background:rgba(239,68,68,.12);color:var(--red)}
+.tg-i{background:rgba(59,130,246,.12);color:var(--blue)}
+
+/* BUTTONS */
+.bt{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:.15s;font-family:inherit;white-space:nowrap}
+.bt-p{background:var(--gold);color:#000}.bt-p:hover{filter:brightness(1.1)}
+.bt-o{background:transparent;color:var(--t2);border:1px solid rgba(255,255,255,.12)}.bt-o:hover{border-color:rgba(255,255,255,.25);color:#fff}
+.bt-s{padding:3px 8px;font-size:11px}
+.bt-er{background:var(--red);color:#fff}.bt-ok{background:var(--green);color:#fff}.bt-bl{background:var(--blue);color:#fff}
+
+/* INPUTS */
+.in{background:var(--bg3);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:7px 11px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:.15s}
+.in:focus{border-color:var(--gold)}.in::placeholder{color:var(--t3)}
+.sel.in{cursor:pointer}
+
+/* TOOLBAR */
+.tb-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;justify-content:center;align-items:center}
+.ov.on{display:flex}
+.md{background:var(--bg2);border-radius:12px;width:92%;max-width:860px;max-height:82vh;overflow-y:auto;border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.md-h{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.md-h h3{font-size:17px;color:#fff}
+.md-x{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:4px}.md-x:hover{color:#fff}
+.md-b{padding:20px 22px}
+
+/* PAGER */
+.pg{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.pg-i{font-size:11px;color:var(--t3)}
+.pg-b{display:flex;gap:3px}
+.pg-b button{background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--t2);padding:5px 11px;border-radius:4px;cursor:pointer;font-size:11px}
+.pg-b button:hover{border-color:var(--gold);color:#fff}
+.pg-b button.ac{background:var(--gold);color:#000;border-color:var(--gold)}
+.pg-b button:disabled{opacity:.35;cursor:default}
+
+/* LAYOUT */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1024px){.g2,.g3{grid-template-columns:1fr}}
+
+/* STATES */
+.ld{display:flex;align-items:center;justify-content:center;padding:36px;color:var(--t3);gap:8px}
+.sp{width:22px;height:22px;border:2px solid var(--bg3);border-top-color:var(--gold);border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.em{text-align:center;padding:36px;color:var(--t3)}
+
+/* TOAST */
+.ts{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px}
+.ts-msg{padding:10px 18px;border-radius:8px;font-size:12px;animation:si .25s;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.ts-ok{background:#065f46;color:#6ee7b7}.ts-er{background:#7f1d1d;color:#fca5a5}.ts-in{background:#1e3a5f;color:#93c5fd}
+@keyframes si{from{transform:translateX(80%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* STEPS */
+.st{display:flex;align-items:center;gap:6px;padding:12px 0}
+.st-i{display:flex;align-items:center;gap:6px}
+.st-n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg3);color:var(--t3)}
+.st-i.ac .st-n{background:var(--gold);color:#000}
+.st-i.dn .st-n{background:var(--green);color:#fff}
+.st-lb{font-size:11px;color:var(--t3)}.st-i.ac .st-lb{color:var(--gold)}
+.st-ln{flex:1;height:2px;background:var(--bg3);min-width:30px}.st-i.dn .st-ln{background:var(--green)}
+
+@media(max-width:768px){.sb{width:56px;min-width:56px}.sb-logo{justify-content:center;padding:14px}.sb-logo b,.sb-logo span,.sb-nav a span,.sg{display:none}.sb-nav a{justify-content:center;padding:10px}.stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+</style>
+</head>
+<body>
+
+<aside class="sb">
+<div class="sb-logo"><i>D</i><div><b>店赢OS</b><span>平台管理后台</span></div></div>
+<nav class="sb-nav">
+<div class="sg">核心业务</div>
+<a class="ac" data-pg="dashboard"><span class="ic">📊</span><span>数据大屏</span></a>
+<a data-pg="merchants"><span class="ic">🏪</span><span>商户管理</span><span class="b" id="mc">-</span></a>
+<a data-pg="reviews"><span class="ic">⭐</span><span>评价管理</span></a>
+<a data-pg="complaints"><span class="ic">🔥</span><span>支付投诉</span><span class="b" id="cb" style="display:none">0</span></a>
+<a data-pg="aiagents"><span class="ic">🤖</span><span>AI Agent</span></a>
+<div class="sg">运营管理</div>
+<a data-pg="finance"><span class="ic">💰</span><span>财务中心</span></a>
+<a data-pg="agents"><span class="ic">👥</span><span>代理商</span></a>
+<a data-pg="sentiment"><span class="ic">📢</span><span>舆情管控</span></a>
+<a data-pg="analytics"><span class="ic">📈</span><span>数据分析</span></a>
+<div class="sg">系统设置</div>
+<a data-pg="customer"><span class="ic">👤</span><span>客户成功</span></a>
+<a data-pg="content"><span class="ic">📝</span><span>内容中心</span></a>
+<a data-pg="settings"><span class="ic">⚙️</span><span>系统设置</span></a>
+</nav>
+<div class="sb-ft">© 2026 店赢OS v2.0</div>
+</aside>
+
+<div class="mn">
+<header class="tb">
+<h1 id="pt">数据大屏</h1><span class="tb-sub" id="pb">首页 / 数据大屏</span>
+<div class="tb-r"><span style="font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px"><span class="dot"></span>API 已连接</span><span class="usr"><span class="av" id="lu">A</span><span id="un">管理员</span></span><button class="bt bt-o bt-s" onclick="logout()" style="margin-left:8px">退出</button></div>
+</header>
+<div class="ct" id="ca"></div>
+</div>
+
+<div class="ts" id="tc"></div>
+<div class="ov" id="mo"><div class="md"><div class="md-h"><h3 id="mt"></h3><button class="md-x" onclick="cm()">✕</button></div><div class="md-b" id="mb"></div></div></div>
+
+<!-- 登录弹窗 -->
+<div class="ov on" id="lo"><div class="md" style="max-width:400px"><div class="md-h"><h3>店赢OS — 平台管理后台</h3></div><div class="md-b" style="text-align:center"><div style="font-size:32px;margin-bottom:16px">🔐</div><div style="margin-bottom:20px"><input class="in" id="liu" placeholder="用户名" style="width:100%;margin-bottom:10px"><input class="in" id="lip" type="password" placeholder="密码" style="width:100%"></div><button class="bt bt-p" id="lib" style="width:100%" onclick="doLogin()">登 录</button><div style="margin-top:14px;font-size:11px;color:var(--t3)">演示账号: admin / 123456</div></div></div></div>
+
+<!-- 外部JS模块（按顺序加载） -->
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ws.js"></script>
+<script src="js/modules/dashboard.js"></script>
+<script src="js/modules/merchants.js"></script>
+<script src="js/modules/reviews.js"></script>
+<script src="js/modules/complaints.js"></script>
+<script src="js/modules/aiagents.js"></script>
+<script src="js/modules/finance.js"></script>
+<script src="js/modules/agents.js"></script>
+<script src="js/modules/sentiment.js"></script>
+<script src="js/modules/analytics.js"></script>
+<script src="js/modules/customer.js"></script>
+<script src="js/modules/content.js"></script>
+<script src="js/modules/settings.js"></script>
+<script src="js/router.js"></script>
+<script>
+// load() 模块路由映射（不改动原有逻辑）
+function load(pg){
+ var a=Q('#ca');
+ switch(pg){
+  case'dashboard':rd(a);break;case'merchants':rm(a);break;case'reviews':rr(a);break;
+  case'complaints':rc(a);break;case'aiagents':rai(a);break;case'finance':rf(a);break;
+  case'agents':rag(a);break;case'sentiment':rse(a);break;case'analytics':ran(a);break;
+  case'customer':rcu(a);break;case'content':rco(a);break;case'settings':rst(a);break
+ }
+}
+// 登录弹窗回车支持 + 模态框点击关闭 + WebSocket初始化
+document.addEventListener('DOMContentLoaded',function(){
+ Q('#lip').addEventListener('keyup',function(e){if(e.key==='Enter')doLogin()});
+ Q('#mo').addEventListener('click',function(e){if(e.target===this)cm()});
+ wsInit();
+});
+</script>
+</body>
+</html>

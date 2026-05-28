@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0F172A">
+  <title>店赢OS - AI驱动的多门店管理平台</title>
+  <meta name="description" content="店赢OS帮你运营门店，专注餐饮、零售、休闲娱乐三大行业，AI驱动多平台统一管理。">
+  <meta property="og:title" content="店赢OS - AI驱动的多门店管理平台">
+  <meta property="og:description" content="一套系统统一管理8大平台，AI智能分析，支付分账自动化">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="css/saas-style.css">
+  <link rel="stylesheet" href="css/landing-mobile.css">
+  <link rel="stylesheet" href="css/mobile-responsive.css">
+</head>
+<body>
+  <!-- 背景网格 -->
+  <div class="bg-grid"></div>
+  <div class="bg-gradient"></div>
+
+  <!-- 导航栏 -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="navbar-logo">
+        <div class="navbar-logo-icon">
+          <i data-lucide="store"></i>
+        </div>
+        <span class="gradient-text">店赢OS</span>
+      </a>
+      <div class="navbar-links">
+        <a href="#features">核心功能</a>
+        <a href="#platforms">支持平台</a>
+        <a href="#pricing">价格方案</a>
+        <a href="admin.html">管理后台</a>
+        <div class="demo-nav" style="display: flex; gap: 8px; margin-left: 8px;">
+          <a href="merchant.html?demo=true" style="background: #10B981; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">商家端</a>
+          <a href="platform.html?demo=true" style="background: #3B82F6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">平台端</a>
+          <a href="agent.html?demo=true" style="background: #8B5CF6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-decoration: none;">代理商</a>
+        </div>
+        <a href="login.html" class="btn-glow" style="padding: 10px 20px; font-size: 0.9rem;">
+          立即体验
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+        <span>全新 2.0 版本发布 · AI 全面升级</span>
+      </div>
+      <h1 class="hero-title">
+        <span>AI透视门店运营</span>
+        <span class="gradient-text">驱动流量 · 星级 · 营收</span>
+        <span>全面增长</span>
+      </h1>
+      <p class="hero-subtitle">
+        基于Multi-Agent架构的新一代智能门店运营系统，让店赢OS帮你运营，专注增长。8大平台统一管理，让实体店全面提升。
+      </p>
+      <div class="hero-cta">
+        <a href="login.html" class="btn-glow">
+          免费开始体验
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px; margin-left: 8px;"></i>
+        </a>
+        <a href="ai-demo.html" class="btn-outline">
+          <i data-lucide="play-circle" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+          观看AI演示
+        </a>
+        <a href="merchant.html?demo=true" class="btn-demo" style="background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: all 0.3s;">
+          <i data-lucide="presentation" style="width: 18px; height: 18px;"></i>
+          演示入口
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value">10,000+</div>
+          <div class="hero-stat-label">门店信赖</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">50万+</div>
+          <div class="hero-stat-label">差评处理</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">32%</div>
+          <div class="hero-stat-label">平均营收提升</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">4.9</div>
+          <div class="hero-stat-label">平台评分</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="section-header">
+      <div class="section-badge">核心功能</div>
+      <h2 class="section-title">一个人运营无限门店的<span class="gradient-text">AI超级能力</span></h2>
+      <p class="section-subtitle">基于多智能体协同工作，覆盖从线索识别到方案生成、服务交付、持续优化的完整运营链路</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="bot"></i>
+        </div>
+        <h3 class="feature-title">AI虚拟店长</h3>
+        <p class="feature-desc">多智能体协同工作，7×24小时自主决策，一个人就能管理上百家门店</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="message-square-reply"></i>
+        </div>
+        <h3 class="feature-title">差评自动处理</h3>
+        <p class="feature-desc">智能识别差评情绪，自动生成回复方案，持续追踪转化，差评转机</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="trending-up"></i>
+        </div>
+        <h3 class="feature-title">动态定价策略</h3>
+        <p class="feature-desc">综合天气、时段、竞品、节假日多维度分析，AI自动优化定价</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="repeat"></i>
+        </div>
+        <h3 class="feature-title">跨店知识迁移</h3>
+        <p class="feature-desc">一家店的成功运营经验，AI自动复制到所有门店，经验快速复用</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="layers"></i>
+        </div>
+        <h3 class="feature-title">8大平台统一管理</h3>
+        <p class="feature-desc">美团、点评、饿了么、抖音、小红书、视频号、高德、口碑一站式管理</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i data-lucide="bar-chart-2"></i>
+        </div>
+        <h3 class="feature-title">数据洞察日报</h3>
+        <p class="feature-desc">每日自动生成运营摘要，关键变化预警，AI智能建议，行动导向</p>
+      </div>
+      <div class="feature-card" onclick="window.open('dashboard-bi.html', '_blank')" style="cursor:pointer;">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #5094EF, #7DAAF7);">
+          <i data-lucide="brain"></i>
+        </div>
+        <h3 class="feature-title">BI智能分析 <span style="font-size:12px;color:var(--primary);font-weight:600;">NEW</span></h3>
+        <p class="feature-desc">Metabase风格嵌入式BI仪表盘，30天趋势、渠道分布、AI问答，自然语言查询数据</p>
+      </div>
+      <div class="feature-card" onclick="window.location.href='merchant.html?demo=true'" style="cursor:pointer; border: 2px solid #10B981;">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #10B981, #059669);">
+          <i data-lucide="presentation"></i>
+        </div>
+        <h3 class="feature-title">演示模式 <span style="font-size:12px;color:#10B981;font-weight:600;">🔥</span></h3>
+        <p class="feature-desc">一键进入演示模式，预填充Mock数据，支持时间加速，完整模拟AI运营效果</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms Section -->
+  <section class="section platform-section" id="platforms">
+    <div class="section-header">
+      <div class="section-badge">全平台覆盖</div>
+      <h2 class="section-title">一套系统<span class="gradient-text">8大主流平台</span>统一管理</h2>
+      <p class="section-subtitle">无需在多个平台间切换，一站式管理所有渠道，效率提升10倍</p>
+    </div>
+    <div class="platform-grid">
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="utensils"></i>
+        </div>
+        <div class="platform-name">美团</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="star"></i>
+        </div>
+        <div class="platform-name">大众点评</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <div class="platform-name">饿了么</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="video"></i>
+        </div>
+        <div class="platform-name">抖音</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="book-open"></i>
+        </div>
+        <div class="platform-name">小红书</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="message-circle"></i>
+        </div>
+        <div class="platform-name">视频号</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="map-pin"></i>
+        </div>
+        <div class="platform-name">高德</div>
+      </div>
+      <div class="platform-item">
+        <div class="platform-icon">
+          <i data-lucide="wallet"></i>
+        </div>
+        <div class="platform-name">口碑</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section" id="pricing">
+    <div class="section-header">
+      <div class="section-badge">价格方案</div>
+      <h2 class="section-title">简单透明的<span class="gradient-text">定价方案</span></h2>
+      <p class="section-subtitle">从单店到连锁品牌，都能找到最适合的方案</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3 class="pricing-name">免费版</h3>
+        <div class="pricing-price">¥0<span>/月</span></div>
+        <p class="pricing-desc">适合单店起步，基础功能免费使用</p>
+        <ul class="pricing-features">
+          <li>最多管理3家门店</li>
+          <li>基础数据统计</li>
+          <li>基础差评提醒</li>
+          <li>社区支持</li>
+        </ul>
+        <button class="btn-outline" style="width: 100%;">
+          免费开始
+        </button>
+      </div>
+      <div class="pricing-card featured">
+        <h3 class="pricing-name">专业版</h3>
+        <div class="pricing-price">¥299<span>/月</span></div>
+        <p class="pricing-desc">适合成长型门店，解锁全部AI能力</p>
+        <ul class="pricing-features">
+          <li>最多管理20家门店</li>
+          <li>AI智能分析报告</li>
+          <li>差评自动回复</li>
+          <li>动态定价策略</li>
+          <li>优先客服支持</li>
+        </ul>
+        <button class="btn-glow" style="width: 100%;">
+          立即订阅
+        </button>
+      </div>
+      <div class="pricing-card">
+        <h3 class="pricing-name">企业版</h3>
+        <div class="pricing-price">定制</div>
+        <p class="pricing-desc">适合连锁品牌，定制化服务</p>
+        <ul class="pricing-features">
+          <li>无限门店数量</li>
+          <li>私有化部署</li>
+          <li>定制化开发</li>
+          <li>专属客户经理</li>
+          <li>一对一培训服务</li>
+        </ul>
+        <button class="btn-outline" style="width: 100%;">
+          联系我们
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <h2 class="cta-title">准备好让店赢OS帮你运营了吗？</h2>
+      <p class="cta-subtitle">立即开始，让AI帮你运营门店，解放双手，专注增长</p>
+      <a href="login.html" class="cta-btn">
+        免费开始体验
+        <i data-lucide="arrow-right" style="width: 18px; height: 18px; margin-left: 8px; vertical-align: middle;"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon">
+            <i data-lucide="store"></i>
+          </div>
+          <span class="gradient-text">店赢OS</span>
+        </div>
+        <p class="footer-desc">
+          AI驱动的多门店管理平台，让一个人运营无限门店成为可能。
+        </p>
+      </div>
+      <div class="footer-column">
+        <h4>产品</h4>
+        <ul>
+          <li><a href="admin.html">管理后台</a></li>
+          <li><a href="ai-demo.html">AI演示</a></li>
+          <li><a href="dashboard.html">数据大屏</a></li>
+          <li><a href="architecture.html">技术架构</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>解决方案</h4>
+        <ul>
+          <li><a href="#">餐饮行业</a></li>
+          <li><a href="#">零售行业</a></li>
+          <li><a href="#">休娱行业</a></li>
+          <li><a href="#">休闲娱乐</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>资源</h4>
+        <ul>
+          <li><a href="#">帮助中心</a></li>
+          <li><a href="#">开发文档</a></li>
+          <li><a href="cli-demo.html">CLI工具</a></li>
+          <li><a href="#">API文档</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>公司</h4>
+        <ul>
+          <li><a href="#">关于我们</a></li>
+          <li><a href="#">加入我们</a></li>
+          <li><a href="#">联系方式</a></li>
+          <li><a href="#">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 店赢OS. 保留所有权利。</p>
+      <div style="display: flex; gap: 16px;">
+        <a href="#" style="color: var(--text-muted);">
+          <i data-lucide="github" style="width: 20px; height: 20px;"></i>
+        </a>
+        <a href="#" style="color: var(--text-muted);">
+          <i data-lucide="twitter" style="width: 20px; height: 20px;"></i>
+        </a>
+      </div>
+    </div>
+    </div>
+  </footer>
+
+  <script>
+    // 初始化图标
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+
+      // 导航栏滚动效果
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+
+      // 平滑滚动到锚点
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // 元素进入视口动画
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.feature-card, .platform-item, .pricing-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.6s ease';
+        observer.observe(el);
+      });
+    });
+  </script>
+  <script src="js/interaction.js"></script>
+</body>
+</html>

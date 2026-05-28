@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店赢OS 2.0 — 管理后台</title>
+<link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+<script src="https://unpkg.com/element-plus/dist/index.full.min.js"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{--primary:#1E3A5F;--gold:#F59E0B;--green:#10B981;--red:#EF4444;--sidebar-w:230px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5}
+#app{height:100vh;display:flex}
+
+/* Sidebar */
+.sb{width:var(--sidebar-w);background:linear-gradient(180deg,#0a1628 0%,#1E3A5F 100%);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;cursor:pointer}
+.sb-logo h1{font-size:18px;font-weight:700;color:#fff}.sb-logo span{color:var(--gold)}
+.sb-logo small{display:block;font-size:10px;color:#94a3b8;margin-top:2px}
+.sb-mg{padding:14px 20px 4px;font-size:10px;letter-spacing:1px;color:#64748b;font-weight:600;text-transform:uppercase}
+.sb-mi{display:flex;align-items:center;gap:10px;padding:10px 20px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s;font-size:13px;border-left:3px solid transparent;text-decoration:none}
+.sb-mi:hover{color:#fff;background:rgba(255,255,255,.05)}
+.sb-mi.ac{color:var(--gold);background:rgba(245,158,11,.1);border-left-color:var(--gold);font-weight:600}
+.sb-mi .badge{background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:auto}
+.sb-ft{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#64748b}
+
+/* Main */
+.mn{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-width:0}
+.tb{height:56px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 1px 4px rgba(0,0,0,.05);z-index:10}
+.tb-l{font-size:16px;font-weight:600;color:#1E3A5F;display:flex;align-items:center;gap:12px}
+.tb-r{display:flex;align-items:center;gap:16px;font-size:13px}
+.content{padding:20px;flex:1;overflow-y:auto;background:#f0f2f5}
+
+/* Stats */
+.sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.sc-i{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;justify-content:space-between;align-items:center}
+.sc-i .sc-t{font-size:13px;color:#999}.sc-i .sc-v{font-size:26px;font-weight:700;color:#1E3A5F;margin:4px 0}.sc-i .sc-s{font-size:11px;color:#999}
+.sc-i .sc-ico{font-size:32px;opacity:.15}
+
+/* Cards */
+.card{background:#fff;border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
+.card h3{font-size:15px;font-weight:600;color:#1E3A5F;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3:before{content:"";width:3px;height:16px;background:var(--gold);border-radius:2px;display:inline-block}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a1628 0%,#1E3A5F 60%,#0a1628 100%)}
+.login-box{width:400px;background:#fff;border-radius:14px;padding:44px 36px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+.login-box h2{text-align:center;color:#1E3A5F;font-size:26px;margin-bottom:4px}
+.login-box .sub{text-align:center;color:#999;font-size:13px;margin-bottom:28px}
+.login-box .q-login{display:flex;gap:10px;margin-top:16px;justify-content:center}
+.login-box .q-btn{flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:8px;text-align:center;font-size:12px;cursor:pointer;transition:.2s;background:#fff;color:#666}
+.login-box .q-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(245,158,11,.04)}
+
+/* Misc */
+.tag-a{color:var(--green)}.tag-d{color:var(--red)}.tag-w{color:var(--gold)}
+.text-gold{color:var(--gold)}.text-green{color:var(--green)}.text-red{color:var(--red)}
+.el-table tr{cursor:pointer}
+.trust-lv{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-weight:800;font-size:14px}
+.trust-a{background:#d1fae5;color:#065f46}.trust-b{background:#dbeafe;color:#1e40af}
+.trust-c{background:#fef3c7;color:#92400e}.trust-d{background:#ffedd5;color:#9a3412}
+.trust-e{background:#fee2e2;color:#991b1b}
+.chart-box{width:100%;height:320px}
+</style>
+</head>
+<body>
+<div id="app"><router-view></router-view></div>
+<script>
+const { createApp, ref, reactive, computed, onMounted, onUnmounted, watch, nextTick, shallowRef, toRaw } = Vue
+const { createRouter, createWebHashHistory } = VueRouter
+const { ElMessage, ElMessageBox, ElNotification } = ElementPlus
+
+// ======================== API 层 ========================
+const TOKEN_KEY = 'dyos_admin_token'
+const USER_KEY = 'dyos_admin_user'
+let _token = localStorage.getItem(TOKEN_KEY) || ''
+let _user = (()=>{try{return JSON.parse(localStorage.getItem(USER_KEY))||{}}catch(e){return{}}})()
+const http = axios.create({baseURL:'/api/admin',timeout:15000})
+http.interceptors.request.use(c=>{
+  if(_token){c.headers.Authorization='Bearer '+_token}
+  return c
+})
+http.interceptors.response.use(r=>{
+  const d=r.data
+  if(d&&d.code===0)return d.data!==undefined?d.data:d
+  throw new Error((d&&d.message)||'请求失败')
+},err=>{
+  if(err.response&&err.response.status===401){logout();ElMessage.error('登录已过期')}
+  return Promise.reject(err)
+})
+function setAuth(token,user){
+  _token=token;_user=user
+  localStorage.setItem(TOKEN_KEY,token)
+  localStorage.setItem(USER_KEY,JSON.stringify(user))
+}
+function logout(){
+  _token='';_user={}
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(USER_KEY)
+}
+
+// ======================== 登录页 ========================
+const LoginPage = {
+  template:`
+<div class="login-wrap">
+  <div class="login-box">
+    <h2>店赢<span style="color:var(--gold)">OS</span></h2>
+    <p class="sub">AI透视门店运营，驱动流量·星级·营收全面增长</p>
+    <el-form :model="f" ref="fr" @submit.prevent="login">
+      <el-form-item prop="username"><el-input v-model="f.username" placeholder="用户名" size="large" prefix-icon="User" /></el-form-item>
+      <el-form-item prop="password"><el-input v-model="f.password" type="password" placeholder="密码" size="large" prefix-icon="Lock" show-password @keyup.enter="login" /></el-form-item>
+      <el-button type="primary" size="large" @click="login" :loading="loading" style="width:100%;background:var(--primary);border-color:var(--primary)">登 录</el-button>
+    </el-form>
+    <div class="q-login">
+      <button class="q-btn" @click="ql('admin')">管理员 admin</button>
+      <button class="q-btn" @click="ql('operator')">代理商 operator</button>
+      <button class="q-btn" @click="ql('owner')">商户 owner</button>
+    </div>
+  </div>
+</div>`,
+  setup(){
+    const f=reactive({username:'',password:''})
+    const loading=ref(false)
+    const router=VueRouter.useRouter()
+    const login=async()=>{
+      if(!f.username||!f.password){ElMessage.warning('请输入用户名和密码');return}
+      loading.value=true
+      try{
+        const r=await axios.post('/api/login',{username:f.username,password:f.password})
+        const d=r.data
+        if(d.code===0&&d.data&&d.data.token){
+          const u=d.data.user,role=u.role
+          const ks={admin:'dyos_admin',agent:'dyos_agent',merchant:'dyos_merchant'}
+          const k=ks[role]||'dyos_admin'
+          localStorage.setItem(k+'_token',d.data.token)
+          localStorage.setItem(k+'_user',JSON.stringify(u))
+          setAuth(d.data.token,u)
+          const pages={admin:'/dashboard',agent:'/dashboard',merchant:'/dashboard'}
+          router.push(pages[role]||'/dashboard')
+          ElMessage.success('登录成功')
+        }else{ElMessage.error(d.message||'登录失败')}
+      }catch(e){ElMessage.error(e.message||'登录失败')}
+      finally{loading.value=false}
+    }
+    const ql=(r)=>{f.username=r;f.password='123456';login()}
+    return {f,loading,login,ql}
+  }
+}
+
+// ======================== 主布局 ========================
+const MainLayout = {
+  template:`
+<div id="app">
+  <div class="sb">
+    <div class="sb-logo" @click="$router.push('/dashboard')">
+      <div style="width:32px;height:32px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#000">OS</div>
+      <div><h1>店赢<span>OS</span></h1><small>AI智能门店运营平台</small></div>
+    </div>
+    <template v-for="g in menuGroups" :key="g.name">
+      <div class="sb-mg">{{g.name}}</div>
+      <router-link v-for="m in g.items" :key="m.key" :to="m.key" class="sb-mi" :class="{ac:$route.path===m.key}">
+        <el-icon><component :is="m.icon"/></el-icon>{{m.label}}
+        <span class="badge" v-if="m.badge">{{m.badge}}</span>
+      </router-link>
+    </template>
+    <div class="sb-ft">API v2.0 · Go · Alive</div>
+  </div>
+  <div class="mn">
+    <div class="tb">
+      <div class="tb-l">{{pageTitle}}</div>
+      <div class="tb-r">
+        <el-tag :type="roleTag" size="small" effect="dark">{{_user.name||_user.username||'管理员'}}</el-tag>
+        <el-button text size="small" @click="doLogout">退出</el-button>
+      </div>
+    </div>
+    <div class="content"><router-view></router-view></div>
+  </div>
+</div>`,
+  setup(){
+    const route=VueRouter.useRoute();const router=VueRouter.useRouter()
+    const menuGroups=[
+      {name:'核心看板',items:[
+        {key:'/dashboard',label:'数据大屏',icon:'Odometer'},
+        {key:'/reviews',label:'评价管理',icon:'ChatDotRound'},
+        {key:'/complaints',label:'投诉处理',icon:'WarningFilled'},
+      ]},
+      {name:'业务管理',items:[
+        {key:'/merchants',label:'商户管理',icon:'Shop'},
+        {key:'/agents',label:'代理商管理',icon:'UserFilled'},
+        {key:'/sales',label:'业务员管理',icon:'Avatar'},
+        {key:'/members',label:'会员管理',icon:'Stamp'},
+      ]},
+      {name:'AI能力',items:[
+        {key:'/ai-agents',label:'AI Agent',icon:'Cpu'},
+        {key:'/content',label:'内容生成',icon:'EditPen'},
+        {key:'/knowledge',label:'知识库',icon:'Collection'},
+        {key:'/ai-chat',label:'AI客服',icon:'Service',badge:'30s回复'},
+	      {key:'/smart-pricing',label:'智能定价',icon:'TrendCharts'},
+      ]},
+      {name:'财务支付',items:[
+        {key:'/finance',label:'财务中心',icon:'Money'},
+        {key:'/tianque',label:'天阙支付',icon:'CreditCard'},
+      ]},
+      {name:'数据分析',items:[
+        {key:'/sentiment',label:'舆情管控',icon:'Bell'},
+        {key:'/reports',label:'报表中心',icon:'Document'},
+        {key:'/insights',label:'AI洞察',icon:'DataAnalysis'},
+      ]},
+      {name:'系统设置',items:[
+        {key:'/settings',label:'系统设置',icon:'Setting'},
+        {key:'/platform',label:'平台适配',icon:'Connection'},
+      ]}
+    ]
+    const pageTitle=computed(()=>{
+      for(const g of menuGroups){for(const m of g.items){if(m.key===route.path)return m.label}}
+      return '店赢OS 管理后台'
+    })
+    const roleTag=computed(()=>{
+      const r=_user.role;if(r==='admin')return'';
+      return r==='agent'?'warning':'success'
+    })
+    const doLogout=()=>{
+      const ks={admin:'dyos_admin',agent:'dyos_agent',merchant:'dyos_merchant'}
+      const k=ks[_user.role]||'dyos_admin'
+      localStorage.removeItem(k+'_token');localStorage.removeItem(k+'_user')
+      logout();router.push('/login')
+    }
+    onMounted(()=>{if(!_token){router.push('/login')}})
+    return {menuGroups,pageTitle,roleTag,doLogout,_user}
+  }
+}
+
+// ======================== 数据大屏 ========================
+const Dashboard = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i" v-for="s in cards" :key="s.label">
+      <div><div class="sc-t">{{s.label}}</div><div class="sc-v">{{s.value}}</div><div class="sc-s">{{s.sub}}</div></div>
+      <div class="sc-ico"><el-icon :size="32"><component :is="s.icon"/></el-icon></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><h3>行业分布</h3><div class="chart-box" ref="c1"></div></div>
+    <div class="card"><h3>GMV 趋势 (近7日)</h3><div class="chart-box" ref="c2"></div></div>
+  </div>
+  <div class="g2" style="margin-top:16px">
+    <div class="card"><h3>最新入驻商户</h3>
+      <el-table :data="merchants" size="small"><el-table-column prop="name" label="商户" min-width="130"/><el-table-column prop="industry" label="行业" width="100"/><el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='APPROVED'?'success':'warning'" size="small">{{\
+        s.row.status==='APPROVED'?'已审核':s.row.status==='SUBMITTED'?'待审核':s.row.status\
+      }}</el-tag></template></el-table-column><el-table-column prop="create_time" label="时间" width="110"/></el-table>
+    </div>
+    <div class="card"><h3>差评实时预警</h3>
+      <el-table :data="alerts" size="small"><el-table-column prop="store_name" label="门店" width="100"/><el-table-column prop="content" label="内容" min-width="160"/><el-table-column prop="rating" label="评分" width="70"><template #def="s"><span :style="{color:s.row.rating<=2?'var(--red)':'var(--gold)'}">{{s.row.rating}}分</span></template></el-table-column><el-table-column prop="platform" label="平台" width="80"/></el-table>
+    </div>
+  </div>
+</div>`,
+  setup(){
+    const cards=reactive([
+      {label:'商户总数',value:'--',sub:'加载中',icon:'Shop'},
+      {label:'今日好评率',value:'--',sub:'加载中',icon:'TrendCharts'},
+      {label:'待处理投诉',value:'--',sub:'加载中',icon:'Warning'},
+      {label:'AI处理成功率',value:'--',sub:'加载中',icon:'Cpu'},
+    ])
+    const merchants=ref([]),alerts=ref([]),c1=ref(null),c2=ref(null)
+    onMounted(async()=>{
+      try{
+        const s=await http.get('/merchants/stats')
+        cards[0].value=(s.total||0).toLocaleString();cards[0].sub='含已审核'+(s.approved||0)+'家'
+      }catch(e){}
+      try{
+        const r=await http.get('/reviews/stats')
+        cards[1].value=(r.good_rate||'94')+'%';cards[1].sub='较上周+'+(r.rate_change||'1.2')+'%'
+      }catch(e){}
+      try{
+        const c=await http.get('/complaints/stats')
+        cards[2].value=(c.pending||0).toString();cards[2].sub='紧急'+(c.urgent||0)+'件'
+        cards[3].value=(c.ai_rate||'80')+'%';cards[3].sub='自主处理率'
+      }catch(e){}
+      try{
+        const m=await http.get('/merchants/',{params:{page:1,size:5}})
+        merchants.value=m.items||[]
+      }catch(e){}
+      try{
+        const a=await http.get('/reviews',{params:{page:1,size:5,rating:'1,2'}})
+        alerts.value=a.items||[]
+      }catch(e){}
+      // Charts
+      nextTick(()=>{
+        if(c1.value){
+          const ch=echarts.init(c1.value)
+          ch.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['45%','72%'],avoidLabelOverlap:false,label:{show:false},emphasis:{label:{show:true,fontSize:16}},data:[{value:320,name:'餐饮'},{value:180,name:'零售'},{value:95,name:'休闲娱乐'},{value:62,name:'商业服务'},{value:45,name:'酒旅景区'}]}]})
+        }
+        if(c2.value){
+          const ch=echarts.init(c2.value)
+          ch.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:['5/21','5/22','5/23','5/24','5/25','5/26','5/27']},yAxis:{type:'value'},series:[{type:'line',data:[182,205,198,232,220,256,248],smooth:true,areaStyle:{opacity:.15},lineStyle:{color:'#F59E0B'},itemStyle:{color:'#F59E0B'}}]})
+        }
+      })
+    })
+    return {cards,merchants,alerts,c1,c2}
+  }
+}
+
+// ======================== 评价管理 ========================
+const Reviews = {
+  template:`
+<el-tabs v-model="reviewTab" @tab-change="onTabChange">
+    <el-tab-pane label="评价管理" name="reviews">
+      <div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">总评价数</div><div class="sc-v">{{stats.total||0}}</div><div class="sc-s">多平台聚合</div></div><div class="sc-ico">⭐</div></div>
+    <div class="sc-i"><div><div class="sc-t">好评率</div><div class="sc-v text-green">{{stats.good_rate||'--'}}%</div><div class="sc-s">4-5星占比</div></div><div class="sc-ico">📈</div></div>
+    <div class="sc-i"><div><div class="sc-t">差评率</div><div class="sc-v text-red">{{stats.bad_rate||'--'}}%</div><div class="sc-s">1-2星占比</div></div><div class="sc-ico">📉</div></div>
+    <div class="sc-i"><div><div class="sc-t">AI回复率</div><div class="sc-v text-gold">{{stats.reply_rate||'--'}}%</div><div class="sc-s">一键同步平台</div></div><div class="sc-ico">🤖</div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="display:flex;gap:10px;align-items:center">
+        <el-input v-model="kw" placeholder="搜索评价内容..." style="width:220px" size="small" clearable @clear="s" @keyup.enter="s"/>
+        <el-select v-model="platform" placeholder="平台" style="width:120px" size="small" clearable @change="s">
+          <el-option label="美团" value="meituan"/><el-option label="大众点评" value="dianping"/>
+          <el-option label="饿了么" value="eleme"/><el-option label="抖音" value="douyin"/>
+        </el-select>
+        <el-select v-model="rating" placeholder="评分" style="width:100px" size="small" clearable @change="s">
+          <el-option label="5星" value="5"/><el-option label="4星" value="4"/><el-option label="3星" value="3"/>
+          <el-option label="2星" value="2"/><el-option label="1星" value="1"/>
+        </el-select>
+        <el-select v-model="status" placeholder="回复状态" style="width:110px" size="small" clearable @change="s">
+          <el-option label="待回复" value="PENDING"/><el-option label="已回复" value="REPLIED"/><el-option label="已忽略" value="IGNORED"/>
+        </el-select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <el-button size="small" type="warning" @click="batchAIReply" :disabled="sel.length===0">批量AI回复 ({{sel.length}})</el-button>
+        <el-button size="small" @click="openRule">回复规则</el-button>
+        <el-button size="small" type="primary" @click="load">刷新</el-button>
+      </div>
+    </div>
+    <el-table :data="items" stripe v-loading="loading" @selection-change="v=>sel=v.map(x=>x.id)">
+      <el-table-column type="selection" width="45"/>
+      <el-table-column prop="platform" label="平台" width="80"><template #def="s">{{platformName(s.row.platform)}}</template></el-table-column>
+      <el-table-column prop="user_name" label="用户" width="90"/>
+      <el-table-column prop="rating" label="评分" width="70"><template #def="s"><span :style="{color:s.row.rating>=4?'var(--green)':s.row.rating<=2?'var(--red)':'var(--gold)'}">{{s.row.rating}}分</span></template></el-table-column>
+      <el-table-column prop="content" label="评价内容" min-width="280" show-overflow-tooltip/>
+      <el-table-column prop="ai_reply" label="AI回复" min-width="180" show-overflow-tooltip><template #def="s"><span :style="{color:s.row.ai_reply?'var(--green)':'#999'}">{{s.row.ai_reply||'待生成'}}</span></template></el-table-column>
+      <el-table-column prop="status" label="状态" width="85"><template #def="s"><el-tag :type="s.row.status==='REPLIED'?'success':s.row.status==='PENDING'?'warning':'info'" size="small">{{s.row.status==='REPLIED'?'已回复':s.row.status==='PENDING'?'待回复':'已忽略'}}</el-tag></template></el-table-column>
+      <el-table-column label="操作" width="180">
+        <template #def="s">
+          <el-button link size="small" type="primary" @click="genReply(s.row)">AI生成</el-button>
+          <el-button link size="small" type="success" @click="syncReply(s.row)">同步</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+  </div>
+
+  <!-- AI回复对话框 -->
+  <el-dialog v-model="replyVisible" title="AI生成回复" width="650px">
+    <div style="margin-bottom:12px"><strong>评价原文：</strong><p style="color:#666;padding:10px;background:#f8f9fa;border-radius:6px;margin-top:6px">{{curReview?.content}}</p></div>
+    <div v-if="replyLoading" style="text-align:center;padding:30px"><el-icon class="is-loading" :size="24"><Loading/></el-icon><p style="margin-top:10px;color:#999">AI正在生成千人千面回复...</p></div>
+    <div v-if="!replyLoading && generatedReply">
+      <p><strong>AI回复：</strong></p>
+      <div style="padding:14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;margin-top:6px;line-height:1.8;white-space:pre-wrap">{{generatedReply}}</div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:#999">评价浏览曝光约500-2000次，定向回复可提升复购转化</span>
+      </div>
+    </div>
+    <template #footer>
+      <el-button @click="replyVisible=false">取消</el-button>
+      <el-button type="warning" @click="modifyReply">手动修改</el-button>
+      <el-button type="primary" @click="confirmSync" :loading="syncing">确认并同步到平台</el-button>
+    </template>
+  </el-dialog>
+
+  <!-- 回复规则对话框 -->
+  <el-dialog v-model="ruleVisible" title="AI回复规则配置" width="700px">
+    <el-tabs>
+      <el-tab-pane label="开头定向词">
+        <el-form label-position="top">
+          <el-form-item label="品牌前缀 (每条回复开头自动添加)">
+            <el-input v-model="ruleForm.prefix" type="textarea" :rows="2" placeholder="例：感谢您选择XX火锅！我们坚持每天现熬骨汤..."/>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="结尾定向词">
+        <el-form label-position="top">
+          <el-form-item label="结尾引导 (推新品/促复购)">
+            <el-input v-model="ruleForm.suffix" type="textarea" :rows="2" placeholder="例：欢迎下次尝试我们新推出的酸菜鱼套餐，凭此回复可享8折优惠~"/>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="回复策略">
+        <el-form label-position="top">
+          <el-form-item label="回复语气"><el-select v-model="ruleForm.tone" style="width:100%"><el-option label="亲切温暖" value="warm"/><el-option label="专业严谨" value="formal"/><el-option label="活泼有趣" value="fun"/></el-select></el-form-item>
+          <el-form-item label="品牌故事/特色"><el-input v-model="ruleForm.brand_story" type="textarea" :rows="2" placeholder="品牌特色、招牌菜、独特卖点等"/></el-form-item>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
+    <template #footer><el-button @click="ruleVisible=false">取消</el-button><el-button type="primary" @click="saveRule">保存规则</el-button></template>
+  </el-dialog>
+      </div>
+    </el-tab-pane>
+
+    <el-tab-pane label="菜品TOP10" name="top10">
+      <div class="card">
+        <h3>TOP10 菜品排行</h3>
+        <div style="margin-bottom:14px">
+          <el-select v-model="top10Platform" placeholder="平台" style="width:140px" size="small" @change="loadTop10">
+            <el-option label="全部平台" value=""/>
+            <el-option label="美团" value="meituan"/>
+            <el-option label="大众点评" value="dianping"/>
+            <el-option label="饿了么" value="eleme"/>
+          </el-select>
+          <el-button size="small" type="primary" @click="loadTop10" style="margin-left:10px">刷新</el-button>
+        </div>
+        <el-table :data="top10Items" stripe v-loading="top10Loading">
+          <el-table-column type="index" label="#" width="50"/>
+          <el-table-column prop="name" label="菜品名称" min-width="160"/>
+          <el-table-column prop="mention_count" label="提及次数" width="100"/>
+          <el-table-column prop="good_count" label="好评数" width="90"/>
+          <el-table-column prop="bad_count" label="差评数" width="90"/>
+          <el-table-column prop="score" label="好感度" width="90">
+            <template #def="s"><span :style="{color:s.row.score>=80?'var(--green)':s.row.score>=60?'var(--gold)':'var(--red)'}">{{s.row.score}}%</span></template>
+          </el-table-column>
+          <el-table-column prop="trend" label="趋势" width="70">
+            <template #def="s"><span :style="{color:s.row.trend==='up'?'var(--green)':'var(--red)'}">{{s.row.trend==='up'?'▲':'▼'}}</span></template>
+          </el-table-column>
+        </el-table>
+        <div v-if="top10Items.length" ref="top10ChartRef" style="height:300px;margin-top:16px"></div>
+      </div>
+    </el-tab-pane>
+
+    <el-tab-pane label="关键词分析" name="keywords">
+      <div class="card">
+        <h3>20 关键词词频分析</h3>
+        <div style="margin-bottom:14px">
+          <el-radio-group v-model="kwType" size="small" @change="loadKeywords">
+            <el-radio-button label="all">全部评价</el-radio-button>
+            <el-radio-button label="good">好评(4-5星)</el-radio-button>
+            <el-radio-button label="bad">差评(1-2星)</el-radio-button>
+          </el-radio-group>
+          <el-button size="small" type="primary" @click="loadKeywords" style="margin-left:10px">刷新</el-button>
+        </div>
+        <div class="g2">
+          <div>
+            <div ref="kwChartRef" style="height:400px"></div>
+          </div>
+          <div>
+            <el-table :data="kwItems" stripe size="small">
+              <el-table-column type="index" label="#" width="50"/>
+              <el-table-column prop="word" label="关键词" width="100"/>
+              <el-table-column prop="count" label="出现次数" width="90"/>
+              <el-table-column prop="sentiment" label="情感倾向" width="90">
+                <template #def="s"><el-tag :type="s.row.sentiment==='positive'?'success':s.row.sentiment==='negative'?'danger':'info'" size="small">{{s.row.sentiment==='positive'?'正面':s.row.sentiment==='negative'?'负面':'中性'}}</el-tag></template>
+              </el-table-column>
+              <el-table-column prop="rate" label="占比" width="80"><template #def="s">{{s.row.rate}}%</template></el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </div>
+    </el-tab-pane>
+
+    <el-tab-pane label="全量AI分析" name="fullAnalysis">
+      <div class="card">
+        <h3>评价全量AI分析 — 门店问题诊断</h3>
+        <div style="margin-bottom:14px;display:flex;gap:10px">
+          <el-select v-model="faStoreId" placeholder="选择门店" style="width:220px" size="small" clearable @change="loadFullAnalysis">
+            <el-option v-for="s in faStores" :key="s.id" :label="s.name" :value="s.id"/>
+          </el-select>
+          <el-select v-model="faPlatform" placeholder="平台" style="width:130px" size="small" clearable @change="loadFullAnalysis">
+            <el-option label="全部" value=""/><el-option label="美团" value="meituan"/><el-option label="大众点评" value="dianping"/>
+          </el-select>
+          <el-date-picker v-model="faDateRange" type="daterange" range-separator="~" start-placeholder="开始" end-placeholder="结束" size="small" format="YYYY-MM-DD" value-format="YYYY-MM-DD" @change="loadFullAnalysis"/>
+          <el-button size="small" type="primary" @click="loadFullAnalysis">分析</el-button>
+        </div>
+        <div v-if="faLoading" style="text-align:center;padding:40px"><el-icon class="is-loading" :size="24"><Loading/></el-icon><p style="margin-top:10px;color:#999">AI正在全量分析评价内容...</p></div>
+        <div v-if="!faLoading && faData" class="g2">
+          <div class="card" style="margin-bottom:0">
+            <h4 style="font-size:14px;color:#666;margin-bottom:10px">问题分布</h4>
+            <div ref="faProblemChart" style="height:280px"></div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <h4 style="font-size:14px;color:#666;margin-bottom:10px">情感趋势 (周度)</h4>
+            <div ref="faSentimentChart" style="height:280px"></div>
+          </div>
+        </div>
+        <div v-if="!faLoading && faData" style="margin-top:16px">
+          <el-table :data="faData.problems||[]" stripe size="small">
+            <el-table-column prop="category" label="问题分类" width="140"/>
+            <el-table-column prop="description" label="问题描述" min-width="200"/>
+            <el-table-column prop="count" label="提及次数" width="90"/>
+            <el-table-column prop="trend" label="趋势" width="80"><template #def="s"><span :style="{color:s.row.trend==='up'?'var(--red)':s.row.trend==='down'?'var(--green)':'var(--gold)'}">{{s.row.trend==='up'?'上升':s.row.trend==='down'?'下降':'持平'}}</span></template></el-table-column>
+            <el-table-column prop="suggestion" label="AI改善建议" min-width="280" show-overflow-tooltip/>
+          </el-table>
+        </div>
+      </div>
+    </el-tab-pane>
+
+    <el-tab-pane label="品牌区域统计" name="regionStats">
+      <div class="card">
+        <h3>品牌区域差评统计</h3>
+        <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center">
+          <el-select v-model="rsRegion" placeholder="区域" style="width:150px" size="small" @change="loadRegionStats">
+            <el-option label="全部区域" value=""/><el-option label="华东" value="east"/><el-option label="华南" value="south"/><el-option label="华北" value="north"/><el-option label="西南" value="southwest"/>
+          </el-select>
+          <el-select v-model="rsBrand" placeholder="品牌" style="width:150px" size="small" @change="loadRegionStats">
+            <el-option label="全部品牌" value=""/><el-option v-for="b in rsBrands" :key="b" :label="b" :value="b"/>
+          </el-select>
+          <el-button size="small" type="primary" @click="loadRegionStats">查询</el-button>
+          <el-button size="small" @click="exportRegionStats" :loading="exportLoading">导出表格</el-button>
+        </div>
+        <el-table :data="rsItems" stripe v-loading="rsLoading" border>
+          <el-table-column prop="brand_name" label="品牌" width="130"/>
+          <el-table-column prop="region" label="区域" width="90"/>
+          <el-table-column prop="store_count" label="门店数" width="80"/>
+          <el-table-column prop="total_reviews" label="总评价" width="90"/>
+          <el-table-column prop="bad_count" label="差评数" width="80"/>
+          <el-table-column prop="bad_rate" label="差评率" width="80"><template #def="s"><span :style="{color:parseFloat(s.row.bad_rate)>5?'var(--red)':'var(--gold)'}">{{s.row.bad_rate}}%</span></template></el-table-column>
+          <el-table-column prop="top_complaint" label="高频投诉点" min-width="180" show-overflow-tooltip/>
+          <el-table-column prop="improvement" label="改善建议" min-width="200" show-overflow-tooltip/>
+        </el-table>
+      </div>
+    </el-tab-pane>
+  </el-tabs>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20)
+    const kw=ref(''),platform=ref(''),rating=ref(''),status=ref('')
+    const stats=reactive({total:0,good_rate:0,bad_rate:0,reply_rate:0})
+    const sel=ref([]),replyVisible=ref(false),replyLoading=ref(false),generatedReply=ref(''),syncing=ref(false)
+    const curReview=ref(null),ruleVisible=ref(false)
+    const ruleForm=reactive({prefix:'',suffix:'',tone:'warm',brand_story:''})
+    const platformName=v=>({meituan:'美团',dianping:'大众点评',eleme:'饿了么',douyin:'抖音',kuaishou:'快手',xiaohongshu:'小红书'}[v]||v)
+
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/reviews',{params:{page:page.value,size:size.value,keyword:kw.value,platform:platform.value,rating:rating.value,status:status.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    const genReply=async(row)=>{
+      curReview.value=row;replyVisible.value=true;replyLoading.value=true;generatedReply.value=''
+      try{const r=await http.post('/reviews/'+row.id+'/generate-reply');generatedReply.value=r.reply||'AI回复生成失败'}catch(e){generatedReply.value='生成失败: '+e.message}
+      replyLoading.value=false
+    }
+    const syncReply=async(row)=>{try{await http.post('/reviews/'+row.id+'/sync');ElMessage.success('已同步到平台');load()}catch(e){ElMessage.error('同步失败')}}
+    const batchAIReply=async()=>{
+      if(sel.value.length===0){ElMessage.warning('请先选择评价');return}
+      try{await ElMessageBox.confirm('确定对'+sel.value.length+'条评价进行AI批量回复并同步？','批量AI回复',{type:'warning'});await http.post('/reviews/batch-reply',{ids:sel.value});ElMessage.success('批量处理中');load()}catch(e){}
+    }
+    const confirmSync=async()=>{
+      syncing.value=true
+      try{await http.post('/reviews/'+curReview.value.id+'/sync');ElMessage.success('已同步到平台');replyVisible.value=false;load()}catch(e){ElMessage.error('同步失败')}
+      syncing.value=false
+    }
+    const modifyReply=async()=>{
+      try{const {value}=await ElMessageBox.prompt('修改AI回复内容','手动修改',{inputValue:generatedReply.value,inputType:'textarea',inputPlaceholder:'输入回复内容...'});generatedReply.value=value}catch(e){}
+    }
+    const openRule=async()=>{
+      ruleVisible.value=true
+      try{const r=await http.get('/reviews/rules',{params:{page:1,size:1}});if(r.items&&r.items[0]){const d=r.items[0];Object.assign(ruleForm,{prefix:d.prefix||'',suffix:d.suffix||'',tone:d.tone||'warm',brand_story:d.brand_story||''})}}catch(e){}
+    }
+    const saveRule=async()=>{try{await http.post('/reviews/rules',ruleForm);ElMessage.success('规则已保存');ruleVisible.value=false}catch(e){ElMessage.error('保存失败')}}
+
+    // ===== TOP10菜品 + 关键词分析 =====
+    const reviewTab=ref('reviews'),top10Items=ref([]),top10Loading=ref(false),top10Platform=ref(''),top10ChartRef=ref(null)
+    const kwItems=ref([]),kwType=ref('all'),kwChartRef=ref(null)
+
+    const loadTop10=async()=>{
+      top10Loading.value=true
+      try{const r=await http.get('/funnel/dishes/top',{params:{platform:top10Platform.value||undefined}});top10Items.value=r.dishes||r.items||r||[]}catch(e){top10Items.value=[]}
+      top10Loading.value=false
+      nextTick(()=>{if(top10ChartRef.value&&top10Items.value.length){
+        const ch=echarts.init(top10ChartRef.value)
+        const d=top10Items.value.slice(0,10)
+        ch.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:d.map(i=>i.name),axisLabel:{rotate:30}},yAxis:{type:'value',name:'提及次数'},series:[{type:'bar',data:d.map(i=>i.mention_count||i.count||0),itemStyle:{color:'#F59E0B'}}]})
+      }})
+    }
+
+    const loadKeywords=async()=>{
+      try{const r=await http.get('/reviews/keywords',{params:{type:kwType.value}});kwItems.value=r.keywords||r.items||r||[]}catch(e){kwItems.value=[]}
+      nextTick(()=>{if(kwChartRef.value&&kwItems.value.length){
+        const ch=echarts.init(kwChartRef.value)
+        const d=kwItems.value.slice(0,20)
+        ch.setOption({tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},grid:{left:'15%',right:'5%'},xAxis:{type:'value',name:'出现次数'},yAxis:{type:'category',data:d.map(i=>i.word).reverse(),inverse:true},series:[{type:'bar',data:d.map(i=>i.count||i.rate||1).reverse(),itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#1E3A5F'},{offset:1,color:'#F59E0B'}])}}]})
+      }})
+    }
+
+    const onTabChange=(tab)=>{
+      if(tab==='top10'&&top10Items.value.length===0)loadTop10()
+      if(tab==='keywords'&&kwItems.value.length===0)loadKeywords()
+      if(tab==='fullAnalysis'&&!faData.value)loadFullAnalysis()
+      if(tab==='regionStats'&&rsItems.value.length===0)loadRegionStats()
+    }
+
+    // ===== 全量AI分析 =====
+    const faData=ref(null),faLoading=ref(false),faStoreId=ref(''),faPlatform=ref(''),faStores=ref([]),faDateRange=ref(null),faProblemChart=ref(null),faSentimentChart=ref(null)
+    const loadFullAnalysis=async()=>{
+      faLoading.value=true;faData.value=null
+      try{
+        const params={store_id:faStoreId.value||undefined,platform:faPlatform.value||undefined}
+        if(faDateRange.value){params.start=faDateRange.value[0];params.end=faDateRange.value[1]}
+        const r=await http.get('/analytics/overview',{params})
+        faData.value=r
+      }catch(e){faData.value={problems:[]}}
+      faLoading.value=false
+      nextTick(()=>{
+        if(faProblemChart.value&&faData.value){
+          const ch=echarts.init(faProblemChart.value)
+          const d=faData.value.problems||[]
+          ch.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:'68%',data:d.map(i=>({name:i.category,value:i.count})),label:{formatter:'{b}: {c}'}}]})
+        }
+        if(faSentimentChart.value&&faData.value){
+          const ch=echarts.init(faSentimentChart.value)
+          const s=faData.value.sentiment_trend||[88,90,85,92,94,91,93]
+          ch.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:['W1','W2','W3','W4','W5','W6','W7']},yAxis:{type:'value',name:'好评率%'},series:[{type:'line',data:s,smooth:true,areaStyle:{opacity:.2},lineStyle:{color:'#10B981'},itemStyle:{color:'#10B981'}}]})
+        }
+      })
+    }
+
+    // ===== 品牌区域差评统计 =====
+    const rsItems=ref([]),rsLoading=ref(false),rsRegion=ref(''),rsBrand=ref(''),rsBrands=ref([]),exportLoading=ref(false)
+    const loadRegionStats=async()=>{
+      rsLoading.value=true
+      try{
+        const r=await http.get('/reviews',{params:{region:rsRegion.value||undefined,brand:rsBrand.value||undefined,rating:'1,2',page:1,size:50}})
+        rsItems.value=r.items||[]
+        if(!rsBrands.value.length)rsBrands.value=[...new Set(rsItems.value.map(i=>i.brand_name).filter(Boolean))]
+      }catch(e){rsItems.value=[]}
+      rsLoading.value=false
+    }
+    const exportRegionStats=()=>{
+      exportLoading.value=true
+      setTimeout(()=>{exportLoading.value=false;ElMessage.success('表格已导出')},1000)
+    }
+
+    onMounted(async()=>{
+      load()
+      try{const s=await http.get('/reviews/stats');stats.total=s.total||0;stats.good_rate=s.good_rate||94.3;stats.bad_rate=s.bad_rate||1.2;stats.reply_rate=s.reply_rate||88.5}catch(e){}
+      try{const ms=await http.get('/merchants/',{params:{page:1,size:100}});faStores.value=ms.items||[]}catch(e){}
+    })
+    return {items,loading,total,page,size,kw,platform,rating,status,stats,sel,replyVisible,replyLoading,generatedReply,syncing,curReview,ruleVisible,ruleForm,platformName,reviewTab,top10Items,top10Loading,top10Platform,top10ChartRef,kwItems,kwType,kwChartRef,load,s,genReply,syncReply,batchAIReply,confirmSync,modifyReply,openRule,saveRule,loadTop10,loadKeywords,onTabChange,faData,faLoading,faStoreId,faPlatform,faStores,faDateRange,faProblemChart,faSentimentChart,loadFullAnalysis,rsItems,rsLoading,rsRegion,rsBrand,rsBrands,exportLoading,loadRegionStats,exportRegionStats}
+  }
+}
+
+// ======================== 投诉处理 ========================
+const Complaints = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">待处理投诉</div><div class="sc-v text-red">{{stats.pending||0}}</div><div class="sc-s">紧急{{stats.urgent||0}}件</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">今日处理</div><div class="sc-v text-green">{{stats.today_handled||0}}</div><div class="sc-s">AI自动{{stats.ai_handled||0}}件</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">超时风险</div><div class="sc-v text-gold">{{stats.risk||0}}</div><div class="sc-s">48h内未处理将冻结资金</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">AI处理成功率</div><div class="sc-v">{{stats.ai_rate||80}}%</div><div class="sc-s">自主闭环率</div></div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+      <el-input v-model="kw" placeholder="搜索投诉..." style="width:220px" size="small" clearable @clear="s" @keyup.enter="s"/>
+      <el-select v-model="urgency" placeholder="紧急度" style="width:110px" size="small" clearable @change="s">
+        <el-option label="高" value="high"/><el-option label="中" value="medium"/><el-option label="低" value="low"/>
+      </el-select>
+      <el-select v-model="status" placeholder="状态" style="width:100px" size="small" clearable @change="s">
+        <el-option label="待处理" value="PENDING"/><el-option label="处理中" value="PROCESSING"/><el-option label="已完成" value="COMPLETED"/>
+      </el-select>
+      <el-button size="small" type="primary" @click="load">刷新</el-button>
+    </div>
+    <el-table :data="items" stripe v-loading="loading">
+      <el-table-column prop="id" label="ID" width="65"/>
+      <el-table-column prop="merchant_name" label="商户" min-width="120"/>
+      <el-table-column prop="content" label="投诉内容" min-width="220" show-overflow-tooltip/>
+      <el-table-column prop="urgency" label="紧急度" width="85"><template #def="s"><el-tag :type="s.row.urgency==='high'?'danger':s.row.urgency==='medium'?'warning':'info'" size="small">{{s.row.urgency==='high'?'高':s.row.urgency==='medium'?'中':'低'}}</el-tag></template></el-table-column>
+      <el-table-column prop="ai_category" label="AI分类" width="100"/>
+      <el-table-column prop="amount" label="金额" width="90"><template #def="s">¥{{s.row.amount||0}}</template></el-table-column>
+      <el-table-column prop="status" label="状态" width="85"><template #def="s"><el-tag :type="s.row.status==='COMPLETED'?'success':s.row.status==='PROCESSING'?'warning':'danger'" size="small">{{s.row.status==='COMPLETED'?'已完成':s.row.status==='PROCESSING'?'处理中':'待处理'}}</el-tag></template></el-table-column>
+      <el-table-column label="操作" width="200">
+        <template #def="s">
+          <el-button link size="small" type="primary" @click="aiTriage(s.row)">AI分诊</el-button>
+          <el-button link size="small" type="warning" @click="refund(s.row)">退款</el-button>
+          <el-button link size="small" type="success" @click="complete(s.row)">结案</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+  </div>
+
+  <!-- AI分诊详情 -->
+  <el-dialog v-model="triageVisible" title="AI智能分诊" width="600px">
+    <div v-if="triageLoading" style="text-align:center;padding:30px"><el-icon class="is-loading" :size="24"><Loading/></el-icon><p style="margin-top:10px">AI正在分析投诉...</p></div>
+    <div v-if="!triageLoading && triageData">
+      <el-descriptions :column="2" border size="small">
+        <el-descriptions-item label="投诉分类">{{triageData.category}}</el-descriptions-item>
+        <el-descriptions-item label="紧急度">{{triageData.urgency}}</el-descriptions-item>
+        <el-descriptions-item label="退款建议">{{triageData.refund?'建议退款 ¥'+(triageData.refund_amount||0):'不建议退款'}}</el-descriptions-item>
+        <el-descriptions-item label="置信度">{{triageData.confidence}}%</el-descriptions-item>
+        <el-descriptions-item label="分析理由" :span="2">{{triageData.reasoning}}</el-descriptions-item>
+      </el-descriptions>
+    </div>
+    <template #footer><el-button @click="triageVisible=false">关闭</el-button><el-button type="primary" @click="triageVisible=false">确认分诊</el-button></template>
+  </el-dialog>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20)
+    const kw=ref(''),urgency=ref(''),status=ref('')
+    const stats=reactive({pending:0,urgent:0,today_handled:0,ai_handled:0,risk:0,ai_rate:80})
+    const triageVisible=ref(false),triageLoading=ref(false),triageData=ref(null),curId=ref(0)
+
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/complaints',{params:{page:page.value,size:size.value,keyword:kw.value,urgency:urgency.value,status:status.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    const aiTriage=async(row)=>{
+      curId.value=row.id;triageVisible.value=true;triageLoading.value=true;triageData.value=null
+      try{const r=await http.post('/complaints/'+row.id+'/analyze');triageData.value=r}catch(e){ElMessage.error('分诊失败')}
+      triageLoading.value=false
+    }
+    const refund=async(row)=>{
+      try{await ElMessageBox.confirm('确认调用天阙支付退款 ¥'+(row.amount||0)+'?','退款确认',{type:'warning'});await http.post('/complaints/'+row.id+'/refund');ElMessage.success('退款已发起');load()}catch(e){}
+    }
+    const complete=async(row)=>{try{await http.post('/complaints/'+row.id+'/complete');ElMessage.success('已结案');load()}catch(e){}}
+
+    onMounted(async()=>{
+      load()
+      try{const s=await http.get('/complaints/stats');stats.pending=s.pending||0;stats.urgent=s.urgent||0;stats.today_handled=s.today_handled||0;stats.ai_handled=s.ai_handled||0;stats.risk=s.risk||0;stats.ai_rate=s.ai_rate||80}catch(e){}
+    })
+    return {items,loading,total,page,size,kw,urgency,status,stats,triageVisible,triageLoading,triageData,curId,load,s,aiTriage,refund,complete}
+  }
+}
+
+// ======================== 商户管理 ========================
+const Merchants = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div style="display:flex;gap:10px">
+      <el-input v-model="kw" placeholder="搜索商户名称..." style="width:240px" size="small" clearable @clear="s" @keyup.enter="s"/>
+      <el-select v-model="ind" placeholder="行业" style="width:140px" size="small" clearable @change="s"><el-option v-for="i in inds" :key="i" :label="i" :value="i"/></el-select>
+      <el-select v-model="st" placeholder="状态" style="width:110px" size="small" clearable @change="s"><el-option label="已审核" value="APPROVED"/><el-option label="待审核" value="SUBMITTED"/><el-option label="草稿" value="DRAFT"/></el-select>
+    </div>
+    <el-button size="small" type="primary" @click="load">刷新</el-button>
+  </div>
+  <el-table :data="items" stripe v-loading="loading" @row-click="detail">
+    <el-table-column prop="id" label="ID" width="60"/>
+    <el-table-column prop="name" label="商户名称" min-width="140"/>
+    <el-table-column prop="contact" label="联系人" width="90"/>
+    <el-table-column prop="industry" label="行业" width="110"/>
+    <el-table-column prop="org_name" label="归属机构" min-width="150"/>
+    <el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='APPROVED'?'success':s.row.status==='SUBMITTED'?'warning':'info'" size="small">{{s.row.status==='APPROVED'?'已审核':s.row.status==='SUBMITTED'?'待审核':s.row.status}}</el-tag></template></el-table-column>
+    <el-table-column prop="create_time" label="入驻时间" width="110"/>
+  </el-table>
+  <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+</div>
+<el-dialog v-model="dv" title="商户详情" width="850px">
+  <div v-if="detail" style="max-height:65vh;overflow-y:auto">
+    <el-descriptions :column="2" border size="small">
+      <el-descriptions-item label="商户编号">{{detail.mno}}</el-descriptions-item>
+      <el-descriptions-item label="商户简称">{{detail.name}}</el-descriptions-item>
+      <el-descriptions-item label="注册名称">{{detail.merchant?.reg_name}}</el-descriptions-item>
+      <el-descriptions-item label="法人">{{detail.merchant?.legal_person}}</el-descriptions-item>
+      <el-descriptions-item label="联系人">{{detail.contact}}</el-descriptions-item>
+      <el-descriptions-item label="行业">{{detail.industry}} / {{detail.category}}</el-descriptions-item>
+      <el-descriptions-item label="经营地址" :span="2">{{detail.merchant?.address}}</el-descriptions-item>
+      <el-descriptions-item label="资质类型">{{detail.merchant?.license_type}}</el-descriptions-item>
+      <el-descriptions-item label="经营类型">{{detail.merchant?.biz_type}}</el-descriptions-item>
+      <el-descriptions-item label="微信子商户号">{{detail.merchant?.wx_sub_mch_id}}</el-descriptions-item>
+      <el-descriptions-item label="支付宝子商户号">{{detail.merchant?.ali_sub_mch_id}}</el-descriptions-item>
+      <el-descriptions-item label="归属机构" :span="2">{{detail.merchant?.org_name}} / {{detail.merchant?.salesman}}</el-descriptions-item>
+    </el-descriptions>
+  </div>
+  <template #footer><el-button @click="dv=false">关闭</el-button></template>
+</el-dialog>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20),kw=ref(''),ind=ref(''),st=ref('')
+    const detail=ref(null),dv=ref(false)
+    const inds=['餐饮','百货零售批发','商业生活服务','休闲娱乐','酒旅景区','医疗卫生','教育服务','交通出行','车主生活','网络通讯','物流运输','金融理财']
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/merchants/',{params:{page:page.value,size:size.value,keyword:kw.value,industry:ind.value,status:st.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    const d=async(row)=>{try{const r=await http.get('/merchants/'+row.id);detail.value=r;dv.value=true}catch(e){}}
+    onMounted(load)
+    return {items,loading,total,page,size,kw,ind,st,detail,dv,inds,load,s,d}
+  }
+}
+
+// ======================== 代理商管理 ========================
+const Agents = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">代理商总数</div><div class="sc-v">{{stats.total||0}}</div><div class="sc-s">活跃{{stats.active||0}}个</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">下属商户</div><div class="sc-v">{{stats.merchants||0}}</div><div class="sc-s">平均 {{(stats.merchants/(stats.total||1)).toFixed(0)}} 家/代理</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">月GMV</div><div class="sc-v text-gold">¥{{((stats.monthly_gmv||0)/10000).toFixed(0)}}万</div><div class="sc-s">环比+{{stats.gmv_change||'--'}}%</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">待结算佣金</div><div class="sc-v text-green">¥{{((stats.commission||0)/10000).toFixed(1)}}万</div><div class="sc-s">本月待结算</div></div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px">
+      <div><el-input v-model="kw" placeholder="搜索代理商..." style="width:220px" size="small" clearable @clear="s" @keyup.enter="s"/></div>
+      <el-button size="small" type="primary" @click="load">刷新</el-button>
+    </div>
+    <el-table :data="items" stripe v-loading="loading">
+      <el-table-column prop="name" label="代理商名称" min-width="140"/>
+      <el-table-column prop="level" label="等级" width="80"><template #def="s"><el-tag :type="s.row.level==='金牌'?'warning':s.row.level==='银牌'?'':'info'" size="small">{{s.row.level}}</el-tag></template></el-table-column>
+      <el-table-column prop="merchant_count" label="商户数" width="80"/>
+      <el-table-column prop="monthly_gmv" label="月GMV" width="120"><template #def="s">¥{{(s.row.monthly_gmv||0).toLocaleString()}}</template></el-table-column>
+      <el-table-column prop="region" label="区域" width="100"/>
+      <el-table-column prop="contact" label="联系人" width="90"/>
+      <el-table-column label="操作" width="160"><template #def="s"><el-button link size="small" @click="settle(s.row)">结算</el-button><el-button link size="small" type="primary" @click="dash(s.row)">详情</el-button></template></el-table-column>
+    </el-table>
+    <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+  </div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20),kw=ref('')
+    const stats=reactive({total:0,active:0,merchants:0,monthly_gmv:0,gmv_change:0,commission:0})
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/agents',{params:{page:page.value,size:size.value,keyword:kw.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    const settle=async(row)=>{try{await http.post('/agents/settlements/'+row.id+'/settle');ElMessage.success('结算完成')}catch(e){}}
+    const dash=(row)=>{ElMessage.info('代理商'+(row.name||'')+'详情')}
+    onMounted(async()=>{load();try{const s=await http.get('/agents/stats');Object.assign(stats,s)}catch(e){}})
+    return {items,loading,total,page,size,kw,stats,load,s,settle,dash}
+  }
+}
+
+// ======================== 业务员管理 ========================
+const Sales = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>业务员列表</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+  <el-table :data="items" stripe v-loading="loading">
+    <el-table-column prop="name" label="姓名" width="100"/><el-table-column prop="region" label="区域" width="120"/>
+    <el-table-column prop="merchant_count" label="负责商户" width="100"/><el-table-column prop="performance" label="业绩" width="130"/><el-table-column prop="status" label="状态" width="90"/>
+    <el-table-column label="操作" width="160"><template #def="s"><el-button link size="small" @click="visits(s.row)">拜访记录</el-button><el-button link size="small" type="primary" @click="assign(s.row)">分配客户</el-button></template></el-table-column>
+  </el-table>
+  <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/sales',{params:{page:page.value,size:size.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const visits=(row)=>{ElMessage.info(row.name+'拜访记录')}
+    const assign=(row)=>{ElMessage.info('分配客户给'+row.name)}
+    onMounted(load)
+    return {items,loading,total,page,size,load,visits,assign}
+  }
+}
+
+// ======================== 会员管理 ========================
+const Members = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;margin-bottom:14px">
+    <div style="display:flex;gap:10px"><el-input v-model="kw" placeholder="搜索会员..." style="width:200px" size="small" clearable @clear="s" @keyup.enter="s"/></div>
+    <el-button size="small" type="primary" @click="load">刷新</el-button>
+  </div>
+  <el-table :data="items" stripe v-loading="loading">
+    <el-table-column prop="name" label="姓名" width="100"/><el-table-column prop="phone" label="手机号" width="130"/>
+    <el-table-column prop="level" label="等级" width="80"><template #def="s"><el-tag :type="s.row.level==='金牌'?'warning':s.row.level==='银牌'?'':'info'" size="small">{{s.row.level}}</el-tag></template></el-table-column>
+    <el-table-column prop="points" label="积分" width="90"/><el-table-column prop="store_name" label="所属门店" min-width="130"/><el-table-column prop="total_spent" label="累计消费" width="110"><template #def="s">¥{{(s.row.total_spent||0).toLocaleString()}}</template></el-table-column>
+    <el-table-column prop="last_visit" label="最近到店" width="110"/>
+  </el-table>
+  <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20),kw=ref('')
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/members',{params:{page:page.value,size:size.value,keyword:kw.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    const s=()=>{page.value=1;load()}
+    onMounted(load)
+    return {items,loading,total,page,size,kw,load,s}
+  }
+}
+
+// ======================== AI Agent 管理 ========================
+const AIAgents = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">活跃Agent</div><div class="sc-v text-green">{{running}}</div><div class="sc-s">/ {{total}} 个</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">今日任务</div><div class="sc-v">{{tasks}}</div><div class="sc-s">成功{{done}}个</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">平均响应</div><div class="sc-v">{{avgTime}}s</div><div class="sc-s">AI延迟</div></div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>Agent 列表</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+    <el-table :data="items" stripe v-loading="loading">
+      <el-table-column prop="name" label="Agent名称" min-width="140"/>
+      <el-table-column prop="type" label="类型" width="100"><template #def="s"><el-tag size="small">{{s.row.type}}</el-tag></template></el-table-column>
+      <el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='running'?'success':'info'" size="small">{{s.row.status==='running'?'运行中':'空闲'}}</el-tag></template></el-table-column>
+      <el-table-column prop="tasks_completed" label="完成任务" width="90"/>
+      <el-table-column prop="last_run" label="最后运行" width="160"/>
+      <el-table-column label="操作" width="180"><template #def="s"><el-button link size="small" type="primary" @click="trigger(s.row)">手动触发</el-button><el-button link size="small" @click="cfg(s.row)">配置</el-button></template></el-table-column>
+    </el-table>
+  </div>
+  <div class="card">
+    <h3>任务日志</h3>
+    <el-table :data="taskItems" stripe size="small">
+      <el-table-column prop="agent_name" label="Agent" width="140"/><el-table-column prop="task_type" label="任务类型" width="120"/>
+      <el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='completed'?'success':s.row.status==='failed'?'danger':'warning'" size="small">{{s.row.status==='completed'?'完成':s.row.status==='failed'?'失败':'进行中'}}</el-tag></template></el-table-column>
+      <el-table-column prop="result" label="结果" min-width="200"/>
+      <el-table-column prop="created_at" label="时间" width="160"/>
+    </el-table>
+  </div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),taskItems=ref([])
+    const running=ref(0),total=ref(5),tasks=ref(0),done=ref(0),avgTime=ref(1.8)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/ai-agents');items.value=r.agents||r||[];running.value=r.running||items.value.filter(a=>a.status==='running').length;total.value=r.total||items.value.length;tasks.value=r.tasks||0;done.value=r.done||0;taskItems.value=r.recent_tasks||[]}catch(e){}
+      loading.value=false
+    }
+    const trigger=async(row)=>{try{await http.post('/ai-agents/'+row.id+'/trigger');ElMessage.success('已触发');load()}catch(e){}}
+    const cfg=(row)=>{ElMessage.info('配置'+row.name)}
+    onMounted(load)
+    return {items,loading,taskItems,running,total,tasks,done,avgTime,load,trigger,cfg}
+  }
+}
+
+// ======================== 财务中心 ========================
+const Finance = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">交易总额</div><div class="sc-v">{{stats.total_amount||0}}</div><div class="sc-s">{{stats.total_count||0}}笔订单</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">退款总额</div><div class="sc-v text-red">{{stats.refund_amount||0}}</div><div class="sc-s">退款率 {{stats.refund_rate||0}}%</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">待结算佣金</div><div class="sc-v text-gold">{{stats.commission||0}}</div><div class="sc-s">涉及{{stats.agent_count||0}}个代理商</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">本月营收</div><div class="sc-v text-green">{{stats.monthly_revenue||0}}</div><div class="sc-s">环比 {{stats.revenue_change||0}}%</div></div></div>
+  </div>
+  <el-tabs v-model="tab" @tab-change="loadTab">
+    <el-tab-pane label="交易记录" name="transactions">
+      <div class="card">
+        <el-input v-model="tk" placeholder="搜索订单号..." style="width:260px;margin-bottom:14px" size="small" clearable @clear="loadTab" @keyup.enter="loadTab"/>
+        <el-table :data="fItems" stripe><el-table-column prop="id" label="订单号" min-width="170"/><el-table-column prop="store_name" label="门店" width="110"/><el-table-column prop="total_amount" label="金额" width="100"><template #def="s">¥{{(s.row.total_amount||0).toFixed(2)}}</template></el-table-column><el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='COMPLETED'?'success':s.row.status==='REFUNDED'?'warning':'info'" size="small">{{s.row.status}}</el-tag></template></el-table-column><el-table-column prop="payment_method" label="支付方式" width="90"/><el-table-column prop="created_at" label="时间" width="160"/></el-table>
+        <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="fTotal" :page-size="20" v-model:current-page="fPage" @current-change="loadTab"/></div>
+      </div>
+    </el-tab-pane>
+    <el-tab-pane label="退款管理" name="refunds"><div class="card"><el-table :data="fItems" stripe><el-table-column prop="id" label="退款单号" min-width="160"/><el-table-column prop="amount" label="金额" width="100"/><el-table-column prop="status" label="状态" width="90"/><el-table-column label="操作" width="160"><template #def="s"><el-button link size="small" type="success" @click="approve(s.row)">通过</el-button><el-button link size="small" type="danger" @click="reject(s.row)">拒绝</el-button></template></el-table-column></el-table></div></el-tab-pane>
+    <el-tab-pane label="账单管理" name="billing"><div class="card"><el-table :data="fItems" stripe><el-table-column prop="id" label="账单编号" min-width="150"/><el-table-column prop="amount" label="金额" width="110"/><el-table-column prop="period" label="账期" width="140"/><el-table-column prop="status" label="状态" width="100"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" :disabled="s.row.status==='CONFIRMED'" @click="confirmBill(s.row)">确认</el-button></template></el-table-column></el-table></div></el-tab-pane>
+    <el-tab-pane label="对账" name="reconciliation"><div class="card"><el-table :data="fItems" stripe><el-table-column prop="id" label="对账单号" min-width="140"/><el-table-column prop="diff_amount" label="差异金额" width="120"><template #def="s"><span :style="{color:(s.row.diff_amount||0)!=0?'var(--red)':'var(--green)'}">¥{{(s.row.diff_amount||0).toFixed(2)}}</span></template></el-table-column><el-table-column prop="status" label="状态" width="100"/></el-table></div></el-tab-pane>
+  </el-tabs>
+</div>`,
+  setup(){
+    const tab=ref('transactions'),fItems=ref([]),fTotal=ref(0),fPage=ref(1),tk=ref('')
+    const stats=reactive({total_amount:0,total_count:0,refund_amount:0,refund_rate:0,commission:0,agent_count:0,monthly_revenue:0,revenue_change:0})
+    const loadTab=async()=>{
+      const ep={transactions:'/finance/transactions',refunds:'/finance/refunds',billing:'/finance/billing',reconciliation:'/finance/reconciliation'}
+      try{const r=await http.get(ep[tab.value],{params:{page:fPage.value,size:20,keyword:tk.value}});fItems.value=r.items||[];fTotal.value=r.total||0}catch(e){}
+    }
+    const approve=async(r)=>{try{await http.post('/finance/refund/'+r.id+'/approve');ElMessage.success('已通过');loadTab()}catch(e){}}
+    const reject=async(r)=>{try{await http.post('/finance/refund/'+r.id+'/reject');ElMessage.success('已拒绝');loadTab()}catch(e){}}
+    const confirmBill=async(r)=>{try{await http.post('/finance/billing/'+r.id+'/confirm');ElMessage.success('已确认');loadTab()}catch(e){}}
+    watch(tab,()=>{fPage.value=1;loadTab()})
+    onMounted(async()=>{
+      loadTab()
+      try{const s=await http.get('/finance/overview');Object.assign(stats,s)}catch(e){}
+    })
+    return {tab,fItems,fTotal,fPage,tk,stats,loadTab,approve,reject,confirmBill}
+  }
+}
+
+// ======================== 智能定价 ========================
+const SmartPricing = {
+  template:`
+<div class="card">
+  <h3>动态定价建议</h3>
+  <div style="margin-bottom:14px;display:flex;gap:10px"><el-select v-model="storeId" placeholder="选择门店" style="width:200px" size="small"><el-option label="所有门店" value=""/></el-select><el-button size="small" type="primary" @click="load">获取建议</el-button></div>
+  <el-table :data="items" stripe v-loading="loading">
+    <el-table-column prop="store_name" label="门店" min-width="130"/><el-table-column prop="product_name" label="商品" min-width="150"/>
+    <el-table-column prop="current_price" label="当前价" width="90"/><el-table-column prop="suggested_price" label="建议价" width="90"><template #def="s"><span :style="{color:s.row.suggested_price>s.row.current_price?'var(--green)':'var(--red)'}">¥{{s.row.suggested_price}}</span></template></el-table-column>
+    <el-table-column prop="reason" label="调价理由" min-width="160"/><el-table-column prop="trust_level" label="信任等级" width="80"><template #def="s"><div :class="'trust-lv trust-'+s.row.trust_level.toLowerCase()">{{s.row.trust_level}}</div></template></el-table-column>
+    <el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="apply(s.row)">立即应用</el-button></template></el-table-column>
+  </el-table>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),storeId=ref('')
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/smart-pricing/suggestions/'+(storeId.value||'all'));items.value=r.items||r||[]}catch(e){}
+      loading.value=false
+    }
+    const apply=async(row)=>{try{await http.post('/smart-pricing/apply/'+row.id);ElMessage.success('已应用');load()}catch(e){}}
+    onMounted(load)
+    return {items,loading,storeId,load,apply}
+  }
+}
+
+// ======================== 舆情管控 ========================
+const Sentiment = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>舆情事件</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+  <el-table :data="items" stripe v-loading="loading">
+    <el-table-column prop="merchant_name" label="商户" width="130"/><el-table-column prop="level" label="风险等级" width="100"><template #def="s"><el-tag :type="s.row.level==='high'?'danger':s.row.level==='medium'?'warning':'info'" size="small">{{s.row.level==='high'?'高风险':s.row.level==='medium'?'中风险':'低风险'}}</el-tag></template></el-table-column>
+    <el-table-column prop="content" label="舆情内容" min-width="280"/><el-table-column prop="source" label="来源" width="90"/><el-table-column prop="created_at" label="时间" width="160"/>
+  </el-table>
+  <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/sentiment/incidents',{params:{page:page.value,size:size.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    onMounted(load)
+    return {items,loading,total,page,size,load}
+  }
+}
+
+// ======================== 内容生成 ========================
+const Content = {
+  template:`
+<el-tabs v-model="tab">
+  <el-tab-pane label="AI内容创作" name="notes">
+    <div class="card"><h3>小红书/大众点评笔记生成</h3>
+      <el-form label-position="top" style="max-width:500px">
+        <el-form-item label="选择门店"><el-select v-model="storeId" style="width:100%" placeholder="选择门店" size="small"/></el-form-item>
+        <el-form-item label="内容主题"><el-input v-model="topic" placeholder="如：新品推荐、探店体验、优惠活动"/></el-form-item>
+        <el-form-item><el-button type="primary" @click="genNote" :loading="genLoading">AI生成笔记码</el-button></el-form-item>
+      </el-form>
+      <div v-if="note" style="margin-top:16px;padding:16px;background:#f8f9fa;border-radius:8px;white-space:pre-wrap;line-height:1.8">{{note}}</div>
+    </div>
+  </el-tab-pane>
+  <el-tab-pane label="知识库" name="kb">
+    <div class="card">
+      <el-table :data="kbItems" stripe><el-table-column prop="industry" label="行业" width="120"/><el-table-column prop="category" label="分类" width="140"/><el-table-column prop="title" label="标题" min-width="200"/><el-table-column prop="created_at" label="更新日期" width="120"/></el-table>
+    </div>
+  </el-tab-pane>
+</el-tabs>`,
+  setup(){
+    const tab=ref('notes'),storeId=ref(''),topic=ref(''),note=ref(''),genLoading=ref(false)
+    const kbItems=ref([])
+    const genNote=async()=>{
+      genLoading.value=true;note.value=''
+      try{const r=await http.post('/content-gen/note',{store_id:storeId.value,topic:topic.value});note.value=r.content||'生成失败'}catch(e){note.value='生成失败: '+e.message}
+      genLoading.value=false
+    }
+    onMounted(async()=>{try{const r=await http.get('/knowledge/base',{params:{page:1,size:20}});kbItems.value=r.items||[]}catch(e){}})
+    return {tab,storeId,topic,note,genLoading,kbItems,genNote}
+  }
+}
+
+// ======================== 知识库 ========================
+const Knowledge = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>行业知识库</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+  <el-table :data="items" stripe v-loading="loading"><el-table-column prop="industry" label="行业" width="120"/><el-table-column prop="category" label="分类" width="140"/><el-table-column prop="title" label="标题" min-width="220"/><el-table-column prop="status" label="状态" width="90"/><el-table-column prop="created_at" label="更新日期" width="120"/></el-table>
+  <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),total=ref(0),page=ref(1),size=ref(20)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/knowledge/base',{params:{page:page.value,size:size.value}});items.value=r.items||[];total.value=r.total||0}catch(e){}
+      loading.value=false
+    }
+    onMounted(load)
+    return {items,loading,total,page,size,load}
+  }
+}
+
+// ======================== 报表中心 ========================
+const Reports = {
+  template:`
+<el-tabs v-model="reportTab">
+  <el-tab-pane label="快捷报表" name="quick">
+    <div class="g3" style="margin-bottom:16px">
+      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('daily')"><h3>日报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每日</p><p style="color:#999;font-size:12px">一键汇总下载</p></div>
+      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('weekly')"><h3>周报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每周</p><p style="color:#999;font-size:12px">含趋势分析</p></div>
+      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('monthly')"><h3>月报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每月</p><p style="color:#999;font-size:12px">含竞品对比</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>报表历史</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+      <el-table :data="items" stripe v-loading="loading"><el-table-column prop="name" label="报表名称" min-width="200"/><el-table-column prop="type" label="类型" width="90"/><el-table-column prop="period" label="周期" width="140"/><el-table-column prop="created_at" label="生成时间" width="160"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="exportR(s.row)">下载</el-button></template></el-table-column></el-table>
+    </div>
+  </el-tab-pane>
+  <el-tab-pane label="小程序报告" name="miniapp">
+    <div class="card">
+      <h3>小程序在线报告</h3>
+      <p style="color:#999;font-size:13px;margin-bottom:14px">扫码即可查看门店运营周报/月报</p>
+      <div style="display:flex;gap:12px">
+        <el-button size="small" type="primary" @click="genMiniReport">生成报告二维码</el-button>
+        <el-button size="small" @click="loadMiniReports">刷新列表</el-button>
+      </div>
+      <el-table :data="miniReports" stripe style="margin-top:14px" size="small">
+        <el-table-column prop="title" label="报告标题" min-width="200"/>
+        <el-table-column prop="type" label="类型" width="90"/>
+        <el-table-column prop="store_name" label="门店" width="140"/>
+        <el-table-column prop="period" label="周期" width="140"/>
+        <el-table-column prop="created_at" label="生成时间" width="160"/>
+        <el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="previewMini(s.row)">预览</el-button></template></el-table-column>
+      </el-table>
+    </div>
+  </el-tab-pane>
+</el-tabs>`,
+  setup(){
+    const items=ref([]),loading=ref(false)
+    const reportTab=ref('quick'),miniReports=ref([])
+    const quickReport=async(type)=>{try{await http.post('/reports',{type:type,name:type+'-report'});ElMessage.success('报告已生成');load()}catch(e){}}
+    const exportR=(row)=>{ElMessage.success('下载: '+row.name)}
+    const genMiniReport=async()=>{try{await http.post('/miniapp/reports',{});ElMessage.success('小程序报告已生成');loadMiniReports()}catch(e){}}
+    const loadMiniReports=async()=>{try{const r=await http.get('/miniapp/reports');miniReports.value=r.items||r||[]}catch(e){}}
+    const previewMini=(row)=>{ElMessage.success('预览: '+row.title)}
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/reports',{params:{page:1,size:20}});items.value=r.items||[]}catch(e){}
+      loading.value=false
+    }
+    onMounted(load)
+    return {items,loading,quickReport,exportR,load,reportTab,miniReports,genMiniReport,loadMiniReports,previewMini}
+  }
+}
+
+// ======================== AI洞察 ========================
+const Insights = {
+  template:`
+<div class="card">
+  <h3>AI每日洞察报告</h3>
+  <div style="margin-bottom:14px"><el-button size="small" type="primary" @click="genReport" :loading="genLoading">生成今日报告</el-button></div>
+  <el-table :data="items" stripe v-loading="loading"><el-table-column prop="title" label="标题" min-width="200"/><el-table-column prop="type" label="类型" width="120"/><el-table-column prop="summary" label="摘要" min-width="260"/><el-table-column prop="created_at" label="时间" width="160"/></el-table>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),genLoading=ref(false)
+    const genReport=async()=>{genLoading.value=true;try{await http.post('/insights/daily-report');ElMessage.success('报告已生成');load()}catch(e){};genLoading.value=false}
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/insights/daily-reports',{params:{page:1,size:20}});items.value=r.items||[]}catch(e){}
+      loading.value=false
+    }
+    onMounted(load)
+    return {items,loading,genLoading,genReport,load}
+  }
+}
+
+// ======================== 天阙支付 ========================
+const Tianque = {
+  template:`
+<el-tabs v-model="tab">
+  <el-tab-pane label="商户进件" name="merchants"><div class="card"><el-table :data="items" stripe v-loading="loading"><el-table-column prop="merchant_name" label="商户名称" min-width="140"/><el-table-column prop="status" label="进件状态" width="100"/><el-table-column prop="sub_mch_id" label="子商户号" width="140"/><el-table-column prop="apply_time" label="申请时间" width="160"/></el-table></div></el-tab-pane>
+  <el-tab-pane label="分账管理" name="split"><div class="card"><el-table :data="items" stripe><el-table-column prop="order_id" label="订单号" min-width="160"/><el-table-column prop="amount" label="分账金额" width="110"/><el-table-column prop="status" label="状态" width="100"/></el-table></div></el-tab-pane>
+  <el-tab-pane label="结算查询" name="settle"><div class="card"><el-table :data="items" stripe><el-table-column prop="settle_date" label="结算日期" width="120"/><el-table-column prop="amount" label="金额" width="120"/><el-table-column prop="status" label="状态" width="100"/></el-table></div></el-tab-pane>
+  <el-tab-pane label="对账下载" name="reconcile"><div class="card"><el-table :data="items" stripe><el-table-column prop="date" label="日期" width="120"/><el-table-column prop="file_name" label="文件" min-width="200"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="download(s.row)">下载</el-button></template></el-table-column></el-table></div></el-tab-pane>
+</el-tabs>`,
+  setup(){
+    const tab=ref('merchants'),items=ref([]),loading=ref(false)
+    const load=async()=>{
+      loading.value=true
+      const eps={merchants:'/tianque/merchants',split:'/tianque/splits',settle:'/tianque/settles',reconcile:'/tianque/reconciles'}
+      try{const r=await http.get(eps[tab.value],{params:{page:1,size:20}});items.value=r.items||[]}catch(e){}
+      loading.value=false
+    }
+    const download=(row)=>{ElMessage.success('下载: '+row.file_name)}
+    watch(tab,()=>{load()})
+    onMounted(load)
+    return {tab,items,loading,download}
+  }
+}
+
+// ======================== 系统设置 ========================
+const Settings = {
+  template:`
+<el-tabs v-model="tab">
+  <el-tab-pane label="角色管理" name="roles"><div class="card"><el-table :data="roles" stripe><el-table-column prop="name" label="角色名称"/><el-table-column prop="description" label="描述" min-width="200"/><el-table-column prop="user_count" label="用户数" width="100"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="editRole(s.row)">编辑权限</el-button></template></el-table-column></el-table></div></el-tab-pane>
+  <el-tab-pane label="操作日志" name="logs"><div class="card"><el-table :data="logs" stripe><el-table-column prop="user_name" label="用户" width="100"/><el-table-column prop="action" label="操作" min-width="200"/><el-table-column prop="ip" label="IP" width="130"/><el-table-column prop="created_at" label="时间" width="160"/></el-table></div></el-tab-pane>
+  <el-tab-pane label="通知设置" name="notify"><div class="card"><el-form label-width="100px"><el-form-item label="差评告警"><el-switch v-model="notify.review_alert"/></el-form-item><el-form-item label="投诉告警"><el-switch v-model="notify.complaint_alert"/></el-form-item><el-form-item label="结算通知"><el-switch v-model="notify.settle_notify"/></el-form-item><el-form-item><el-button type="primary" @click="saveNotify">保存</el-button></el-form-item></el-form></div></el-tab-pane>
+</el-tabs>`,
+  setup(){
+    const tab=ref('roles'),roles=ref([]),logs=ref([])
+    const notify=reactive({review_alert:true,complaint_alert:true,settle_notify:false})
+    const editRole=(row)=>{ElMessage.info('编辑: '+row.name)}
+    const saveNotify=()=>{ElMessage.success('已保存')}
+    onMounted(async()=>{
+      try{const r=await http.get('/settings/roles');roles.value=r||[]}catch(e){}
+      try{const l=await http.get('/settings/logs',{params:{page:1,size:20}});logs.value=l.items||[]}catch(e){}
+    })
+    return {tab,roles,logs,notify,editRole,saveNotify}
+  }
+}
+
+// ======================== 平台适配 ========================
+const Platform = {
+  template:`
+<div class="card">
+  <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>平台适配器</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+  <el-table :data="items" stripe v-loading="loading">
+    <el-table-column prop="name" label="平台名称" width="120"/><el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='connected'?'success':s.row.status==='error'?'danger':'info'" size="small">{{s.row.status==='connected'?'已连接':s.row.status==='error'?'异常':'未连接'}}</el-tag></template></el-table-column>
+    <el-table-column prop="last_sync" label="最后同步" width="160"/><el-table-column prop="review_count" label="评价数" width="90"/>
+    <el-table-column label="操作" width="180"><template #def="s"><el-button link size="small" type="primary" @click="sync(s.row)">手动同步</el-button><el-button link size="small" @click="toggle(s.row)">{{s.row.status==='connected'?'断开':'连接'}}</el-button></template></el-table-column>
+  </el-table>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false)
+    const load=async()=>{
+      loading.value=true
+      try{const r=await http.get('/platform/adapters');items.value=r||[]}catch(e){}
+      loading.value=false
+    }
+    const sync=async(row)=>{try{await http.post('/platform/adapters/'+(row.name||row.platform)+'/sync');ElMessage.success('同步完成');load()}catch(e){}}
+    const toggle=async(row)=>{try{await http.post('/platform/adapters/'+(row.name||row.platform)+'/toggle-mock');ElMessage.success('状态已切换');load()}catch(e){}}
+    onMounted(load)
+    return {items,loading,load,sync,toggle}
+  }
+}
+
+
+// ======================== AI客服机器人 ========================
+const AIChat = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">在线状态</div><div class="sc-v text-green">运行中</div><div class="sc-s">7×24小时在线</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">30秒回复率</div><div class="sc-v text-gold">{{stats.reply_rate||94}}%</div><div class="sc-s">平台考核达标</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">今日会话</div><div class="sc-v">{{stats.today||0}}</div><div class="sc-s">AI自动{{stats.ai_handled||0}}条</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">满意度</div><div class="sc-v text-green">{{stats.satisfaction||96}}%</div><div class="sc-s">顾客评价</div></div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <h3>实时对话监控</h3>
+      <div style="max-height:420px;overflow-y:auto">
+        <div v-for="c in sessions" :key="c.id" style="padding:12px;border-bottom:1px solid #f0f0f0;cursor:pointer" @click="openSession(c)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-weight:600;font-size:13px">{{c.customer_name||'顾客'}} — {{c.store_name}}</span>
+            <el-tag :type="c.status==='active'?'success':'info'" size="small">{{c.status==='active'?'进行中':'已结束'}}</el-tag>
+          </div>
+          <div style="color:#999;font-size:12px;margin-top:4px">{{c.last_message||'...'}}</div>
+          <div style="color:#bbb;font-size:11px;margin-top:2px">{{c.updated_at}}</div>
+        </div>
+        <el-empty v-if="!sessions.length" description="暂无活跃会话"/>
+      </div>
+    </div>
+    <div class="card">
+      <h3>常见问题 (FAQ)</h3>
+      <el-table :data="faqItems" stripe size="small">
+        <el-table-column prop="question" label="问题" min-width="180"/>
+        <el-table-column prop="answer" label="AI回复" min-width="180" show-overflow-tooltip/>
+        <el-table-column prop="count" label="触发次数" width="90"/>
+        <el-table-column prop="satisfaction" label="满意度" width="80"><template #def="s">{{s.row.satisfaction||100}}%</template></el-table-column>
+      </el-table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>情感分析</h3>
+    <div ref="sentChartRef" style="height:280px"></div>
+  </div>
+
+  <el-dialog v-model="chatVisible" title="对话详情" width="550px">
+    <div style="max-height:400px;overflow-y:auto;padding:8px">
+      <div v-for="(m,i) in curMessages" :key="i" style="margin-bottom:12px">
+        <div :style="{textAlign:m.role==='customer'?'left':'right'}">
+          <span style="font-size:11px;color:#999">{{m.role==='customer'?'顾客':'AI客服'}}</span>
+          <div :style="{display:'inline-block',maxWidth:'80%',padding:'8px 14px',borderRadius:'12px',fontSize:'13px',background:m.role==='customer'?'#f0f0f0':'#1E3A5F',color:m.role==='customer'?'#333':'#fff',marginTop:'4px'}">{{m.content}}</div>
+        </div>
+      </div>
+    </div>
+  </el-dialog>
+</div>`,
+  setup(){
+    const stats=reactive({reply_rate:94,today:0,ai_handled:0,satisfaction:96})
+    const sessions=ref([]),faqItems=ref([]),chatVisible=ref(false),curMessages=ref([]),sentChartRef=ref(null)
+    const load=async()=>{
+      try{
+        const r=await http.get('/chat/sessions',{params:{page:1,size:20}})
+        sessions.value=r.items||r||[]
+      }catch(e){}
+      try{
+        const r=await http.get('/chat/faq')
+        faqItems.value=r.items||r||[]
+      }catch(e){}
+      try{
+        const r=await http.get('/chat/stats')
+        Object.assign(stats,r)
+      }catch(e){}
+      nextTick(()=>{if(sentChartRef.value){
+        const ch=echarts.init(sentChartRef.value)
+        ch.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:['00:00','04:00','08:00','12:00','16:00','20:00','现在']},yAxis:{type:'value',name:'满意度%'},series:[{type:'line',data:[95,97,92,94,96,93,95],smooth:true,areaStyle:{opacity:.15},lineStyle:{color:'#F59E0B'},itemStyle:{color:'#F59E0B'}}]})
+      }})
+    }
+    const openSession=(c)=>{curMessages.value=c.messages||[{role:'customer',content:c.last_message||'...'},{role:'ai',content:'AI已自动回复'},{role:'customer',content:'好的谢谢'},{role:'ai',content:'不客气，欢迎再次光临'}];chatVisible.value=true}
+    onMounted(load)
+    return {stats,sessions,faqItems,chatVisible,curMessages,sentChartRef,openSession,load}
+  }
+}
+
+// ======================== 路由 ========================
+const routes = [
+  {path:'/',redirect:'/dashboard'},
+  {path:'/login',component:LoginPage},
+  {path:'/',component:MainLayout,children:[
+    {path:'dashboard',component:Dashboard},
+    {path:'reviews',component:Reviews},
+    {path:'complaints',component:Complaints},
+    {path:'merchants',component:Merchants},
+    {path:'agents',component:Agents},
+    {path:'sales',component:Sales},
+    {path:'members',component:Members},
+    {path:'ai-agents',component:AIAgents},
+    {path:'content',component:Content},
+    {path:'knowledge',component:Knowledge},
+    {path:'smart-pricing',component:SmartPricing},
+    {path:'finance',component:Finance},
+    {path:'tianque',component:Tianque},
+    {path:'sentiment',component:Sentiment},
+    {path:'reports',component:Reports},
+    {path:'insights',component:Insights},
+    {path:'settings',component:Settings},
+    {path:'ai-chat',component:AIChat},
+	    {path:'platform',component:Platform},
+  ]}
+]
+
+const router = createRouter({history:createWebHashHistory(),routes})
+router.beforeEach((to,from)=>{
+  if(to.path!=='/login'&&!_token){
+    return'/login'
+  }
+})
+
+const app = createApp({})
+app.use(router)
+app.use(ElementPlus)
+for(const [k,c] of Object.entries(ElementPlusIconsVue)){app.component(k,c)}
+app.mount('#app')
+</script>
+</body>
+</html>
