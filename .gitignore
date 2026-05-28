@@ -28,6 +28,7 @@ node_modules/
 dist/
 
 # IDE
+.claude/
 .vscode/
 .idea/
 *.swp
