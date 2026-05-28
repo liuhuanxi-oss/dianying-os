@@ -7,18 +7,18 @@ import (
 	"time"
 
 	"dyos-go/internal/model"
-	"dyos-go/pkg/deepseek"
+	"dyos-go/pkg/ai"
 
 	"gorm.io/gorm"
 )
 
 type ContentGenService struct {
 	db *gorm.DB
-	ai *deepseek.Client
+	ai *ai.Client
 }
 
 func NewContentGenService(db *gorm.DB) *ContentGenService {
-	return &ContentGenService{db: db, ai: deepseek.NewClient()}
+	return &ContentGenService{db: db, ai: ai.NewClient()}
 }
 
 func (s *ContentGenService) GeneratePost(platform string, merchantID uint, params map[string]interface{}) map[string]interface{} {

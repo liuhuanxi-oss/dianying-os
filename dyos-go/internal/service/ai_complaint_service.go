@@ -6,18 +6,18 @@ import (
 	"time"
 
 	"dyos-go/internal/model"
-	"dyos-go/pkg/deepseek"
+	"dyos-go/pkg/ai"
 
 	"gorm.io/gorm"
 )
 
 type AIComplaintService struct {
 	db     *gorm.DB
-	deepSeek *deepseek.Client
+	deepSeek *ai.Client
 }
 
 func NewAIComplaintService(db *gorm.DB) *AIComplaintService {
-	return &AIComplaintService{db: db, deepSeek: deepseek.NewClient()}
+	return &AIComplaintService{db: db, deepSeek: ai.NewClient()}
 }
 
 // Analyze 使用DeepSeek+规则引擎分析投诉

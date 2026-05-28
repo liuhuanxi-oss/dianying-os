@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"dyos-go/internal/model"
-	"dyos-go/pkg/deepseek"
+	"dyos-go/pkg/ai"
 
 	"gorm.io/gorm"
 )
@@ -17,14 +17,14 @@ type AIAgentService struct {
 	db     *gorm.DB
 	mu     sync.Mutex
 	running map[uint]chan struct{}
-	ai     *deepseek.Client
+	ai     *ai.Client
 }
 
 func NewAIAgentService(db *gorm.DB) *AIAgentService {
 	return &AIAgentService{
 		db:      db,
 		running: make(map[uint]chan struct{}),
-		ai:      deepseek.NewClient(),
+		ai:      ai.NewClient(),
 	}
 }
 
