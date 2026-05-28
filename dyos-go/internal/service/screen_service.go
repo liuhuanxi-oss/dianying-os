@@ -17,6 +17,17 @@ func NewScreenService(db *gorm.DB) *ScreenService {
 	return &ScreenService{db: db}
 }
 
+func (s *ScreenService) isSQLite() bool {
+	return s.db != nil && s.db.Dialector.Name() == "sqlite"
+}
+
+func (s *ScreenService) jsonUnquote(col, path string) string {
+	if s.isSQLite() {
+		return "REPLACE(json_extract(" + col + ", '$." + path + "'), '\"', '')"
+	}
+	return "JSON_UNQUOTE(JSON_EXTRACT(" + col + ", '$." + path + "'))"
+}
+
 func (s *ScreenService) Snapshot() map[string]interface{} {
 	return map[string]interface{}{
 		"kpis":        s.KPIs(),
@@ -96,7 +107,8 @@ func (s *ScreenService) StoreMap() []map[string]interface{} {
 			Count int64   `gorm:"column:cnt"`
 			GMV   float64 `gorm:"column:gmv"`
 		}, 0)
-		s.db.Raw("SELECT JSON_UNQUOTE(JSON_EXTRACT(apply_data, '$.经营地址')) as city, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND JSON_EXTRACT(apply_data, '$.经营地址') IS NOT NULL GROUP BY city ORDER BY cnt DESC LIMIT 30").Scan(&rows)
+		cityExpr := s.jsonUnquote("apply_data", "经营地址")
+		s.db.Raw("SELECT "+cityExpr+" as city, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND json_extract(apply_data, '$.经营地址') IS NOT NULL GROUP BY city ORDER BY cnt DESC LIMIT 30").Scan(&rows)
 		if len(rows) > 0 {
 			for _, r := range rows {
 				items = append(items, map[string]interface{}{"name": r.City, "value": r.Count, "gmv": r.GMV})
@@ -176,12 +188,8 @@ func (s *ScreenService) IndustryCompare() []map[string]interface{} {
 			Count int64   `gorm:"column:cnt"`
 			GMV   float64 `gorm:"column:gmv"`
 		}, 0)
-		isSQLite := s.db.Dialector.Name() == "sqlite"
-		sql := "SELECT JSON_UNQUOTE(JSON_EXTRACT(apply_data, '$.行业大类')) as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND JSON_EXTRACT(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5"
-		if isSQLite {
-			sql = "SELECT REPLACE(json_extract(apply_data, '$.行业大类'), '\"', '') as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND json_extract(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5"
-		}
-		s.db.Raw(sql).Scan(&rows)
+		nameExpr := s.jsonUnquote("apply_data", "行业大类")
+		s.db.Raw("SELECT "+nameExpr+" as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND json_extract(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5").Scan(&rows)
 		if len(rows) > 0 {
 			for _, r := range rows {
 				items = append(items, map[string]interface{}{"industry": r.Name, "merchants": r.Count, "gmv": r.GMV})
@@ -416,7 +424,9 @@ func (s *ScreenService) EnsureMerchantMeta() {
 	if s.db == nil {
 		return
 	}
-	// 从 apply_data JSON 中提取行业和城市信息，回填到主表字段
+	if s.isSQLite() {
+		return
+	}
 	s.db.Exec(`
 		UPDATE payment_merchants pm
 		SET city = COALESCE(
