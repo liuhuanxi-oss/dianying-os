@@ -99,5 +99,9 @@ func AllModels() []interface{} {
 		&Version{},
 		&LoginLog{},
 		&DataMaskingRule{},
+
+		// 支付服务商与风险商户
+		&PaymentProvider{},
+		&RiskMerchant{},
 	}
 }

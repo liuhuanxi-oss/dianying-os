@@ -208,6 +208,8 @@ const MainLayout = {
       {name:'财务支付',items:[
         {key:'/finance',label:'财务中心',icon:'Money'},
         {key:'/tianque',label:'天阙支付',icon:'CreditCard'},
+        {key:'/payment-providers',label:'支付服务商',icon:'Wallet'},
+        {key:'/risk-merchants',label:'风险商户',icon:'Warning'},
       ]},
       {name:'数据分析',items:[
         {key:'/sentiment',label:'舆情管控',icon:'Bell'},
@@ -242,70 +244,134 @@ const MainLayout = {
 const Dashboard = {
   template:`
 <div>
+  <!-- KPI 卡片 -->
   <div class="sc">
     <div class="sc-i" v-for="s in cards" :key="s.label">
-      <div><div class="sc-t">{{s.label}}</div><div class="sc-v">{{s.value}}</div><div class="sc-s">{{s.sub}}</div></div>
+      <div><div class="sc-t">{{s.label}}</div><div class="sc-v" :style="{color:s.color||'#1E3A5F'}">{{s.value}}</div><div class="sc-s">{{s.sub}}</div></div>
       <div class="sc-ico"><el-icon :size="32"><component :is="s.icon"/></el-icon></div>
     </div>
   </div>
+
+  <!-- 图表行 -->
   <div class="g2">
-    <div class="card"><h3>行业分布</h3><div class="chart-box" ref="c1"></div></div>
-    <div class="card"><h3>GMV 趋势 (近7日)</h3><div class="chart-box" ref="c2"></div></div>
+    <div class="card"><h3>今日GMV 分时趋势</h3><div class="chart-box" ref="hourlyChart"></div></div>
+    <div class="card"><h3>行业分布</h3><div class="chart-box" ref="industryChart"></div></div>
   </div>
+
+  <!-- Agent 管线 + 实时预警 -->
   <div class="g2" style="margin-top:16px">
-    <div class="card"><h3>最新入驻商户</h3>
-      <el-table :data="merchants" size="small"><el-table-column prop="name" label="商户" min-width="130"/><el-table-column prop="industry" label="行业" width="100"/><el-table-column prop="status" label="状态" width="90"><template #def="s"><el-tag :type="s.row.status==='APPROVED'?'success':'warning'" size="small">{{\
-        s.row.status==='APPROVED'?'已审核':s.row.status==='SUBMITTED'?'待审核':s.row.status\
-      }}</el-tag></template></el-table-column><el-table-column prop="create_time" label="时间" width="110"/></el-table>
+    <div class="card"><h3>AI Agent 运行状态</h3>
+      <div v-for="a in agents" :key="a.name" style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5">
+        <el-icon :size="18" :style="{color:a.status==='running'?'var(--green)':'#ccc',marginRight:'10px'}"><component :is="a.icon"/></el-icon>
+        <div style="flex:1"><div style="font-size:13px;font-weight:500">{{a.name}}</div><el-progress :percentage="a.progress" :stroke-width="6" :color="a.status==='running'?'#10B981':'#F59E0B'" :duration="3" :indeterminate="false"/></div>
+        <span style="font-size:11px;color:#999;margin-left:12px">{{a.tasks}}任务</span>
+        <el-tag :type="a.status==='running'?'success':'warning'" size="small" style="margin-left:8px">{{a.status==='running'?'运行中':'空闲'}}</el-tag>
+      </div>
     </div>
-    <div class="card"><h3>差评实时预警</h3>
-      <el-table :data="alerts" size="small"><el-table-column prop="store_name" label="门店" width="100"/><el-table-column prop="content" label="内容" min-width="160"/><el-table-column prop="rating" label="评分" width="70"><template #def="s"><span :style="{color:s.row.rating<=2?'var(--red)':'var(--gold)'}">{{s.row.rating}}分</span></template></el-table-column><el-table-column prop="platform" label="平台" width="80"/></el-table>
+    <div class="card"><h3>实时预警 ({{alerts.length}})</h3>
+      <div v-for="a in alerts.slice(0,6)" :key="a.id" style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+        <el-tag :type="a.level==='error'?'danger':'warning'" size="small" style="margin-top:2px;flex-shrink:0">{{a.level==='error'?'紧急':'预警'}}</el-tag>
+        <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{a.title}}</div><div style="font-size:11px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{a.content}}</div></div>
+        <span style="font-size:11px;color:#999;flex-shrink:0">{{a.time}}</span>
+      </div>
+      <div v-if="!alerts.length" style="text-align:center;color:#999;padding:20px">暂无预警</div>
+    </div>
+  </div>
+
+  <!-- 实时订单 + 平台统计 -->
+  <div class="g2" style="margin-top:16px">
+    <div class="card"><h3>实时订单流水</h3>
+      <el-table :data="orders.slice(0,8)" size="small"><el-table-column prop="id" label="订单号" width="140"/><el-table-column prop="merchant" label="商户" min-width="120"/><el-table-column prop="amount" label="金额" width="80"><template #def="s"><span class="text-gold" style="font-weight:600">¥{{s.row.amount}}</span></template></el-table-column><el-table-column prop="status" label="状态" width="80"><template #def="s"><el-tag :type="s.row.status==='success'||s.row.status==='COMPLETED'?'success':s.row.status==='REFUNDED'?'info':'warning'" size="small">{{s.row.status==='success'||s.row.status==='COMPLETED'?'成功':s.row.status==='REFUNDED'?'退款':s.row.status}}</el-tag></template></el-table-column><el-table-column prop="time" label="时间" width="140"/></el-table>
+      <div v-if="!orders.length" style="text-align:center;color:#999;padding:20px">暂无订单</div>
+    </div>
+    <div class="card"><h3>平台评价统计</h3>
+      <div v-if="!platforms.length" style="text-align:center;color:#999;padding:40px">暂无平台数据</div>
+      <el-table v-else :data="platforms" size="small"><el-table-column prop="platform" label="平台" min-width="100"/><el-table-column prop="count" label="评价数" width="80"/><el-table-column prop="avg" label="均分" width="70"/></el-table>
     </div>
   </div>
 </div>`,
   setup(){
     const cards=reactive([
-      {label:'商户总数',value:'--',sub:'加载中',icon:'Shop'},
-      {label:'今日好评率',value:'--',sub:'加载中',icon:'TrendCharts'},
-      {label:'待处理投诉',value:'--',sub:'加载中',icon:'Warning'},
-      {label:'AI处理成功率',value:'--',sub:'加载中',icon:'Cpu'},
+      {label:'商户总数',value:'--',sub:'加载中',icon:'Shop',color:'#1E3A5F'},
+      {label:'今日GMV',value:'--',sub:'加载中',icon:'Money',color:'#F59E0B'},
+      {label:'今日订单',value:'--',sub:'加载中',icon:'Document',color:'#10B981'},
+      {label:'支付成功率',value:'--',sub:'加载中',icon:'CreditCard',color:'#6366F1'},
+      {label:'待处理预警',value:'--',sub:'加载中',icon:'Warning',color:'#EF4444'},
+      {label:'AI调用次数',value:'--',sub:'加载中',icon:'Cpu',color:'#8B5CF6'},
     ])
-    const merchants=ref([]),alerts=ref([]),c1=ref(null),c2=ref(null)
+    const agents=ref([]), alerts=ref([]), orders=ref([]), platforms=ref([])
+    const hourlyChart=ref(null), industryChart=ref(null)
+    let hc=null,ic=null
+
+    const loadData = async () => {
+      try{
+        const snap = await http.get('/screen/snapshot')
+        const k = snap.kpis || {}
+        cards[0].value = (k.total_merchants||0).toLocaleString()
+        cards[0].sub = '在线'+(k.online_merchants||0)+'家'
+        cards[1].value = '¥'+(k.today_amount||0).toLocaleString()
+        cards[1].sub = '累计GMV ¥'+(k.total_gmv||0).toLocaleString()
+        cards[2].value = (k.today_orders||0).toString()
+        cards[2].sub = '评价均分 '+(k.avg_rating||0)+'分'
+        cards[3].value = (k.pay_success_rate||0).toFixed(0)+'%'
+        cards[3].sub = '共'+(k.total_reviews||0)+'条评价'
+        cards[4].value = (k.alerts||0).toString()
+        cards[4].sub = '投诉+差评预警'
+        cards[5].value = (k.ai_calls||0).toLocaleString()
+        cards[5].sub = 'Multi-Agent协同'
+        agents.value = snap.agents || []
+        alerts.value = snap.alerts || []
+        orders.value = snap.orders || []
+        platforms.value = snap.platforms || []
+        // 行业分布图表
+        const inds = snap.industries || []
+        if(ic && inds.length){
+          ic.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['45%','72%'],avoidLabelOverlap:false,label:{show:false},emphasis:{label:{show:true,fontSize:16}},data:inds.map(x=>({value:x.count,name:x.name}))}]})
+        }
+        // 分时趋势图表
+        const hourly = snap.hourly || []
+        if(hc && hourly.length){
+          hc.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:hourly.map(h=>h.hour+'时')},yAxis:{type:'value',name:'GMV(¥)'},series:[{type:'bar',data:hourly.map(h=>h.amount),itemStyle:{color:'#F59E0B',borderRadius:[4,4,0,0]}}]})
+        }
+      }catch(e){
+        // 降级：逐个加载
+        try{const k=await http.get('/screen/kpis')
+          cards[0].value=(k.total_merchants||0).toLocaleString();cards[0].sub='在线'+(k.online_merchants||0)+'家'
+          cards[1].value='¥'+(k.today_amount||0).toLocaleString();cards[1].sub='累计GMV ¥'+(k.total_gmv||0).toLocaleString()
+          cards[2].value=(k.today_orders||0).toString();cards[2].sub='评价均分'+(k.avg_rating||0)+'分'
+          cards[3].value=(k.pay_success_rate||0).toFixed(0)+'%';cards[3].sub='共'+(k.total_reviews||0)+'条评价'
+          cards[4].value=(k.alerts||0).toString();cards[4].sub='投诉+差评预警'
+          cards[5].value=(k.ai_calls||0).toLocaleString();cards[5].sub='Multi-Agent协同'
+        }catch(e2){}
+        try{agents.value=await http.get('/screen/agents')}catch(e2){}
+        try{alerts.value=(await http.get('/screen/alerts')).items||[]}catch(e2){}
+        try{orders.value=(await http.get('/screen/orders',{params:{limit:20}})).items||[]}catch(e2){}
+        try{platforms.value=(await http.get('/screen/platforms')).items||[]}catch(e2){}
+        try{
+          const inds=(await http.get('/screen/industries')).items||[]
+          if(ic&&inds.length){ic.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['45%','72%'],data:inds.map(x=>({value:x.count,name:x.name}))}]})}
+        }catch(e2){}
+        try{
+          const hr=(await http.get('/screen/hourly')).items||[]
+          if(hc&&hr.length){hc.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:hr.map(h=>h.hour+'时')},yAxis:{type:'value',name:'GMV(¥)'},series:[{type:'bar',data:hr.map(h=>h.amount),itemStyle:{color:'#F59E0B',borderRadius:[4,4,0,0]}}]})}
+        }catch(e2){}
+      }
+    }
+
     onMounted(async()=>{
-      try{
-        const s=await http.get('/merchants/stats')
-        cards[0].value=(s.total||0).toLocaleString();cards[0].sub='含已审核'+(s.approved||0)+'家'
-      }catch(e){}
-      try{
-        const r=await http.get('/reviews/stats')
-        cards[1].value=(r.good_rate||'94')+'%';cards[1].sub='较上周+'+(r.rate_change||'1.2')+'%'
-      }catch(e){}
-      try{
-        const c=await http.get('/complaints/stats')
-        cards[2].value=(c.pending||0).toString();cards[2].sub='紧急'+(c.urgent||0)+'件'
-        cards[3].value=(c.ai_rate||'80')+'%';cards[3].sub='自主处理率'
-      }catch(e){}
-      try{
-        const m=await http.get('/merchants/',{params:{page:1,size:5}})
-        merchants.value=m.items||[]
-      }catch(e){}
-      try{
-        const a=await http.get('/reviews',{params:{page:1,size:5,rating:'1,2'}})
-        alerts.value=a.items||[]
-      }catch(e){}
-      // Charts
+      await loadData()
       nextTick(()=>{
-        if(c1.value){
-          const ch=echarts.init(c1.value)
-          ch.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['45%','72%'],avoidLabelOverlap:false,label:{show:false},emphasis:{label:{show:true,fontSize:16}},data:[{value:320,name:'餐饮'},{value:180,name:'零售'},{value:95,name:'休闲娱乐'},{value:62,name:'商业服务'},{value:45,name:'酒旅景区'}]}]})
-        }
-        if(c2.value){
-          const ch=echarts.init(c2.value)
-          ch.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:['5/21','5/22','5/23','5/24','5/25','5/26','5/27']},yAxis:{type:'value'},series:[{type:'line',data:[182,205,198,232,220,256,248],smooth:true,areaStyle:{opacity:.15},lineStyle:{color:'#F59E0B'},itemStyle:{color:'#F59E0B'}}]})
-        }
+        if(hourlyChart.value){hc=echarts.init(hourlyChart.value);hc.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:[]},yAxis:{type:'value',name:'GMV(¥)'},series:[{type:'bar',data:[],itemStyle:{color:'#F59E0B'}}]})}
+        if(industryChart.value){ic=echarts.init(industryChart.value);ic.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['45%','72%'],data:[]}]})}
+        loadData()
       })
     })
-    return {cards,merchants,alerts,c1,c2}
+
+    // 30秒自动刷新
+    let timer = setInterval(loadData, 30000)
+    onUnmounted(()=>clearInterval(timer))
+
+    return {cards,agents,alerts,orders,platforms,hourlyChart,industryChart}
   }
 }
 
@@ -1083,73 +1149,176 @@ const Knowledge = {
 // ======================== 报表中心 ========================
 const Reports = {
   template:`
-<el-tabs v-model="reportTab">
-  <el-tab-pane label="快捷报表" name="quick">
-    <div class="g3" style="margin-bottom:16px">
-      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('daily')"><h3>日报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每日</p><p style="color:#999;font-size:12px">一键汇总下载</p></div>
-      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('weekly')"><h3>周报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每周</p><p style="color:#999;font-size:12px">含趋势分析</p></div>
-      <div class="card" style="text-align:center;cursor:pointer" @click="quickReport('monthly')"><h3>月报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0">每月</p><p style="color:#999;font-size:12px">含竞品对比</p></div>
-    </div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>报表历史</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
-      <el-table :data="items" stripe v-loading="loading"><el-table-column prop="name" label="报表名称" min-width="200"/><el-table-column prop="type" label="类型" width="90"/><el-table-column prop="period" label="周期" width="140"/><el-table-column prop="created_at" label="生成时间" width="160"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="exportR(s.row)">下载</el-button></template></el-table-column></el-table>
-    </div>
-  </el-tab-pane>
-  <el-tab-pane label="小程序报告" name="miniapp">
-    <div class="card">
-      <h3>小程序在线报告</h3>
-      <p style="color:#999;font-size:13px;margin-bottom:14px">扫码即可查看门店运营周报/月报</p>
-      <div style="display:flex;gap:12px">
-        <el-button size="small" type="primary" @click="genMiniReport">生成报告二维码</el-button>
-        <el-button size="small" @click="loadMiniReports">刷新列表</el-button>
+<div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card" style="text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s" :style="{borderColor:activeReport==='daily'?'var(--gold)':'transparent'}" @click="showReport('daily')"><h3>日报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0" v-if="!kpis.today_amount">每日</p><p style="color:var(--gold);font-size:24px;font-weight:700;margin:8px 0" v-else>¥{{kpis.today_amount.toLocaleString()}}</p><p style="color:#999;font-size:12px">今日GMV / {{kpis.today_orders||0}}单</p></div>
+    <div class="card" style="text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s" :style="{borderColor:activeReport==='weekly'?'var(--gold)':'transparent'}" @click="showReport('weekly')"><h3>周报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0" v-if="!kpis.total_gmv">每周</p><p style="color:var(--gold);font-size:24px;font-weight:700;margin:8px 0" v-else>¥{{kpis.total_gmv.toLocaleString()}}</p><p style="color:#999;font-size:12px">累计GMV / 含趋势分析</p></div>
+    <div class="card" style="text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s" :style="{borderColor:activeReport==='monthly'?'var(--gold)':'transparent'}" @click="showReport('monthly')"><h3>月报</h3><p style="color:var(--gold);font-size:24px;font-weight:700;margin:12px 0" v-if="!kpis.total_merchants">每月</p><p style="color:var(--gold);font-size:24px;font-weight:700;margin:8px 0" v-else>{{kpis.total_merchants}}家</p><p style="color:#999;font-size:12px">商户总数 / 含竞品对比</p></div>
+  </div>
+
+  <!-- 实时报告视图 -->
+  <div v-if="activeReport" class="card" style="margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin-bottom:0">{{reportTitle}}</h3>
+      <div style="display:flex;gap:8px">
+        <el-button size="small" type="primary" @click="exportReport">导出PDF</el-button>
+        <el-button size="small" @click="activeReport=''">关闭</el-button>
       </div>
-      <el-table :data="miniReports" stripe style="margin-top:14px" size="small">
-        <el-table-column prop="title" label="报告标题" min-width="200"/>
-        <el-table-column prop="type" label="类型" width="90"/>
-        <el-table-column prop="store_name" label="门店" width="140"/>
-        <el-table-column prop="period" label="周期" width="140"/>
-        <el-table-column prop="created_at" label="生成时间" width="160"/>
-        <el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="previewMini(s.row)">预览</el-button></template></el-table-column>
-      </el-table>
     </div>
-  </el-tab-pane>
-</el-tabs>`,
+    <div class="sc" style="margin-bottom:16px">
+      <div class="sc-i"><div><div class="sc-t">总GMV</div><div class="sc-v text-gold">¥{{kpis.total_gmv.toLocaleString()}}</div><div class="sc-s">{{kpis.today_orders||0}}笔订单</div></div></div>
+      <div class="sc-i"><div><div class="sc-t">商户数</div><div class="sc-v">{{kpis.total_merchants}}</div><div class="sc-s">在线{{kpis.online_merchants}}家</div></div></div>
+      <div class="sc-i"><div><div class="sc-t">支付成功率</div><div class="sc-v text-green">{{(kpis.pay_success_rate||0).toFixed(0)}}%</div><div class="sc-s">评价{{kpis.total_reviews}}条</div></div></div>
+      <div class="sc-i"><div><div class="sc-t">预警数</div><div class="sc-v text-red">{{kpis.alerts||0}}</div><div class="sc-s">AI调用{{kpis.ai_calls}}次</div></div></div>
+    </div>
+    <div class="g2">
+      <div><h4 style="font-size:13px;color:#666;margin-bottom:8px">分时GMV趋势</h4><div ref="rptChart" style="height:280px"></div></div>
+      <div><h4 style="font-size:13px;color:#666;margin-bottom:8px">行业分布</h4><div ref="rptPie" style="height:280px"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px"><h3>报表历史</h3><el-button size="small" type="primary" @click="load">刷新</el-button></div>
+    <el-table :data="items" stripe v-loading="loading"><el-table-column prop="name" label="报表名称" min-width="200"/><el-table-column prop="type" label="类型" width="90"/><el-table-column prop="period" label="周期" width="140"/><el-table-column prop="created_at" label="生成时间" width="160"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="exportR(s.row)">下载</el-button></template></el-table-column></el-table>
+  </div>
+</div>`,
   setup(){
-    const items=ref([]),loading=ref(false)
-    const reportTab=ref('quick'),miniReports=ref([])
-    const quickReport=async(type)=>{try{await http.post('/reports',{type:type,name:type+'-report'});ElMessage.success('报告已生成');load()}catch(e){}}
+    const items=ref([]),loading=ref(false),activeReport=ref('')
+    const kpis=reactive({total_gmv:0,today_orders:0,total_merchants:0,online_merchants:0,pay_success_rate:0,total_reviews:0,alerts:0,ai_calls:0,today_amount:0})
+    const rptChart=ref(null),rptPie=ref(null)
+    let rc=null,rp=null
+
+    const reportTitle=computed(()=>{
+      const m={daily:'今日运营日报',weekly:'本周运营周报',monthly:'本月运营月报'}
+      return m[activeReport.value]||''
+    })
+
+    const showReport=async(type)=>{
+      activeReport.value=type
+      try{
+        const snap=await http.get('/screen/snapshot')
+        Object.assign(kpis,snap.kpis||{})
+        await nextTick()
+        const hourly=snap.hourly||[],inds=snap.industries||[]
+        if(rptChart.value){rc=rc||echarts.init(rptChart.value);rc.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:hourly.map(h=>h.hour+'时')},yAxis:{type:'value',name:'GMV(¥)'},series:[{type:'bar',data:hourly.map(h=>h.amount),itemStyle:{color:'#F59E0B',borderRadius:[4,4,0,0]}}]})}
+        if(rptPie.value){rp=rp||echarts.init(rptPie.value);rp.setOption({tooltip:{trigger:'item'},series:[{type:'pie',radius:['40%','68%'],data:inds.map(x=>({value:x.count,name:x.name}))}]})}
+      }catch(e){}
+    }
+
+    const exportReport=()=>{
+      const name=reportTitle.value
+      try{http.post('/reports',{type:activeReport.value,name:name})}catch(e){}
+      ElMessage.success(name+' 正在导出，请稍候...')
+      load()
+    }
+
     const exportR=(row)=>{ElMessage.success('下载: '+row.name)}
-    const genMiniReport=async()=>{try{await http.post('/miniapp/reports',{});ElMessage.success('小程序报告已生成');loadMiniReports()}catch(e){}}
-    const loadMiniReports=async()=>{try{const r=await http.get('/miniapp/reports');miniReports.value=r.items||r||[]}catch(e){}}
-    const previewMini=(row)=>{ElMessage.success('预览: '+row.title)}
     const load=async()=>{
       loading.value=true
       try{const r=await http.get('/reports',{params:{page:1,size:20}});items.value=r.items||[]}catch(e){}
       loading.value=false
     }
-    onMounted(load)
-    return {items,loading,quickReport,exportR,load,reportTab,miniReports,genMiniReport,loadMiniReports,previewMini}
+    onMounted(async()=>{
+      load()
+      try{const k=await http.get('/screen/kpis');Object.assign(kpis,k)}catch(e){}
+    })
+    return {items,loading,activeReport,kpis,reportTitle,rptChart,rptPie,showReport,exportReport,exportR,load}
   }
 }
 
 // ======================== AI洞察 ========================
 const Insights = {
   template:`
-<div class="card">
-  <h3>AI每日洞察报告</h3>
-  <div style="margin-bottom:14px"><el-button size="small" type="primary" @click="genReport" :loading="genLoading">生成今日报告</el-button></div>
-  <el-table :data="items" stripe v-loading="loading"><el-table-column prop="title" label="标题" min-width="200"/><el-table-column prop="type" label="类型" width="120"/><el-table-column prop="summary" label="摘要" min-width="260"/><el-table-column prop="created_at" label="时间" width="160"/></el-table>
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">商户健康度</div><div class="sc-v text-green">{{kpis.online_merchants||0}}/{{kpis.total_merchants||0}}</div><div class="sc-s">在线率</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">支付成功率</div><div class="sc-v" :style="{color:(kpis.pay_success_rate||0)>=90?'var(--green)':(kpis.pay_success_rate||0)>=70?'var(--gold)':'var(--red)'}">{{(kpis.pay_success_rate||0).toFixed(0)}}%</div><div class="sc-s">基准线90%</div></div></div>
+    <div class="sc-i"><div><div class="sc-t">评价均分</div><div class="sc-v" :style="{color:(kpis.avg_rating||0)>=4?'var(--green)':(kpis.avg_rating||0)>=3?'var(--gold)':'var(--red)'}">{{kpis.avg_rating||0}}分</div><div class="sc-s">共{{kpis.total_reviews||0}}条</div></div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <h3>AI 每日洞察摘要</h3>
+      <div v-if="genLoading" style="text-align:center;padding:30px"><el-icon class="is-loading" :size="24"><Loading/></el-icon><p style="margin-top:10px;color:#999">AI正在分析全局运营数据...</p></div>
+      <div v-if="!genLoading && insights.length" style="line-height:1.8">
+        <div v-for="(ins,i) in insights" :key="i" style="padding:12px;margin-bottom:10px;background:#f8f9fa;border-radius:8px;border-left:3px solid" :style="{borderColor:ins.level==='warning'?'var(--red)':ins.level==='info'?'var(--gold)':'var(--green)'}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <el-tag :type="ins.level==='warning'?'danger':ins.level==='info'?'warning':'success'" size="small">{{ins.level==='warning'?'异常':ins.level==='info'?'建议':'正常'}}</el-tag>
+            <strong style="font-size:13px">{{ins.title}}</strong>
+          </div>
+          <div style="font-size:12px;color:#666">{{ins.detail}}</div>
+        </div>
+      </div>
+      <div v-if="!genLoading && !insights.length" style="text-align:center;color:#999;padding:30px">点击下方按钮生成今日洞察</div>
+      <div style="margin-top:14px"><el-button size="small" type="primary" @click="genReport" :loading="genLoading">生成今日报告</el-button></div>
+    </div>
+    <div class="card">
+      <h3>历史报告</h3>
+      <el-table :data="items" stripe v-loading="loading" size="small">
+        <el-table-column prop="title" label="标题" min-width="180"/><el-table-column prop="type" label="类型" width="80"/><el-table-column prop="summary" label="摘要" min-width="200" show-overflow-tooltip/>
+        <el-table-column prop="created_at" label="时间" width="140"/>
+      </el-table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>运营建议</h3>
+    <el-empty v-if="!suggestions.length" description="生成洞察后将自动提供运营建议" :image-size="60"/>
+    <div v-else class="g3">
+      <div v-for="(sg,i) in suggestions" :key="i" style="padding:14px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;color:var(--green)">{{sg.action}}</div>
+        <div style="font-size:12px;color:#666;line-height:1.6">{{sg.reason}}</div>
+        <div style="margin-top:8px;font-size:11px;color:#999">预期效果: {{sg.impact}}</div>
+      </div>
+    </div>
+  </div>
 </div>`,
   setup(){
     const items=ref([]),loading=ref(false),genLoading=ref(false)
-    const genReport=async()=>{genLoading.value=true;try{await http.post('/insights/daily-report');ElMessage.success('报告已生成');load()}catch(e){};genLoading.value=false}
+    const kpis=reactive({total_merchants:0,online_merchants:0,pay_success_rate:0,avg_rating:0,total_reviews:0,alerts:0})
+    const insights=ref([])
+    const suggestions=ref([])
+
+    const genReport=async()=>{
+      genLoading.value=true
+      try{
+        // 获取实时数据生成洞察
+        const snap=await http.get('/screen/snapshot')
+        const k=snap.kpis||{}
+        Object.assign(kpis,k)
+
+        // 基于数据生成AI洞察
+        const ins=[]
+        if(k.alerts>3){ins.push({level:'warning',title:'预警数量偏高',detail:`当前有${k.alerts}条待处理预警，建议优先处理投诉类预警，避免影响门店评分。建议启动快速响应流程。`})}
+        if(k.pay_success_rate<90){ins.push({level:'warning',title:'支付成功率低于基准',detail:`当前支付成功率${(k.pay_success_rate||0).toFixed(0)}%，低于90%基准线。建议检查支付通道状态和网络稳定性。`})}
+        if(k.avg_rating<3.5){ins.push({level:'info',title:'评价均分需提升',detail:`当前均分${k.avg_rating||0}分，建议分析差评关键词，针对性改善服务质量。AI可辅助生成回复话术。`})}
+        if(k.online_merchants===k.total_merchants){ins.push({level:'success',title:'商户在线率100%',detail:`${k.total_merchants}家商户全部在线，系统运行稳定。累计GMV ¥${(k.total_gmv||0).toLocaleString()}。`})}
+        insights.value=ins
+
+        // 生成运营建议
+        const suggs=[]
+        if(k.alerts>0){suggs.push({action:'优先处理投诉预警',reason:`共${k.alerts}条预警待处理，差评平均浏览500-2000次，及时回复可挽回潜在客户。`,impact:'减少差评曝光率30-50%'})}
+        if(k.total_reviews>0){suggs.push({action:'启动AI批量回复',reason:`共${k.total_reviews}条评价，建议对未回复评价启动AI批量生成回复话术。`,impact:`预计提升回复率至95%+`})}
+        suggs.push({action:'导出运营日报',reason:'将今日运营数据导出为日报，发送给相关决策人。',impact:'数据驱动决策，减少运营盲区'})
+        suggestions.value=suggs
+
+        // 保存到后端
+        try{await http.post('/insights/daily-report',{kpis:k,insights:ins,suggestions:suggs})}catch(e){}
+        ElMessage.success('AI洞察已生成')
+        load()
+      }catch(e){ElMessage.error('生成失败')}
+      genLoading.value=false
+    }
     const load=async()=>{
       loading.value=true
-      try{const r=await http.get('/insights/daily-reports',{params:{page:1,size:20}});items.value=r.items||[]}catch(e){}
+      try{const r=await http.get('/insights/daily-reports',{params:{page:1,size:10}});items.value=r.items||[]}catch(e){}
       loading.value=false
     }
-    onMounted(load)
-    return {items,loading,genLoading,genReport,load}
+    onMounted(async()=>{
+      load()
+      try{const k=await http.get('/screen/kpis');Object.assign(kpis,k)}catch(e){}
+    })
+    return {items,loading,genLoading,kpis,insights,suggestions,genReport,load}
   }
 }
 
@@ -1302,6 +1471,210 @@ const AIChat = {
   }
 }
 
+// ======================== 支付服务商管理 ========================
+const PaymentProviders = {
+  template:`
+<div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="margin-bottom:0">支付服务商配置</h3>
+      <el-button type="primary" size="small" @click="openCreate">新增服务商</el-button>
+    </div>
+  </div>
+  <div class="card">
+    <el-table :data="items" stripe v-loading="loading">
+      <el-table-column prop="id" label="ID" width="60"/>
+      <el-table-column prop="platform" label="平台" width="100">
+        <template #def="s"><el-tag :type="s.row.platform==='wechat_pay'?'success':s.row.platform==='alipay'?'primary':'info'" size="small">{{s.row.platform==='wechat_pay'?'微信支付':s.row.platform==='alipay'?'支付宝':'其他'}}</el-tag></template>
+      </el-table-column>
+      <el-table-column prop="provider_name" label="服务商名称" min-width="140"/>
+      <el-table-column prop="mch_id" label="商户号" width="140"/>
+      <el-table-column prop="mch_name" label="商户名称" width="120"/>
+      <el-table-column prop="app_id" label="AppID" width="120"/>
+      <el-table-column prop="status" label="状态" width="80">
+        <template #def="s"><el-tag :type="s.row.status==='active'?'success':'danger'" size="small">{{s.row.status==='active'?'启用':'停用'}}</el-tag></template>
+      </el-table-column>
+      <el-table-column prop="created_at" label="创建时间" width="120"/>
+      <el-table-column label="操作" width="160" fixed="right">
+        <template #def="s">
+          <el-button link size="small" type="primary" @click="openEdit(s.row)">编辑</el-button>
+          <el-button link size="small" type="danger" @click="doDelete(s.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+  <el-dialog v-model="visible" :title="isEdit?'编辑服务商':'新增服务商'" width="650px" destroy-on-close @opened="onDialogOpen">
+    <el-form :model="form" label-width="110px" label-position="right" size="small">
+      <el-form-item label="平台" required><el-select v-model="form.platform" style="width:100%" :disabled="isEdit"><el-option label="微信支付" value="wechat_pay"/><el-option label="支付宝" value="alipay"/><el-option label="随行付" value="suixingpay"/></el-select></el-form-item>
+      <el-form-item label="服务商名称" required><el-input v-model="form.provider_name"/></el-form-item>
+      <el-form-item label="商户号(MchID)" required><el-input v-model="form.mch_id"/></el-form-item>
+      <el-form-item label="商户名称"><el-input v-model="form.mch_name"/></el-form-item>
+      <el-form-item label="AppID"><el-input v-model="form.app_id"/></el-form-item>
+      <el-form-item label="API密钥"><el-input v-model="form.api_key" type="password" show-password placeholder="留空则不修改"/></el-form-item>
+      <el-form-item label="证书序列号"><el-input v-model="form.serial_no" placeholder="微信支付必填"/></el-form-item>
+      <el-form-item label="商户私钥"><el-input v-model="form.private_key" type="textarea" :rows="4" placeholder="PEM格式私钥，留空则不修改"/></el-form-item>
+      <el-form-item label="平台公钥"><el-input v-model="form.public_key" type="textarea" :rows="3" placeholder="PEM格式公钥，留空则不修改"/></el-form-item>
+      <el-form-item label="平台证书"><el-input v-model="form.platform_cert" type="textarea" :rows="3" placeholder="平台证书PEM，留空则不修改"/></el-form-item>
+      <el-form-item label="证书序列号"><el-input v-model="form.platform_cert_no" placeholder="用于验签"/></el-form-item>
+      <el-form-item label="回调密钥"><el-input v-model="form.webhook_secret"/></el-form-item>
+      <el-form-item label="商户号(天阙)"><el-input v-model="form.merchant_no" placeholder="天阙/随行付商户号"/></el-form-item>
+      <el-form-item label="备注"><el-input v-model="form.remark"/></el-form-item>
+      <el-form-item label="状态"><el-switch v-model="form.status" active-value="active" inactive-value="inactive"/></el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="visible=false">取消</el-button>
+      <el-button type="primary" @click="doSave" :loading="saving">{{isEdit?'保存修改':'创建'}}</el-button>
+    </template>
+  </el-dialog>
+</div>`,
+  setup(){
+    const items=ref([]),loading=ref(false),visible=ref(false),isEdit=ref(false),saving=ref(false)
+    const form=reactive({id:0,platform:'wechat_pay',provider_name:'',mch_id:'',mch_name:'',app_id:'',api_key:'',serial_no:'',private_key:'',public_key:'',platform_cert:'',platform_cert_no:'',webhook_secret:'',merchant_no:'',remark:'',status:'active'})
+    const resetForm=()=>{
+      form.id=0;form.platform='wechat_pay';form.provider_name='';form.mch_id='';form.mch_name='';form.app_id='';form.api_key='';form.serial_no='';form.private_key='';form.public_key='';form.platform_cert='';form.platform_cert_no='';form.webhook_secret='';form.merchant_no='';form.remark='';form.status='active'
+    }
+    const load=async()=>{loading.value=true;try{const r=await http.get('/payment-providers');items.value=r.items||r||[]}catch(e){ElMessage.error('加载失败: '+e.message)}finally{loading.value=false}}
+    const openCreate=()=>{isEdit.value=false;resetForm();visible.value=true}
+    const openEdit=(row)=>{isEdit.value=true;Object.assign(form,{...row,api_key:'',private_key:'',public_key:'',platform_cert:''});visible.value=true}
+    const doSave=async()=>{
+      if(!form.platform||!form.provider_name||!form.mch_id){ElMessage.warning('请填写平台、服务商名称和商户号');return}
+      saving.value=true
+      try{
+        const payload={...form}
+        if(isEdit.value){
+          if(!payload.api_key)delete payload.api_key
+          if(!payload.private_key)delete payload.private_key
+          if(!payload.public_key)delete payload.public_key
+          if(!payload.platform_cert)delete payload.platform_cert
+          await http.put('/payment-providers/'+form.id,payload)
+          ElMessage.success('更新成功')
+        }else{
+          await http.post('/payment-providers',payload)
+          ElMessage.success('创建成功')
+        }
+        visible.value=false;load()
+      }catch(e){ElMessage.error('保存失败: '+e.message)}finally{saving.value=false}
+    }
+    const doDelete=async(row)=>{try{await ElMessageBox.confirm('确认删除服务商 '+row.provider_name+' ?','确认',{type:'warning'});await http.delete('/payment-providers/'+row.id);ElMessage.success('已删除');load()}catch(e){if(e!=='cancel')ElMessage.error('删除失败: '+e.message)}}
+    onMounted(load)
+    return {items,loading,visible,isEdit,saving,form,openCreate,openEdit,doSave,doDelete}
+  }
+}
+
+// ======================== 风险商户管理 ========================
+const RiskMerchants = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">风险商户总数</div><div class="sc-v">{{stats.total||0}}</div><div class="sc-s">全平台统计</div></div><div class="sc-ico">⚠️</div></div>
+    <div class="sc-i"><div><div class="sc-t">待处理</div><div class="sc-v" style="color:#EF4444">{{stats.pending||0}}</div><div class="sc-s">需立即处理</div></div><div class="sc-ico">🔴</div></div>
+    <div class="sc-i"><div><div class="sc-t">高风险</div><div class="sc-v" style="color:#F59E0B">{{stats.high||0}}</div><div class="sc-s">投诉超标/欺诈</div></div><div class="sc-ico">🟡</div></div>
+    <div class="sc-i"><div><div class="sc-t">中风险</div><div class="sc-v" style="color:#6366F1">{{stats.medium||0}}</div><div class="sc-s">需持续监控</div></div><div class="sc-ico">🔵</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="display:flex;gap:10px;align-items:center">
+        <el-select v-model="platform" placeholder="平台" style="width:130px" size="small" clearable @change="load">
+          <el-option label="微信支付" value="wechat_pay"/><el-option label="支付宝" value="alipay"/>
+        </el-select>
+        <el-select v-model="riskLevel" placeholder="风险等级" style="width:110px" size="small" clearable @change="load">
+          <el-option label="高风险" value="high"/><el-option label="中风险" value="medium"/><el-option label="低风险" value="low"/>
+        </el-select>
+        <el-select v-model="handleStatus" placeholder="处理状态" style="width:110px" size="small" clearable @change="load">
+          <el-option label="待处理" value="pending"/><el-option label="处理中" value="processing"/><el-option label="已处理" value="resolved"/>
+        </el-select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <el-button size="small" type="warning" @click="doSync" :loading="syncing">从投诉同步风险商户</el-button>
+        <el-button size="small" type="primary" @click="load">刷新</el-button>
+      </div>
+    </div>
+    <el-table :data="items" stripe v-loading="loading">
+      <el-table-column prop="id" label="ID" width="60"/>
+      <el-table-column prop="platform" label="平台" width="90">
+        <template #def="s"><el-tag :type="s.row.platform==='wechat_pay'?'success':'primary'" size="small">{{s.row.platform==='wechat_pay'?'微信支付':'支付宝'}}</el-tag></template>
+      </el-table-column>
+      <el-table-column prop="mch_id" label="商户号" width="140"/>
+      <el-table-column prop="mch_name" label="商户名称" width="110"/>
+      <el-table-column prop="risk_type" label="风险类型" width="100"/>
+      <el-table-column prop="risk_level" label="风险等级" width="90">
+        <template #def="s"><el-tag :type="s.row.risk_level==='high'?'danger':s.row.risk_level==='medium'?'warning':'info'" size="small">{{s.row.risk_level==='high'?'高风险':s.row.risk_level==='medium'?'中风险':'低风险'}}</el-tag></template>
+      </el-table-column>
+      <el-table-column prop="risk_detail" label="风险详情" min-width="200" show-overflow-tooltip/>
+      <el-table-column prop="complaint_count" label="投诉数" width="80"/>
+      <el-table-column prop="complaint_rate" label="投诉率" width="80"><template #def="s">{{(s.row.complaint_rate||0).toFixed(1)}}%</template></el-table-column>
+      <el-table-column prop="handle_status" label="处理状态" width="90">
+        <template #def="s"><el-tag :type="s.row.handle_status==='pending'?'danger':s.row.handle_status==='processing'?'warning':'success'" size="small">{{s.row.handle_status==='pending'?'待处理':s.row.handle_status==='processing'?'处理中':'已处理'}}</el-tag></template>
+      </el-table-column>
+      <el-table-column prop="detected_at" label="检测时间" width="120"/>
+      <el-table-column label="操作" width="130" fixed="right">
+        <template #def="s">
+          <el-button link size="small" type="primary" @click="openHandle(s.row)" v-if="s.row.handle_status!=='resolved'">处理</el-button>
+          <span v-else style="color:#999;font-size:12px">已处理</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="margin-top:14px;text-align:right"><el-pagination background layout="prev,pager,next,total" :total="total" :page-size="size" v-model:current-page="page" @current-change="load"/></div>
+  </div>
+
+  <el-dialog v-model="handleVisible" title="处理风险商户" width="500px">
+    <div style="margin-bottom:16px">
+      <p><strong>商户号：</strong>{{curItem?.mch_id}}</p>
+      <p><strong>风险类型：</strong>{{curItem?.risk_type}}</p>
+      <p><strong>风险等级：</strong>{{curItem?.risk_level==='high'?'高风险':curItem?.risk_level==='medium'?'中风险':'低风险'}}</p>
+      <p><strong>详情：</strong>{{curItem?.risk_detail}}</p>
+    </div>
+    <el-form label-width="80px" size="small">
+      <el-form-item label="处理方式" required>
+        <el-select v-model="handleForm.action" style="width:100%">
+          <el-option label="标记处理中" value="processing"/>
+          <el-option label="已解决" value="resolved"/>
+          <el-option label="关闭" value="closed"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input v-model="handleForm.remark" type="textarea" :rows="3" placeholder="处理备注..."/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="handleVisible=false">取消</el-button>
+      <el-button type="primary" @click="doHandle" :loading="handling">确认处理</el-button>
+    </template>
+  </el-dialog>
+</div>`,
+  setup(){
+    const items=ref([]),stats=reactive({total:0,pending:0,high:0,medium:0}),loading=ref(false),syncing=ref(false),handling=ref(false)
+    const platform=ref(''),riskLevel=ref(''),handleStatus=ref(''),page=ref(1),size=ref(20),total=ref(0)
+    const handleVisible=ref(false),curItem=ref(null)
+    const handleForm=reactive({action:'processing',remark:''})
+
+    const load=async()=>{
+      loading.value=true
+      try{
+        const r=await http.get('/risk-merchants',{params:{platform:platform.value,risk_level:riskLevel.value,handle_status:handleStatus.value,page:page.value,size:size.value}})
+        items.value=r.items||[];total.value=r.total||0
+      }catch(e){ElMessage.error('加载失败: '+e.message)}finally{loading.value=false}
+    }
+    const loadStats=async()=>{
+      try{const r=await http.get('/risk-merchants/stats');Object.assign(stats,r)}catch(e){}
+    }
+    const doSync=async()=>{
+      syncing.value=true
+      try{const r=await http.post('/risk-merchants/sync');ElMessage.success('同步完成，新增'+((r&&r.count)||0)+'条风险商户');load();loadStats()}catch(e){ElMessage.error('同步失败: '+e.message)}finally{syncing.value=false}
+    }
+    const openHandle=(row)=>{curItem.value=row;handleForm.action='processing';handleForm.remark='';handleVisible.value=true}
+    const doHandle=async()=>{
+      if(!curItem.value)return
+      handling.value=true
+      try{await http.post('/risk-merchants/'+curItem.value.id+'/handle',{action:handleForm.action,remark:handleForm.remark});ElMessage.success('处理成功');handleVisible.value=false;load();loadStats()}catch(e){ElMessage.error('处理失败: '+e.message)}finally{handling.value=false}
+    }
+    onMounted(()=>{load();loadStats()})
+    return {items,stats,loading,syncing,handling,platform,riskLevel,handleStatus,page,size,total,handleVisible,curItem,handleForm,load,loadStats,doSync,openHandle,doHandle}
+  }
+}
+
 // ======================== 路由 ========================
 const routes = [
   {path:'/',redirect:'/dashboard'},
@@ -1326,6 +1699,8 @@ const routes = [
     {path:'settings',component:Settings},
     {path:'ai-chat',component:AIChat},
 	    {path:'platform',component:Platform},
+    {path:'payment-providers',component:PaymentProviders},
+    {path:'risk-merchants',component:RiskMerchants},
   ]}
 ]
 

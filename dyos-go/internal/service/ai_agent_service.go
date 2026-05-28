@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"dyos-go/internal/model"
+	"dyos-go/pkg/deepseek"
 
 	"gorm.io/gorm"
 )
@@ -16,10 +17,15 @@ type AIAgentService struct {
 	db     *gorm.DB
 	mu     sync.Mutex
 	running map[uint]chan struct{}
+	ai     *deepseek.Client
 }
 
 func NewAIAgentService(db *gorm.DB) *AIAgentService {
-	return &AIAgentService{db: db, running: make(map[uint]chan struct{})}
+	return &AIAgentService{
+		db:      db,
+		running: make(map[uint]chan struct{}),
+		ai:      deepseek.NewClient(),
+	}
 }
 
 var agentDefs = []map[string]interface{}{
@@ -179,10 +185,25 @@ func (s *AIAgentService) runTask(task *model.AIAgentTask) {
 			}
 			delay := time.Duration(800+rand.Intn(1400)) * time.Millisecond
 			time.Sleep(delay)
-			progress := 10 + (i+1)*(90/len(steps))
+			progress := 10 + (i+1)*(70/len(steps))
 			s.updateTask(task.ID, "running", progress)
 			_ = step
 		}
+
+		// 调用 DeepSeek API 生成结果
+		if s.ai.Available() {
+			systemPrompt := s.buildSystemPrompt(task.AgentType)
+			userPrompt := s.buildUserPrompt(task.AgentType, task.Params)
+			result, err := s.ai.Chat(systemPrompt, userPrompt)
+			if err == nil && result != "" {
+				s.updateTask(task.ID, "running", 92)
+				s.finishTask(task.ID, result)
+				return
+			}
+			// 降级到模拟结果
+			s.updateTask(task.ID, "running", 90)
+		}
+
 		result := s.generateResult(task.AgentType, task.Params)
 		s.finishTask(task.ID, result)
 	}()
@@ -245,6 +266,40 @@ func (s *AIAgentService) agentSteps(agentType string) []string {
 		return []string{"热点捕捉", "选题策划", "文案创作", "图片生成", "多平台适配", "定时发布"}
 	default:
 		return []string{"分析中", "生成中", "完成"}
+	}
+}
+
+func (s *AIAgentService) buildSystemPrompt(agentType string) string {
+	switch agentType {
+	case "business":
+		return "你是专业的企业经营分析师，擅长数据驱动的经营诊断和增长建议。请基于提供的数据，输出结构化的经营分析报告，包含：健康度评分、关键亮点、风险预警、行动建议。用JSON格式返回。"
+	case "marketing":
+		return "你是资深营销策略专家，擅长制定精准的营销方案和渠道策略。请基于商户信息，输出营销策略方案，包含：营销主题、渠道分配、预算建议、预期ROI。用JSON格式返回。"
+	case "review":
+		return "你是专业的评价管理专家，擅长分析用户评价情感和生成个性化回复。请分析提供的评价内容，输出情感分析结果和回复建议。用JSON格式返回。"
+	case "supply_chain":
+		return "你是供应链管理专家，擅长库存预测和采购优化。请基于商户数据，输出供应链分析，包含：库存预警、采购建议、风险提示。用JSON格式返回。"
+	case "content":
+		return "你是资深社交媒体内容创作者，擅长为门店撰写小红书、抖音、大众点评等平台的营销内容。请创作有吸引力的内容，包含：标题、正文、话题标签、发布建议。用JSON格式返回。"
+	default:
+		return "你是门店运营AI助手，请基于用户需求输出专业的分析和建议。用JSON格式返回。"
+	}
+}
+
+func (s *AIAgentService) buildUserPrompt(agentType string, paramsJSON string) string {
+	switch agentType {
+	case "business":
+		return fmt.Sprintf("请基于以下门店运营数据进行分析，输出经营诊断报告（JSON格式）：\n%s", paramsJSON)
+	case "marketing":
+		return fmt.Sprintf("请为以下商户制定营销策略方案（JSON格式）：\n%s", paramsJSON)
+	case "review":
+		return fmt.Sprintf("请分析以下评价内容并生成回复建议（JSON格式）：\n%s", paramsJSON)
+	case "supply_chain":
+		return fmt.Sprintf("请分析以下库存数据并给出采购建议（JSON格式）：\n%s", paramsJSON)
+	case "content":
+		return fmt.Sprintf("请为以下门店创作社交媒体内容（JSON格式，支持多平台）：\n%s", paramsJSON)
+	default:
+		return fmt.Sprintf("请根据以下参数输出分析结果（JSON格式）：\n%s", paramsJSON)
 	}
 }
 

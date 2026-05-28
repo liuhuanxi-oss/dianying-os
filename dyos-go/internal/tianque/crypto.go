@@ -80,7 +80,11 @@ func (c *RSACrypto) hash(data []byte) ([]byte, crypto.Hash) {
 func BuildSignString(data map[string]interface{}) string {
 	keys := make([]string, 0, len(data))
 	for key, value := range data {
-		if key == "sign" || key == "signType" || value == nil {
+		if key == "sign" || value == nil {
+			continue
+		}
+		// 排除空字符串（保留数字0）
+		if s, ok := value.(string); ok && s == "" {
 			continue
 		}
 		keys = append(keys, key)
@@ -98,8 +102,13 @@ func valueToString(value interface{}) string {
 	case string:
 		return v
 	case map[string]interface{}, []interface{}, []map[string]interface{}, []map[string]string:
-		data, _ := json.Marshal(v)
-		return string(data)
+		// 紧凑JSON，不转义HTML/中文
+		var buf strings.Builder
+		enc := json.NewEncoder(&buf)
+		enc.SetEscapeHTML(false)
+		_ = enc.Encode(v)
+		// Encode在末尾加了\n，去掉
+		return strings.TrimSpace(buf.String())
 	default:
 		return fmt.Sprint(v)
 	}

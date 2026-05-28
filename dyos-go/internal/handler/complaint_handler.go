@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
+	"time"
 
+	"dyos-go/internal/model"
 	"dyos-go/internal/service"
 	"dyos-go/internal/tianque"
 	"dyos-go/pkg/response"
@@ -125,11 +128,10 @@ func (h *ComplaintHandler) Refund(c *gin.Context) {
 	if ok, _ := h.svc.CheckOwnership(uint(id), c.GetUint("tenant_merchant_id")); !ok { response.Error(c, 403, response.CodeForbidden, "无权操作此投诉"); return }
 	var body struct {
 		Amount       float64 `json:"amount"`
-		RefundReason string `json:"refund_reason"`
+		RefundReason string  `json:"refund_reason"`
 	}
 	c.ShouldBindJSON(&body)
 
-	// 尝试通过天阙SDK发起退款
 	refundResult := map[string]interface{}{
 		"complaint_id": id,
 		"channel":      "天阙代子商户退款",
@@ -137,10 +139,26 @@ func (h *ComplaintHandler) Refund(c *gin.Context) {
 	}
 
 	if h.tianque != nil {
+		// 获取投诉详情以提取商户号和交易流水号
+		complaintData, err := h.svc.GetByID(uint(id))
+		if err != nil {
+			refundResult["status"] = "failed"
+			refundResult["error"] = "投诉不存在"
+			response.Error(c, 404, response.CodeBadRequest, "投诉不存在")
+			return
+		}
+		complaint, _ := complaintData["complaint"].(model.Complaint)
+
+		mno := complaint.MerchantNo
+		origOrderNo := complaint.TransactionID
 		paymentAPI := tianque.NewPaymentAPI(h.tianque)
+		ordNo := fmt.Sprintf("RF%d%06d", time.Now().UnixMilli(), id)
 		refundData := map[string]interface{}{
-			"amt":  body.Amount,
-			"reason": body.RefundReason,
+			"mno":          mno,
+			"ordNo":        ordNo,
+			"origOrderNo":  origOrderNo,
+			"amt":          fmt.Sprintf("%.2f", body.Amount),
+			"refundReason": body.RefundReason,
 		}
 		result, err := paymentAPI.Refund(refundData)
 		if err != nil {
@@ -154,6 +172,12 @@ func (h *ComplaintHandler) Refund(c *gin.Context) {
 					refundResult["tianque_status"] = refundStatus
 					refundResult["refund_no"] = respData["refundUuid"]
 				}
+				if bizCode, ok := respData["bizCode"]; ok {
+					refundResult["biz_code"] = bizCode
+				}
+				if bizMsg, ok := respData["bizMsg"]; ok {
+					refundResult["biz_msg"] = bizMsg
+				}
 			}
 			if code, _ := result["code"].(string); code == "0000" {
 				refundResult["status"] = "refunded"
@@ -161,7 +185,6 @@ func (h *ComplaintHandler) Refund(c *gin.Context) {
 			}
 		}
 	} else {
-		// SDK未配置，使用模拟退款
 		refundResult["refund_no"] = "TK_MOCK_" + c.Param("id")
 		refundResult["status"] = "processing"
 		refundResult["note"] = "天阙SDK未配置，使用模拟退款"

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"dyos-go/internal/screen"
 	"dyos-go/internal/service"
@@ -18,19 +19,27 @@ type ScreenHandler struct {
 }
 
 func NewScreenHandler(service *service.ScreenService, hub *screen.Hub) *ScreenHandler {
-	return &ScreenHandler{service: service, hub: hub, upgrader: websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}}
+	return &ScreenHandler{
+		service: service,
+		hub:     hub,
+		upgrader: websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }},
+	}
 }
 
+// --- 平台端大屏 ---
+
 func (h *ScreenHandler) RegisterAdminRoutes(group *gin.RouterGroup) {
-	screenGroup := group.Group("/screen")
+	sg := group.Group("/screen")
 	{
-		screenGroup.GET("/snapshot", h.Snapshot)
-		screenGroup.GET("/kpis", h.KPIs)
-		screenGroup.GET("/map", h.StoreMap)
-		screenGroup.GET("/orders", h.Orders)
-		screenGroup.GET("/agents", h.AgentPipeline)
-		screenGroup.GET("/industries", h.IndustryCompare)
-		screenGroup.GET("/alerts", h.Alerts)
+		sg.GET("/snapshot", h.Snapshot)
+		sg.GET("/kpis", h.KPIs)
+		sg.GET("/map", h.StoreMap)
+		sg.GET("/orders", h.Orders)
+		sg.GET("/agents", h.AgentPipeline)
+		sg.GET("/industries", h.IndustryCompare)
+		sg.GET("/alerts", h.Alerts)
+		sg.GET("/hourly", h.HourlyTrend)
+		sg.GET("/platforms", h.PlatformStats)
 	}
 }
 
@@ -66,32 +75,53 @@ func (h *ScreenHandler) Alerts(c *gin.Context) {
 	response.Success(c, gin.H{"items": h.service.Alerts()})
 }
 
+func (h *ScreenHandler) HourlyTrend(c *gin.Context) {
+	response.Success(c, gin.H{"items": h.service.HourlyTrend()})
+}
+
+func (h *ScreenHandler) PlatformStats(c *gin.Context) {
+	response.Success(c, gin.H{"items": h.service.PlatformStats()})
+}
+
+// --- 商户端大屏 ---
+
 func (h *ScreenHandler) RegisterMerchantRoutes(group *gin.RouterGroup) {
 	sg := group.Group("/screen")
 	{
+		sg.GET("/snapshot", h.MerchantSnapshot)
 		sg.GET("/kpis", h.MerchantKPIs)
 		sg.GET("/orders", h.MerchantOrders)
 		sg.GET("/trend", h.MerchantTrend)
+		sg.GET("/hourly", h.MerchantHourly)
 	}
 }
 
+func (h *ScreenHandler) MerchantSnapshot(c *gin.Context) {
+	merchantID := h.getMerchantID(c)
+	response.Success(c, h.service.MerchantSnap(merchantID))
+}
+
 func (h *ScreenHandler) MerchantKPIs(c *gin.Context) {
-	response.Success(c, h.service.KPIs())
+	merchantID := h.getMerchantID(c)
+	response.Success(c, h.service.MerchantKPIs(merchantID))
 }
 
 func (h *ScreenHandler) MerchantOrders(c *gin.Context) {
-	response.Success(c, gin.H{"items": h.service.RealTimeOrders(20)})
+	merchantID := h.getMerchantID(c)
+	response.Success(c, gin.H{"items": h.service.MerchantOrders(merchantID, 20)})
 }
 
 func (h *ScreenHandler) MerchantTrend(c *gin.Context) {
-	response.Success(c, map[string]interface{}{
-		"trend": []map[string]interface{}{
-			{"date": "05-18", "gmv": 25300}, {"date": "05-19", "gmv": 26800},
-			{"date": "05-20", "gmv": 24500}, {"date": "05-21", "gmv": 29200},
-			{"date": "05-22", "gmv": 27800}, {"date": "05-23", "gmv": 30500}, {"date": "05-24", "gmv": 28600},
-		},
-	})
+	merchantID := h.getMerchantID(c)
+	response.Success(c, gin.H{"items": h.service.MerchantTrend(merchantID)})
 }
+
+func (h *ScreenHandler) MerchantHourly(c *gin.Context) {
+	merchantID := h.getMerchantID(c)
+	response.Success(c, gin.H{"items": h.service.MerchantHourly(merchantID)})
+}
+
+// --- WebSocket ---
 
 func (h *ScreenHandler) WebSocket(c *gin.Context) {
 	conn, err := h.upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -105,4 +135,30 @@ func (h *ScreenHandler) WebSocket(c *gin.Context) {
 			return
 		}
 	}
+}
+
+// --- 辅助 ---
+
+func (h *ScreenHandler) getMerchantID(c *gin.Context) uint {
+	if mid, exists := c.Get("merchant_id"); exists {
+		switch v := mid.(type) {
+		case uint:
+			return v
+		case float64:
+			return uint(v)
+		case int:
+			return uint(v)
+		}
+	}
+	idStr := c.Query("merchant_id")
+	if idStr == "" {
+		idStr = c.GetHeader("X-Merchant-ID")
+	}
+	if idStr != "" {
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err == nil {
+			return uint(id)
+		}
+	}
+	return 0
 }

@@ -95,22 +95,19 @@ func (c *Client) buildRequest(data map[string]interface{}) (map[string]interface
 		data = map[string]interface{}{}
 	}
 	reqID := newReqID()
-	timestamp := time.Now().UnixMilli()
+	// 天阙timestamp格式: yyyyMMddHHmmss（北京时间）
+	timestamp := time.Now().Format("20060102150405")
+
 	body := map[string]interface{}{
+		"signType":  "RSA",
+		"version":   "1.0",
 		"orgId":     c.orgID,
 		"reqId":     reqID,
 		"timestamp": timestamp,
-		"version":   "1.0",
-		"signType":  "RSA",
+		"reqData":   data,
 	}
-	if len(data) > 0 {
-		body["reqData"] = data
-	}
-	signData := copyMap(data)
-	signData["orgId"] = c.orgID
-	signData["reqId"] = reqID
-	signData["timestamp"] = timestamp
-	sign, err := c.crypto.Sign(BuildSignString(signData))
+
+	sign, err := c.crypto.Sign(BuildSignString(body))
 	if err != nil {
 		return nil, err
 	}

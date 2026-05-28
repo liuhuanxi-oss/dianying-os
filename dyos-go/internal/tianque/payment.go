@@ -40,7 +40,6 @@ func (api *PaymentAPI) Query(data map[string]interface{}) (map[string]interface{
 }
 
 func (api *PaymentAPI) Refund(data map[string]interface{}) (map[string]interface{}, error) {
-	setDefault(data, "refundType", "01")
 	return api.client.Post("/order/refund", data)
 }
 
