@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"embed"
+	"flag"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -16,10 +19,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:embed admin-spa
+var adminSPA embed.FS
+
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 
-	cfg, err := config.Load()
+	configPath := flag.String("config", "config.yaml", "配置文件路径")
+	flag.Parse()
+
+	cfg, err := config.LoadPath(*configPath)
 	if err != nil {
 		log.Fatalf("加载配置失败: %v", err)
 	}
@@ -30,7 +39,13 @@ func main() {
 		db = nil
 	}
 
-	r := router.New(db, cfg)
+	// 内嵌前端静态文件
+	var spaFS fs.FS
+	if cfg.Database.Driver == "sqlite" || cfg.Server.ServeSPA {
+		spaFS, _ = fs.Sub(adminSPA, "admin-spa")
+	}
+
+	r := router.New(db, cfg, spaFS)
 	srv := &http.Server{
 		Addr:         cfg.Server.Addr(),
 		Handler:      r,
@@ -40,7 +55,7 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("店赢OS服务启动于 %s", cfg.Server.Addr())
+		log.Printf("店赢OS服务启动于 %s (driver=%s)", cfg.Server.Addr(), cfg.Database.Driver)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("启动服务失败: %v", err)
 		}

@@ -8,22 +8,35 @@ import (
 	"dyos-go/internal/model"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func ConnectDatabase(cfg config.DatabaseConfig) (*gorm.DB, error) {
-	db, err := gorm.Open(mysql.Open(cfg.DSN()), &gorm.Config{})
+	var dialector gorm.Dialector
+	if cfg.Driver == "sqlite" {
+		dialector = sqlite.Open(cfg.DSN())
+	} else {
+		dialector = mysql.Open(cfg.DSN())
+	}
+	db, err := gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		return nil, err
+	if cfg.Driver != "sqlite" {
+		sqlDB, err := db.DB()
+		if err != nil {
+			return nil, err
+		}
+		sqlDB.SetMaxOpenConns(50)
+		sqlDB.SetMaxIdleConns(10)
+		sqlDB.SetConnMaxLifetime(5 * time.Minute)
+		sqlDB.SetConnMaxIdleTime(2 * time.Minute)
+	} else {
+		// SQLite: 开启 WAL 模式提升并发
+		db.Exec("PRAGMA journal_mode=WAL")
+		db.Exec("PRAGMA busy_timeout=5000")
 	}
-	sqlDB.SetMaxOpenConns(50)
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetConnMaxLifetime(5 * time.Minute)
-	sqlDB.SetConnMaxIdleTime(2 * time.Minute)
 	AutoMigrate(db)
 	return db, nil
 }

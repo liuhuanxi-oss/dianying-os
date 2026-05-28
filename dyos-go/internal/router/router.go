@@ -1,7 +1,9 @@
 package router
 
 import (
+	"io/fs"
 	"log"
+	"net/http"
 	"strconv"
 
 	"dyos-go/internal/config"
@@ -18,7 +20,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
+func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery(), middleware.RateLimit(), middleware.CORS())
 
@@ -120,6 +122,14 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 	knowledgeService := service.NewKnowledgeService(db)
 	knowledgeHandler := handler.NewKnowledgeHandler(knowledgeService)
 
+	// 支付服务商管理
+	paymentProviderService := service.NewPaymentProviderService(db)
+	paymentProviderHandler := handler.NewPaymentProviderHandler(paymentProviderService)
+
+	// 风险商户管理
+	riskMerchantService := service.NewRiskMerchantService(db)
+	riskMerchantHandler := handler.NewRiskMerchantHandler(riskMerchantService)
+
 	authHandler := handler.NewAuthHandler(db)
 	r.POST("/api/login", authHandler.Login)
 	r.POST("/api/auth/login", authHandler.Login)
@@ -196,6 +206,10 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 					complaintHandler.SetTianqueClient(tianqueClient)
 			}
 		}
+
+		// 支付服务商 + 风险商户（总平台管理）
+		paymentProviderHandler.RegisterRoutes(admin)
+		riskMerchantHandler.RegisterRoutes(admin)
 	}
 
 	merchant := r.Group("/api/merchant")
@@ -286,6 +300,11 @@ func New(db *gorm.DB, cfg *config.Config) *gin.Engine {
 		productRankHandler.RegisterMerchantRoutes(merchant)
 		settingsHandler.RegisterMerchantRoutes(merchant)
 		knowledgeHandler.RegisterMerchantRoutes(merchant)
+	}
+
+	// 内嵌前端SPA (璇玑NAS模式)
+	if spaFS != nil {
+		r.Use(gin.WrapH(http.FileServer(http.FS(spaFS))))
 	}
 
 	return r

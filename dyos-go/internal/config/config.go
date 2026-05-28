@@ -16,19 +16,22 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Host string
-	Port int
+	Host     string
+	Port     int
+	ServeSPA bool // 是否内嵌前端（NAS模式默认开启）
 }
 
 type DatabaseConfig struct {
-	Host      string
-	Port      string
-	User      string
-	Password  string
-	Name      string
-	Charset   string
+	Driver   string
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Name     string
+	Path     string // SQLite 文件路径
+	Charset  string
 	ParseTime bool
-	Loc       string
+	Loc      string
 }
 
 type TianqueConfig struct {
@@ -49,16 +52,26 @@ type LogConfig struct {
 }
 
 func Load() (*Config, error) {
+	return LoadPath("")
+}
+
+func LoadPath(configPath string) (*Config, error) {
 	_ = godotenv.Load("../.env", "../../.env", "../../../.env", ".env")
 
 	v := viper.New()
-	v.SetConfigName("config")
-	v.SetConfigType("yaml")
-	v.AddConfigPath(".")
-	v.AddConfigPath("./dyos-go")
+	if configPath != "" {
+		v.SetConfigFile(configPath)
+	} else {
+		v.SetConfigName("config")
+		v.SetConfigType("yaml")
+		v.AddConfigPath(".")
+		v.AddConfigPath("./dyos-go")
+	}
 
 	v.SetDefault("server.host", "0.0.0.0")
 	v.SetDefault("server.port", 8081)
+	v.SetDefault("database.driver", "mysql")
+	v.SetDefault("database.path", "dyos.db")
 	v.SetDefault("database.charset", "utf8mb4")
 	v.SetDefault("database.parse_time", true)
 	v.SetDefault("database.loc", "Local")
@@ -80,15 +93,18 @@ func Load() (*Config, error) {
 
 	cfg := &Config{
 		Server: ServerConfig{
-			Host: v.GetString("server.host"),
-			Port: v.GetInt("server.port"),
+			Host:     v.GetString("server.host"),
+			Port:     v.GetInt("server.port"),
+			ServeSPA: v.GetBool("server.serve_spa"),
 		},
 		Database: DatabaseConfig{
+			Driver:    firstNonEmpty(v.GetString("DB_DRIVER"), v.GetString("database.driver")),
 			Host:      v.GetString("MYSQL_HOST"),
 			Port:      v.GetString("MYSQL_PORT"),
 			User:      v.GetString("MYSQL_USER"),
 			Password:  v.GetString("MYSQL_PASSWORD"),
 			Name:      v.GetString("MYSQL_DATABASE"),
+			Path:      v.GetString("DB_PATH"),
 			Charset:   v.GetString("database.charset"),
 			ParseTime: v.GetBool("database.parse_time"),
 			Loc:       v.GetString("database.loc"),
@@ -108,6 +124,11 @@ func Load() (*Config, error) {
 		Log: LogConfig{Level: v.GetString("log.level")},
 	}
 
+	// SQLite模式自动开启前端内嵌
+	if cfg.Database.Driver == "sqlite" {
+		cfg.Server.ServeSPA = true
+	}
+
 	return cfg, nil
 }
 
@@ -121,6 +142,12 @@ func firstNonEmpty(values ...string) string {
 }
 
 func (c DatabaseConfig) DSN() string {
+	if c.Driver == "sqlite" {
+		if c.Path == "" {
+			return "dyos.db"
+		}
+		return c.Path
+	}
 	parseTime := "False"
 	if c.ParseTime {
 		parseTime = "True"

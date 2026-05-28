@@ -1,0 +1,38 @@
+# ============================================================
+# 店赢OS - 宝塔定时任务配置
+# 进入宝塔面板 → 计划任务 → 添加
+# ============================================================
+
+# ---------- 任务1: 日志轮转 ----------
+# 类型: Shell脚本
+# 名称: dyos-日志轮转
+# 周期: 每天 凌晨 2:00
+# 命令:
+/usr/sbin/logrotate -v /etc/logrotate.d/dyos-server >> /var/log/logrotate-dyos.log 2>&1
+
+# ---------- 任务2: 数据库备份 ----------
+# 类型: Shell脚本
+# 名称: dyos-数据库备份
+# 周期: 每天 凌晨 3:00
+# 命令:
+bash /www/wwwroot/os.detian.xin/scripts/backup-db.sh >> /www/wwwroot/os.detian.xin/logs/backup-db.log 2>&1
+
+# ---------- 任务3: 服务健康监控 ----------
+# 类型: Shell脚本
+# 名称: dyos-服务监控
+# 周期: 每5分钟
+# 命令:
+#!/bin/bash
+HEALTH=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8081/api/health 2>/dev/null || echo "000")
+if [ "$HEALTH" != "200" ]; then
+    echo "[$(date)] 健康检查失败 (HTTP ${HEALTH})，尝试重启..."
+    systemctl restart dyos-server 2>/dev/null || supervisorctl restart dyos-server 2>/dev/null
+fi
+
+# ---------- 任务4: 备份文件清理 ----------
+# 类型: Shell脚本
+# 名称: dyos-清理过期备份
+# 周期: 每天 凌晨 4:00
+# 命令:
+find /www/wwwroot/os.detian.xin/backups/ -type f -mtime +30 -delete 2>/dev/null
+find /www/wwwroot/os.detian.xin/logs/ -name "*.gz" -mtime +30 -delete 2>/dev/null

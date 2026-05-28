@@ -1,0 +1,13 @@
+# 店赢OS 璇玑AI NAS 配置
+# 使用: ./dyos-nas -config config-nas.yaml
+
+server:
+  host: 0.0.0.0
+  port: 8081
+
+database:
+  driver: sqlite
+  path: dyos.db
+
+log:
+  level: info

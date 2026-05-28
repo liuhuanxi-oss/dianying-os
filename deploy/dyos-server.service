@@ -1,0 +1,56 @@
+# ============================================================
+# 店赢OS - systemd 进程守护配置
+# 适用于 AlmaLinux 8.10 / CentOS 8+
+# 文件路径: /etc/systemd/system/dyos-server.service
+# ============================================================
+
+[Unit]
+Description=店赢OS API 服务 (dyos-server)
+Documentation=https://os.detian.xin
+After=network-online.target mysqld.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www
+Group=www
+WorkingDirectory=/www/wwwroot/os.detian.xin
+ExecStart=/www/wwwroot/os.detian.xin/dyos-server --env=release
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -SIGTERM $MAINPID
+
+# 环境变量
+Environment="GIN_MODE=release"
+Environment="TZ=Asia/Shanghai"
+
+# 自动重启
+Restart=on-failure
+RestartSec=5s
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# 日志
+StandardOutput=append:/www/wwwroot/os.detian.xin/logs/dyos-server.log
+StandardError=append:/www/wwwroot/os.detian.xin/logs/dyos-server-error.log
+
+# 安全加固
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/www/wwwroot/os.detian.xin /tmp
+ReadOnlyPaths=/etc/ssl/certs
+
+# 资源限制
+LimitNOFILE=65535
+LimitNPROC=4096
+MemoryMax=512M
+CPUQuota=200%
+
+# 优雅关闭超时
+TimeoutStopSec=15s
+KillMode=mixed
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
