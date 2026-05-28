@@ -176,7 +176,12 @@ func (s *ScreenService) IndustryCompare() []map[string]interface{} {
 			Count int64   `gorm:"column:cnt"`
 			GMV   float64 `gorm:"column:gmv"`
 		}, 0)
-		s.db.Raw("SELECT JSON_UNQUOTE(JSON_EXTRACT(apply_data, '$.行业大类')) as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND JSON_EXTRACT(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5").Scan(&rows)
+		isSQLite := s.db.Dialector.Name() == "sqlite"
+		sql := "SELECT JSON_UNQUOTE(JSON_EXTRACT(apply_data, '$.行业大类')) as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND JSON_EXTRACT(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5"
+		if isSQLite {
+			sql = "SELECT REPLACE(json_extract(apply_data, '$.行业大类'), '\"', '') as name, COUNT(*) as cnt, COALESCE(SUM(total_amount),0) as gmv FROM payment_merchants WHERE apply_data != '' AND json_extract(apply_data, '$.行业大类') IS NOT NULL GROUP BY name ORDER BY cnt DESC LIMIT 5"
+		}
+		s.db.Raw(sql).Scan(&rows)
 		if len(rows) > 0 {
 			for _, r := range rows {
 				items = append(items, map[string]interface{}{"industry": r.Name, "merchants": r.Count, "gmv": r.GMV})
@@ -252,6 +257,9 @@ func (s *ScreenService) HourlyTrend() []map[string]interface{} {
 func (s *ScreenService) PlatformStats() []map[string]interface{} {
 	items := make([]map[string]interface{}, 0)
 	if s.db != nil {
+		if s.db.Dialector.Name() == "sqlite" {
+			return items
+		}
 		type PlatRow struct {
 			Name  string `gorm:"column:platform"`
 			Count int64  `gorm:"column:cnt"`
