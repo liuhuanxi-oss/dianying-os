@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家端深度运营 - 店赢OS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-primary); min-height: 100vh; }
+
+        .layout { display: flex; min-height: 100vh; }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
+        .logo h1 { font-size: 20px; font-weight: 700; }
+        .logo span { font-size: 12px; opacity: 0.8; }
+        .nav-item { padding: 14px 24px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active { background: rgba(255,255,255,0.2); border-left: 4px solid var(--secondary); }
+        .nav-item svg { width: 20px; height: 20px; }
+
+        /* 主内容 */
+        .main { flex: 1; margin-left: 260px; padding: 32px; }
+        .page-header { margin-bottom: 32px; }
+        .page-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .page-header p { color: var(--text-secondary); }
+
+        /* 功能模块切换 */
+        .module-tabs { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+        .module-tab {
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .module-tab:hover { border-color: var(--primary); color: var(--primary); }
+        .module-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+        .stat-card.success { border-left-color: var(--secondary); }
+        .stat-card.warning { border-left-color: var(--warning); }
+        .stat-card.info { border-left-color: var(--info); }
+        .stat-card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+        .stat-card .value { font-size: 32px; font-weight: 700; color: var(--text-primary); }
+        .stat-card .sub { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .stat-card .trend.up { background: #d1fae5; color: #065f46; }
+        .stat-card .trend.down { background: #fee2e2; color: #991b1b; }
+
+        /* 内容区块 */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 20px 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h3 { font-size: 18px; font-weight: 600; }
+        .card-body { padding: 32px; }
+
+        /* 排班相关 */
+        .schedule-grid { display: grid; grid-template-columns: 1fr 350px; gap: 24px; }
+        .schedule-calendar { background: var(--bg-light); border-radius: var(--radius); padding: 24px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .calendar-header h4 { font-size: 18px; font-weight: 600; }
+        .calendar-nav { display: flex; gap: 8px; }
+        .calendar-nav button { padding: 8px 12px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px; }
+        .weekday { text-align: center; font-weight: 600; color: var(--text-secondary); font-size: 14px; }
+        .schedule-slots { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .schedule-slot {
+            min-height: 80px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .schedule-slot:hover { border-color: var(--primary); }
+        .schedule-slot .date { font-weight: 600; margin-bottom: 8px; }
+        .schedule-slot .staff-count { font-size: 12px; color: var(--text-secondary); }
+        .schedule-slot.has-staff { border-color: var(--secondary); background: #f0fdf4; }
+        .staff-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        .ai-suggestion {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .ai-suggestion .icon { font-size: 24px; margin-bottom: 8px; }
+        .ai-suggestion p { color: #92400e; font-size: 14px; line-height: 1.6; }
+        .ai-suggestion strong { font-weight: 600; }
+
+        /* 员工列表 */
+        .employee-list { margin-top: 24px; }
+        .employee-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .employee-item:last-child { border-bottom: none; }
+        .employee-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .employee-info { flex: 1; }
+        .employee-info h4 { font-size: 16px; font-weight: 600; }
+        .employee-info p { font-size: 13px; color: var(--text-secondary); }
+        .employee-stats { display: flex; gap: 24px; }
+        .employee-stat { text-align: center; }
+        .employee-stat .num { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .employee-stat .label { font-size: 11px; color: var(--text-secondary); }
+
+        /* 库存预警 */
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .inventory-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--secondary);
+        }
+        .inventory-item.warning { border-left-color: var(--warning); }
+        .inventory-item.danger { border-left-color: var(--danger); }
+        .inventory-icon { width: 48px; height: 48px; border-radius: 12px; background: white; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .inventory-info { flex: 1; }
+        .inventory-info h4 { font-size: 16px; font-weight: 600; }
+        .inventory-info p { font-size: 13px; color: var(--text-secondary); }
+        .inventory-stock {
+            text-align: right;
+        }
+        .inventory-stock .num { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .inventory-stock .unit { font-size: 12px; color: var(--text-secondary); }
+        .stock-bar { width: 100px; height: 8px; background: var(--border); border-radius: 4px; margin-top: 8px; overflow: hidden; }
+        .stock-bar-fill { height: 100%; background: var(--secondary); border-radius: 4px; }
+
+        /* 采购单 */
+        .purchase-form { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
+
+        /* 按钮 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-success:hover { background: var(--secondary-dark); }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-outline { background: white; color: var(--text-primary); border: 2px solid var(--border); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* 员工绩效 */
+        .performance-table { width: 100%; border-collapse: collapse; }
+        .performance-table th, .performance-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .performance-table th { background: var(--bg-light); font-weight: 600; color: var(--text-secondary); font-size: 14px; }
+        .performance-table tr:hover { background: var(--bg-light); }
+        .rank-badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ffb800); color: #7c5800; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #a8a8a8); color: #555; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #b8722d); color: white; }
+        .score-badge { padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+        .score-high { background: #d1fae5; color: #065f46; }
+        .score-mid { background: #fef3c7; color: #92400e; }
+        .score-low { background: #fee2e2; color: #991b1b; }
+
+        /* 熟客识别 */
+        .customer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .customer-card {
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            padding: 24px;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .customer-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: var(--shadow); }
+        .customer-card.vip { border-color: #ffd700; background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%); }
+        .vip-badge { position: absolute; top: 16px; right: 16px; padding: 4px 12px; background: #ffd700; color: #7c5800; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .customer-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .customer-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
+        .customer-info h4 { font-size: 18px; font-weight: 600; }
+        .customer-info p { font-size: 13px; color: var(--text-secondary); }
+        .customer-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .customer-tag { padding: 4px 12px; background: white; border-radius: 20px; font-size: 12px; color: var(--text-secondary); }
+        .customer-tag.active { background: var(--primary); color: white; }
+        .customer-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .customer-stat { text-align: center; padding: 12px; background: white; border-radius: 8px; }
+        .customer-stat .num { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .customer-stat .label { font-size: 11px; color: var(--text-secondary); }
+
+        /* 供应商对账 */
+        .supplier-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+        .supplier-tab { padding: 16px 24px; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; transition: all 0.3s; }
+        .supplier-tab:hover { color: var(--primary); }
+        .supplier-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .reconciliation-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+        .reconciliation-table th, .reconciliation-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        .reconciliation-table th { background: var(--bg-light); font-weight: 600; }
+        .status-tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-match { background: #d1fae5; color: #065f46; }
+        .status-diff { background: #fee2e2; color: #991b1b; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+
+        /* 图表区域 */
+        .chart-container { height: 300px; background: var(--bg-light); border-radius: var(--radius); padding: 24px; position: relative; }
+        .chart-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .chart-bars { display: flex; align-items: flex-end; gap: 24px; height: 200px; padding: 20px; }
+        .chart-bar { width: 40px; background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 8px 8px 0 0; position: relative; transition: all 0.3s; }
+        .chart-bar:hover { background: linear-gradient(180deg, var(--secondary) 0%, var(--secondary-dark) 100%); }
+        .chart-bar-label { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); font-size: 12px; color: var(--text-secondary); }
+        .chart-bar-value { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-primary); }
+
+        /* 雷达图 */
+        .radar-chart { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .radar-item { text-align: center; }
+        .radar-circle { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
+        .radar-label { font-size: 12px; color: var(--text-secondary); }
+
+        /* 进度环 */
+        .progress-ring { position: relative; width: 120px; height: 120px; margin: 0 auto; }
+        .progress-ring svg { transform: rotate(-90deg); }
+        .progress-ring circle { fill: none; stroke-width: 8; }
+        .progress-ring .bg { stroke: var(--border); }
+        .progress-ring .progress { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 1s; }
+        .progress-ring .text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .progress-ring .text .num { font-size: 24px; font-weight: 700; }
+        .progress-ring .text .label { font-size: 12px; color: var(--text-secondary); }
+
+        /* 会员等级 */
+        .membership-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            padding: 32px;
+            color: white;
+            margin-bottom: 32px;
+        }
+        .membership-card.gold { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .membership-card.diamond { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+        .membership-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .membership-level { font-size: 24px; font-weight: 700; }
+        .membership-points { font-size: 36px; font-weight: 700; }
+        .membership-benefits { display: flex; gap: 16px; }
+        .benefit-item { padding: 8px 16px; background: rgba(255,255,255,0.2); border-radius: 20px; font-size: 13px; }
+
+        /* 弹窗 */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal { background: white; border-radius: var(--radius); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; transform: translateY(-20px); transition: all 0.3s; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal-header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; font-weight: 600; }
+        .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--bg-light); cursor: pointer; font-size: 18px; }
+        .modal-body { padding: 32px; }
+        .modal-footer { padding: 20px 32px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 16px; }
+
+        /* AI分析卡片 */
+        .ai-analysis { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: var(--radius); padding: 24px; margin-top: 24px; }
+        .ai-analysis h4 { color: #4338ca; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .ai-analysis ul { list-style: none; }
+        .ai-analysis li { padding: 8px 0; color: #4338ca; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .ai-analysis li::before { content: '💡'; }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .schedule-grid { grid-template-columns: 1fr; }
+            .purchase-form { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main { margin-left: 0; padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>店赢OS</h1>
+                <span>商家端深度运营</span>
+            </div>
+            <nav>
+                <div class="nav-item active" onclick="switchModule('schedule')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span>智能排班</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('inventory')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <span>库存预警</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('performance')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span>员工绩效</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('customer')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span>熟客识别</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('supplier')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span>供应商对账</span>
+                </div>
+                <div class="nav-item" onclick="switchModule('overview')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    <span>运营总览</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="main">
+            <div class="page-header">
+                <h2>🏪 商家端深度运营中心</h2>
+                <p>AI驱动的智能运营，让您的生意更轻松</p>
+            </div>
+
+            <!-- 概览统计 -->
+            <div class="stats-grid" id="overviewStats">
+                <div class="stat-card success">
+                    <h3>今日营收</h3>
+                    <div class="value">¥12,856</div>
+                    <div class="sub">较昨日 +18.5% <span class="trend up">↑</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>活跃顾客</h3>
+                    <div class="value">328<span style="font-size:16px">人</span></div>
+                    <div class="sub">新增熟客 12 人</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>库存预警</h3>
+                    <div class="value">5<span style="font-size:16px">件</span></div>
+                    <div class="sub">急需补货 2 件</div>
+                </div>
+                <div class="stat-card info">
+                    <h3>员工在岗</h3>
+                    <div class="value">12<span style="font-size:16px">人</span></div>
+                    <div class="sub">排班完成率 100%</div>
+                </div>
+            </div>
+
+            <!-- ==================== 智能排班模块 ==================== -->
+            <div id="module-schedule" class="module-content">
+                <div class="card-header">
+                    <h3>📅 智能排班助手</h3>
+                    <button class="btn btn-primary" onclick="openModal('schedule-modal')">+ 添加排班</button>
+                </div>
+                <div class="card-body">
+                    <!-- AI排班建议 -->
+                    <div class="ai-suggestion">
+                        <div class="icon">🤖</div>
+                        <p><strong>AI智能建议：</strong>根据历史数据和下周的天气预报分析，预计下周一至周三客流较平日减少约20%，建议减少1名前台人员；周四至周六客流预计增长35%，建议增加2名服务员。同时，"小张"周三已申请请假，已自动安排"小李"替班。</p>
+                    </div>
+
+                    <div class="schedule-grid">
+                        <div class="schedule-calendar">
+                            <div class="calendar-header">
+                                <h4>2024年1月 第三周</h4>
+                                <div class="calendar-nav">
+                                    <button>&lt; 上周</button>
+                                    <button>今天</button>
+                                    <button>下周 &gt;</button>
+                                </div>
+                            </div>
+                            <div class="weekdays">
+                                <div class="weekday">周一</div>
+                                <div class="weekday">周二</div>
+                                <div class="weekday">周三</div>
+                                <div class="weekday">周四</div>
+                                <div class="weekday">周五</div>
+                                <div class="weekday">周六</div>
+                                <div class="weekday">周日</div>
+                            </div>
+                            <div class="schedule-slots">
+                                <div class="schedule-slot has-staff">
+                                    <div class="date">15</div>
+                                    <span class="staff-tag">小张</span><span class="staff-tag">小李</span>
+                                    <div class="staff-count">需4人/已排3人</div>
+                                </div>
+                                <div class="schedule-slot has-staff">
+                                    <div class="date">16</div>
+                                    <span class="staff-tag">小王</span><span class="staff-tag">小赵</span>
+                                    <div class="staff-count">需4人/已排4人 ✓</div>
+                                </div>
+                                <div class="schedule-slot has-staff">
+                                    <div class="date">17</div>
+                                    <span class="staff-tag">小李</span><span class="staff-tag">小周</span>
+                                    <div class="staff-count">需3人/已排3人 ✓</div>
+                                </div>
+                                <div class="schedule-slot has-staff" style="background:#fef3c7;border-color:#f59e0b;">
+                                    <div class="date">18 <span style="background:#f59e0b;color:white;padding:2px 6px;border-radius:4px;font-size:10px;">周末</span></div>
+                                    <span class="staff-tag">小张</span><span class="staff-tag">小李</span><span class="staff-tag">小王</span><span class="staff-tag">+1</span>
+                                    <div class="staff-count">需6人/已排5人</div>
+                                </div>
+                                <div class="schedule-slot has-staff" style="background:#fef3c7;border-color:#f59e0b;">
+                                    <div class="date">19 <span style="background:#f59e0b;color:white;padding:2px 6px;border-radius:4px;font-size:10px;">周末</span></div>
+                                    <span class="staff-tag">小张</span><span class="staff-tag">小李</span><span class="staff-tag">小王</span>
+                                    <div class="staff-count">需6人/已排4人</div>
+                                </div>
+                                <div class="schedule-slot">
+                                    <div class="date">20</div>
+                                    <div class="staff-count">点击安排排班</div>
+                                </div>
+                                <div class="schedule-slot">
+                                    <div class="date">21</div>
+                                    <div class="staff-count">点击安排排班</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 style="margin-bottom:16px;font-size:16px;">👥 员工列表</h4>
+                            <div class="employee-list" style="background:white;border-radius:12px;">
+                                <div class="employee-item">
+                                    <div class="employee-avatar">张</div>
+                                    <div class="employee-info">
+                                        <h4>张小明</h4>
+                                        <p>服务员 | 正式员工</p>
+                                    </div>
+                                    <div class="employee-stats">
+                                        <div class="employee-stat"><div class="num">98</div><div class="label">评分</div></div>
+                                        <div class="employee-stat"><div class="num">5</div><div class="label">本周班次</div></div>
+                                    </div>
+                                </div>
+                                <div class="employee-item">
+                                    <div class="employee-avatar" style="background:#10b981;">李</div>
+                                    <div class="employee-info">
+                                        <h4>李小红</h4>
+                                        <p>收银员 | 正式员工</p>
+                                    </div>
+                                    <div class="employee-stats">
+                                        <div class="employee-stat"><div class="num">96</div><div class="label">评分</div></div>
+                                        <div class="employee-stat"><div class="num">4</div><div class="label">本周班次</div></div>
+                                    </div>
+                                </div>
+                                <div class="employee-item">
+                                    <div class="employee-avatar" style="background:#f59e0b;">王</div>
+                                    <div class="employee-info">
+                                        <h4>王小强</h4>
+                                        <p>后厨 | 正式员工</p>
+                                    </div>
+                                    <div class="employee-stats">
+                                        <div class="employee-stat"><div class="num">95</div><div class="label">评分</div></div>
+                                        <div class="employee-stat"><div class="num">5</div><div class="label">本周班次</div></div>
+                                    </div>
+                                </div>
+                                <div class="employee-item">
+                                    <div class="employee-avatar" style="background:#6366f1;">赵</div>
+                                    <div class="employee-info">
+                                        <h4>赵雅琪</h4>
+                                        <p>服务员 | 兼职</p>
+                                    </div>
+                                    <div class="employee-stats">
+                                        <div class="employee-stat"><div class="num">94</div><div class="label">评分</div></div>
+                                        <div class="employee-stat"><div class="num">3</div><div class="label">本周班次</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ai-analysis">
+                                <h4>📊 排班优化分析</h4>
+                                <ul>
+                                    <li>小张周三请假，系统已自动安排替班</li>
+                                    <li>周末人手建议增加2人，当前缺1人</li>
+                                    <li>小赵本周工时偏低，可适当增加班次</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 库存预警模块 ==================== -->
+            <div id="module-inventory" class="module-content" style="display:none;">
+                <div class="card-header">
+                    <h3>📦 库存智能预警</h3>
+                    <div style="display:flex;gap:12px;">
+                        <button class="btn btn-outline" onclick="openModal('purchase-modal')">生成采购单</button>
+                        <button class="btn btn-primary" onclick="openModal('inventory-modal')">+ 添加库存</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- 预警统计 -->
+                    <div class="stats-grid" style="margin-bottom:24px;">
+                        <div class="stat-card danger">
+                            <h3>⚠️ 紧急预警</h3>
+                            <div class="value">2<span style="font-size:16px">件</span></div>
+                            <div class="sub">预计3天内缺货</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>⚡ 库存不足</h3>
+                            <div class="value">5<span style="font-size:16px">件</span></div>
+                            <div class="sub">建议本周补货</div>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>✅ 库存充足</h3>
+                            <div class="value">28<span style="font-size:16px">件</span></div>
+                            <div class="sub">可维持15天以上</div>
+                        </div>
+                    </div>
+
+                    <!-- 库存列表 -->
+                    <h4 style="margin-bottom:16px;">📋 库存预警明细</h4>
+                    <div class="inventory-grid">
+                        <div class="inventory-item danger">
+                            <div class="inventory-icon">🧋</div>
+                            <div class="inventory-info">
+                                <h4>奶茶原料包</h4>
+                                <p>库存可用 2 天，预计本周四缺货</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num" style="color:#ef4444;">12</div>
+                                <div class="unit">包</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:15%;background:#ef4444;"></div></div>
+                            </div>
+                        </div>
+                        <div class="inventory-item danger">
+                            <div class="inventory-icon">🥤</div>
+                            <div class="inventory-info">
+                                <h4>一次性杯盖</h4>
+                                <p>库存可用 1 天，预计明天缺货</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num" style="color:#ef4444;">50</div>
+                                <div class="unit">个</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:8%;background:#ef4444;"></div></div>
+                            </div>
+                        </div>
+                        <div class="inventory-item warning">
+                            <div class="inventory-icon">🍯</div>
+                            <div class="inventory-info">
+                                <h4>糖浆（草莓味）</h4>
+                                <p>库存可用 5 天，建议本周补货</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num" style="color:#f59e0b;">8</div>
+                                <div class="unit">瓶</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:35%;background:#f59e0b;"></div></div>
+                            </div>
+                        </div>
+                        <div class="inventory-item warning">
+                            <div class="inventory-icon">🥛</div>
+                            <div class="inventory-info">
+                                <h4>鲜牛奶</h4>
+                                <p>库存可用 4 天，建议本周补货</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num" style="color:#f59e0b;">6</div>
+                                <div class="unit">箱</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:40%;background:#f59e0b;"></div></div>
+                            </div>
+                        </div>
+                        <div class="inventory-item">
+                            <div class="inventory-icon">🧋</div>
+                            <div class="inventory-info">
+                                <h4>珍珠椰果</h4>
+                                <p>库存可用 20 天，状态良好</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num">45</div>
+                                <div class="unit">包</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:80%;background:#10b981;"></div></div>
+                            </div>
+                        </div>
+                        <div class="inventory-item">
+                            <div class="inventory-icon">☕</div>
+                            <div class="inventory-info">
+                                <h4>咖啡豆</h4>
+                                <p>库存可用 25 天，状态良好</p>
+                            </div>
+                            <div class="inventory-stock">
+                                <div class="num">30</div>
+                                <div class="unit">袋</div>
+                                <div class="stock-bar"><div class="stock-bar-fill" style="width:90%;background:#10b981;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI销量预测 -->
+                    <div class="ai-analysis" style="margin-top:32px;">
+                        <h4>📈 AI销量预测（未来7天）</h4>
+                        <div class="chart-container" style="height:200px;margin-top:16px;">
+                            <div class="chart-bars">
+                                <div class="chart-bar" style="height:60%;"><div class="chart-bar-value">180</div><div class="chart-bar-label">今天</div></div>
+                                <div class="chart-bar" style="height:45%;"><div class="chart-bar-value">135</div><div class="chart-bar-label">明天</div></div>
+                                <div class="chart-bar" style="height:50%;"><div class="chart-bar-value">150</div><div class="chart-bar-label">周三</div></div>
+                                <div class="chart-bar" style="height:85%;"><div class="chart-bar-value">255</div><div class="chart-bar-label">周四</div></div>
+                                <div class="chart-bar" style="height:100%;"><div class="chart-bar-value">300</div><div class="chart-bar-label">周五</div></div>
+                                <div class="chart-bar" style="height:95%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">285</div><div class="chart-bar-label">周六</div></div>
+                                <div class="chart-bar" style="height:70%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">210</div><div class="chart-bar-label">周日</div></div>
+                            </div>
+                        </div>
+                        <p style="margin-top:16px;color:#4338ca;font-size:14px;">💡 <strong>建议：</strong>周末销量预计增长40%，建议提前增加奶茶原料和一次性杯盖的库存，当前库存仅能支撑到周四。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 员工绩效模块 ==================== -->
+            <div id="module-performance" class="module-content" style="display:none;">
+                <div class="card-header">
+                    <h3>📊 员工绩效看板</h3>
+                    <button class="btn btn-outline" onclick="openModal('performance-modal')">导出报表</button>
+                </div>
+                <div class="card-body">
+                    <!-- 绩效概览 -->
+                    <div class="stats-grid" style="margin-bottom:32px;">
+                        <div class="stat-card">
+                            <h3>本月营收</h3>
+                            <div class="value">¥386,520</div>
+                            <div class="sub">团队目标 350,000 <span class="trend up">110%</span></div>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>平均绩效得分</h3>
+                            <div class="value">92.5</div>
+                            <div class="sub">较上月 +3.2 分</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>好评率</h3>
+                            <div class="value">96.8%</div>
+                            <div class="sub">较上月 +1.2%</div>
+                        </div>
+                        <div class="stat-card info">
+                            <h3>出勤率</h3>
+                            <div class="value">98.5%</div>
+                            <div class="sub">本月缺勤 4 人次</div>
+                        </div>
+                    </div>
+
+                    <!-- 绩效表格 -->
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>员工</th>
+                                <th>岗位</th>
+                                <th>服务评分</th>
+                                <th>好评数</th>
+                                <th>差评数</th>
+                                <th>销售业绩</th>
+                                <th>出勤</th>
+                                <th>综合绩效</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="rank-badge rank-1">🥇</div></td>
+                                <td><div class="customer-header" style="gap:12px;"><div class="customer-avatar" style="width:40px;height:40px;font-size:14px;">张</div><span>张小明</span></div></td>
+                                <td>服务员</td>
+                                <td><span class="score-badge score-high">4.9</span></td>
+                                <td style="color:#10b981;font-weight:600;">156</td>
+                                <td style="color:#ef4444;">2</td>
+                                <td>¥45,820</td>
+                                <td>22/22</td>
+                                <td><span class="score-badge score-high">98</span></td>
+                                <td><button class="btn btn-outline" style="padding:6px 12px;font-size:13px;">详情</button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge rank-2">🥈</div></td>
+                                <td><div class="customer-header" style="gap:12px;"><div class="customer-avatar" style="width:40px;height:40px;font-size:14px;background:#10b981;">李</div><span>李小红</span></div></td>
+                                <td>收银员</td>
+                                <td><span class="score-badge score-high">4.8</span></td>
+                                <td style="color:#10b981;font-weight:600;">142</td>
+                                <td style="color:#ef4444;">3</td>
+                                <td>¥42,150</td>
+                                <td>21/22</td>
+                                <td><span class="score-badge score-high">95</span></td>
+                                <td><button class="btn btn-outline" style="padding:6px 12px;font-size:13px;">详情</button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge rank-3">🥉</div></td>
+                                <td><div class="customer-header" style="gap:12px;"><div class="customer-avatar" style="width:40px;height:40px;font-size:14px;background:#f59e0b;">王</div><span>王小强</span></div></td>
+                                <td>后厨</td>
+                                <td><span class="score-badge score-high">4.7</span></td>
+                                <td style="color:#10b981;font-weight:600;">138</td>
+                                <td style="color:#ef4444;">4</td>
+                                <td>¥38,960</td>
+                                <td>22/22</td>
+                                <td><span class="score-badge score-high">93</span></td>
+                                <td><button class="btn btn-outline" style="padding:6px 12px;font-size:13px;">详情</button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge" style="background:#e2e8f0;color:#64748b;">4</div></td>
+                                <td><div class="customer-header" style="gap:12px;"><div class="customer-avatar" style="width:40px;height:40px;font-size:14px;background:#6366f1;">赵</div><span>赵雅琪</span></div></td>
+                                <td>服务员</td>
+                                <td><span class="score-badge score-mid">4.5</span></td>
+                                <td style="color:#10b981;font-weight:600;">98</td>
+                                <td style="color:#ef4444;">6</td>
+                                <td>¥28,450</td>
+                                <td>18/22</td>
+                                <td><span class="score-badge score-mid">85</span></td>
+                                <td><button class="btn btn-outline" style="padding:6px 12px;font-size:13px;">详情</button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge" style="background:#e2e8f0;color:#64748b;">5</div></td>
+                                <td><div class="customer-header" style="gap:12px;"><div class="customer-avatar" style="width:40px;height:40px;font-size:14px;background:#ec4899;">周</div><span>周美玲</span></div></td>
+                                <td>收银员</td>
+                                <td><span class="score-badge score-mid">4.4</span></td>
+                                <td style="color:#10b981;font-weight:600;">86</td>
+                                <td style="color:#ef4444;">8</td>
+                                <td>¥25,320</td>
+                                <td>20/22</td>
+                                <td><span class="score-badge score-mid">82</span></td>
+                                <td><button class="btn btn-outline" style="padding:6px 12px;font-size:13px;">详情</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 绩效雷达图 -->
+                    <div style="margin-top:32px;">
+                        <h4 style="margin-bottom:16px;">🎯 团队能力雷达图</h4>
+                        <div class="radar-chart" style="background:white;padding:32px;border-radius:12px;">
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#4361ee;">92</div>
+                                <div class="radar-label">服务态度</div>
+                            </div>
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#10b981;">88</div>
+                                <div class="radar-label">销售能力</div>
+                            </div>
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#f59e0b;">85</div>
+                                <div class="radar-label">专业技能</div>
+                            </div>
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#ec4899;">90</div>
+                                <div class="radar-label">团队协作</div>
+                            </div>
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#6366f1;">87</div>
+                                <div class="radar-label">出勤守时</div>
+                            </div>
+                            <div class="radar-item">
+                                <div class="radar-circle" style="background:#14b8a6;">94</div>
+                                <div class="radar-label">顾客好评</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 熟客识别模块 ==================== -->
+            <div id="module-customer" class="module-content" style="display:none;">
+                <div class="card-header">
+                    <h3>👥 熟客识别与精准营销</h3>
+                    <div style="display:flex;gap:12px;">
+                        <button class="btn btn-outline" onclick="openModal('marketing-modal')">定向发券</button>
+                        <button class="btn btn-primary" onclick="openModal('customer-modal')">查看全部顾客</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- 会员等级卡片 -->
+                    <div class="membership-card diamond">
+                        <div class="membership-header">
+                            <div>
+                                <div class="membership-level">💎 钻石会员</div>
+                                <div style="font-size:14px;opacity:0.8;margin-top:4px;">特权：专属折扣、生日礼包、优先服务</div>
+                            </div>
+                            <div class="membership-points">8,860 积分</div>
+                        </div>
+                        <div class="membership-benefits">
+                            <div class="benefit-item">9折优惠</div>
+                            <div class="benefit-item">免排队</div>
+                            <div class="benefit-item">专属礼品</div>
+                            <div class="benefit-item">积分翻倍</div>
+                        </div>
+                    </div>
+
+                    <!-- 顾客列表 -->
+                    <h4 style="margin-bottom:16px;">🌟 重点顾客</h4>
+                    <div class="customer-grid">
+                        <div class="customer-card vip">
+                            <div class="vip-badge">💎 VIP</div>
+                            <div class="customer-header">
+                                <div class="customer-avatar" style="background:linear-gradient(135deg, #f59e0b, #d97706);">陈</div>
+                                <div class="customer-info">
+                                    <h4>陈美娟</h4>
+                                    <p>📱 138****8888 | 💎钻石会员</p>
+                                </div>
+                            </div>
+                            <div class="customer-tags">
+                                <span class="customer-tag active">高频消费</span>
+                                <span class="customer-tag active">下午茶爱好者</span>
+                                <span class="customer-tag">奶茶控</span>
+                            </div>
+                            <div class="customer-stats">
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#f59e0b;">89</div>
+                                    <div class="label">到店次数</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">¥8,560</div>
+                                    <div class="label">累计消费</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#10b981;">15天</div>
+                                    <div class="label">上次到店</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customer-card vip">
+                            <div class="vip-badge">🥇 金卡</div>
+                            <div class="customer-header">
+                                <div class="customer-avatar" style="background:linear-gradient(135deg, #6366f1, #4f46e5);">林</div>
+                                <div class="customer-info">
+                                    <h4>林志强</h4>
+                                    <p>📱 139****6666 | 🥇金卡会员</p>
+                                </div>
+                            </div>
+                            <div class="customer-tags">
+                                <span class="customer-tag active">企业客户</span>
+                                <span class="customer-tag active">周一至周五</span>
+                                <span class="customer-tag">咖啡首选</span>
+                            </div>
+                            <div class="customer-stats">
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#f59e0b;">56</div>
+                                    <div class="label">到店次数</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">¥5,280</div>
+                                    <div class="label">累计消费</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#ef4444;">3天</div>
+                                    <div class="label">上次到店</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customer-card">
+                            <div class="customer-header">
+                                <div class="customer-avatar">王</div>
+                                <div class="customer-info">
+                                    <h4>王小雨</h4>
+                                    <p>📱 136****2222 | 🥈银卡会员</p>
+                                </div>
+                            </div>
+                            <div class="customer-tags">
+                                <span class="customer-tag active">周末常客</span>
+                                <span class="customer-tag">甜品爱好者</span>
+                            </div>
+                            <div class="customer-stats">
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#6366f1;">32</div>
+                                    <div class="label">到店次数</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">¥2,860</div>
+                                    <div class="label">累计消费</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">20天</div>
+                                    <div class="label">上次到店</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customer-card">
+                            <div class="customer-header">
+                                <div class="customer-avatar" style="background:#10b981;">张</div>
+                                <div class="customer-info">
+                                    <h4>张伟</h4>
+                                    <p>📱 135****9999 | 普通会员</p>
+                                </div>
+                            </div>
+                            <div class="customer-tags">
+                                <span class="customer-tag active">新品尝鲜</span>
+                                <span class="customer-tag">外卖为主</span>
+                            </div>
+                            <div class="customer-stats">
+                                <div class="customer-stat">
+                                    <div class="num" style="color:#10b981;">18</div>
+                                    <div class="label">到店次数</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">¥1,520</div>
+                                    <div class="label">累计消费</div>
+                                </div>
+                                <div class="customer-stat">
+                                    <div class="num">8天</div>
+                                    <div class="label">上次到店</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI营销建议 -->
+                    <div class="ai-analysis" style="margin-top:32px;">
+                        <h4>🎯 AI精准营销建议</h4>
+                        <ul>
+                            <li><strong>陈美娟</strong>已15天未到店，建议发送"老顾客专属回归券"激活消费</li>
+                            <li><strong>林志强</strong>平时喜欢周一至周五消费，明天周一建议推送咖啡优惠</li>
+                            <li><strong>王小雨</strong>复购周期约20天，还有3天到期，建议提前发券</li>
+                            <li><strong>张伟</strong>偏爱新品，建议推送新品"芋泥波波"尝鲜券</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 供应商对账模块 ==================== -->
+            <div id="module-supplier" class="module-content" style="display:none;">
+                <div class="card-header">
+                    <h3>🤝 供应商自动对账</h3>
+                    <button class="btn btn-primary" onclick="openModal('supplier-modal')">+ 添加供应商</button>
+                </div>
+                <div class="card-body">
+                    <!-- 对账概览 -->
+                    <div class="stats-grid" style="margin-bottom:24px;">
+                        <div class="stat-card">
+                            <h3>合作供应商</h3>
+                            <div class="value">8<span style="font-size:16px">家</span></div>
+                            <div class="sub">本月新增 1 家</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>待对账</h3>
+                            <div class="value">¥28,560</div>
+                            <div class="sub">3 笔待处理</div>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>本月采购</h3>
+                            <div class="value">¥86,420</div>
+                            <div class="sub">已对账 98%</div>
+                        </div>
+                    </div>
+
+                    <!-- 供应商Tab -->
+                    <div class="supplier-tabs">
+                        <div class="supplier-tab active">全部供应商</div>
+                        <div class="supplier-tab">饮品原料</div>
+                        <div class="supplier-tab">包材耗材</div>
+                        <div class="supplier-tab">设备维护</div>
+                    </div>
+
+                    <!-- 供应商列表 -->
+                    <div style="background:white;border-radius:12px;overflow:hidden;">
+                        <table class="reconciliation-table">
+                            <thead>
+                                <tr>
+                                    <th>供应商</th>
+                                    <th>联系人</th>
+                                    <th>本月采购</th>
+                                    <th>对账状态</th>
+                                    <th>对账差异</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>广州饮品原料批发</strong></td>
+                                    <td>李经理 138****1234</td>
+                                    <td>¥32,580</td>
+                                    <td><span class="status-tag status-pending">待对账</span></td>
+                                    <td>-</td>
+                                    <td><button class="btn btn-primary" style="padding:6px 16px;font-size:13px;">发起对账</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>深圳包材有限公司</strong></td>
+                                    <td>王经理 136****5678</td>
+                                    <td>¥18,920</td>
+                                    <td><span class="status-tag status-match">已匹配</span></td>
+                                    <td style="color:#10b981;">¥0.00</td>
+                                    <td><button class="btn btn-success" style="padding:6px 16px;font-size:13px;">确认付款</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>上海奶茶设备厂</strong></td>
+                                    <td>张经理 139****9012</td>
+                                    <td>¥12,400</td>
+                                    <td><span class="status-tag status-diff">有差异</span></td>
+                                    <td style="color:#ef4444;">¥-320.00</td>
+                                    <td><button class="btn btn-warning" style="padding:6px 16px;font-size:13px;">查看差异</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>东莞一次性用品厂</strong></td>
+                                    <td>赵经理 135****3456</td>
+                                    <td>¥22,520</td>
+                                    <td><span class="status-tag status-match">已匹配</span></td>
+                                    <td style="color:#10b981;">¥0.00</td>
+                                    <td><button class="btn btn-success" style="padding:6px 16px;font-size:13px;">已付款 ✓</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- AI对账详情 -->
+                    <div class="ai-analysis" style="margin-top:32px;">
+                        <h4>🤖 AI对账分析报告</h4>
+                        <p style="margin-bottom:16px;">本月共完成 <strong>5笔</strong> 供应商对账，其中 <strong>4笔</strong> 完全匹配，<strong>1笔</strong> 存在小差异（上海奶茶设备厂，差异¥320，因设备配件价格微调）。</p>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+                            <div style="background:white;padding:16px;border-radius:8px;text-align:center;">
+                                <div style="font-size:24px;font-weight:700;color:#10b981;">¥86,420</div>
+                                <div style="font-size:13px;color:#64748b;">本月采购总额</div>
+                            </div>
+                            <div style="background:white;padding:16px;border-radius:8px;text-align:center;">
+                                <div style="font-size:24px;font-weight:700;color:#4361ee;">98.6%</div>
+                                <div style="font-size:13px;color:#64748b;">对账匹配率</div>
+                            </div>
+                            <div style="background:white;padding:16px;border-radius:8px;text-align:center;">
+                                <div style="font-size:24px;font-weight:700;color:#f59e0b;">¥320</div>
+                                <div style="font-size:13px;color:#64748b;">待核实差异</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 运营总览模块 ==================== -->
+            <div id="module-overview" class="module-content" style="display:none;">
+                <div class="card-header">
+                    <h3>📊 运营数据总览</h3>
+                    <select class="form-select" style="width:200px;">
+                        <option>近7天</option>
+                        <option>近30天</option>
+                        <option>近90天</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <!-- 核心指标 -->
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <h3>总营收</h3>
+                            <div class="value">¥386,520</div>
+                            <div class="sub">较上月同期 +23.5% <span class="trend up">↑</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>总订单</h3>
+                            <div class="value">12,856</div>
+                            <div class="sub">较上月同期 +18.2%</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>平均客单价</h3>
+                            <div class="value">¥30.1</div>
+                            <div class="sub">较上月 +4.5%</div>
+                        </div>
+                        <div class="stat-card info">
+                            <h3>新增会员</h3>
+                            <div class="value">328</div>
+                            <div class="sub">转化率 12.8%</div>
+                        </div>
+                    </div>
+
+                    <!-- 趋势图表 -->
+                    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:24px;">
+                        <div class="content-card">
+                            <div class="card-header" style="background:linear-gradient(135deg, #4361ee, #3a56d4);">
+                                <h3>📈 营收趋势</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height:280px;">
+                                    <div class="chart-bars" style="height:220px;">
+                                        <div class="chart-bar" style="height:55%;"><div class="chart-bar-value">45k</div><div class="chart-bar-label">周一</div></div>
+                                        <div class="chart-bar" style="height:48%;"><div class="chart-bar-value">39k</div><div class="chart-bar-label">周二</div></div>
+                                        <div class="chart-bar" style="height:52%;"><div class="chart-bar-value">43k</div><div class="chart-bar-label">周三</div></div>
+                                        <div class="chart-bar" style="height:65%;"><div class="chart-bar-value">53k</div><div class="chart-bar-label">周四</div></div>
+                                        <div class="chart-bar" style="height:78%;"><div class="chart-bar-value">64k</div><div class="chart-bar-label">周五</div></div>
+                                        <div class="chart-bar" style="height:100%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">82k</div><div class="chart-bar-label">周六</div></div>
+                                        <div class="chart-bar" style="height:85%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">70k</div><div class="chart-bar-label">周日</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header" style="background:linear-gradient(135deg, #10b981, #059669);">
+                                <h3>🥧 销售占比</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="text-align:center;padding:20px 0;">
+                                    <div class="progress-ring">
+                                        <svg width="120" height="120">
+                                            <circle class="bg" cx="60" cy="60" r="52"/>
+                                            <circle class="progress" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="98"/>
+                                        </svg>
+                                        <div class="text">
+                                            <div class="num">30%</div>
+                                            <div class="label">饮品</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px;">
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div style="width:12px;height:12px;background:#4361ee;border-radius:2px;"></div>
+                                        <span style="flex:1;font-size:14px;">奶茶饮品</span>
+                                        <span style="font-weight:600;">30%</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div style="width:12px;height:12px;background:#10b981;border-radius:2px;"></div>
+                                        <span style="flex:1;font-size:14px;">咖啡</span>
+                                        <span style="font-weight:600;">25%</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div style="width:12px;height:12px;background:#f59e0b;border-radius:2px;"></div>
+                                        <span style="flex:1;font-size:14px;">甜品</span>
+                                        <span style="font-weight:600;">22%</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div style="width:12px;height:12px;background:#ec4899;border-radius:2px;"></div>
+                                        <span style="flex:1;font-size:14px;">轻食</span>
+                                        <span style="font-weight:600;">15%</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div style="width:12px;height:12px;background:#6366f1;border-radius:2px;"></div>
+                                        <span style="flex:1;font-size:14px;">其他</span>
+                                        <span style="font-weight:600;">8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 时段分析 -->
+                    <div class="content-card" style="margin-top:24px;">
+                        <div class="card-header" style="background:linear-gradient(135deg, #ec4899, #db2777);">
+                            <h3>⏰ 消费时段分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+                                <div style="text-align:center;padding:24px;background:#fef3c7;border-radius:12px;">
+                                    <div style="font-size:36px;margin-bottom:8px;">🌅</div>
+                                    <div style="font-size:18px;font-weight:700;color:#92400e;">上午茶 10:00-12:00</div>
+                                    <div style="font-size:32px;font-weight:700;color:#f59e0b;margin:12px 0;">¥8,560</div>
+                                    <div style="font-size:13px;color:#92400e;">占比 15%</div>
+                                </div>
+                                <div style="text-align:center;padding:24px;background:#dbeafe;border-radius:12px;">
+                                    <div style="font-size:36px;margin-bottom:8px;">☀️</div>
+                                    <div style="font-size:18px;font-weight:700;color:#1e40af;">午餐时段 12:00-14:00</div>
+                                    <div style="font-size:32px;font-weight:700;color:#4361ee;margin:12px 0;">¥15,280</div>
+                                    <div style="font-size:13px;color:#1e40af;">占比 26%</div>
+                                </div>
+                                <div style="text-align:center;padding:24px;background:#fce7f3;border-radius:12px;">
+                                    <div style="font-size:36px;margin-bottom:8px;">🍰</div>
+                                    <div style="font-size:18px;font-weight:700;color:#9d174d;">下午茶 14:00-17:00</div>
+                                    <div style="font-size:32px;font-weight:700;color:#ec4899;margin:12px 0;">¥18,650</div>
+                                    <div style="font-size:13px;color:#9d174d;">占比 32% ↑</div>
+                                </div>
+                                <div style="text-align:center;padding:24px;background:#e0e7ff;border-radius:12px;">
+                                    <div style="font-size:36px;margin-bottom:8px;">🌙</div>
+                                    <div style="font-size:18px;font-weight:700;color:#4338ca;">晚餐时段 17:00-21:00</div>
+                                    <div style="font-size:32px;font-weight:700;color:#6366f1;margin:12px 0;">¥15,860</div>
+                                    <div style="font-size:13px;color:#4338ca;">占比 27%</div>
+                                </div>
+                            </div>
+                            <div class="ai-analysis" style="margin-top:24px;">
+                                <h4>💡 AI运营建议</h4>
+                                <ul>
+                                    <li><strong>下午茶时段</strong>订单增长30%，建议增加人手并推出下午茶专属套餐</li>
+                                    <li>周末客流量是工作日的1.5倍，周末排班建议增加2名服务员</li>
+                                    <li>客单价在下午茶时段最高，建议主推双人套餐提升客单价</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 弹窗：添加排班 -->
+    <div class="modal-overlay" id="schedule-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📅 添加排班</h3>
+                <button class="modal-close" onclick="closeModal('schedule-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>选择员工</label>
+                    <select class="form-select">
+                        <option>张小明 - 服务员</option>
+                        <option>李小红 - 收银员</option>
+                        <option>王小强 - 后厨</option>
+                        <option>赵雅琪 - 服务员</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>选择日期</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>班次类型</label>
+                    <select class="form-select">
+                        <option>早班 08:00-16:00</option>
+                        <option>中班 12:00-20:00</option>
+                        <option>晚班 16:00-24:00</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <input type="text" class="form-input" placeholder="如有特殊要求请备注">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('schedule-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('schedule-modal')">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：库存管理 -->
+    <div class="modal-overlay" id="inventory-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📦 添加库存</h3>
+                <button class="modal-close" onclick="closeModal('inventory-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>商品名称</label>
+                    <input type="text" class="form-input" placeholder="输入商品名称">
+                </div>
+                <div class="form-group">
+                    <label>商品分类</label>
+                    <select class="form-select">
+                        <option>饮品原料</option>
+                        <option>包材耗材</option>
+                        <option>设备配件</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>当前库存</label>
+                    <input type="number" class="form-input" placeholder="输入数量">
+                </div>
+                <div class="form-group">
+                    <label>最低库存预警</label>
+                    <input type="number" class="form-input" placeholder="低于此数量将预警">
+                </div>
+                <div class="form-group">
+                    <label>供应商</label>
+                    <select class="form-select">
+                        <option>广州饮品原料批发</option>
+                        <option>深圳包材有限公司</option>
+                        <option>上海奶茶设备厂</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('inventory-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('inventory-modal')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：采购单 -->
+    <div class="modal-overlay" id="purchase-modal">
+        <div class="modal" style="max-width:700px;">
+            <div class="modal-header">
+                <h3>🛒 生成采购单</h3>
+                <button class="modal-close" onclick="closeModal('purchase-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:16px;color:#64748b;">系统已根据库存预警自动生成以下采购清单：</p>
+                <table class="reconciliation-table">
+                    <thead>
+                        <tr>
+                            <th>商品</th>
+                            <th>当前库存</th>
+                            <th>建议采购</th>
+                            <th>单价</th>
+                            <th>小计</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>奶茶原料包</td>
+                            <td>12包</td>
+                            <td>100包</td>
+                            <td>¥8.5</td>
+                            <td>¥850</td>
+                        </tr>
+                        <tr>
+                            <td>一次性杯盖</td>
+                            <td>50个</td>
+                            <td>500个</td>
+                            <td>¥0.3</td>
+                            <td>¥150</td>
+                        </tr>
+                        <tr>
+                            <td>糖浆（草莓味）</td>
+                            <td>8瓶</td>
+                            <td>20瓶</td>
+                            <td>¥25</td>
+                            <td>¥500</td>
+                        </tr>
+                        <tr>
+                            <td>鲜牛奶</td>
+                            <td>6箱</td>
+                            <td>15箱</td>
+                            <td>¥45</td>
+                            <td>¥675</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top:24px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:16px;font-weight:600;">采购总计：</span>
+                    <span style="font-size:24px;font-weight:700;color:#4361ee;">¥2,175</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('purchase-modal')">取消</button>
+                <button class="btn btn-success" onclick="closeModal('purchase-modal')">发送给供应商</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗：定向发券 -->
+    <div class="modal-overlay" id="marketing-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🎫 定向发券</h3>
+                <button class="modal-close" onclick="closeModal('marketing-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>选择顾客群体</label>
+                    <select class="form-select">
+                        <option>30天未到店顾客（建议）</option>
+                        <option>高价值VIP顾客</option>
+                        <option>生日当月顾客</option>
+                        <option>自定义筛选</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>优惠券类型</label>
+                    <select class="form-select">
+                        <option>折扣券（如8折）</option>
+                        <option>满减券（如满50减10）</option>
+                        <option>代金券（如送10元）</option>
+                        <option>新品体验券</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>优惠内容</label>
+                    <input type="text" class="form-input" value="满50元减10元" placeholder="输入优惠内容">
+                </div>
+                <div class="form-group">
+                    <label>有效期</label>
+                    <select class="form-select">
+                        <option>7天内有效</option>
+                        <option>15天内有效</option>
+                        <option>30天内有效</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>预计发放数量</label>
+                    <div style="padding:16px;background:#e0e7ff;border-radius:8px;font-size:18px;font-weight:600;color:#4338ca;">约 36 位顾客</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('marketing-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('marketing-modal')">确认发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchModule(module) {
+            // 隐藏所有模块
+            document.querySelectorAll('.module-content').forEach(el => el.style.display = 'none');
+            // 显示目标模块
+            document.getElementById('module-' + module).style.display = 'block';
+            
+            // 更新侧边栏状态
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // 点击遮罩关闭弹窗
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Tab切换
+        document.querySelectorAll('.supplier-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.supplier-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

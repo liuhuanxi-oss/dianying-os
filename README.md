@@ -1,377 +1,303 @@
 <div align="center">
+
+<img src="assets/logo.svg" alt="店赢OS" width="80" />
+
 # 店赢OS
-**AI透视门店运营，驱动流量 · 星级 · 营收全面增长**
 
-AI驱动的面向餐饮/零售/休娱行业的智能门店运营SaaS平台
+**Multi-Agent 驱动的开源门店运营平台**
 
-[功能模块](#功能模块) · [技术架构](#技术架构) · [定价方案](#定价方案) · [快速开始](#快速开始) · [团队介绍](#团队介绍)
+专注于餐饮 / 零售 / 休闲娱乐行业的差评处理、客诉响应、支付纠纷自动化
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-black?style=flat-square)](LICENSE)
-[![Multi-Agent](https://img.shields.io/badge/Architecture-Multi%20Agent-6366F1?style=flat-square)](#技术架构)
+[![Go 1.22](https://img.shields.io/badge/Go-1.22-00ADD8?style=flat-square&logo=go)](https://go.dev)
+[![Vue 3](https://img.shields.io/badge/Vue-3.x-4FC08D?style=flat-square&logo=vue.js)](https://vuejs.org)
+[![Multi-Agent](https://img.shields.io/badge/Architecture-Multi%20Agent-6366F1?style=flat-square)](#ai-agent架构)
 
-[👉 在线体验](https://liuhuanxi-oss.github.io/dianying-os/)
-
-**📊 10,000+** 门店信赖 **·** **💬 50万+** 差评已处理 **·** **📈 32%** 平均营收提升 **·** **⭐ 4.8** 平台评分
+[在线 Demo](https://liuhuanxi-oss.github.io/dianying-os/) · [快速开始](#快速开始) · [贡献指南](#贡献指南) · [技术架构](#技术架构)
 
 </div>
 
 ---
 
-> **"一个人 + AI = 无限可能"**
->
-> 店赢OS让每一位实体店老板，拥有像大厂一样的AI运营团队。
+## 项目简介
 
-## ✨ 项目简介
+店赢OS 是一个 **MIT 协议开源**的门店运营平台，基于 Multi-Agent 协同架构，帮助线下门店实现差评自动处理、客诉智能分诊、支付纠纷全链路自动化。
 
-店赢OS完美诠释了"一个人+AI=无限可能"——一个人，就能轻松运营一个庞大的连锁品牌。
+- **开源协议**：MIT License，可自由使用、修改、分发，支持私有化部署与二次开发
+- **核心理念**："一个人 + AI = 无限可能" — 用 AI Agent 替代重复性运营人力
+- **适用行业**：餐饮、零售、休闲娱乐等线下实体门店
 
-店赢OS是新一代AI驱动的智能门店运营系统，基于Multi-Agent架构，让实体门店实现"一人公司"的运营模式。**8大运营平台全覆盖**：美团+大众点评+饿了么+抖音+小红书+微信视频号+高德+口碑(支付宝)。
+## 核心能力
 
-- ✅ **一个人运营无限门店**：多Agent协同，AI虚拟店长7×24小时自主决策
-- ✅ **差评自动处理**：智能识别、自动回复、持续追踪，差评变转机
-- ✅ **动态定价**：天气、时段、竞品、节假日综合考量，自动调价
-- ✅ **跨店知识迁移**：一家店的成功经验，复制到N家店
-- ✅ **8大平台统一管理**：美团、点评、饿了么、抖音、小红书、视频号、高德、口碑一站式运营
-
----
-
-## 🎯 核心特色
-
-### 1. AI驱动的全链路门店运营
-基于Multi-Agent架构，5个AI Agent协同工作，覆盖从线索识别到方案生成、服务交付、持续优化的完整运营链路。
-
-### 2. 8大平台统一管理
-美团+大众点评+饿了么+抖音+小红书+微信视频号+高德+口碑(支付宝)，一个平台掌控全局。
-
-### 3. 数据洞察驱动决策
-多维度数据分析报表，AI洞察日报，智能ROI计算，让每一个决策都有数据支撑。
-
----
-
-<a id="功能模块"></a>
-## 📦 功能模块（36个功能）
-
-### 核心功能（6个）
-| 功能 | 描述 |
-|------|------|
-| **运营概览** | 多维度经营数据看板 + AI洞察分析，实时掌控门店全局 |
-| **AI对话** | 智能运营助手 + 对话模板 + 历史会话，随时获取运营建议 |
-| **数据报表** | 营收/订单/流量多维度分析 + 翻牌动画 + 实时刷新 |
-| **AI付(支付宝)** | 支付宝AI付能力展示，智能支付解决方案 |
-| **知识库** | 行业运营知识库(餐饮/零售/休娱9个文档)，沉淀运营经验 |
-| **决策日志** | AI决策记录与回溯，透明化运营决策过程 |
-
-### 智能分析（6个）
-| 功能 | 描述 |
-|------|------|
-| **门店健康** | 评分+改善路线图+优先级排序+预期收益，全面诊断门店状态 |
-| **运营日历** | 智能运营事件规划，提前布局运营节奏 |
-| **报表中心** | 多维度数据报表，深度挖掘运营数据价值 |
-| **ROI计算器** | 投资回报率分析，科学评估运营投入产出 |
-| **竞品监控** | 排行榜/雷达图/价格对比/口碑分析/市场份额/AI应对策略 |
-| **库存预警** | 智能库存管理，提前预警避免断货风险 |
-
-### AI能力（4个）
-| 功能 | 描述 |
-|------|------|
-| **AI内容创作** | 多平台内容生成，一键发布到8大平台 |
-| **AI洞察日报** | 每日自动运营摘要+关键变化+行动建议 |
-| **门店数字孪生** | 门店运营模拟，预测不同策略效果 |
-| **语音交互** | 语音输入+AI语音回复，双手解放高效沟通 |
-
-### 运营管理（9个）
-| 功能 | 描述 |
-|------|------|
-| **营销工具** | 多平台营销管理，统一制定营销策略 |
-| **工单系统** | 运营工单管理，任务追踪高效协同 |
-| **权限管理** | 多角色权限控制，精细化团队管理 |
-| **员工绩效** | 绩效看板，激发团队战斗力 |
-| **供应链管理** | 供应商管理，优化采购成本 |
-| **会员运营** | 会员分析与运营，提升复购率 |
-| **平台管理** | 8大平台统一管理，一站式运营中心 |
-| **舆情监控** | 实时舆情追踪，把握口碑动态 |
-| **智能定价** | AI驱动定价策略，最大化收益 |
-
-### 系统（5个）
-| 功能 | 描述 |
-|------|------|
-| **更新日志** | v1.0-v3.2完整版本记录，持续迭代透明化 |
-| **智能预警** | 多维度预警中心，风险早知道 |
-| **门店巡检** | 数字化巡检管理，提升巡检效率 |
-| **数据实验室** | 自定义数据分析，探索数据价值 |
-| **数据导出** | PDF/Excel/图片多格式导出，满足不同场景需求 |
-
-### 全局功能（2个）
-| 功能 | 描述 |
-|------|------|
-| **⌘K命令面板** | 全局快速搜索与操作，极致效率体验 |
-| **新手引导** | 交互式Onboarding，快速上手系统 |
-
----
-
-## 🤖 AI Agent架构
-
-### 5个AI Agent协同工作
+### 🤖 五级 AI Agent 全流程协同
 
 ```
-👤 用户输入（老板提问 / 差评预警 / 运营决策）
-    ↓
-🤖 AI虚拟店长 — 全局运营调度
-    ↓
-├── 🔍 线索Agent — 商机识别与跟进
-├── 📋 方案Agent — 个性化方案推荐
-├── ⚡ 交付Agent — 服务交付管理
-└── 🔄 运营Agent — 持续运营优化
-    ↓
-📚 行业知识库（餐饮/零售/休娱）
+数据监测 → 问题分级 → 话术生成 → 自动触达 → 运营决策
 ```
 
-| Agent | 职能 | 说明 |
-|-------|------|------|
-| **虚拟店长** | 全局运营调度 | 统一协调其他Agent，处理复杂运营决策 |
-| **线索Agent** | 商机识别与跟进 | 识别运营机会，追踪转化效果 |
-| **方案Agent** | 个性化方案推荐 | 基于门店数据，生成定制化运营方案 |
-| **交付Agent** | 服务交付管理 | 确保运营方案落地执行 |
-| **运营Agent** | 持续运营优化 | 监控效果，持续迭代优化 |
+5 个 AI Agent 各司其职，覆盖门店运营全链路，支持接入 DeepSeek 等开源大模型。
 
----
+### 📡 多平台接入
 
-<a id="技术架构"></a>
-## ⚙️ 技术架构
+美团 / 抖音 / 饿了么 / 大众点评 / 小红书 / 微信视频号 / 高德 / 口碑（支付宝）— 8 大平台数据抓取与统一处理。
+
+### 🏠 私有化部署
+
+支持 Docker 容器化部署，可对接本地 AI NAS 或私有算力，数据不出企业内网。
 
 ### 🛡️ 五级信任体系
 
-> AI不是全知全能，信任需要逐步建立。
+AI 决策分级授权 — A 级（全自动）到 E 级（人工干预），渐进式建立对 AI 的信任，兼顾效率与安全。
 
-- 🟢 **A级 · 优秀** — 全功能开放，AI自主决策
-- 🔵 **B级 · 良好** — 全功能，重要操作需确认
-- 🟡 **C级 · 标准** — 核心功能，操作需审核
-- 🟠 **D级 · 观察** — 基础功能，观察学习期
-- 🔴 **E级 · 预警** — 最小权限，需人工干预
+## 功能模块
 
-### 🔧 技术栈
+### 评价与客诉管理
 
-| 类别 | 技术 | 说明 |
-|------|------|------|
-| **前端** | HTML5 + CSS3 + Vanilla JavaScript | 轻量零构建，快速迭代 |
-| **图表** | Chart.js + ECharts | 专业级数据可视化 |
-| **图标** | Lucide Icons | 统一现代视觉风格 |
-| **部署** | GitHub Pages | 零成本秒更新，全球CDN |
-| **AI能力** | 扣子(Coze)平台 | 5个Agent协同，Multi-Agent架构 |
+| 功能 | 说明 |
+|------|------|
+| 多平台评价聚合 | 8 大平台评价统一收集、展示、回复 |
+| AI 自动回复 | DeepSeek 驱动的智能话术生成与一键回复 |
+| 差评预警 | 差评实时监测、分级告警、自动上报 |
+| 支付投诉处理 | 微信/支付宝投诉 → AI 分诊 → 退款处理全链路自动化 |
 
----
+### 运营分析
 
-<a id="行业覆盖"></a>
-## 🏪 行业覆盖
+| 功能 | 说明 |
+|------|------|
+| 数据大屏 | 实时 GMV、订单、评价、客诉数据可视化 |
+| 口碑分析 | 关键词提取、情感趋势、菜品 TOP 排行 |
+| 竞品监控 | 排行榜、雷达图、市场份额对比 |
+| AI 洞察日报 | 每日运营摘要 + 异常检测 + 行动建议 |
 
-### 餐饮行业
-堂食+外卖+点评运营，覆盖正餐、轻餐、饮品等多业态
+### 智能运营
 
-### 零售行业
-商品管理+库存+多渠道，打通线上线下零售全链路
+| 功能 | 说明 |
+|------|------|
+| AI 内容创作 | 小红书笔记 / 抖音脚本一键生成 |
+| 会员运营 | 会员分析、复购追踪、续费率监控 |
+| 智能定价 | 天气/时段/竞品综合考量的动态调价策略 |
+| 跨店知识迁移 | 一家店的成功运营策略，复制到多店 |
 
-### 休娱行业
-预约管理+会员+内容营销，提升客户体验与复购
+### 系统能力
 
----
+| 功能 | 说明 |
+|------|------|
+| 三端分离 | 平台端 / 代理商端 / 商户端独立部署 |
+| 租户隔离 | 数据隔离中间件，多商户安全共存 |
+| API 接口 | RESTful API，支持第三方系统对接 |
+| 数据导出 | PDF / Excel / 图片多格式导出 |
 
-<a id="定价方案"></a>
-## 💰 定价方案
+## AI Agent 架构
 
-> 用不到一个员工的价格，换取一支7×24小时在线的AI运营团队。
-
-| 版本 | 价格 | 功能 |
-|------|------|------|
-| **免费体验版** | 免费 | 基础数据看板 + 3个平台管理 |
-| **专业版** | ¥299/月 | 全功能 + 8平台管理 + AI洞察 |
-| **旗舰版** | ¥799/月 | 专业版 + AI内容创作 + 语音交互 + 优先支持 |
-
----
-
-<a id="快速开始"></a>
-## 🚀 快速开始
-
-### 在线体验
-
-👉 [https://liuhuanxi-oss.github.io/dianying-os/](https://liuhuanxi-oss.github.io/dianying-os/)
-
-### 本地启动
-
-```bash
-# 克隆项目
-git clone https://github.com/liuhuanxi-oss/dianying-os.git
-cd dianying-os
-
-# 本地启动
-python -m http.server 8080
-
-# 打开浏览器
-open http://localhost:8080
+```
+👤 用户输入（差评预警 / 客诉工单 / 运营决策）
+    ↓
+🤖 AI 虚拟店长 — 全局运营调度
+    ↓
+├── 🔍 线索 Agent — 商机识别与跟进
+├── 📋 方案 Agent — 个性化方案推荐
+├── ⚡ 交付 Agent — 服务交付管理
+└── 🔄 运营 Agent — 持续运营优化
+    ↓
+📚 行业知识库（餐饮 / 零售 / 休娱）
 ```
 
-### 快捷键
-- `⌘K` / `Ctrl+K` — 打开命令面板快速导航
-- 支持深色模式自动切换
+## 技术架构
 
----
-
-## 📁 项目结构
+| 层级 | 技术 | 说明 |
+|------|------|------|
+| **后端** | Go 1.22 + Gin | 371+ API 端点，万级并发仅需 200MB 内存 |
+| **前端** | Vue 3 + Element Plus + ECharts | 四端独立 SPA（平台/代理/商户/小程序） |
+| **AI 引擎** | Multi-Agent + DeepSeek | 5 Agent 协同，支持接入任意 OpenAI 兼容 API |
+| **数据库** | MySQL 8.0 | GORM ORM，Repository 模式 |
+| **部署** | Docker + Nginx + systemd | 单二进制部署，支持宝塔面板 |
 
 ```
 dianying-os/
-├── index.html          # 主入口文件
-├── css/
-│   └── styles.css      # 样式文件
-├── js/
-│   ├── app.js          # 主应用逻辑
-│   ├── agents.js       # AI Agent模块
-│   └── data.js         # 数据管理
-├── assets/
-│   └── images/         # 图片资源
-├── README.md           # 项目文档
-├── LICENSE             # MIT许可证
-└── _config.yml         # GitHub Pages配置
+├── dyos-go/                 # Go 2.0 后端
+│   ├── cmd/server/          # 入口
+│   ├── internal/
+│   │   ├── handler/         # HTTP 处理器（30+）
+│   │   ├── service/         # 业务逻辑层
+│   │   ├── repository/      # 数据访问层
+│   │   ├── model/           # 数据模型
+│   │   ├── middleware/       # 中间件（鉴权/租户/限流）
+│   │   ├── router/          # 路由注册
+│   │   ├── tianque/         # 天阙支付集成
+│   │   └── screen/          # 数据大屏 WebSocket
+│   └── pkg/                 # 公共库（JWT/DeepSeek/微信支付）
+├── admin-spa-vue/           # Vue 3 管理后台 SPA
+├── deploy/                  # 部署配置（Nginx/systemd/Docker）
+└── cli/                     # CLI 工具（平台适配器/支付工具）
 ```
 
----
+## 快速开始
 
-## 💬 真实用户反馈
+### 环境要求
 
-**📉 差评率 5%→1.2%** **·** **💰 雨天增收 +¥2,800/周** **·** **📊 会员续费 45%→62%**
+- Go 1.22+
+- MySQL 8.0+
+- Node.js 18+（前端开发）
 
-> "以前每天手动回复差评，头都大了。现在AI自动处理，差评率从5%降到1.2%，我还省了一个运营的人力。"
->
-> — 李老板 · 火锅店（成都 · 3家门店 · 使用3个月）
+### 本地开发
 
-> "动态定价太香了！上周下雨，AI自动调高外卖优惠力度，一周下来多赚了2800块。这钱以前都让平台赚了。"
->
-> — 张店长 · 奶茶店（杭州 · 1家门店 · 使用2个月）
+```bash
+# 克隆仓库
+git clone https://github.com/liuhuanxi-oss/dianying-os.git
+cd dianying-os/dyos-go
 
-> "会员续费率一直上不去，用了AI分析才发现问题在哪。现在会员续费率从45%提到62%，一个月多赚小一万。"
->
-> — 王经理 · 健身房（北京 · 2家门店 · 使用1个月）
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env 填入数据库连接等信息
 
----
+# 启动后端
+go run cmd/server/main.go
 
-<a id="团队介绍"></a>
-## 👥 团队介绍
-
-> 一人公司，一个人+AI实现无限可能。
-
-| 成员 | 角色 | 简介 |
-|------|------|------|
-| **刘天龙 Taylor** | 创始人 & 产品负责人 | 6年深耕商户服务，和18万+门店打过交道。做过63个行业解决方案，店赢OS是几千次跟老板聊完之后的答案。 |
-| **Hermes Liu** | AI架构师 | 专注Multi-Agent系统设计，五级信任机制和多Agent调度架构出自他手。 |
-| **Hermes Tan** | 数据工程师 | 把门店运营经验变成可复用的知识图谱，10个行业知识库和跨店迁移能力的数据灵魂。 |
-
----
-
-### 🗺️ Roadmap
-
-📅 **Q3 2026** — 上线餐饮行业专属功能模块
-📅 **Q4 2026** — 启动零售行业试点合作
-📅 **Q1 2027** — 开放API接口，支持更多第三方应用
-
----
-
-## 🤝 开源贡献
-
-我们欢迎每一位开发者参与贡献！无论是提交 Bug report、改进文档，还是提交 Pull Request，都是对店赢OS 的支持。
-
-### 📋 如何参与贡献
-
-1. **Fork 本仓库**
-   ```bash
-   git clone https://github.com/liuhuanxi-oss/dianying-os.git
-   cd dianying-os
-   ```
-2. **创建特性分支**
-   ```bash
-   git checkout -b feature/your-feature-name
-   # 或修复 Bug
-   git checkout -b fix/your-bug-fix
-   ```
-3. **进行开发**
-   - 实现你的功能或修复
-   - 确保代码符合项目规范
-   - 添加必要的测试
-4. **提交更改**
-   ```bash
-   git add .
-   git commit -m "feat: 添加新功能描述"
-   # 提交信息格式见下方规范
-   ```
-5. **推送到远程**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **创建 Pull Request**
-   - 在 GitHub 上发起 PR
-   - 填写 PR 模板中的所有项
-   - 等待代码审查
-
-### 📐 代码规范
-
-#### JavaScript / HTML
-
-- 使用语义化的变量和函数命名
-- 遵循 ES6+ 语法标准
-- 添加必要的注释说明复杂逻辑
-- 示例：
-  ```javascript
-  // ❌ 不推荐
-  function a(b, c) { return b + c; }
-  
-  // ✅ 推荐
-  /**
-   * 计算店铺综合评分
-   * @param {number} baseRating - 基础评分
-   * @param {number} reviewWeight - 评价权重
-   * @returns {number} 综合评分
-   */
-  function calculateCompositeRating(baseRating, reviewWeight) {
-    return baseRating * reviewWeight;
-  }
-  ```
-
-#### 提交信息格式
-
-我们采用 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
+# 前端开发（新终端）
+cd admin-spa-vue
+npm install
+npm run dev
 ```
 
-**Type 类型：**
-- `feat` — 新功能
-- `fix` — Bug修复
-- `docs` — 文档更新
-- `style` — 代码格式（不影响功能）
-- `refactor` — 重构
-- `perf` — 性能优化
-- `test` — 测试相关
-- `chore` — 构建/工具相关
+### 璇玑AI NAS 本地部署（龙虾盒子）
 
----
+店赢OS 璇玑版专为[璇玑AI NAS（龙虾盒子）](https://www.openclaw.ai)优化 — 15MB 单二进制，SQLite 零依赖，插电即用。
 
-## 📄 License
+```bash
+# 1. 下载璇玑版二进制
+wget https://github.com/liuhuanxi-oss/dianying-os/releases/latest/download/dyos-nas-linux-amd64
 
-本项目基于 [MIT License](LICENSE) 开源。
+# 2. 赋予执行权限
+chmod +x dyos-nas-linux-amd64
+
+# 3. 下载 NAS 配置文件
+wget https://github.com/liuhuanxi-oss/dianying-os/releases/latest/download/config-nas.yaml
+
+# 4. 一键启动（自动创建数据库、内嵌管理后台）
+./dyos-nas-linux-amd64 -config config-nas.yaml
+```
+
+启动后访问 `http://<璇玑NAS-IP>:8081` 即可使用完整管理后台。
+
+**璇玑AI NAS 部署优势：**
+
+| 特性 | 说明 |
+|------|------|
+| 🚀 15MB 单文件 | Go 编译为单二进制，内嵌 Vue 前端，无需 Nginx/Node.js |
+| 💾 SQLite 本地存储 | 零配置，数据不出门店，隐私安全 |
+| 🧠 千问 7B/30B 推理 | 40TOPS NPU 加速 AI 回复，零 API 费用 |
+| 🔌 离线可用 | 评价处理、经营分析等核心功能无需联网 |
+| 🏠 OpenClaw 集成 | 支持微信/飞书/钉钉自然语言操控门店运营 |
+
+**从源码编译璇玑版：**
+
+```bash
+cd dyos-go
+# 一键构建（需要 Go 1.22+ 和 GCC）
+bash build-nas.sh
+# 输出: dyos-nas (15MB 单二进制)
+```
+
+### OpenClaw 技能安装
+
+在璇玑AI NAS 上通过 OpenClaw 自然语言操控店赢OS：
+
+```bash
+# 技能仓库已包含 5 个技能
+ls skills/
+# dyos-review/     — 评价管理
+# dyos-pricing/    — 智能定价
+# dyos-insight/    — 经营洞察
+# dyos-member/     — 会员管理
+# dyos-complaint/  — 支付投诉处理
+
+# 安装到 OpenClaw
+cp -r skills/dyos-* ~/.openclaw/workspace/skills/
+openclaw restart
+```
+
+安装后可通过自然语言操控：
+- "帮我处理今天的差评"
+- "本周经营怎么样"
+- "分析会员流失情况"
+
+### Docker 部署
+
+```bash
+# 构建镜像
+docker build -t dianying-os .
+
+# 启动服务
+docker run -d \
+  --name dianying-os \
+  -p 8081:8081 \
+  -e DB_HOST=your-db-host \
+  -e DB_USER=your-db-user \
+  -e DB_PASSWORD=your-db-password \
+  -e DB_NAME=os_detian_xin \
+  dianying-os
+```
+
+### 宝塔面板部署
+
+```bash
+# 交叉编译 Linux 二进制
+GOOS=linux GOARCH=amd64 go build -o dyos-server cmd/server/main.go
+
+# 上传至服务器，配置 Nginx 反向代理后启动
+# 详见 deploy/ 目录下的配置模板
+```
+
+## 贡献指南
+
+我们欢迎任何形式的贡献：Bug 反馈、功能建议、文档改进、代码提交。
+
+### 贡献流程
+
+1. **Fork** 本仓库
+2. 创建特性分支：`git checkout -b feat/your-feature`
+3. 提交更改：`git commit -m "feat: 功能描述"`
+4. 推送到分支：`git push origin feat/your-feature`
+5. 创建 **Pull Request**
+
+### 提交规范
+
+项目采用 [Conventional Commits](https://www.conventionalcommits.org/)：
+
+| 类型 | 说明 |
+|------|------|
+| `feat` | 新功能 |
+| `fix` | Bug 修复 |
+| `docs` | 文档更新 |
+| `refactor` | 重构 |
+| `chore` | 构建/工具 |
+| `test` | 测试 |
+
+### 开发指南
+
+- Go 代码遵循 [Effective Go](https://go.dev/doc/effective_go)
+- Vue 组件使用 Composition API（`<script setup>`）
+- API 遵循 RESTful 设计，统一 JSON 响应格式
+- 提交前确保 `go build` 和 `npm run build` 无报错
+
+## 团队
+
+| 成员 | 角色 |
+|------|------|
+| **刘天龙 Taylor** | 创始人 & 产品负责人 — 6 年商户服务经验，18 万+ 门店接触 |
+| **Hermes Liu** | AI 架构师 — Multi-Agent 系统设计与五级信任机制 |
+| **Hermes Tan** | 数据工程师 — 行业知识库与跨店知识迁移 |
+
+## License
+
+本项目基于 [MIT License](LICENSE) 开源。你可以自由使用、修改、分发，包括商业用途。
 
 ---
 
 <div align="center">
 
-我们坚信，一人公司不是梦，而是AI时代的最小可行传奇。
-
-欢迎体验[在线Demo](https://liuhuanxi-oss.github.io/dianying-os/)，一起探索AI赋能实体商业的无限可能。
+**一个人 + AI = 无限可能**
 
 [⭐ Star](https://github.com/liuhuanxi-oss/dianying-os) · [🐛 Issue](https://github.com/liuhuanxi-oss/dianying-os/issues) · [💬 Discussion](https://github.com/liuhuanxi-oss/dianying-os/discussions)
-
-© 2026 店赢OS · MIT License
 
 </div>

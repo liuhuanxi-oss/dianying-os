@@ -1,0 +1,138 @@
+{
+  "store": {
+    "basic": {
+      "name": "示例门店",
+      "type": "hotpot",
+      "industry": "餐饮",
+      "businessLicense": "XXXXXXXXXXXX",
+      "contact": {
+        "name": "张三",
+        "phone": "138****8888",
+        "email": "zhangsan@example.com"
+      }
+    },
+    "location": {
+      "address": "上海市浦东新区陆家嘴环路1000号",
+      "province": "上海市",
+      "city": "上海市",
+      "district": "浦东新区",
+      "longitude": 121.5064,
+      "latitude": 31.2354,
+      "businessHours": {
+        "monday": {"open": "11:00", "close": "23:00"},
+        "tuesday": {"open": "11:00", "close": "23:00"},
+        "wednesday": {"open": "11:00", "close": "23:00"},
+        "thursday": {"open": "11:00", "close": "23:00"},
+        "friday": {"open": "11:00", "close": "23:00"},
+        "saturday": {"open": "10:30", "close": "23:30"},
+        "sunday": {"open": "10:30", "close": "23:30"}
+      }
+    },
+    "capacity": {
+      "totalSeats": 80,
+      "tables": 20,
+      "包厢": 4,
+      "maxDailyCapacity": 300
+    },
+    "staff": {
+      "total": 15,
+      "roles": [
+        {"name": "店长", "count": 1, "salary": 8000},
+        {"name": "前厅主管", "count": 2, "salary": 5000},
+        {"name": "服务员", "count": 8, "salary": 4000},
+        {"name": "后厨", "count": 3, "salary": 4500},
+        {"name": "收银", "count": 1, "salary": 4000}
+      ]
+    }
+  },
+  "operations": {
+    "review": {
+      "autoReply": true,
+      "trustLevel": {
+        "A": {"minScore": 95, "autoExecute": true},
+        "B": {"minScore": 85, "autoExecute": true, "notify": true},
+        "C": {"minScore": 60, "autoExecute": false},
+        "D": {"minScore": 40, "autoExecute": false, "priority": "high"},
+        "E": {"minScore": 0, "autoExecute": false, "escalate": true}
+      },
+      "alertThresholds": {
+        "badReviewCount": 3,
+        "ratingDrop": 0.5,
+        "responseRate": 95
+      }
+    },
+    "pricing": {
+      "enabled": true,
+      "factors": {
+        "weather": {"enabled": true, "weight": 0.2},
+        "time": {"enabled": true, "weight": 0.25},
+        "demand": {"enabled": true, "weight": 0.3},
+        "competitor": {"enabled": true, "weight": 0.15},
+        "holiday": {"enabled": true, "weight": 0.1}
+      },
+      "constraints": {
+        "maxDiscount": 0.3,
+        "minMargin": 0.2,
+        "priceFloor": 0.7
+      }
+    },
+    "marketing": {
+      "enabled": true,
+      "campaigns": [
+        {
+          "name": "开业活动",
+          "type": "discount",
+          "discount": 0.8,
+          "duration": "首周",
+          "status": "inactive"
+        },
+        {
+          "name": "会员日",
+          "type": "points",
+          "multiplier": 2,
+          "dayOfMonth": 18,
+          "status": "active"
+        }
+      ]
+    }
+  },
+  "integrations": {
+    "platforms": {
+      "dianping": {"enabled": true, "account": "xxx"},
+      "meituan": {"enabled": true, "account": "xxx"},
+      "ele": {"enabled": false},
+      "meituanDelivery": {"enabled": true, "account": "xxx"}
+    },
+    "apis": {
+      "weather": {"enabled": true, "provider": "default"},
+      "calendar": {"enabled": true}
+    }
+  },
+  "notifications": {
+    "email": {
+      "enabled": true,
+      "address": "owner@example.com"
+    },
+    "sms": {
+      "enabled": true,
+      "threshold": "B"
+    },
+    "wechat": {
+      "enabled": true,
+      "template": "default"
+    }
+  },
+  "ai": {
+    "virtualManager": {
+      "enabled": true,
+      "mode": "auto",
+      "responseTime": "immediate"
+    },
+    "agents": {
+      "insight": {"enabled": true, "schedule": "daily"},
+      "plan": {"enabled": true},
+      "deliver": {"enabled": true},
+      "operate": {"enabled": true}
+    }
+  }
+}

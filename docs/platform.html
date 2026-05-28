@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平台管理端 - 店赢OS</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-primary); min-height: 100vh; }
+
+        .layout { display: flex; min-height: 100vh; }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
+        .logo h1 { font-size: 20px; font-weight: 700; }
+        .logo span { font-size: 12px; opacity: 0.8; }
+        .nav-section { margin-bottom: 24px; }
+        .nav-section-title { padding: 8px 24px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; }
+        .nav-item { padding: 14px 24px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active { background: rgba(255,255,255,0.2); border-left: 4px solid var(--secondary); }
+        .nav-item svg { width: 20px; height: 20px; }
+
+        /* 主内容 */
+        .main { flex: 1; margin-left: 260px; padding: 32px; }
+        .page-header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .page-header p { color: var(--text-secondary); }
+        .header-actions { display: flex; gap: 12px; }
+
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+        .stat-card.success { border-left-color: var(--secondary); }
+        .stat-card.warning { border-left-color: var(--warning); }
+        .stat-card.danger { border-left-color: var(--danger); }
+        .stat-card.info { border-left-color: var(--info); }
+        .stat-card.purple { border-left-color: var(--purple); }
+        .stat-card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; }
+        .stat-card .value { font-size: 32px; font-weight: 700; color: var(--text-primary); }
+        .stat-card .sub { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+        .stat-card .trend { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .stat-card .trend.up { background: #d1fae5; color: #065f46; }
+        .stat-card .trend.down { background: #fee2e2; color: #991b1b; }
+
+        /* 内容区块 */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 20px 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h3 { font-size: 18px; font-weight: 600; }
+        .card-body { padding: 32px; }
+
+        /* 按钮 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-success:hover { background: var(--secondary-dark); }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-outline { background: white; color: var(--text-primary); border: 2px solid var(--border); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+
+        /* 表格 */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        .data-table th { background: var(--bg-light); font-weight: 600; color: var(--text-secondary); }
+        .data-table tr:hover { background: var(--bg-light); }
+
+        /* 状态标签 */
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .status-success { background: #d1fae5; color: #065f46; }
+        .status-warning { background: #fef3c7; color: #92400e; }
+        .status-danger { background: #fee2e2; color: #991b1b; }
+        .status-info { background: #dbeafe; color: #1e40af; }
+        .status-purple { background: #ede9fe; color: #6d28d9; }
+
+        /* 预警卡片 */
+        .alert-grid { display: grid; gap: 16px; }
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: var(--radius);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        .alert-item.danger { background: #fee2e2; border-color: #ef4444; }
+        .alert-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .alert-content { flex: 1; }
+        .alert-content h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .alert-content p { font-size: 13px; color: var(--text-secondary); }
+
+        /* 图表 */
+        .chart-container { height: 300px; background: var(--bg-light); border-radius: var(--radius); padding: 24px; }
+        .chart-bars { display: flex; align-items: flex-end; gap: 16px; height: 200px; padding: 20px; }
+        .chart-bar { flex: 1; background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 8px 8px 0 0; position: relative; max-width: 60px; }
+        .chart-bar-label { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
+        .chart-bar-value { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--text-primary); }
+
+        /* 进度环 */
+        .progress-ring { position: relative; width: 100px; height: 100px; }
+        .progress-ring svg { transform: rotate(-90deg); }
+        .progress-ring circle { fill: none; stroke-width: 8; }
+        .progress-ring .bg { stroke: var(--border); }
+        .progress-ring .progress { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 1s; }
+        .progress-ring .text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .progress-ring .text .num { font-size: 20px; font-weight: 700; }
+
+        /* 分账配置 */
+        .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .config-card {
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+        .config-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+        .config-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .config-item:last-child { border-bottom: none; }
+        .config-item .label { font-size: 14px; color: var(--text-secondary); }
+        .config-item .value { font-size: 18px; font-weight: 700; color: var(--primary); }
+
+        /* 商户评级 */
+        .rating-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .rating-card {
+            padding: 24px;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .rating-card:hover { transform: scale(1.05); }
+        .rating-card.grade-a { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-color: #10b981; }
+        .rating-card.grade-b { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-color: #3b82f6; }
+        .rating-card.grade-c { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-color: #f59e0b; }
+        .rating-card.grade-d { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-color: #ef4444; }
+        .rating-badge { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: white; }
+        .grade-a .rating-badge { background: #10b981; }
+        .grade-b .rating-badge { background: #3b82f6; }
+        .grade-c .rating-badge { background: #f59e0b; }
+        .grade-d .rating-badge { background: #ef4444; }
+        .rating-card h4 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .rating-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+        .rating-stats { font-size: 24px; font-weight: 700; }
+
+        /* 风险准备金 */
+        .reserve-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .reserve-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            padding: 32px;
+            color: white;
+            text-align: center;
+        }
+        .reserve-card h3 { font-size: 14px; opacity: 0.8; margin-bottom: 12px; }
+        .reserve-card .value { font-size: 36px; font-weight: 700; }
+
+        /* 纠纷处理 */
+        .dispute-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            margin-bottom: 32px;
+        }
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .flow-step::after { content: ''; position: absolute; top: 24px; right: 0; width: 50%; height: 3px; background: var(--border); }
+        .flow-step:last-child::after { display: none; }
+        .flow-step::before { content: ''; position: absolute; top: 24px; left: 0; width: 50%; height: 3px; background: var(--border); }
+        .flow-step:first-child::before { display: none; }
+        .flow-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; position: relative; z-index: 1; }
+        .flow-step.completed .flow-icon { background: var(--secondary); }
+        .flow-step.current .flow-icon { background: var(--warning); animation: pulse 2s infinite; }
+        .flow-step h4 { font-size: 14px; font-weight: 600; }
+        .flow-step p { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* NPS调研 */
+        .nps-display {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border-radius: var(--radius);
+            margin-bottom: 32px;
+        }
+        .nps-score {
+            text-align: center;
+        }
+        .nps-score .number { font-size: 72px; font-weight: 700; color: var(--primary); line-height: 1; }
+        .nps-score .label { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
+        .nps-breakdown { flex: 1; }
+        .nps-bar { display: flex; height: 32px; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+        .nps-bar .promoters { background: #10b981; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+        .nps-bar .passives { background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-weight: 600; }
+        .nps-bar .detractors { background: #ef4444; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+        .nps-legend { display: flex; gap: 24px; }
+        .nps-legend span { font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .nps-legend span::before { content: ''; width: 12px; height: 12px; border-radius: 3px; }
+
+        /* 漏斗 */
+        .funnel-container { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px; }
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .funnel-bar {
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .funnel-bar:hover { transform: scale(1.02); }
+        .funnel-label { width: 120px; text-align: right; font-size: 14px; color: var(--text-secondary); }
+        .funnel-rate { width: 80px; text-align: left; font-size: 14px; color: var(--text-secondary); }
+
+        /* A/B测试 */
+        .ab-test { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 24px; }
+        .ab-variant {
+            padding: 24px;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+        }
+        .ab-variant.winner { border-color: var(--secondary); background: #f0fdf4; }
+        .ab-variant h4 { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .ab-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .ab-stat:last-child { border-bottom: none; }
+        .ab-stat .label { color: var(--text-secondary); }
+        .ab-stat .value { font-weight: 600; }
+
+        /* 流失分析 */
+        .churn-analysis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .churn-card {
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+        }
+        .churn-card h4 { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
+        .churn-card .count { font-size: 48px; font-weight: 700; color: var(--text-primary); }
+        .churn-card .count.warning { color: var(--warning); }
+        .churn-card .count.danger { color: var(--danger); }
+
+        /* Tab切换 */
+        .module-tabs { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+        .module-tab { padding: 12px 24px; border-radius: 8px; cursor: pointer; background: var(--bg-card); border: 2px solid var(--border); font-weight: 500; transition: all 0.3s; }
+        .module-tab:hover { border-color: var(--primary); color: var(--primary); }
+        .module-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .module-content { display: none; }
+        .module-content.active { display: block; }
+
+        /* 弹窗 */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal { background: white; border-radius: var(--radius); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; transform: translateY(-20px); transition: all 0.3s; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal-header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; font-weight: 600; }
+        .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--bg-light); cursor: pointer; font-size: 18px; }
+        .modal-body { padding: 32px; }
+        .modal-footer { padding: 20px 32px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 16px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px; font-size: 15px; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .rating-grid { grid-template-columns: repeat(2, 1fr); }
+            .reserve-overview { grid-template-columns: 1fr; }
+            .churn-analysis { grid-template-columns: 1fr; }
+            .ab-test { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main { margin-left: 0; padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>店赢OS</h1>
+                <span>平台管理端</span>
+            </div>
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-title">💰 支付延伸</div>
+                    <div class="nav-item active" onclick="switchModule('payment')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        <span>分账系统</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('qrocde')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                        <span>聚合码管理</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('credit')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span>流水贷授信</span>
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">🔒 合规风控</div>
+                    <div class="nav-item" onclick="switchModule('aml')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span>反洗钱监控</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('rating')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        <span>商户评级</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('dispute')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        <span>纠纷处理</span>
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">🎯 平台增长</div>
+                    <div class="nav-item" onclick="switchModule('referral')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        <span>裂变系统</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('funnel')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        <span>转化漏斗</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('churn')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        <span>流失召回</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('nps')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>NPS调研</span>
+                    </div>
+                    <div class="nav-item" onclick="switchModule('analytics')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span>数据埋点</span>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="main">
+            <div class="page-header">
+                <div>
+                    <h2>⚙️ 平台管理中心</h2>
+                    <p>支付延伸 · 合规风控 · 智能增长</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline">📊 数据报表</button>
+                    <button class="btn btn-primary">⚡ 系统设置</button>
+                </div>
+            </div>
+
+            <!-- 核心指标 -->
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <h3>今日交易额</h3>
+                    <div class="value">¥856万</div>
+                    <div class="sub">较昨日 +12.5% <span class="trend up">↑</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>活跃商户</h3>
+                    <div class="value">3,256<span style="font-size:16px">家</span></div>
+                    <div class="sub">本月新增 128 家</div>
+                </div>
+                <div class="stat-card warning">
+                    <h3>待处理告警</h3>
+                    <div class="value">23<span style="font-size:16px">条</span></div>
+                    <div class="sub">需人工审核 5 条</div>
+                </div>
+                <div class="stat-card danger">
+                    <h3>风险准备金</h3>
+                    <div class="value">¥128万</div>
+                    <div class="sub">占交易额 0.1%</div>
+                </div>
+            </div>
+
+            <!-- ==================== 分账系统模块 ==================== -->
+            <div id="module-payment" class="module-content active">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>💰 分账自动分润配置</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('config-modal')">+ 新增规则</button>
+                    </div>
+                    <div class="card-body">
+                        <!-- 分账规则配置 -->
+                        <div class="config-grid">
+                            <div class="config-card">
+                                <h4>🍜 餐饮行业默认分账</h4>
+                                <div class="config-item">
+                                    <span class="label">平台抽成</span>
+                                    <span class="value">0.35%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">代理商分润</span>
+                                    <span class="value">0.20%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">商户到账</span>
+                                    <span class="value">99.45%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">结算周期</span>
+                                    <span style="font-size:14px;font-weight:600;">T+1 自动结算</span>
+                                </div>
+                            </div>
+                            
+                            <div class="config-card">
+                                <h4>☕ 茶饮行业分账</h4>
+                                <div class="config-item">
+                                    <span class="label">平台抽成</span>
+                                    <span class="value">0.30%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">代理商分润</span>
+                                    <span class="value">0.25%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">商户到账</span>
+                                    <span class="value">99.45%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">结算周期</span>
+                                    <span style="font-size:14px;font-weight:600;">T+1 自动结算</span>
+                                </div>
+                            </div>
+                            
+                            <div class="config-card">
+                                <h4>🏪 零售行业分账</h4>
+                                <div class="config-item">
+                                    <span class="label">平台抽成</span>
+                                    <span class="value">0.40%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">代理商分润</span>
+                                    <span class="value">0.15%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">商户到账</span>
+                                    <span class="value">99.45%</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="label">结算周期</span>
+                                    <span style="font-size:14px;font-weight:600;">T+1 自动结算</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 分账记录 -->
+                        <h4 style="margin:32px 0 16px;">📋 最近分账记录</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>订单号</th>
+                                    <th>商户</th>
+                                    <th>交易金额</th>
+                                    <th>平台抽成</th>
+                                    <th>代理商分润</th>
+                                    <th>商户到账</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>P20240115001</td>
+                                    <td>星巴克(华强北店)</td>
+                                    <td>¥256.00</td>
+                                    <td style="color:var(--primary);">¥0.90</td>
+                                    <td style="color:var(--secondary);">¥0.51</td>
+                                    <td style="color:var(--success);">¥254.59</td>
+                                    <td>14:32:15</td>
+                                </tr>
+                                <tr>
+                                    <td>P20240115002</td>
+                                    <td>喜茶(万象城店)</td>
+                                    <td>¥128.00</td>
+                                    <td style="color:var(--primary);">¥0.38</td>
+                                    <td style="color:var(--secondary);">¥0.32</td>
+                                    <td style="color:var(--success);">¥127.30</td>
+                                    <td>14:28:42</td>
+                                </tr>
+                                <tr>
+                                    <td>P20240115003</td>
+                                    <td>麦当劳(海岸城)</td>
+                                    <td>¥89.50</td>
+                                    <td style="color:var(--primary);">¥0.31</td>
+                                    <td style="color:var(--secondary);">¥0.18</td>
+                                    <td style="color:var(--success);">¥89.01</td>
+                                    <td>14:25:33</td>
+                                </tr>
+                                <tr>
+                                    <td>P20240115004</td>
+                                    <td>奈雪の茶(南山店)</td>
+                                    <td>¥156.00</td>
+                                    <td style="color:var(--primary);">¥0.47</td>
+                                    <td style="color:var(--secondary);">¥0.39</td>
+                                    <td style="color:var(--success);">¥155.14</td>
+                                    <td>14:22:18</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 垫资服务 -->
+                <div class="content-card">
+                    <div class="card-header" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
+                        <h3>⚡ 垫资服务（T+0快速提现）</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid" style="margin-bottom:24px;">
+                            <div class="stat-card">
+                                <h3>今日垫资总额</h3>
+                                <div class="value">¥86.5万</div>
+                                <div class="sub">共 1,256 笔</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <h3>待回收金额</h3>
+                                <div class="value">¥45.2万</div>
+                                <div class="sub">预计 T+1 到账</div>
+                            </div>
+                            <div class="stat-card success">
+                                <h3>服务费收入</h3>
+                                <div class="value">¥259.50</div>
+                                <div class="sub">费率 0.3%</div>
+                            </div>
+                        </div>
+                        <div style="background:#fef3c7;padding:20px;border-radius:12px;border:2px solid #f59e0b;">
+                            <h4 style="color:#92400e;margin-bottom:12px;">💡 垫资规则说明</h4>
+                            <ul style="color:#b45309;font-size:14px;line-height:1.8;padding-left:20px;">
+                                <li>普通提现 T+1 到账，免收手续费</li>
+                                <li>快速提现 T+0 到账，收取 <strong>0.3%</strong> 服务费</li>
+                                <li>单笔垫资上限 <strong>¥50,000</strong></li>
+                                <li>商户垫资额度根据交易额和评级动态调整</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 聚合码管理模块 ==================== -->
+            <div id="module-qrocde" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📱 聚合支付二维码</h3>
+                        <button class="btn btn-primary btn-sm">+ 生成新码</button>
+                    </div>
+                    <div class="card-body">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:24px;">
+                            <div style="background:var(--bg-light);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="width:160px;height:160px;background:white;margin:0 auto 24px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:80px;">📱</div>
+                                <h4 style="margin-bottom:8px;">星巴克(华强北店)</h4>
+                                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">商户码：SB20240001</p>
+                                <div style="display:flex;gap:8px;justify-content:center;">
+                                    <span class="status-badge status-success">微信</span>
+                                    <span class="status-badge status-success">支付宝</span>
+                                    <span class="status-badge status-success">银联</span>
+                                </div>
+                            </div>
+                            <div style="background:var(--bg-light);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="width:160px;height:160px;background:white;margin:0 auto 24px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:80px;">☕</div>
+                                <h4 style="margin-bottom:8px;">喜茶(万象城店)</h4>
+                                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">商户码：XC20240002</p>
+                                <div style="display:flex;gap:8px;justify-content:center;">
+                                    <span class="status-badge status-success">微信</span>
+                                    <span class="status-badge status-success">支付宝</span>
+                                    <span class="status-badge status-success">云闪付</span>
+                                </div>
+                            </div>
+                            <div style="background:var(--bg-light);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="width:160px;height:160px;background:white;margin:0 auto 24px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:80px;">🍔</div>
+                                <h4 style="margin-bottom:8px;">麦当劳(海岸城)</h4>
+                                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">商户码：MC20240003</p>
+                                <div style="display:flex;gap:8px;justify-content:center;">
+                                    <span class="status-badge status-success">微信</span>
+                                    <span class="status-badge status-success">支付宝</span>
+                                    <span class="status-badge status-info">花呗</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 流水贷授信模块 ==================== -->
+            <div id="module-credit" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>💳 流水贷授信系统</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid" style="margin-bottom:32px;">
+                            <div class="stat-card">
+                                <h3>授信总额</h3>
+                                <div class="value">¥2,560万</div>
+                                <div class="sub">授信商户 128 家</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <h3>待还款</h3>
+                                <div class="value">¥856万</div>
+                                <div class="sub">逾期 3 笔</div>
+                            </div>
+                            <div class="stat-card success">
+                                <h3>本月利息收入</h3>
+                                <div class="value">¥12.8万</div>
+                                <div class="sub">日利率 万分之五</div>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom:16px;">📋 授信商户列表</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>商户</th>
+                                    <th>授信额度</th>
+                                    <th>已用额度</th>
+                                    <th>剩余额度</th>
+                                    <th>月利率</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>星巴克(华强北店)</td>
+                                    <td>¥50,000</td>
+                                    <td>¥28,000</td>
+                                    <td>¥22,000</td>
+                                    <td>1.5%</td>
+                                    <td><span class="status-badge status-success">正常</span></td>
+                                    <td><button class="btn btn-outline btn-sm">详情</button></td>
+                                </tr>
+                                <tr>
+                                    <td>喜茶(万象城店)</td>
+                                    <td>¥80,000</td>
+                                    <td>¥45,000</td>
+                                    <td>¥35,000</td>
+                                    <td>1.5%</td>
+                                    <td><span class="status-badge status-success">正常</span></td>
+                                    <td><button class="btn btn-outline btn-sm">详情</button></td>
+                                </tr>
+                                <tr>
+                                    <td>麦当劳(海岸城)</td>
+                                    <td>¥100,000</td>
+                                    <td>¥0</td>
+                                    <td>¥100,000</td>
+                                    <td>1.5%</td>
+                                    <td><span class="status-badge status-info">未使用</span></td>
+                                    <td><button class="btn btn-outline btn-sm">详情</button></td>
+                                </tr>
+                                <tr>
+                                    <td>奈雪の茶(南山店)</td>
+                                    <td>¥60,000</td>
+                                    <td>¥62,000</td>
+                                    <td style="color:var(--danger);">-¥2,000</td>
+                                    <td>1.5%</td>
+                                    <td><span class="status-badge status-danger">逾期</span></td>
+                                    <td><button class="btn btn-danger btn-sm">催收</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 反洗钱监控模块 ==================== -->
+            <div id="module-aml" class="module-content">
+                <div class="content-card">
+                    <div class="card-header" style="background:linear-gradient(135deg, #ef4444, #dc2626);">
+                        <h3>🚨 反洗钱实时监控</h3>
+                        <span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:13px;">监控中</span>
+                    </div>
+                    <div class="card-body">
+                        <!-- 预警列表 -->
+                        <h4 style="margin-bottom:16px;">⚠️ 待处理告警</h4>
+                        <div class="alert-grid">
+                            <div class="alert-item danger">
+                                <div class="alert-icon" style="background:#fee2e2;">🚨</div>
+                                <div class="alert-content">
+                                    <h4>大额交易告警 - 商户：深圳某贸易商行</h4>
+                                    <p>单笔交易 ¥68,000，超过单笔限额 ¥50,000 | 14:32:15</p>
+                                </div>
+                                <button class="btn btn-danger btn-sm">立即处理</button>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-icon" style="background:#fef3c7;">⚡</div>
+                                <div class="alert-content">
+                                    <h4>频繁小额交易 - 商户：广州某便利店</h4>
+                                    <p>10分钟内交易 28 笔，总计 ¥3,560，疑似拆分交易 | 14:28:42</p>
+                                </div>
+                                <button class="btn btn-warning btn-sm">审核</button>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-icon" style="background:#fef3c7;">🌙</div>
+                                <div class="alert-content">
+                                    <h4>夜间异常交易 - 商户：深圳某烟酒店</h4>
+                                    <p>凌晨 3:00-4:00 交易 5 笔，总计 ¥8,500 | 03:45:22</p>
+                                </div>
+                                <button class="btn btn-warning btn-sm">审核</button>
+                            </div>
+                        </div>
+
+                        <!-- 监控规则配置 -->
+                        <h4 style="margin:32px 0 16px;">📋 监控规则配置</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>规则名称</th>
+                                    <th>阈值</th>
+                                    <th>触发次数</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>单笔大额交易</td>
+                                    <td>¥50,000</td>
+                                    <td>今日 12 次</td>
+                                    <td><span class="status-badge status-success">启用</span></td>
+                                    <td><button class="btn btn-outline btn-sm">配置</button></td>
+                                </tr>
+                                <tr>
+                                    <td>单日累计大额</td>
+                                    <td>¥200,000</td>
+                                    <td>今日 5 次</td>
+                                    <td><span class="status-badge status-success">启用</span></td>
+                                    <td><button class="btn btn-outline btn-sm">配置</button></td>
+                                </tr>
+                                <tr>
+                                    <td>频繁小额交易</td>
+                                    <td>10分钟内 ≥20笔</td>
+                                    <td>今日 8 次</td>
+                                    <td><span class="status-badge status-success">启用</span></td>
+                                    <td><button class="btn btn-outline btn-sm">配置</button></td>
+                                </tr>
+                                <tr>
+                                    <td>夜间异常交易</td>
+                                    <td>凌晨 0:00-6:00</td>
+                                    <td>今日 15 次</td>
+                                    <td><span class="status-badge status-success">启用</span></td>
+                                    <td><button class="btn btn-outline btn-sm">配置</button></td>
+                                </tr>
+                                <tr>
+                                    <td>异地交易检测</td>
+                                    <td>交易地点与注册地不符</td>
+                                    <td>本周 23 次</td>
+                                    <td><span class="status-badge status-warning">审核中</span></td>
+                                    <td><button class="btn btn-outline btn-sm">配置</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 商户评级模块 ==================== -->
+            <div id="module-rating" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>⭐ 商户评级体系</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- 评级分布 -->
+                        <div class="rating-grid">
+                            <div class="rating-card grade-a">
+                                <div class="rating-badge">A</div>
+                                <h4>A级优质商户</h4>
+                                <p>费率-0.05%，额度+50%</p>
+                                <div class="rating-stats">286 家 <span style="font-size:14px;color:#059669;">(8.8%)</span></div>
+                            </div>
+                            <div class="rating-card grade-b">
+                                <div class="rating-badge">B</div>
+                                <h4>B级良好商户</h4>
+                                <p>正常费率，正常额度</p>
+                                <div class="rating-stats">2,128 家 <span style="font-size:14px;color:#2563eb;">(65.4%)</span></div>
+                            </div>
+                            <div class="rating-card grade-c">
+                                <div class="rating-badge">C</div>
+                                <h4>C级一般商户</h4>
+                                <p>费率+0.03%，额度-30%</p>
+                                <div class="rating-stats">680 家 <span style="font-size:14px;color:#d97706;">(20.9%)</span></div>
+                            </div>
+                            <div class="rating-card grade-d">
+                                <div class="rating-badge">D</div>
+                                <h4>D级高风险</h4>
+                                <p>限制交易，重点监控</p>
+                                <div class="rating-stats">162 家 <span style="font-size:14px;color:#dc2626;">(4.9%)</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 评级维度 -->
+                        <h4 style="margin:32px 0 16px;">📊 评级维度说明</h4>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">交易稳定性 25%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">近3个月交易波动幅度，波动越小分数越高</p>
+                            </div>
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">交易增长率 20%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">近3个月交易额环比增长率</p>
+                            </div>
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">投诉率 15%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">客诉数量占总交易笔数的比例</p>
+                            </div>
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">退款率 15%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">退款笔数占总交易笔数的比例</p>
+                            </div>
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">入网时长 15%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">在平台注册的时间越长分数越高</p>
+                            </div>
+                            <div style="background:var(--bg-light);padding:24px;border-radius:12px;">
+                                <h4 style="margin-bottom:12px;">合规记录 10%</h4>
+                                <p style="font-size:13px;color:var(--text-secondary);">是否存在违规记录、风控事件</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 风险准备金 -->
+                <div class="content-card">
+                    <div class="card-header" style="background:linear-gradient(135deg, #6366f1, #4f46e5);">
+                        <h3>💼 风险准备金机制</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="reserve-overview">
+                            <div class="reserve-card">
+                                <h3>累计计提</h3>
+                                <div class="value">¥128.56万</div>
+                            </div>
+                            <div class="reserve-card" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
+                                <h3>已使用</h3>
+                                <div class="value">¥12.8万</div>
+                            </div>
+                            <div class="reserve-card" style="background:linear-gradient(135deg, #10b981, #059669);">
+                                <h3>可用余额</h3>
+                                <div class="value">¥115.76万</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-light);padding:20px;border-radius:12px;">
+                            <h4 style="margin-bottom:12px;">📋 准备金规则</h4>
+                            <ul style="font-size:14px;color:var(--text-secondary);line-height:2;padding-left:20px;">
+                                <li>每笔交易自动扣取 <strong>0.1%</strong> 作为风险准备金</li>
+                                <li>商户正常解约 <strong>6个月后</strong> 返还本金（不计息）</li>
+                                <li>用于退款垫资、风险事件赔付等</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 纠纷处理模块 ==================== -->
+            <div id="module-dispute" class="module-content">
+                <div class="content-card">
+                    <div class="card-header" style="background:linear-gradient(135deg, #ec4899, #db2777);">
+                        <h3>⚖️ 交易纠纷处理平台</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- 纠纷流程 -->
+                        <div class="dispute-flow">
+                            <div class="flow-step completed">
+                                <div class="flow-icon">1</div>
+                                <h4>顾客发起</h4>
+                                <p>提交投诉/退款申请</p>
+                            </div>
+                            <div class="flow-step current">
+                                <div class="flow-icon">2</div>
+                                <h4>商户处理</h4>
+                                <p>商家协商处理</p>
+                            </div>
+                            <div class="flow-step">
+                                <div class="flow-icon">3</div>
+                                <h4>平台仲裁</h4>
+                                <p>人工审核裁定</p>
+                            </div>
+                            <div class="flow-step">
+                                <div class="flow-icon">4</div>
+                                <h4>执行结果</h4>
+                                <p>执行仲裁决定</p>
+                            </div>
+                        </div>
+
+                        <!-- 纠纷列表 -->
+                        <h4 style="margin-bottom:16px;">📋 待处理纠纷</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>纠纷单号</th>
+                                    <th>商户</th>
+                                    <th>类型</th>
+                                    <th>金额</th>
+                                    <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>D20240115001</td>
+                                    <td>星巴克(华强北店)</td>
+                                    <td>商品质量问题</td>
+                                    <td>¥68.00</td>
+                                    <td><span class="status-badge status-warning">商户处理中</span></td>
+                                    <td>2024-01-15 14:32</td>
+                                    <td><button class="btn btn-outline btn-sm">查看</button></td>
+                                </tr>
+                                <tr>
+                                    <td>D20240115002</td>
+                                    <td>喜茶(万象城店)</td>
+                                    <td>长时间未送达</td>
+                                    <td>¥128.00</td>
+                                    <td><span class="status-badge status-info">申请仲裁</span></td>
+                                    <td>2024-01-15 13:45</td>
+                                    <td><button class="btn btn-primary btn-sm">仲裁</button></td>
+                                </tr>
+                                <tr>
+                                    <td>D20240115003</td>
+                                    <td>麦当劳(海岸城)</td>
+                                    <td>少送商品</td>
+                                    <td>¥45.50</td>
+                                    <td><span class="status-badge status-success">已解决</span></td>
+                                    <td>2024-01-15 12:30</td>
+                                    <td><button class="btn btn-outline btn-sm">详情</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 裂变系统模块 ==================== -->
+            <div id="module-referral" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>🎁 商户推荐裂变系统</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid" style="margin-bottom:32px;">
+                            <div class="stat-card success">
+                                <h3>本月推荐成功</h3>
+                                <div class="value">86<span style="font-size:16px">家</span></div>
+                                <div class="sub">较上月 +32%</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>发放奖励</h3>
+                                <div class="value">¥12.8万</div>
+                                <div class="sub">奖励 258 个商户</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <h3>推荐转化率</h3>
+                                <div class="value">38.5%</div>
+                                <div class="sub">推荐转化高于行业平均</div>
+                            </div>
+                        </div>
+
+                        <!-- 裂变规则 -->
+                        <div style="background:linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);padding:32px;border-radius:12px;margin-bottom:32px;">
+                            <h4 style="color:#065f46;margin-bottom:20px;">🎯 推荐奖励规则</h4>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+                                <div style="background:white;padding:24px;border-radius:8px;text-align:center;">
+                                    <div style="font-size:48px;margin-bottom:12px;">🎁</div>
+                                    <div style="font-size:16px;font-weight:700;color:#065f46;margin-bottom:8px;">推荐成功</div>
+                                    <div style="font-size:14px;color:#047857;">老商户推荐新商户，双方均获得 <strong>3个月免费会员</strong></div>
+                                </div>
+                                <div style="background:white;padding:24px;border-radius:8px;text-align:center;">
+                                    <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+                                    <div style="font-size:16px;font-weight:700;color:#065f46;margin-bottom:8px;">推荐达人</div>
+                                    <div style="font-size:14px;color:#047857;">推荐满 <strong>5个商户</strong> 再送 <strong>3个月免费会员</strong></div>
+                                </div>
+                                <div style="background:white;padding:24px;border-radius:8px;text-align:center;">
+                                    <div style="font-size:48px;margin-bottom:12px;">💰</div>
+                                    <div style="font-size:16px;font-weight:700;color:#065f46;margin-bottom:8px;">额外奖励</div>
+                                    <div style="font-size:14px;color:#047857;">月度推荐TOP3额外获得 <strong>¥500/¥300/¥200</strong> 现金奖励</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 推荐排行榜 -->
+                        <h4 style="margin-bottom:16px;">🏆 推荐达人榜</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>商户</th>
+                                    <th>推荐数量</th>
+                                    <th>获得奖励</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span style="font-size:20px;">🥇</span></td>
+                                    <td>星巴克(华强北店)</td>
+                                    <td>18 家</td>
+                                    <td>54个月会员 + ¥500</td>
+                                    <td><span class="status-badge status-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="font-size:20px;">🥈</span></td>
+                                    <td>喜茶(万象城店)</td>
+                                    <td>15 家</td>
+                                    <td>45个月会员 + ¥300</td>
+                                    <td><span class="status-badge status-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span style="font-size:20px;">🥉</span></td>
+                                    <td>麦当劳(海岸城)</td>
+                                    <td>12 家</td>
+                                    <td>36个月会员 + ¥200</td>
+                                    <td><span class="status-badge status-success">正常</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 转化漏斗模块 ==================== -->
+            <div id="module-funnel" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📊 免费试用转化漏斗</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- 转化漏斗 -->
+                        <div class="funnel-container">
+                            <div class="funnel-step">
+                                <span class="funnel-label">注册</span>
+                                <div class="funnel-bar" style="width:100%;">10,000 人</div>
+                                <span class="funnel-rate">100%</span>
+                            </div>
+                            <div class="funnel-step">
+                                <span class="funnel-label">激活</span>
+                                <div class="funnel-bar" style="width:85%;background:linear-gradient(135deg, #3b82f6, #2563eb);">8,500 人</div>
+                                <span class="funnel-rate">85%</span>
+                            </div>
+                            <div class="funnel-step">
+                                <span class="funnel-label">活跃使用</span>
+                                <div class="funnel-bar" style="width:60%;background:linear-gradient(135deg, #8b5cf6, #7c3aed);">6,000 人</div>
+                                <span class="funnel-rate">70.6%</span>
+                            </div>
+                            <div class="funnel-step">
+                                <span class="funnel-label">试用到期</span>
+                                <div class="funnel-bar" style="width:40%;background:linear-gradient(135deg, #f59e0b, #d97706);">4,000 人</div>
+                                <span class="funnel-rate">66.7%</span>
+                            </div>
+                            <div class="funnel-step">
+                                <span class="funnel-label">付费转化</span>
+                                <div class="funnel-bar" style="width:25%;background:linear-gradient(135deg, #10b981, #059669);">2,500 人</div>
+                                <span class="funnel-rate">62.5%</span>
+                            </div>
+                        </div>
+
+                        <!-- 转化节点运营 -->
+                        <h4 style="margin:32px 0 16px;">📅 转化节点运营策略</h4>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+                            <div style="background:#e0e7ff;padding:20px;border-radius:12px;text-align:center;">
+                                <div style="background:#4361ee;color:white;padding:8px 16px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px;">第1天</div>
+                                <h4 style="margin-bottom:8px;">激活</h4>
+                                <p style="font-size:12px;color:var(--text-secondary);">欢迎消息+新手引导+核心功能体验</p>
+                            </div>
+                            <div style="background:#dbeafe;padding:20px;border-radius:12px;text-align:center;">
+                                <div style="background:#3b82f6;color:white;padding:8px 16px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px;">第3天</div>
+                                <h4 style="margin-bottom:8px;">活跃</h4>
+                                <p style="font-size:12px;color:var(--text-secondary);">推送使用效果报告：处理X条，挽回Y元</p>
+                            </div>
+                            <div style="background:#fef3c7;padding:20px;border-radius:12px;text-align:center;">
+                                <div style="background:#f59e0b;color:white;padding:8px 16px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px;">第7天</div>
+                                <h4 style="margin-bottom:8px;">转化</h4>
+                                <p style="font-size:12px;color:var(--text-secondary);">到期前3天推送优惠：现在开通立减100元</p>
+                            </div>
+                            <div style="background:#fee2e2;padding:20px;border-radius:12px;text-align:center;">
+                                <div style="background:#ef4444;color:white;padding:8px 16px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px;">到期日</div>
+                                <h4 style="margin-bottom:8px;">逼单</h4>
+                                <p style="font-size:12px;color:var(--text-secondary);">功能锁定+最后优惠倒计时</p>
+                            </div>
+                        </div>
+
+                        <!-- A/B测试 -->
+                        <h4 style="margin:32px 0 16px;">🧪 A/B测试结果</h4>
+                        <div class="ab-test">
+                            <div class="ab-variant">
+                                <h4>A方案：限时5折优惠</h4>
+                                <div class="ab-stat">
+                                    <span class="label">转化率</span>
+                                    <span class="value">28.5%</span>
+                                </div>
+                                <div class="ab-stat">
+                                    <span class="label">ARPU</span>
+                                    <span class="value">¥2,580</span>
+                                </div>
+                                <div class="ab-stat">
+                                    <span class="label">参与用户</span>
+                                    <span class="value">1,250</span>
+                                </div>
+                            </div>
+                            <div class="ab-variant winner">
+                                <h4>🏆 B方案：买一送一 + 专属客服 ⭐</h4>
+                                <div class="ab-stat">
+                                    <span class="label">转化率</span>
+                                    <span class="value" style="color:#059669;">35.2%</span>
+                                </div>
+                                <div class="ab-stat">
+                                    <span class="label">ARPU</span>
+                                    <span class="value">¥3,120</span>
+                                </div>
+                                <div class="ab-stat">
+                                    <span class="label">参与用户</span>
+                                    <span class="value">1,380</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 流失召回模块 ==================== -->
+            <div id="module-churn" class="module-content">
+                <div class="content-card">
+                    <div class="card-header" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
+                        <h3>📈 流失商户召回系统</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- 流失分布 -->
+                        <div class="churn-analysis">
+                            <div class="churn-card">
+                                <h4>潜在流失（7天不登录）</h4>
+                                <div class="count warning">128 家</div>
+                                <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;">召回策略：推送优化建议</p>
+                            </div>
+                            <div class="churn-card">
+                                <h4>已流失（15天不登录）</h4>
+                                <div class="count danger">86 家</div>
+                                <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;">召回策略：专属客服+延长15天</p>
+                            </div>
+                            <div class="churn-card">
+                                <h4>深度流失（30天不登录）</h4>
+                                <div class="count danger">52 家</div>
+                                <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;">召回策略：半价优惠+专属礼包</p>
+                            </div>
+                        </div>
+
+                        <!-- 召回效果 -->
+                        <h4 style="margin:32px 0 16px;">📊 召回效果追踪</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>流失等级</th>
+                                    <th>触达数量</th>
+                                    <th>召回成功</th>
+                                    <th>召回率</th>
+                                    <th>召回后留存率</th>
+                                    <th>ROI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-badge status-warning">潜在流失</span></td>
+                                    <td>128 家</td>
+                                    <td>68 家</td>
+                                    <td style="color:#059669;font-weight:600;">53.1%</td>
+                                    <td>89.7%</td>
+                                    <td>3.2x</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-badge status-danger">已流失</span></td>
+                                    <td>86 家</td>
+                                    <td>32 家</td>
+                                    <td style="color:#059669;font-weight:600;">37.2%</td>
+                                    <td>75.0%</td>
+                                    <td>2.1x</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-badge status-purple">深度流失</span></td>
+                                    <td>52 家</td>
+                                    <td>12 家</td>
+                                    <td style="color:#f59e0b;font-weight:600;">23.1%</td>
+                                    <td>58.3%</td>
+                                    <td>1.3x</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- 流失原因 -->
+                        <h4 style="margin:32px 0 16px;">📝 流失原因分析</h4>
+                        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
+                            <div style="text-align:center;padding:20px;background:var(--bg-light);border-radius:12px;">
+                                <div style="font-size:32px;font-weight:700;color:var(--primary);">35%</div>
+                                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">价格敏感</div>
+                            </div>
+                            <div style="text-align:center;padding:20px;background:var(--bg-light);border-radius:12px;">
+                                <div style="font-size:32px;font-weight:700;color:var(--secondary);">25%</div>
+                                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">功能不够用</div>
+                            </div>
+                            <div style="text-align:center;padding:20px;background:var(--bg-light);border-radius:12px;">
+                                <div style="font-size:32px;font-weight:700;color:var(--warning);">18%</div>
+                                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">服务不满意</div>
+                            </div>
+                            <div style="text-align:center;padding:20px;background:var(--bg-light);border-radius:12px;">
+                                <div style="font-size:32px;font-weight:700;color:var(--danger);">12%</div>
+                                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">竞争对手</div>
+                            </div>
+                            <div style="text-align:center;padding:20px;background:var(--bg-light);border-radius:12px;">
+                                <div style="font-size:32px;font-weight:700;color:var(--purple);">10%</div>
+                                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">其他原因</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== NPS调研模块 ==================== -->
+            <div id="module-nps" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📊 NPS客户满意度调研</h3>
+                        <button class="btn btn-primary btn-sm">发送调研</button>
+                    </div>
+                    <div class="card-body">
+                        <!-- NPS概览 -->
+                        <div class="nps-display">
+                            <div class="nps-score">
+                                <div class="number">+68</div>
+                                <div class="label">本月NPS</div>
+                            </div>
+                            <div class="nps-breakdown">
+                                <div class="nps-bar">
+                                    <div class="promoters" style="width:75%;">75%</div>
+                                    <div class="passives" style="width:18%;">18%</div>
+                                    <div class="detractors" style="width:7%;">7%</div>
+                                </div>
+                                <div class="nps-legend">
+                                    <span style="color:#10b981;">● 推荐者 (9-10分): 75%</span>
+                                    <span style="color:#64748b;">● 中立者 (7-8分): 18%</span>
+                                    <span style="color:#ef4444;">● 贬损者 (0-6分): 7%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NPS趋势 -->
+                        <h4 style="margin-bottom:16px;">📈 NPS月度趋势</h4>
+                        <div class="chart-container">
+                            <div class="chart-bars">
+                                <div class="chart-bar" style="height:55%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">+52</div><div class="chart-bar-label">8月</div></div>
+                                <div class="chart-bar" style="height:65%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">+58</div><div class="chart-bar-label">9月</div></div>
+                                <div class="chart-bar" style="height:70%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">+62</div><div class="chart-bar-label">10月</div></div>
+                                <div class="chart-bar" style="height:75%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">+65</div><div class="chart-bar-label">11月</div></div>
+                                <div class="chart-bar" style="height:78%;background:linear-gradient(180deg, #10b981 0%, #059669 100%);"><div class="chart-bar-value">+68</div><div class="chart-bar-label">12月</div></div>
+                                <div class="chart-bar" style="height:82%;background:linear-gradient(180deg, #4361ee 0%, #3a56d4 100%);"><div class="chart-bar-value">+72</div><div class="chart-bar-label">1月</div></div>
+                            </div>
+                        </div>
+
+                        <!-- 低分跟进 -->
+                        <h4 style="margin:32px 0 16px;">⚠️ 低分自动跟进（6分及以下）</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>商户</th>
+                                    <th>NPS分数</th>
+                                    <th>反馈内容</th>
+                                    <th>跟进状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>某贸易商行</td>
+                                    <td><span class="status-badge status-danger">4分</span></td>
+                                    <td>到账速度太慢，希望支持T+0</td>
+                                    <td><span class="status-badge status-success">已解决</span></td>
+                                    <td><button class="btn btn-outline btn-sm">查看</button></td>
+                                </tr>
+                                <tr>
+                                    <td>某便利店</td>
+                                    <td><span class="status-badge status-danger">5分</span></td>
+                                    <td>对账功能不够智能，希望增加报表</td>
+                                    <td><span class="status-badge status-warning">跟进中</span></td>
+                                    <td><button class="btn btn-primary btn-sm">跟进</button></td>
+                                </tr>
+                                <tr>
+                                    <td>某餐饮店</td>
+                                    <td><span class="status-badge status-warning">6分</span></td>
+                                    <td>客服响应速度一般</td>
+                                    <td><span class="status-badge status-info">待跟进</span></td>
+                                    <td><button class="btn btn-primary btn-sm">跟进</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== 数据埋点模块 ==================== -->
+            <div id="module-analytics" class="module-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📊 功能使用埋点分析</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- 使用概览 -->
+                        <div class="stats-grid" style="margin-bottom:32px;">
+                            <div class="stat-card">
+                                <h3>日活用户</h3>
+                                <div class="value">8,562</div>
+                                <div class="sub">DAU 较上月 +15%</div>
+                            </div>
+                            <div class="stat-card success">
+                                <h3>功能覆盖率</h3>
+                                <div class="value">68.5%</div>
+                                <div class="sub">用户平均使用68.5%功能</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <h3>功能完成率</h3>
+                                <div class="value">82.3%</div>
+                                <div class="sub">操作完成率</div>
+                            </div>
+                        </div>
+
+                        <!-- 功能使用排行 -->
+                        <h4 style="margin-bottom:16px;">🏆 功能使用排行榜</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>功能模块</th>
+                                    <th>日访问量</th>
+                                    <th>平均使用时长</th>
+                                    <th>完成率</th>
+                                    <th>趋势</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🥇</td>
+                                    <td>聚合收款</td>
+                                    <td>12,856</td>
+                                    <td>2分35秒</td>
+                                    <td>98.5%</td>
+                                    <td><span class="trend up">↑12%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>🥈</td>
+                                    <td>交易记录</td>
+                                    <td>8,562</td>
+                                    <td>1分48秒</td>
+                                    <td>95.2%</td>
+                                    <td><span class="trend up">↑8%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>🥉</td>
+                                    <td>AI差评回复</td>
+                                    <td>5,234</td>
+                                    <td>3分22秒</td>
+                                    <td>89.6%</td>
+                                    <td><span class="trend up">↑25%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>数据报表</td>
+                                    <td>3,856</td>
+                                    <td>5分12秒</td>
+                                    <td>76.8%</td>
+                                    <td><span class="trend down">↓3%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>智能排班</td>
+                                    <td>2,125</td>
+                                    <td>4分45秒</td>
+                                    <td>72.3%</td>
+                                    <td><span class="trend up">↑18%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>库存管理</td>
+                                    <td>1,856</td>
+                                    <td>3分58秒</td>
+                                    <td>68.5%</td>
+                                    <td><span class="trend up">↑5%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- 用户分层 -->
+                        <h4 style="margin:32px 0 16px;">👥 用户分层分析</h4>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+                            <div style="background:linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="font-size:48px;margin-bottom:12px;">🚀</div>
+                                <h4>深度用户</h4>
+                                <p style="font-size:13px;color:#047857;margin:12px 0;">使用80%以上功能</p>
+                                <div style="font-size:36px;font-weight:700;color:#059669;">1,256</div>
+                                <div style="font-size:13px;color:#047857;">占比 14.7%</div>
+                            </div>
+                            <div style="background:linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="font-size:48px;margin-bottom:12px;">⚡</div>
+                                <h4>一般用户</h4>
+                                <p style="font-size:13px;color:#1e40af;margin:12px 0;">使用30-80%功能</p>
+                                <div style="font-size:36px;font-weight:700;color:#2563eb;">4,568</div>
+                                <div style="font-size:13px;color:#1e40af;">占比 53.3%</div>
+                            </div>
+                            <div style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);padding:32px;border-radius:12px;text-align:center;">
+                                <div style="font-size:48px;margin-bottom:12px;">🐢</div>
+                                <h4>浅度用户</h4>
+                                <p style="font-size:13px;color:#92400e;margin:12px 0;">使用不足30%功能</p>
+                                <div style="font-size:36px;font-weight:700;color:#d97706;">2,738</div>
+                                <div style="font-size:13px;color:#92400e;">占比 32.0%</div>
+                            </div>
+                        </div>
+
+                        <!-- 优化建议 -->
+                        <div style="background:var(--bg-light);padding:24px;border-radius:12px;margin-top:32px;">
+                            <h4 style="margin-bottom:16px;">💡 产品优化建议（基于使用数据）</h4>
+                            <ul style="font-size:14px;color:var(--text-secondary);line-height:2;padding-left:20px;">
+                                <li><strong>数据报表功能跳出率高</strong>（27%）：建议简化报表入口，增加自定义看板</li>
+                                <li><strong>智能排班使用量增长快</strong>（+18%）：建议增加排班模板和AI推荐权重</li>
+                                <li><strong>库存管理完成率低</strong>（68.5%）：建议优化操作流程，增加扫码入库</li>
+                                <li><strong>浅度用户占比高</strong>（32%）：建议增加新用户引导和使用激励</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay" id="config-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>➕ 新增分账规则</h3>
+                <button class="modal-close" onclick="closeModal('config-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>规则名称</label>
+                    <input type="text" class="form-input" placeholder="输入规则名称">
+                </div>
+                <div class="form-group">
+                    <label>适用行业</label>
+                    <select class="form-select">
+                        <option>全部行业</option>
+                        <option>餐饮</option>
+                        <option>茶饮</option>
+                        <option>零售</option>
+                        <option>教育培训</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>平台抽成比例</label>
+                    <input type="number" class="form-input" placeholder="0.35" step="0.01"> %
+                </div>
+                <div class="form-group">
+                    <label>代理商分润比例</label>
+                    <input type="number" class="form-input" placeholder="0.20" step="0.01"> %
+                </div>
+                <div class="form-group">
+                    <label>结算周期</label>
+                    <select class="form-select">
+                        <option>T+1 自动结算</option>
+                        <option>T+0 垫资结算</option>
+                        <option>周结</option>
+                        <option>月结</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('config-modal')">取消</button>
+                <button class="btn btn-primary" onclick="closeModal('config-modal')">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchModule(module) {
+            document.querySelectorAll('.module-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('module-' + module).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
