@@ -5,12 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>店赢OS 2.0 — 管理后台</title>
 <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
-<script src="https://unpkg.com/element-plus/dist/index.full.min.js"></script>
-<script src="https://unpkg.com/@element-plus/icons-vue"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/echarts@5/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js" onerror="cdnFail('Vue')"></script>
+<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js" onerror="cdnFail('Vue Router')"></script>
+<script src="https://unpkg.com/element-plus/dist/index.full.min.js" onerror="cdnFail('Element Plus')"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue" onerror="cdnFail('Icons')"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js" onerror="cdnFail('Axios')"></script>
+<script src="https://unpkg.com/echarts@5/dist/echarts.min.js" onerror="cdnFail('ECharts')"></script>
+<script>
+var _cdnFailed=[]
+function cdnFail(lib){_cdnFailed.push(lib)}
+window.addEventListener('DOMContentLoaded',function(){
+  if(typeof Vue==='undefined'||typeof ElementPlus==='undefined'){
+    document.getElementById('app').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;background:#f0f2f5"><div style="text-align:center;padding:40px;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);max-width:500px"><h2 style="color:#E53935;margin-bottom:12px">⚠ 前端资源加载失败</h2><p style="color:#666;margin:8px 0">CDN脚本未能加载，可能网络不通或 unpkg.com 不可达。</p><p style="color:#999;font-size:13px;margin:4px 0">失败列表: '+_cdnFailed.join(', ')+'</p><p style="color:#1E3A5F;margin-top:16px;font-weight:600">解决方案: 确保设备可以访问公网，或联系管理员部署离线资源包。</p><div style="margin-top:20px"><button onclick="location.reload()" style="padding:10px 30px;background:#1E3A5F;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px">重新加载</button></div></div></div>'
+  }
+})
+</script>
 <style>
 :root{--primary:#1E3A5F;--gold:#F59E0B;--green:#10B981;--red:#EF4444;--sidebar-w:230px}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -199,11 +208,16 @@ const MainLayout = {
         {key:'/members',label:'会员管理',icon:'Stamp'},
       ]},
       {name:'AI能力',items:[
-        {key:'/ai-agents',label:'AI Agent',icon:'Cpu'},
+        {key:'/ai-store-manager',label:'AI虚拟店长',icon:'Cpu',badge:'NEW'},
+        {key:'/ai-agents',label:'AI Agent',icon:'Robot'},
         {key:'/content',label:'内容生成',icon:'EditPen'},
         {key:'/knowledge',label:'知识库',icon:'Collection'},
         {key:'/ai-chat',label:'AI客服',icon:'Service',badge:'30s回复'},
-	      {key:'/smart-pricing',label:'智能定价',icon:'TrendCharts'},
+        {key:'/smart-pricing',label:'智能定价',icon:'TrendCharts'},
+      ]},
+      {name:'门店运营',items:[
+        {key:'/digital-twin',label:'门店数字孪生',icon:'Monitor',badge:'3D'},
+        {key:'/cross-store',label:'跨店知识迁移',icon:'Connection'},
       ]},
       {name:'财务支付',items:[
         {key:'/finance',label:'财务中心',icon:'Money'},
@@ -1675,6 +1689,312 @@ const RiskMerchants = {
   }
 }
 
+// ======================== AI虚拟店长 ========================
+const AIStoreManager = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">活跃门店</div><div class="sc-v">{{stats.stores||219}}</div><div class="sc-s">AI店长在管</div></div><div class="sc-ico">🏪</div></div>
+    <div class="sc-i"><div><div class="sc-t">今日自动处理</div><div class="sc-v">{{stats.todayActions||1238}}</div><div class="sc-s">差评回复+投诉+定价</div></div><div class="sc-ico">🤖</div></div>
+    <div class="sc-i"><div><div class="sc-t">AI决策准确率</div><div class="sc-v" style="color:var(--green)">{{stats.accuracy||94.7}}%</div><div class="sc-s">近30天</div></div><div class="sc-ico">🎯</div></div>
+    <div class="sc-i"><div><div class="sc-t">节省人时/天</div><div class="sc-v" style="color:var(--gold)">{{stats.savedHours||186}}h</div><div class="sc-s">相当于 {{Math.round((stats.savedHours||186)/8)}} 个全职员工</div></div><div class="sc-ico">⏱</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <h3>AI虚拟店长 — 核心能力</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+        <div v-for="cap in capabilities" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border-left:3px solid" :style="{borderColor:cap.color}">
+          <el-icon :size="24" :style="{color:cap.color,marginTop:'4px'}"><component :is="cap.icon"/></el-icon>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:14px;color:#1E3A5F">{{cap.name}}</div>
+            <div style="color:#666;font-size:12px;margin-top:4px">{{cap.desc}}</div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+              <el-tag size="small" :type="cap.running?'success':'info'">{{cap.running?'运行中':'待激活'}}</el-tag>
+              <span style="font-size:11px;color:#999">{{cap.stats}}</span>
+            </div>
+          </div>
+          <el-button link size="small" type="primary" @click="triggerCap(cap)">执行</el-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>今日AI店长实时动态</h3>
+      <el-timeline style="margin-top:12px">
+        <el-timeline-item v-for="(e,i) in events" :key="i" :timestamp="e.time" :color="e.color" :icon="e.icon" size="small">
+          <div style="font-size:13px;color:#333">{{e.title}}</div>
+          <div style="font-size:12px;color:#999;margin-top:2px">门店: {{e.store}} · AI置信度: {{e.confidence}}%</div>
+        </el-timeline-item>
+      </el-timeline>
+      <div style="margin-top:12px;text-align:center">
+        <el-button link type="primary" @click="loadEvents">加载更多动态 →</el-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>跨店AI策略总揽</h3>
+    <el-table :data="strategies" stripe size="small" style="margin-top:8px">
+      <el-table-column prop="name" label="策略名称" min-width="150"/>
+      <el-table-column prop="source" label="来源门店" width="120"/>
+      <el-table-column prop="type" label="类型" width="90"><template #def="s"><el-tag size="small">{{s.row.type}}</el-tag></template></el-table-column>
+      <el-table-column prop="success_rate" label="成功率" width="90"><template #def="s">{{s.row.success_rate}}%</template></el-table-column>
+      <el-table-column prop="applied" label="已应用门店" width="100"/>
+      <el-table-column prop="avg_lift" label="平均提升" width="90"><template #def="s"><span :style="{color:parseFloat(s.row.avg_lift)>0?'var(--green)':'var(--red)'}">+{{s.row.avg_lift}}%</span></template></el-table-column>
+      <el-table-column label="操作" width="100"><template #def="s"><el-button link size="small" type="primary" @click="applyStrategy(s.row)">推广到更多</el-button></template></el-table-column>
+    </el-table>
+  </div>
+</div>`,
+  setup(){
+    const stats=reactive({stores:219,todayActions:1238,accuracy:94.7,savedHours:186})
+    const events=ref([
+      {title:'午市动态定价：牛肉火锅下调5%',store:'小龙坎火锅(春熙路店)',time:'11:30',confidence:93,color:'#10B981',icon:'TrendCharts'},
+      {title:'自动回复差评——"菜品等待时间过长"',store:'海底捞(太古里店)',time:'11:15',confidence:88,color:'#F59E0B',icon:'ChatDotRound'},
+      {title:'库存预警：毛肚不足→自动下单采购',store:'蜀大侠火锅(宽窄巷子)',time:'10:45',confidence:96,color:'#EF4444',icon:'WarningFilled'},
+      {title:'会员流失预警：3位铂金会员7天未到店',store:'小龙坎火锅(春熙路店)',time:'09:30',confidence:91,color:'#3B82F6',icon:'Stamp'},
+      {title:'跨店策略迁移：午市引流方案 B→A→C',store:'系统',time:'08:00',confidence:95,color:'#8B5CF6',icon:'Connection'},
+    ])
+    const capabilities=ref([
+      {name:'差评自动回复',desc:'24/7监控8平台差评，AI生成个性化回复，自动同步至美团/抖音/小红书等平台',icon:'ChatDotRound',color:'#EF4444',running:true,stats:'今日已处理127条'},
+      {name:'投诉智能判责',desc:'微信支付/支付宝投诉自动分诊，食品安全/诈骗类100%自动退款，退款延迟类建议方案',icon:'WarningFilled',color:'#F59E0B',running:true,stats:'今日已处理23条'},
+      {name:'动态智能定价',desc:'结合天气/时段/竞品/库存因素，为每道菜品生成最优定价建议，提升客单价12-18%',icon:'TrendCharts',color:'#10B981',running:true,stats:'今日已生成86条建议'},
+      {name:'会员精准运营',desc:'RFM分析+流失预测，自动化会员标签与精准营销，流失预警+自动发放优惠券',icon:'Stamp',color:'#3B82F6',running:true,stats:'覆盖12890位会员'},
+      {name:'供应链库存优化',desc:'基于销售预测的自动补货建议，库存周转率提升25%，减少浪费',icon:'Truck',color:'#8B5CF6',running:false,stats:'待配置供应商数据'},
+    ])
+    const strategies=ref([
+      {name:'午市引流套餐策略',source:'小龙坎火锅(春熙路店)',type:'定价',success_rate:87,applied:'12家',avg_lift:15},
+      {name:'差评回复话术模板',source:'海底捞(太古里店)',type:'话术',success_rate:92,applied:'28家',avg_lift:8},
+      {name:'周末会员专属折扣',source:'蜀大侠火锅(宽窄巷子)',type:'营销',success_rate:79,applied:'9家',avg_lift:22},
+      {name:'雨天外卖加价策略',source:'小龙坎火锅(春熙路店)',type:'定价',success_rate:84,applied:'18家',avg_lift:12},
+    ])
+
+    const loadEvents=()=>{ElMessage.info('更多实时动态加载中...')}
+    const triggerCap=(cap)=>{ElMessage.success('已触发: '+cap.name)}
+    const applyStrategy=(s)=>{ElMessage.success('策略「'+s.name+'」正在推广到其他门店...')}
+
+    return {stats,events,capabilities,strategies,loadEvents,triggerCap,applyStrategy}
+  }
+}
+
+// ======================== 门店数字孪生 ========================
+const DigitalTwin = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">数字孪生门店</div><div class="sc-v">{{stores.length||0}}</div><div class="sc-s">3D空间建模</div></div><div class="sc-ico">🏬</div></div>
+    <div class="sc-i"><div><div class="sc-t">模拟仿真次数</div><div class="sc-v">{{simCount||156}}</div><div class="sc-s">累计</div></div><div class="sc-ico">🔄</div></div>
+    <div class="sc-i"><div><div class="sc-t">最后仿真</div><div class="sc-v" style="color:var(--green);font-size:20px">{{simResult.avg_wait_min||0}}<small style="font-size:12px">min</small></div><div class="sc-s">平均等位</div></div><div class="sc-ico">⏳</div></div>
+    <div class="sc-i"><div><div class="sc-t">优化建议</div><div class="sc-v" style="color:var(--gold);font-size:16px">{{simResult.suggestion||'点击下方开始仿真'}}</div></div><div class="sc-ico">💡</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">门店平面布局 — {{curStore||'选择门店'}}</h3>
+        <div style="display:flex;gap:8px">
+          <el-select v-model="curStore" placeholder="选择门店" size="small" style="width:180px" @change="loadLayout">
+            <el-option v-for="s in stores" :key="s.id" :label="s.name" :value="s.id"/>
+          </el-select>
+        </div>
+      </div>
+      <div style="position:relative;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;min-height:340px;overflow:hidden">
+        <div v-for="z in zones" :style="{position:'absolute',left:(z.x*20)+'px',top:(z.y*20)+'px',width:(z.w*20)+'px',height:(z.h*20)+'px',background:zoneColor(z.type),border:'1px dashed #ccc',borderRadius:'6px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'12px',fontWeight:'600',color:'#555',cursor:'pointer'}" :title="z.name+' ('+(z.tables||'')+')'">
+          {{z.name}}{{z.tables?' ('+z.tables+'桌)':''}}
+        </div>
+        <div v-if="heatmapPoints.length" style="position:absolute;top:0;left:0;right:0;bottom:0">
+          <div v-for="(p,i) in heatmapPoints" :key="'h'+i" :style="{position:'absolute',left:(p.x*20)+'px',top:(p.y*20)+'px',width:'8px',height:'8px',borderRadius:'50%',background:'rgba(255,0,0,'+(p.value/100)+')',transform:'translate(-50%,-50%)'}" :title="'热度: '+p.value"></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <el-button size="small" type="primary" @click="loadHeatmap" :disabled="!curStore">客流热力图</el-button>
+        <el-button size="small" type="success" @click="runSim" :disabled="!curStore" :loading="simLoading">仿真模拟</el-button>
+        <el-button size="small" :disabled="!curStore" @click="voiceMode=!voiceMode">{{voiceMode?'关闭':'开启'}}语音控制</el-button>
+      </div>
+      <div v-if="voiceMode" style="margin-top:12px;display:flex;gap:8px">
+        <el-input v-model="voiceCmd" placeholder="说点什么，如：今天业绩、查看差评、库存..." size="small" style="flex:1" @keyup.enter="sendVoice"/>
+        <el-button size="small" type="primary" @click="sendVoice" :loading="voiceLoading">发送</el-button>
+      </div>
+      <div v-if="voiceResult" style="margin-top:8px;padding:8px 12px;background:#f0fdf4;border-radius:6px;font-size:13px;color:#333">
+        <strong>AI店长回复：</strong>{{voiceResult}}
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>仿真参数</h3>
+        <el-form label-width="90px" size="small" style="margin-top:8px">
+          <el-form-item label="场景"><el-select v-model="simParams.scenario" style="width:100%"><el-option label="午市高峰" value="peak_lunch"/><el-option label="晚市高峰" value="peak_dinner"/><el-option label="平日低峰" value="off_peak"/><el-option label="周末高峰" value="weekend"/></el-select></el-form-item>
+          <el-form-item label="客流量"><el-slider v-model="simParams.customers" :min="10" :max="200"/></el-form-item>
+          <el-form-item label="服务员数"><el-input-number v-model="simParams.staff" :min="1" :max="20" size="small"/></el-form-item>
+          <el-form-item label="后厨人数"><el-input-number v-model="simParams.chef_count" :min="1" :max="15" size="small"/></el-form-item>
+        </el-form>
+      </div>
+      <div class="card">
+        <h3>仿真结果</h3>
+        <div v-if="simResult.result" style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0"><span style="color:#999;font-size:12px">平均等位</span><strong>{{simResult.result.avg_wait_min||0}}分钟</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0"><span style="color:#999;font-size:12px">翻台率</span><strong>{{simResult.result.table_turnover||0}}次/天</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0"><span style="color:#999;font-size:12px">瓶颈区域</span><strong style="color:var(--red)">{{simResult.result.bottleneck_zone||'-'}}</strong></div>
+          <div style="margin-top:10px;padding:10px;background:#fffbeb;border-radius:6px;font-size:12px;color:#92400e">
+            <strong>AI建议：</strong>{{simResult.result.suggestion||'暂无'}}
+          </div>
+        </div>
+        <div v-else style="color:#999;font-size:13px;text-align:center;padding:20px">选择门店并点击仿真模拟</div>
+      </div>
+    </div>
+  </div>
+</div>`,
+  setup(){
+    const stores=ref([{id:1,name:'小龙坎火锅(春熙路店)'},{id:2,name:'海底捞(太古里店)'},{id:3,name:'蜀大侠火锅(宽窄巷子)'}])
+    const curStore=ref(null),zones=ref([]),heatmapPoints=ref([]),voiceMode=ref(false),voiceCmd=ref(''),voiceResult=ref(''),voiceLoading=ref(false),simLoading=ref(false),simCount=ref(156)
+    const simParams=reactive({scenario:'peak_lunch',customers:50,staff:5,chef_count:3})
+    const simResult=reactive({result:null,suggestion:''})
+
+    const zoneColor=(t)=>{const m={service:'#dbeafe',dining:'#fef3c7',kitchen:'#fee2e2'};return m[t]||'#f1f5f9'}
+
+    const loadLayout=async()=>{
+      if(!curStore.value)return
+      try{const r=await http.get('/digital-twin/layout/'+curStore.value);zones.value=r.zones||[]}catch(e){ElMessage.error('加载布局失败')}
+    }
+    const loadHeatmap=async()=>{
+      if(!curStore.value)return
+      try{const r=await http.get('/digital-twin/heatmap/'+curStore.value);heatmapPoints.value=r.points||[];ElMessage.success('热力图已加载，高峰时段: '+(r.peak_hours||[]).join(', '))}catch(e){ElMessage.error('加载热力图失败')}
+    }
+    const runSim=async()=>{
+      if(!curStore.value)return
+      simLoading.value=true
+      try{const r=await http.post('/digital-twin/simulate/'+curStore.value,simParams);simResult.result=r.result;simResult.suggestion=r.result?.suggestion||'';simCount.value++;ElMessage.success('仿真完成')}catch(e){ElMessage.error('仿真失败')}finally{simLoading.value=false}
+    }
+    const sendVoice=async()=>{
+      if(!voiceCmd.value)return
+      voiceLoading.value=true
+      try{const r=await http.post('/digital-twin/voice',{command:voiceCmd.value});voiceResult.value=r.response||'';voiceCmd.value=''}catch(e){ElMessage.error('语音指令失败')}finally{voiceLoading.value=false}
+    }
+
+    return {stores,curStore,zones,heatmapPoints,voiceMode,voiceCmd,voiceResult,voiceLoading,simLoading,simCount,simParams,simResult,zoneColor,loadLayout,loadHeatmap,runSim,sendVoice}
+  }
+}
+
+// ======================== 跨店知识迁移 ========================
+const CrossStore = {
+  template:`
+<div>
+  <div class="sc">
+    <div class="sc-i"><div><div class="sc-t">总迁移次数</div><div class="sc-v">{{total||0}}</div><div class="sc-s">成功将优质策略跨店落地</div></div><div class="sc-ico">🔄</div></div>
+    <div class="sc-i"><div><div class="sc-t">应用成功率</div><div class="sc-v" :style="{color:applyRate>=80?'var(--green)':'var(--gold)'}">{{applyRate}}%</div><div class="sc-s">已应用/总数</div></div><div class="sc-ico">✅</div></div>
+    <div class="sc-i"><div><div class="sc-t">平均提升</div><div class="sc-v" style="color:var(--green)">+{{avgLift}}%</div><div class="sc-s">营收/好评/客单</div></div><div class="sc-ico">📈</div></div>
+    <div class="sc-i"><div><div class="sc-t">知识库条目</div><div class="sc-v" style="color:#1E3A5F">{{kbItems||0}}</div><div class="sc-s">可迁移的已验证策略</div></div><div class="sc-ico">📚</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">发起知识迁移</h3>
+      </div>
+      <el-form label-width="90px" size="small" style="margin-top:8px">
+        <el-form-item label="来源门店" required>
+          <el-select v-model="transferForm.from" style="width:100%" placeholder="选择已验证成功策略的门店">
+            <el-option v-for="s in sourceStores" :key="s.id" :label="s.name+' ('+s.successStrategies+'个成功策略)'" :value="s.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="目标门店" required>
+          <el-select v-model="transferForm.to" style="width:100%" placeholder="选择需要应用策略的门店">
+            <el-option v-for="s in targetStores" :key="s.id" :label="s.name" :value="s.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="知识类型" required>
+          <el-select v-model="transferForm.type" style="width:100%">
+            <el-option label="差评回复话术" value="reply_strategy"/>
+            <el-option label="门店布局方案" value="layout"/>
+            <el-option label="动态定价策略" value="pricing"/>
+            <el-option label="会员运营方案" value="member"/>
+            <el-option label="营销活动方案" value="marketing"/>
+            <el-option label="排班优化策略" value="scheduling"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="doTransfer" :loading="transferring">发起知识迁移</el-button>
+          <el-button @click="resetTransferForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="card">
+      <h3>知识库热门策略</h3>
+      <div style="margin-top:8px">
+        <div v-for="kb in hotKnowledge" :key="kb.id" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0">
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:13px;color:#1E3A5F">{{kb.title}}</div>
+            <div style="color:#999;font-size:11px;margin-top:2px">来源: {{kb.source}} · {{kb.type}} · 应用 {{kb.appliedCount}}次</div>
+          </div>
+          <div style="text-align:right;margin-right:10px">
+            <div :style="{color:kb.successRate>=85?'var(--green)':'var(--gold)',fontWeight:'600'}">{{kb.successRate}}%</div>
+            <div style="font-size:10px;color:#999">成功率</div>
+          </div>
+          <el-button link size="small" type="primary" @click="quickTransfer(kb)">一键迁移</el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0">迁移历史记录</h3>
+      <div style="display:flex;gap:8px">
+        <el-select v-model="filterType" size="small" style="width:120px" clearable placeholder="类型筛选" @change="loadHistory">
+          <el-option label="回复话术" value="reply_strategy"/><el-option label="布局方案" value="layout"/><el-option label="定价策略" value="pricing"/>
+        </el-select>
+        <el-button size="small" @click="loadHistory">刷新</el-button>
+      </div>
+    </div>
+    <el-table :data="history" stripe size="small" v-loading="historyLoading">
+      <el-table-column prop="id" label="ID" width="60"/>
+      <el-table-column prop="source_name" label="来源门店" width="110"/>
+      <el-table-column prop="target_name" label="目标门店" width="110"/>
+      <el-table-column prop="knowledge_type" label="知识类型" width="100"><template #def="s">{{typeLabel(s.row.knowledge_type)}}</template></el-table-column>
+      <el-table-column prop="transfer_score" label="匹配度" width="90"><template #def="s"><span :style="{color:s.row.transfer_score>=80?'var(--green)':'var(--gold)'}">{{s.row.transfer_score}}分</span></template></el-table-column>
+      <el-table-column prop="applied" label="已应用" width="80"><template #def="s"><el-tag :type="s.row.applied?'success':'info'" size="small">{{s.row.applied?'已应用':'待应用'}}</el-tag></template></el-table-column>
+      <el-table-column prop="created_at" label="迁移时间" width="140"/>
+      <el-table-column label="操作" width="100" fixed="right"><template #def="s"><el-button link size="small" type="primary" @click="applyTransfer(s.row)" :disabled="s.row.applied">应用</el-button></template></el-table-column>
+    </el-table>
+  </div>
+</div>`,
+  setup(){
+    const total=ref(86),applyRate=ref(78),avgLift=ref(14),kbItems=ref(42)
+    const history=ref([]),historyLoading=ref(false),filterType=ref(''),transferring=ref(false)
+    const transferForm=reactive({from:null,to:null,type:'reply_strategy'})
+    const sourceStores=ref([{id:1,name:'小龙坎火锅(春熙路店)',successStrategies:12},{id:2,name:'海底捞(太古里店)',successStrategies:8},{id:3,name:'蜀大侠火锅(宽窄巷子)',successStrategies:5}])
+    const targetStores=ref([{id:4,name:'楠火锅(建设路店)'},{id:5,name:'巴蜀大将(天府店)'},{id:6,name:'大龙燚(玉林店)'}])
+    const hotKnowledge=ref([
+      {id:1,title:'小龙坎午市引流套餐定价方案',source:'小龙坎火锅',type:'定价策略',appliedCount:18,successRate:94},
+      {id:2,title:'海底捞差评回复话术黄金模板',source:'海底捞',type:'回复话术',appliedCount:31,successRate:97},
+      {id:3,title:'蜀大侠周末会员日营销方案',source:'蜀大侠火锅',type:'营销方案',appliedCount:9,successRate:82},
+      {id:4,title:'小龙坎雨天外卖满减阶梯策略',source:'小龙坎火锅',type:'定价策略',appliedCount:15,successRate:89},
+    ])
+
+    const typeLabel=(t)=>({reply_strategy:'回复话术',layout:'布局方案',pricing:'定价策略',member:'会员运营',marketing:'营销方案',scheduling:'排班优化'}[t]||t)
+
+    const loadHistory=async()=>{
+      historyLoading.value=true
+      try{const r=await http.get('/knowledge/transfer/history',{params:{type:filterType.value,page:1,size:20}});history.value=r.items||[];total.value=r.total||0}catch(e){ElMessage.error('加载历史失败')}finally{historyLoading.value=false}
+    }
+
+    const doTransfer=async()=>{
+      if(!transferForm.from||!transferForm.to){ElMessage.warning('请选择来源和目标门店');return}
+      transferring.value=true
+      try{const r=await http.post('/knowledge/transfer',{from_merchant:transferForm.from,to_merchant:transferForm.to,type:transferForm.type});ElMessage.success('知识迁移发起成功！ID: '+(r.id||'#'));loadHistory();resetTransferForm()}catch(e){ElMessage.error('迁移失败: '+e.message)}finally{transferring.value=false}
+    }
+
+    const resetTransferForm=()=>{transferForm.from=null;transferForm.to=null;transferForm.type='reply_strategy'}
+    const quickTransfer=(kb)=>{transferForm.type=kb.type==='定价策略'?'pricing':kb.type==='回复话术'?'reply_strategy':'marketing';ElMessage.success('已选择知识: '+kb.title+'，请选择目标门店')}
+    const applyTransfer=async(row)=>{try{await http.post('/knowledge/transfer/'+row.id+'/apply');ElMessage.success('已应用于目标门店');loadHistory()}catch(e){ElMessage.error('应用失败')}}
+
+    onMounted(()=>{loadHistory()})
+    return {total,applyRate,avgLift,kbItems,history,historyLoading,filterType,transferring,transferForm,sourceStores,targetStores,hotKnowledge,typeLabel,loadHistory,doTransfer,resetTransferForm,quickTransfer,applyTransfer}
+  }
+}
+
 // ======================== 路由 ========================
 const routes = [
   {path:'/',redirect:'/dashboard'},
@@ -1701,6 +2021,9 @@ const routes = [
 	    {path:'platform',component:Platform},
     {path:'payment-providers',component:PaymentProviders},
     {path:'risk-merchants',component:RiskMerchants},
+    {path:'ai-store-manager',component:AIStoreManager},
+    {path:'digital-twin',component:DigitalTwin},
+    {path:'cross-store',component:CrossStore},
   ]}
 ]
 
