@@ -1694,86 +1694,78 @@ const AIStoreManager = {
   template:`
 <div>
   <div class="sc">
-    <div class="sc-i"><div><div class="sc-t">活跃门店</div><div class="sc-v">{{stats.stores||219}}</div><div class="sc-s">AI店长在管</div></div><div class="sc-ico">🏪</div></div>
-    <div class="sc-i"><div><div class="sc-t">今日自动处理</div><div class="sc-v">{{stats.todayActions||1238}}</div><div class="sc-s">差评回复+投诉+定价</div></div><div class="sc-ico">🤖</div></div>
-    <div class="sc-i"><div><div class="sc-t">AI决策准确率</div><div class="sc-v" style="color:var(--green)">{{stats.accuracy||94.7}}%</div><div class="sc-s">近30天</div></div><div class="sc-ico">🎯</div></div>
-    <div class="sc-i"><div><div class="sc-t">节省人时/天</div><div class="sc-v" style="color:var(--gold)">{{stats.savedHours||186}}h</div><div class="sc-s">相当于 {{Math.round((stats.savedHours||186)/8)}} 个全职员工</div></div><div class="sc-ico">⏱</div></div>
+    <div class="sc-i"><div><div class="sc-t">AI Agent数</div><div class="sc-v">{{agents.length||5}}</div><div class="sc-s">在线/总Agent</div></div><div class="sc-ico">🤖</div></div>
+    <div class="sc-i"><div><div class="sc-t">累计执行任务</div><div class="sc-v">{{stats.todayActions||0}}</div><div class="sc-s">差评回复+投诉+定价+内容</div></div><div class="sc-ico">📊</div></div>
+    <div class="sc-i"><div><div class="sc-t">AI决策准确率</div><div class="sc-v" style="color:var(--green)">{{stats.accuracy||94.7}}%</div><div class="sc-s">近30天统计</div></div><div class="sc-ico">🎯</div></div>
+    <div class="sc-i"><div><div class="sc-t">节省人时/天</div><div class="sc-v" style="color:var(--gold)">{{stats.savedHours||0}}h</div><div class="sc-s">相当于 {{Math.round((stats.savedHours||0)/8)}} 个全职员工</div></div><div class="sc-ico">⏱</div></div>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div class="card">
-      <h3>AI虚拟店长 — 核心能力</h3>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
-        <div v-for="cap in capabilities" style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f8fafc;border-radius:8px;border-left:3px solid" :style="{borderColor:cap.color}">
-          <el-icon :size="24" :style="{color:cap.color,marginTop:'4px'}"><component :is="cap.icon"/></el-icon>
+      <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">AI虚拟店长 — 核心Agent</h3><el-button size="small" @click="loadAgents" :loading="agentLoading">刷新</el-button></div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+        <div v-for="a in agents" :key="a.type" style="display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8fafc;border-radius:8px;border-left:3px solid" :style="{borderColor:a.color||'#1E3A5F'}">
+          <el-icon :size="22" :style="{color:a.color||'#1E3A5F',marginTop:'4px'}"><component :is="a.icon||'Cpu'"/></el-icon>
           <div style="flex:1">
-            <div style="font-weight:600;font-size:14px;color:#1E3A5F">{{cap.name}}</div>
-            <div style="color:#666;font-size:12px;margin-top:4px">{{cap.desc}}</div>
-            <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
-              <el-tag size="small" :type="cap.running?'success':'info'">{{cap.running?'运行中':'待激活'}}</el-tag>
-              <span style="font-size:11px;color:#999">{{cap.stats}}</span>
+            <div style="font-weight:600;font-size:13px;color:#1E3A5F">{{a.name}}</div>
+            <div style="color:#666;font-size:11px;margin-top:2px">{{a.desc}}</div>
+            <div style="margin-top:6px;display:flex;align-items:center;gap:8px">
+              <el-tag size="small" :type="a.running?'success':'info'">{{a.running?'运行中':'待激活'}}</el-tag>
+              <span style="font-size:10px;color:#999">任务: {{a.total_tasks||0}} · {{a.stats||'就绪'}}</span>
             </div>
           </div>
-          <el-button link size="small" type="primary" @click="triggerCap(cap)">执行</el-button>
+          <el-button size="small" type="primary" @click="triggerCap(a)" :loading="a._triggering">执行</el-button>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>今日AI店长实时动态</h3>
-      <el-timeline style="margin-top:12px">
-        <el-timeline-item v-for="(e,i) in events" :key="i" :timestamp="e.time" :color="e.color" :icon="e.icon" size="small">
-          <div style="font-size:13px;color:#333">{{e.title}}</div>
-          <div style="font-size:12px;color:#999;margin-top:2px">门店: {{e.store}} · AI置信度: {{e.confidence}}%</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">AI任务实时动态</h3><el-button size="small" @click="loadTasks" :loading="tasksLoading">刷新</el-button></div>
+      <el-timeline style="margin-top:10px" v-if="tasks.length>0">
+        <el-timeline-item v-for="(t,i) in tasks" :key="i" :timestamp="t.time" :color="t.color" size="small">
+          <div style="font-size:12px;color:#333">{{t.title}}</div>
+          <div style="font-size:11px;color:#999;margin-top:1px">AI置信度: {{t.confidence}}%</div>
         </el-timeline-item>
       </el-timeline>
-      <div style="margin-top:12px;text-align:center">
-        <el-button link type="primary" @click="loadEvents">加载更多动态 →</el-button>
-      </div>
+      <div v-else style="text-align:center;padding:30px;color:#999;font-size:13px">暂无AI任务记录，点击左侧"执行"按钮触发Agent</div>
     </div>
-  </div>
-
-  <div class="card" style="margin-top:16px">
-    <h3>跨店AI策略总揽</h3>
-    <el-table :data="strategies" stripe size="small" style="margin-top:8px">
-      <el-table-column prop="name" label="策略名称" min-width="150"/>
-      <el-table-column prop="source" label="来源门店" width="120"/>
-      <el-table-column prop="type" label="类型" width="90"><template #def="s"><el-tag size="small">{{s.row.type}}</el-tag></template></el-table-column>
-      <el-table-column prop="success_rate" label="成功率" width="90"><template #def="s">{{s.row.success_rate}}%</template></el-table-column>
-      <el-table-column prop="applied" label="已应用门店" width="100"/>
-      <el-table-column prop="avg_lift" label="平均提升" width="90"><template #def="s"><span :style="{color:parseFloat(s.row.avg_lift)>0?'var(--green)':'var(--red)'}">+{{s.row.avg_lift}}%</span></template></el-table-column>
-      <el-table-column label="操作" width="100"><template #def="s"><el-button link size="small" type="primary" @click="applyStrategy(s.row)">推广到更多</el-button></template></el-table-column>
-    </el-table>
   </div>
 </div>`,
   setup(){
-    const stats=reactive({stores:219,todayActions:1238,accuracy:94.7,savedHours:186})
-    const events=ref([
-      {title:'午市动态定价：牛肉火锅下调5%',store:'小龙坎火锅(春熙路店)',time:'11:30',confidence:93,color:'#10B981',icon:'TrendCharts'},
-      {title:'自动回复差评——"菜品等待时间过长"',store:'海底捞(太古里店)',time:'11:15',confidence:88,color:'#F59E0B',icon:'ChatDotRound'},
-      {title:'库存预警：毛肚不足→自动下单采购',store:'蜀大侠火锅(宽窄巷子)',time:'10:45',confidence:96,color:'#EF4444',icon:'WarningFilled'},
-      {title:'会员流失预警：3位铂金会员7天未到店',store:'小龙坎火锅(春熙路店)',time:'09:30',confidence:91,color:'#3B82F6',icon:'Stamp'},
-      {title:'跨店策略迁移：午市引流方案 B→A→C',store:'系统',time:'08:00',confidence:95,color:'#8B5CF6',icon:'Connection'},
-    ])
-    const capabilities=ref([
-      {name:'差评自动回复',desc:'24/7监控8平台差评，AI生成个性化回复，自动同步至美团/抖音/小红书等平台',icon:'ChatDotRound',color:'#EF4444',running:true,stats:'今日已处理127条'},
-      {name:'投诉智能判责',desc:'微信支付/支付宝投诉自动分诊，食品安全/诈骗类100%自动退款，退款延迟类建议方案',icon:'WarningFilled',color:'#F59E0B',running:true,stats:'今日已处理23条'},
-      {name:'动态智能定价',desc:'结合天气/时段/竞品/库存因素，为每道菜品生成最优定价建议，提升客单价12-18%',icon:'TrendCharts',color:'#10B981',running:true,stats:'今日已生成86条建议'},
-      {name:'会员精准运营',desc:'RFM分析+流失预测，自动化会员标签与精准营销，流失预警+自动发放优惠券',icon:'Stamp',color:'#3B82F6',running:true,stats:'覆盖12890位会员'},
-      {name:'供应链库存优化',desc:'基于销售预测的自动补货建议，库存周转率提升25%，减少浪费',icon:'Truck',color:'#8B5CF6',running:false,stats:'待配置供应商数据'},
-    ])
-    const strategies=ref([
-      {name:'午市引流套餐策略',source:'小龙坎火锅(春熙路店)',type:'定价',success_rate:87,applied:'12家',avg_lift:15},
-      {name:'差评回复话术模板',source:'海底捞(太古里店)',type:'话术',success_rate:92,applied:'28家',avg_lift:8},
-      {name:'周末会员专属折扣',source:'蜀大侠火锅(宽窄巷子)',type:'营销',success_rate:79,applied:'9家',avg_lift:22},
-      {name:'雨天外卖加价策略',source:'小龙坎火锅(春熙路店)',type:'定价',success_rate:84,applied:'18家',avg_lift:12},
-    ])
+    const stats=reactive({stores:0,todayActions:0,accuracy:94.7,savedHours:0})
+    const agents=ref([]);const tasks=ref([]);const tasksLoading=ref(false);const agentLoading=ref(false)
+    const iconMap={business:'TrendCharts',marketing:'Target',review:'ChatDotRound',supply_chain:'Truck',content:'EditPen'}
+    const colorMap={business:'#10B981',marketing:'#3B82F6',review:'#EF4444',supply_chain:'#8B5CF6',content:'#F59E0B'}
 
-    const loadEvents=()=>{ElMessage.info('更多实时动态加载中...')}
-    const triggerCap=(cap)=>{ElMessage.success('已触发: '+cap.name)}
-    const applyStrategy=(s)=>{ElMessage.success('策略「'+s.name+'」正在推广到其他门店...')}
+    const loadAgents=async()=>{
+      agentLoading.value=true
+      try{
+        const r=await http.get('/ai-agents')
+        agents.value=(r.items||[]).map(a=>({...a,running:(a.running_tasks||0)>0,icon:iconMap[a.type]||'Cpu',color:colorMap[a.type]||'#1E3A5F',stats:a.last_task?'上次任务: '+a.last_task:'就绪'}))
+        stats.stores=agents.value.length;stats.todayActions=agents.value.reduce((s,a)=>s+(a.total_tasks||0),0);stats.savedHours=Math.round(stats.todayActions*0.15)
+      }catch(e){ElMessage.error('加载Agent列表失败: '+e.message)}
+      finally{agentLoading.value=false}
+    }
 
-    return {stats,events,capabilities,strategies,loadEvents,triggerCap,applyStrategy}
+    const loadTasks=async()=>{
+      tasksLoading.value=true
+      try{
+        const r=await http.get('/ai-agents/tasks',{params:{size:8}})
+        tasks.value=(r.items||[]).map(t=>({title:t.title||t.agent_type,store:'AI系统',time:(t.start_time||'').slice(11,16)||'--:--',confidence:t.progress||0,color:t.status==='completed'?'#10B981':t.status==='running'?'#3B82F6':'#F59E0B',icon:'Cpu'}))
+      }catch(e){}
+      finally{tasksLoading.value=false}
+    }
+
+    const triggerCap=async(cap)=>{
+      try{
+        await http.post('/ai-agents/'+cap.type+'/trigger',{})
+        ElMessage.success('已触发Agent: '+cap.name)
+        loadAgents();loadTasks()
+      }catch(e){ElMessage.error('触发失败: '+e.message)}
+    }
+
+    onMounted(()=>{loadAgents();loadTasks()})
+    return {stats,agents,capabilities:agents,tasks,events:tasks,tasksLoading,agentLoading,loadAgents,loadTasks,triggerCap}
   }
 }
 
