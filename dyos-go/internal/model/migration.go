@@ -57,6 +57,7 @@ func AllModels() []interface{} {
 		&StoreInspection{},
 		&InspectionTemplate{},
 		&StoreLayout{},
+		&KnowledgeTransfer{},
 
 		// 智能定价与决策
 		&PricingSuggestion{},
@@ -99,6 +100,9 @@ func AllModels() []interface{} {
 		&Version{},
 		&LoginLog{},
 		&DataMaskingRule{},
+		&NotificationChannel{},
+		&NotificationRule{},
+		&NotificationLog{},
 
 		// 支付服务商与风险商户
 		&PaymentProvider{},

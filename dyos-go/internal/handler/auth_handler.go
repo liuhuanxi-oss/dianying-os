@@ -34,7 +34,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	var user model.User
-	if h.db == nil {
+	demoMode := h.db == nil
+	if !demoMode {
+		var count int64
+		if err := h.db.Model(&model.User{}).Count(&count).Error; err == nil && count == 0 {
+			demoMode = true
+		}
+	}
+	if demoMode {
 		// Demo模式降级：接受任意用户名+123456密码
 		if req.Password != "123456" {
 			response.Error(c, 401, response.CodeUnauthorized, "用户名或密码错误")

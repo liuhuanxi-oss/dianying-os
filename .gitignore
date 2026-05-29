@@ -10,7 +10,11 @@
 *.bin
 dyos-server
 dyos-go-server
+dyos-nas
 server.exe
+
+# Go build artifact (copied during build)
+dyos-go/cmd/server/admin-spa/
 
 # 临时文件
 seed_data.sql

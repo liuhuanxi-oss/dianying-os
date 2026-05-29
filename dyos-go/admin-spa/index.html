@@ -1363,21 +1363,69 @@ const Tianque = {
 // ======================== 系统设置 ========================
 const Settings = {
   template:`
-<el-tabs v-model="tab">
+<el-tabs v-model="tab" @tab-change="switchTab">
   <el-tab-pane label="角色管理" name="roles"><div class="card"><el-table :data="roles" stripe><el-table-column prop="name" label="角色名称"/><el-table-column prop="description" label="描述" min-width="200"/><el-table-column prop="user_count" label="用户数" width="100"/><el-table-column label="操作" width="120"><template #def="s"><el-button link size="small" type="primary" @click="editRole(s.row)">编辑权限</el-button></template></el-table-column></el-table></div></el-tab-pane>
   <el-tab-pane label="操作日志" name="logs"><div class="card"><el-table :data="logs" stripe><el-table-column prop="user_name" label="用户" width="100"/><el-table-column prop="action" label="操作" min-width="200"/><el-table-column prop="ip" label="IP" width="130"/><el-table-column prop="created_at" label="时间" width="160"/></el-table></div></el-tab-pane>
-  <el-tab-pane label="通知设置" name="notify"><div class="card"><el-form label-width="100px"><el-form-item label="差评告警"><el-switch v-model="notify.review_alert"/></el-form-item><el-form-item label="投诉告警"><el-switch v-model="notify.complaint_alert"/></el-form-item><el-form-item label="结算通知"><el-switch v-model="notify.settle_notify"/></el-form-item><el-form-item><el-button type="primary" @click="saveNotify">保存</el-button></el-form-item></el-form></div></el-tab-pane>
+  <el-tab-pane label="通知设置" name="notify">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <h3 style="margin:0 0 12px 0">渠道配置</h3>
+        <el-table :data="channels" stripe>
+          <el-table-column prop="name" label="渠道" width="150"/>
+          <el-table-column label="状态" width="80"><template #def="s"><el-switch v-model="s.row.enabled" size="small"/></template></el-table-column>
+          <el-table-column label="Webhook地址" min-width="300"><template #def="s">
+            <template v-if="s.row.channel==='wechat_oa'"><span style="color:#909399">使用店赢OS统一公众号推送，无需配置</span></template>
+            <template v-else><el-input v-model="s.row.webhook_url" size="small" :placeholder="'请输入'+s.row.name+'Webhook地址'"/></template>
+          </template></el-table-column>
+          <el-table-column label="操作" width="180"><template #def="s">
+            <el-button link size="small" type="primary" @click="saveChannel(s.row)">保存</el-button>
+            <el-button link size="small" type="success" @click="testChannel(s.row)" :disabled="!s.row.id || !s.row.enabled">测试</el-button>
+          </template></el-table-column>
+        </el-table>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0">事件通知规则</h3><el-button size="small" type="primary" @click="saveRules">保存规则</el-button></div>
+        <el-table :data="rules" stripe>
+          <el-table-column prop="event_name" label="事件类型" width="140"/>
+          <el-table-column label="状态" width="80"><template #def="s"><el-switch v-model="s.row.enabled" size="small"/></template></el-table-column>
+          <el-table-column label="通知渠道"><template #def="s">
+            <el-checkbox-group v-model="s.row.channels" size="small">
+              <el-checkbox v-for="ch in activeChannels" :key="ch.channel" :label="ch.channel" :value="ch.channel">{{ch.name}}</el-checkbox>
+            </el-checkbox-group>
+          </template></el-table-column>
+        </el-table>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 12px 0">发送日志（最近20条）</h3>
+        <el-table :data="notifyLogs" stripe>
+          <el-table-column prop="event_type" label="事件" width="120"/>
+          <el-table-column prop="channel" label="渠道" width="100"/>
+          <el-table-column prop="title" label="标题" min-width="180"/>
+          <el-table-column label="状态" width="80"><template #def="s"><el-tag :type="s.row.status==='success'?'success':'danger'" size="small">{{s.row.status==='success'?'成功':'失败'}}</el-tag></template></el-table-column>
+          <el-table-column prop="created_at" label="时间" width="160"/>
+        </el-table>
+      </div>
+    </div>
+  </el-tab-pane>
 </el-tabs>`,
   setup(){
     const tab=ref('roles'),roles=ref([]),logs=ref([])
-    const notify=reactive({review_alert:true,complaint_alert:true,settle_notify:false})
+    const channels=ref([]),rules=ref([]),notifyLogs=ref([])
+    const activeChannels=ref([])
     const editRole=(row)=>{ElMessage.info('编辑: '+row.name)}
-    const saveNotify=()=>{ElMessage.success('已保存')}
+    const loadChannels=async()=>{try{const r=await http.get('/notifications/channels');channels.value=r.items||[];activeChannels.value=channels.value.filter(c=>c.channel!=='wechat_oa')}catch(e){channels.value=[]}}
+    const loadRules=async()=>{try{const r=await http.get('/notifications/rules');rules.value=r.items||[]}catch(e){rules.value=[]}}
+    const loadLogs=async()=>{try{const r=await http.get('/notifications/logs',{params:{page:1,size:20}});notifyLogs.value=r.items||[]}catch(e){notifyLogs.value=[]}}
+    const saveChannel=async(row)=>{try{await http.post('/notifications/channels',{id:row.id,channel:row.channel,name:row.name,webhook_url:row.webhook_url,enabled:row.enabled});ElMessage.success('渠道已保存');loadChannels()}catch(e){ElMessage.error('保存失败: '+e.message)}}
+    const testChannel=async(row)=>{try{await http.post('/notifications/channels/'+row.id+'/test');ElMessage.success('测试消息已发送，请检查接收')}catch(e){ElMessage.error('测试失败: '+e.message)}}
+    const saveRules=async()=>{try{await http.put('/notifications/rules',{rules:rules.value});ElMessage.success('规则已保存')}catch(e){ElMessage.error('保存失败: '+e.message)}}
     onMounted(async()=>{
       try{const r=await http.get('/settings/roles');roles.value=r||[]}catch(e){}
       try{const l=await http.get('/settings/logs',{params:{page:1,size:20}});logs.value=l.items||[]}catch(e){}
+      if(tab.value==='notify'){loadChannels();loadRules();loadLogs()}
     })
-    return {tab,roles,logs,notify,editRole,saveNotify}
+    const switchTab=(name)=>{tab.value=name;if(name==='notify'){loadChannels();loadRules();loadLogs()}}
+    return {tab,roles,logs,channels,rules,notifyLogs,activeChannels,editRole,loadChannels,loadRules,loadLogs,saveChannel,testChannel,saveRules,switchTab}
   }
 }
 

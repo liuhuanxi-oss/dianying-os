@@ -14,19 +14,18 @@ import (
 )
 
 type ComplaintHandler struct {
-	svc     *service.ComplaintService
-	aiSvc   *service.AIComplaintService
-	tianque *tianque.Client
+	svc      *service.ComplaintService
+	aiSvc    *service.AIComplaintService
+	tianque  *tianque.Client
+	notifySvc *service.NotificationService
 }
 
 func NewComplaintHandler(svc *service.ComplaintService, aiSvc *service.AIComplaintService) *ComplaintHandler {
 	return &ComplaintHandler{svc: svc, aiSvc: aiSvc}
 }
 
-// SetTianqueClient 注入天阙SDK客户端
-func (h *ComplaintHandler) SetTianqueClient(client *tianque.Client) {
-	h.tianque = client
-}
+func (h *ComplaintHandler) SetTianqueClient(client *tianque.Client) { h.tianque = client }
+func (h *ComplaintHandler) SetNotificationService(ns *service.NotificationService) { h.notifySvc = ns }
 
 // RegisterRoutes 平台端路由
 func (h *ComplaintHandler) RegisterRoutes(group *gin.RouterGroup) {
@@ -205,12 +204,16 @@ func (h *ComplaintHandler) Complete(c *gin.Context) {
 
 func (h *ComplaintHandler) Escalate(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-	if ok, _ := h.svc.CheckOwnership(uint(id), c.GetUint("tenant_merchant_id")); !ok { response.Error(c, 403, response.CodeForbidden, "无权操作此投诉"); return }
+	mid := c.GetUint("tenant_merchant_id")
+	if ok, _ := h.svc.CheckOwnership(uint(id), mid); !ok { response.Error(c, 403, response.CodeForbidden, "无权操作此投诉"); return }
 	var body struct {
 		Reason string `json:"reason"`
 	}
 	c.ShouldBindJSON(&body)
 	h.svc.UpdateStatus(uint(id), "escalated", "manual")
+	if h.notifySvc != nil {
+		h.notifySvc.NotifyIfEnabled(mid, "complaint_alert", "投诉升级提醒", fmt.Sprintf("投诉#%d已升级处理\n原因：%s\n预计30分钟内响应", id, body.Reason))
+	}
 	response.Success(c, map[string]interface{}{
 		"id": id, "status": "escalated", "reason": body.Reason,
 		"message": "已升级至运营主管，预计30分钟内响应",
@@ -220,12 +223,22 @@ func (h *ComplaintHandler) Escalate(c *gin.Context) {
 func (h *ComplaintHandler) WechatCallback(c *gin.Context) {
 	var data map[string]interface{}
 	c.ShouldBindJSON(&data)
+	if h.notifySvc != nil {
+		if mid, ok := data["merchant_id"].(float64); ok {
+			h.notifySvc.NotifyIfEnabled(uint(mid), "complaint_alert", "微信支付投诉通知", fmt.Sprintf("收到一条微信支付投诉\n投诉内容：%v\n请及时处理", data["body"]))
+		}
+	}
 	response.Success(c, map[string]interface{}{"code": "SUCCESS", "message": "回调接收成功", "platform": "wechat_pay"})
 }
 
 func (h *ComplaintHandler) AlipayCallback(c *gin.Context) {
 	var data map[string]interface{}
 	c.ShouldBindJSON(&data)
+	if h.notifySvc != nil {
+		if mid, ok := data["merchant_id"].(float64); ok {
+			h.notifySvc.NotifyIfEnabled(uint(mid), "complaint_alert", "支付宝投诉通知", fmt.Sprintf("收到一条支付宝投诉\n投诉内容：%v\n请及时处理", data["body"]))
+		}
+	}
 	response.Success(c, map[string]interface{}{"code": "SUCCESS", "message": "回调接收成功", "platform": "alipay"})
 }
 

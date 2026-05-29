@@ -126,3 +126,17 @@ type StoreLayout struct {
 }
 
 func (StoreLayout) TableName() string { return "store_layouts" }
+
+type KnowledgeTransfer struct {
+	ID             uint    `gorm:"primaryKey" json:"id"`
+	SourceMerchant uint    `gorm:"column:source_merchant;index" json:"source_merchant"`
+	SourceName     string  `gorm:"column:source_name" json:"source_name"`
+	TargetMerchant uint    `gorm:"column:target_merchant;index" json:"target_merchant"`
+	TargetName     string  `gorm:"column:target_name" json:"target_name"`
+	KnowledgeType  string  `gorm:"column:knowledge_type" json:"knowledge_type"`
+	TransferScore  float64 `gorm:"column:transfer_score;default:0" json:"transfer_score"`
+	Applied        bool    `gorm:"column:applied;default:false" json:"applied"`
+	CreatedAt      string  `gorm:"column:created_at" json:"created_at"`
+}
+
+func (KnowledgeTransfer) TableName() string { return "knowledge_transfers" }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 
 	"dyos-go/internal/service"
@@ -10,12 +11,14 @@ import (
 )
 
 type AIAgentHandler struct {
-	svc *service.AIAgentService
+	svc       *service.AIAgentService
+	notifySvc *service.NotificationService
 }
 
 func NewAIAgentHandler(svc *service.AIAgentService) *AIAgentHandler {
 	return &AIAgentHandler{svc: svc}
 }
+func (h *AIAgentHandler) SetNotificationService(ns *service.NotificationService) { h.notifySvc = ns }
 
 func (h *AIAgentHandler) RegisterRoutes(group *gin.RouterGroup) {
 	ai := group.Group("/ai-agents")
@@ -44,6 +47,9 @@ func (h *AIAgentHandler) Trigger(c *gin.Context) {
 	if err != nil {
 		response.Error(c, 500, response.CodeServerError, "触发Agent失败: "+err.Error())
 		return
+	}
+	if h.notifySvc != nil && task != nil {
+		h.notifySvc.NotifyIfEnabled(0, "ai_task_done", "AI任务已启动", fmt.Sprintf("Agent [%s] 已开始执行任务：%s", agentType, task.Title))
 	}
 	response.Success(c, task)
 }

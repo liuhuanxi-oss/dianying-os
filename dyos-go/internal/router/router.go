@@ -118,6 +118,10 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	crossStoreService := service.NewCrossStoreService(db)
 	crossStoreHandler := handler.NewCrossStoreHandler(crossStoreService)
 
+	// 多通道通知系统
+	notificationService := service.NewNotificationService(db)
+	notificationHandler := handler.NewNotificationHandler(notificationService)
+
 	// 行业大模型
 	knowledgeService := service.NewKnowledgeService(db)
 	knowledgeHandler := handler.NewKnowledgeHandler(knowledgeService)
@@ -129,6 +133,11 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	// 风险商户管理
 	riskMerchantService := service.NewRiskMerchantService(db)
 	riskMerchantHandler := handler.NewRiskMerchantHandler(riskMerchantService)
+
+	// 注入通知服务到各业务模块（在所有 handler 创建之后）
+	complaintHandler.SetNotificationService(notificationService)
+	riskMerchantHandler.SetNotificationService(notificationService)
+	aiAgentHandler.SetNotificationService(notificationService)
 
 	authHandler := handler.NewAuthHandler(db)
 	r.POST("/api/login", authHandler.Login)
@@ -195,6 +204,7 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 		trustHandler.RegisterRoutes(admin)
 		crossStoreHandler.RegisterRoutes(admin)
 		knowledgeHandler.RegisterRoutes(admin)
+		notificationHandler.RegisterRoutes(admin)
 
 		if cfg != nil {
 			tianqueClient, err := tianque.NewClient(cfg.Tianque)

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 
 	"dyos-go/internal/service"
@@ -10,12 +11,14 @@ import (
 )
 
 type RiskMerchantHandler struct {
-	svc *service.RiskMerchantService
+	svc       *service.RiskMerchantService
+	notifySvc *service.NotificationService
 }
 
 func NewRiskMerchantHandler(svc *service.RiskMerchantService) *RiskMerchantHandler {
 	return &RiskMerchantHandler{svc: svc}
 }
+func (h *RiskMerchantHandler) SetNotificationService(ns *service.NotificationService) { h.notifySvc = ns }
 
 func (h *RiskMerchantHandler) RegisterRoutes(group *gin.RouterGroup) {
 	g := group.Group("/risk-merchants")
@@ -43,6 +46,9 @@ func (h *RiskMerchantHandler) Sync(c *gin.Context) {
 	providerID, _ := strconv.ParseUint(providerIDStr, 10, 64)
 	platform := c.DefaultQuery("platform", "wechat_pay")
 	count, _ := h.svc.SyncRiskMerchants(uint(providerID), platform)
+	if h.notifySvc != nil && count > 0 {
+		h.notifySvc.NotifyIfEnabled(0, "risk_alert", "风险商户预警", fmt.Sprintf("风险商户检测完成\n平台：%s\n新增风险商户：%d家\n请及时处理", platform, count))
+	}
 	response.Success(c, map[string]interface{}{
 		"synced": count,
 		"message": "风险商户检测完成",
