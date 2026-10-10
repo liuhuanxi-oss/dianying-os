@@ -11,7 +11,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io"
-	"math/rand"
+	mathrand "math/rand"
 	"net/http"
 	"net/url"
 	"sort"
@@ -274,15 +274,15 @@ func (c *Client) mockComplaints(page, size int) ([]AlipayComplaint, int64, error
 	for i := 0; i < size; i++ {
 		items[i] = AlipayComplaint{
 			ComplaintID:     fmt.Sprintf("ALI%d%06d", time.Now().Unix()%1000000, i),
-			TradeNo:         fmt.Sprintf("202405%d%08d", rand.Intn(9999), rand.Intn(99999999)),
-			MerchantID:      fmt.Sprintf("2088%d%06d", rand.Intn(9999), rand.Intn(999999)),
+			TradeNo:         fmt.Sprintf("202405%d%08d", mathrand.Intn(9999), mathrand.Intn(99999999)),
+			MerchantID:      fmt.Sprintf("2088%d%06d", mathrand.Intn(9999), mathrand.Intn(999999)),
 			MerchantName:    "测试商户-" + fmt.Sprintf("%d", i+1),
-			ComplaintType:   types[rand.Intn(len(types))],
+			ComplaintType:   types[mathrand.Intn(len(types))],
 			ComplaintDetail: fmt.Sprintf("支付宝投诉内容示例#%d：商品质量不满意/服务体验差", i+1),
-			ComplaintAmount: fmt.Sprintf("%.2f", float64(rand.Intn(50000)+1000)/100.0),
-			Status:          statuses[rand.Intn(len(statuses))],
-			ComplaintTime:   time.Now().Add(-time.Duration(rand.Intn(168)) * time.Hour).Format("2006-01-02 15:04:05"),
-			PayerPhone:      fmt.Sprintf("139****%04d", rand.Intn(9999)),
+			ComplaintAmount: fmt.Sprintf("%.2f", float64(mathrand.Intn(50000)+1000)/100.0),
+			Status:          statuses[mathrand.Intn(len(statuses))],
+			ComplaintTime:   time.Now().Add(-time.Duration(mathrand.Intn(168)) * time.Hour).Format("2006-01-02 15:04:05"),
+			PayerPhone:      fmt.Sprintf("139****%04d", mathrand.Intn(9999)),
 		}
 	}
 	return items, int64(42), nil
