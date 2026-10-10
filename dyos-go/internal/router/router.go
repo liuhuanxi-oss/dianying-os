@@ -22,6 +22,8 @@ import (
 
 func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	r := gin.New()
+	// Trust only the local Nginx reverse proxy; reject spoofed forwarded headers from other peers.
+	if err := r.SetTrustedProxies([]string{"127.0.0.1", "::1"}); err != nil { panic(err) }
 	r.Use(gin.Logger(), gin.Recovery(), middleware.RateLimit(), middleware.CORS())
 
 	health := handler.NewHealthHandler(db)
