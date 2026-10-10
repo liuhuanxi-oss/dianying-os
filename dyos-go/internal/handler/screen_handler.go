@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"net/http"
 	"strconv"
 
 	"dyos-go/internal/screen"
