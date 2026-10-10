@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"dyos-go/internal/config"
+	jwtpkg "dyos-go/pkg/jwt"
 	"dyos-go/internal/repository"
 	"dyos-go/internal/router"
 
@@ -33,10 +34,13 @@ func main() {
 		log.Fatalf("加载配置失败: %v", err)
 	}
 
+	secret := os.Getenv("JWT_SECRET")
+	if len(secret) < 32 { log.Fatal("JWT_SECRET must be set to a random secret of at least 32 bytes") }
+	jwtpkg.SetSecret(secret)
+
 	db, err := repository.ConnectDatabase(cfg.Database)
 	if err != nil {
-		log.Printf("连接数据库失败，服务将继续启动: %v", err)
-		db = nil
+		log.Fatalf("数据库连接失败，拒绝启动认证服务: %v", err)
 	}
 
 	// 内嵌前端静态文件

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var secretKey = []byte("dyos-jwt-secret-2026") // 生产环境应从配置读取
+var secretKey []byte // must be configured at startup; never fall back to a published secret
 
 type Claims struct {
 	UserID     uint   `json:"uid"`
@@ -25,6 +25,7 @@ type Claims struct {
 func SetSecret(key string) { secretKey = []byte(key) }
 
 func Sign(c Claims) (string, error) {
+	if len(secretKey) < 32 { return "", errors.New("JWT_SECRET must contain at least 32 bytes") }
 	if c.ExpiresAt == 0 {
 		c.ExpiresAt = time.Now().Add(24 * time.Hour).Unix()
 	}
@@ -37,6 +38,7 @@ func Sign(c Claims) (string, error) {
 }
 
 func Verify(token string) (*Claims, error) {
+	if len(secretKey) < 32 { return nil, errors.New("JWT signing secret not configured") }
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
 		return nil, errors.New("token格式无效")

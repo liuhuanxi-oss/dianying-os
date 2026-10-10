@@ -1,0 +1,33 @@
+name: Go authentication and build checks
+on:
+  pull_request:
+    paths:
+      - 'dyos-go/**'
+      - '.github/workflows/go-security-ci.yml'
+  workflow_dispatch:
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: dyos-go/go.mod
+          cache-dependency-path: dyos-go/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: dyos-go/admin-spa-vue/package-lock.json
+      - name: Build Vue and create embedded SPA
+        run: |
+          npm --prefix dyos-go/admin-spa-vue ci
+          npm --prefix dyos-go/admin-spa-vue run build
+          mkdir -p dyos-go/cmd/server/admin-spa
+          cp -a dyos-go/admin-spa-vue/dist/. dyos-go/cmd/server/admin-spa/
+      - name: Go tests
+        working-directory: dyos-go
+        run: go test ./...
+      - name: Go server build
+        working-directory: dyos-go
+        run: go build ./cmd/server/
