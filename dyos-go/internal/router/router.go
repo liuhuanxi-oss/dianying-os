@@ -22,6 +22,8 @@ import (
 
 func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	r := gin.New()
+	// Trust only the local Nginx reverse proxy; reject spoofed forwarded headers from other peers.
+	if err := r.SetTrustedProxies([]string{"127.0.0.1", "::1"}); err != nil { panic(err) }
 	r.Use(gin.Logger(), gin.Recovery(), middleware.RateLimit(), middleware.CORS())
 
 	health := handler.NewHealthHandler(db)
@@ -140,8 +142,9 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	aiAgentHandler.SetNotificationService(notificationService)
 
 	authHandler := handler.NewAuthHandler(db)
-	r.POST("/api/login", authHandler.Login)
-	r.POST("/api/auth/login", authHandler.Login)
+	loginLimiter := middleware.LoginRateLimit()
+	r.POST("/api/login", loginLimiter, authHandler.Login)
+	r.POST("/api/auth/login", loginLimiter, authHandler.Login)
 	// Refresh tokens are not implemented; never accept passwords on a misleading refresh route.
 	r.POST("/api/auth/refresh", func(c *gin.Context) {
 		response.Error(c, http.StatusNotImplemented, response.CodeServerError, "Token刷新功能尚未开放，请重新登录")
