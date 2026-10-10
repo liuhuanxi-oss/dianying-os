@@ -24,7 +24,7 @@ func AdminAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if claims.Role != "admin" && claims.Role != "agent" {
+		if claims.Role != "admin" {
 			response.Error(c, http.StatusForbidden, response.CodeForbidden, "无管理员权限")
 			c.Abort()
 			return
@@ -32,9 +32,6 @@ func AdminAuth() gin.HandlerFunc {
 		c.Set("role", claims.Role)
 		c.Set("user_id", claims.UserID)
 		c.Set("name", claims.Name)
-		if claims.Role == "agent" {
-			c.Set("agent_id", claims.AgentID)
-		}
 		c.Next()
 	}
 }
