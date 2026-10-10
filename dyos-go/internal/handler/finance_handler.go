@@ -191,6 +191,9 @@ func (h *FinanceHandler) RegisterMerchantRoutes(group *gin.RouterGroup) {
 }
 
 func (h *FinanceHandler) MerchantTransactions(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "20"))
 	data, _ := h.svc.MerchantTransactions(page, size)
@@ -198,12 +201,18 @@ func (h *FinanceHandler) MerchantTransactions(c *gin.Context) {
 }
 
 func (h *FinanceHandler) MerchantGetTransaction(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	data, err := h.svc.GetTransaction(c.Param("id"))
 	if err != nil { response.Error(c, 404, response.CodeServerError, "交易不存在"); return }
 	response.Success(c, data)
 }
 
 func (h *FinanceHandler) MerchantRefund(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	var body struct {
 		Amount float64 `json:"amount"`
 		Reason string  `json:"reason"`
@@ -228,6 +237,9 @@ func (h *FinanceHandler) MerchantFinanceOverview(c *gin.Context) {
 }
 
 func (h *FinanceHandler) MerchantFinanceTransactions(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "20"))
 	data, _ := h.svc.Transactions(page, size, c.Query("status"), "", c.Query("type"))
@@ -235,12 +247,18 @@ func (h *FinanceHandler) MerchantFinanceTransactions(c *gin.Context) {
 }
 
 func (h *FinanceHandler) MerchantFinanceTransactionDetail(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	data, err := h.svc.GetTransaction(c.Param("id"))
 	if err != nil { response.Error(c, 404, response.CodeServerError, "交易不存在"); return }
 	response.Success(c, data)
 }
 
 func (h *FinanceHandler) MerchantFinanceRefunds(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "20"))
 	data, _ := h.svc.Refunds(page, size, c.Query("status"))
@@ -248,6 +266,9 @@ func (h *FinanceHandler) MerchantFinanceRefunds(c *gin.Context) {
 }
 
 func (h *FinanceHandler) MerchantFinanceInvoices(c *gin.Context) {
+	// Fail closed until merchant_id is bound to the finance tables via a verified mapping.
+	response.Error(c, 503, response.CodeServerError, "商户财务接口正在进行租户隔离升级")
+	return
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "20"))
 	data, _ := h.svc.Invoices(page, size, c.Query("status"))
