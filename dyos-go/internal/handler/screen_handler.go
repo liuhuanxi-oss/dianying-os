@@ -22,7 +22,7 @@ func NewScreenHandler(service *service.ScreenService, hub *screen.Hub) *ScreenHa
 	return &ScreenHandler{
 		service: service,
 		hub:     hub,
-		upgrader: websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }},
+		upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin},
 	}
 }
 
