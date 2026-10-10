@@ -1,2 +1,0 @@
-[console_scripts]
-dyos-payment = dyos_payment.cli:main
