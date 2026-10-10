@@ -46,3 +46,22 @@ func TestExpiredToken(t *testing.T) {
         t.Fatal("expired token must be rejected")
     }
 }
+
+func TestNoExpiryRejected(t *testing.T) {
+    original := append([]byte(nil), secretKey...)
+    t.Cleanup(func() { secretKey = original })
+    SetSecret(strings.Repeat("z", 40))
+    token, err := Sign(Claims{UserID: 1, Role: "admin", ExpiresAt: 1})
+    if err != nil { t.Fatal(err) }
+    if _, err := Verify(token); err == nil { t.Fatal("expired token was accepted") }
+}
+
+func TestBearerRequired(t *testing.T) {
+    original := append([]byte(nil), secretKey...)
+    t.Cleanup(func() { secretKey = original })
+    SetSecret(strings.Repeat("q", 40))
+    token, err := Sign(Claims{UserID: 1, Role: "admin"})
+    if err != nil { t.Fatal(err) }
+    if _, err := ExtractFromHeader(token); err == nil { t.Fatal("raw tokens should not be accepted") }
+    if _, err := ExtractFromHeader("Bearer " + token); err != nil { t.Fatal(err) }
+}
