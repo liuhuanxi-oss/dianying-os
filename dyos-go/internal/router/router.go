@@ -140,8 +140,8 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	aiAgentHandler.SetNotificationService(notificationService)
 
 	authHandler := handler.NewAuthHandler(db)
-	r.POST("/api/login", authHandler.Login)
-	r.POST("/api/auth/login", authHandler.Login)
+	r.POST("/api/login", middleware.LoginRateLimit(), authHandler.Login)
+	r.POST("/api/auth/login", middleware.LoginRateLimit(), authHandler.Login)
 	// Refresh tokens are not implemented; never accept passwords on a misleading refresh route.
 	r.POST("/api/auth/refresh", func(c *gin.Context) {
 		response.Error(c, http.StatusNotImplemented, response.CodeServerError, "Token刷新功能尚未开放，请重新登录")
