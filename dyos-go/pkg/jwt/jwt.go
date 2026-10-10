@@ -43,6 +43,9 @@ func Verify(token string) (*Claims, error) {
 	if len(parts) != 3 {
 		return nil, errors.New("token格式无效")
 	}
+	if parts[0] != base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"HS256","typ":"JWT"}`)) {
+		return nil, errors.New("token算法无效")
+	}
 	signingInput := parts[0] + "." + parts[1]
 	expectedSig := hmacSHA256(secretKey, signingInput)
 	if !hmac.Equal([]byte(parts[2]), []byte(expectedSig)) {
@@ -56,7 +59,7 @@ func Verify(token string) (*Claims, error) {
 	if err := json.Unmarshal(payloadBytes, &c); err != nil {
 		return nil, errors.New("token数据解析失败")
 	}
-	if time.Now().Unix() > c.ExpiresAt {
+	if c.ExpiresAt <= time.Now().Unix() {
 		return nil, errors.New("token已过期")
 	}
 	return &c, nil
@@ -74,8 +77,7 @@ func ExtractFromHeader(authHeader string) (*Claims, error) {
 		return nil, errors.New("缺少认证头")
 	}
 	if !strings.HasPrefix(authHeader, "Bearer ") {
-		// 兼容旧版直接传token
-		return Verify(authHeader)
+		return nil, errors.New("认证头必须使用Bearer格式")
 	}
 	token := strings.TrimPrefix(authHeader, "Bearer ")
 	if token == "" {
