@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"net/http"
 	"strconv"
 
 	"dyos-go/internal/model"
@@ -19,7 +18,7 @@ type ReviewHandler struct {
 }
 
 func NewReviewHandler(svc *service.ReviewService) *ReviewHandler {
-	return &ReviewHandler{svc: svc, upgrader: websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}}
+	return &ReviewHandler{svc: svc, upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin}}
 }
 
 func (h *ReviewHandler) RegisterAdminRoutes(group *gin.RouterGroup) {

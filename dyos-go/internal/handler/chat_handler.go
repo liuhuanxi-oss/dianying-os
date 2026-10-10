@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -20,7 +19,7 @@ type ChatHandler struct {
 }
 
 func NewChatHandler(svc *service.ChatService) *ChatHandler {
-	return &ChatHandler{svc: svc, hub: service.NewChatStreamHub(), upgrader: websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}}
+	return &ChatHandler{svc: svc, hub: service.NewChatStreamHub(), upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin}}
 }
 
 func (h *ChatHandler) RegisterAdminRoutes(group *gin.RouterGroup) {
