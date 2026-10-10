@@ -2,6 +2,7 @@ package middleware
 
 import (
  "net/http"
+ "net"
  "strings"
  "sync"
  "time"
@@ -22,7 +23,7 @@ func LoginRateLimit() gin.HandlerFunc {
   // Only use the immediate peer IP. X-Forwarded-For is untrusted unless a
   // known proxy is explicitly configured with Gin SetTrustedProxies.
   ip := strings.TrimSpace(c.Request.RemoteAddr)
-  if host, _, ok := strings.Cut(ip, ":"); ok { ip = host }
+  if host, _, err := net.SplitHostPort(ip); err == nil { ip = host }
   if ip == "" { ip = "unknown" }
   now := time.Now()
   mu.Lock()
