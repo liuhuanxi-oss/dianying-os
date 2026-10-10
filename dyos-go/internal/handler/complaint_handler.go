@@ -295,6 +295,8 @@ func (h *ComplaintHandler) MerchantReply(c *gin.Context) {
 
 func (h *ComplaintHandler) MerchantEscalate(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
+	if id == 0 { response.Error(c, 400, response.CodeBadRequest, "无效的投诉ID"); return }
+	if ok, err := h.svc.CheckOwnership(uint(id), c.GetUint("merchant_id")); err != nil || !ok { response.Error(c, 403, response.CodeForbidden, "无权操作此投诉"); return }
 	var body struct {
 		Reason string `json:"reason"`
 	}
