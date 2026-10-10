@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"net/http"
 	"strconv"
 
 	"dyos-go/internal/model"
