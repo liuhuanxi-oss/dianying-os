@@ -19,7 +19,7 @@ type ChatHandler struct {
 }
 
 func NewChatHandler(svc *service.ChatService) *ChatHandler {
-	return &ChatHandler{svc: svc, hub: service.NewChatStreamHub(), upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin}}
+	return &ChatHandler{svc: svc, hub: service.NewChatStreamHub(), upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin, Subprotocols: []string{"dyos-ws"}}}
 }
 
 func (h *ChatHandler) RegisterAdminRoutes(group *gin.RouterGroup) {
