@@ -150,7 +150,9 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 		response.Error(c, http.StatusNotImplemented, response.CodeServerError, "Token刷新功能尚未开放，请重新登录")
 	})
 
+	wsTickets := middleware.NewWSTicketManager()
 	ws := r.Group("/ws")
+	ws.Use(wsTickets.RequireWSTicket())
 	{
 		screenHandler.RegisterWSRoutes(ws)
 		reviewHandler.RegisterWSRoutes(ws)
@@ -162,6 +164,7 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	admin.Use(middleware.AdminAuth(), middleware.TenantIsolation(), middleware.Pagination(), middleware.PricingGate())
 	{
 		admin.GET("/ping", ping("admin"))
+		admin.POST("/ws-ticket", wsTickets.IssueWS)
 		if db != nil {
 			merchantRepo := repository.NewMerchantRepository(db)
 			merchantService := service.NewMerchantService(merchantRepo)

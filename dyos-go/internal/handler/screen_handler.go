@@ -21,7 +21,7 @@ func NewScreenHandler(service *service.ScreenService, hub *screen.Hub) *ScreenHa
 	return &ScreenHandler{
 		service: service,
 		hub:     hub,
-		upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin},
+		upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin, Subprotocols: []string{"dyos-ws"}},
 	}
 }
 
