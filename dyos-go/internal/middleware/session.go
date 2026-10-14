@@ -2,6 +2,7 @@ package middleware
 
 import (
     "net/http"
+    "errors"
 
     "dyos-go/internal/model"
     "dyos-go/pkg/response"
@@ -35,7 +36,7 @@ func RevalidateSession(db *gorm.DB) gin.HandlerFunc {
         if err != nil {
             // Treat missing/deleted accounts as unauthenticated. Do not
             // allow queries to proceed on transient database errors either.
-            if err == gorm.ErrRecordNotFound {
+            if errors.Is(err, gorm.ErrRecordNotFound) {
                 response.Error(c, http.StatusUnauthorized, response.CodeUnauthorized, "登录状态已失效")
             } else {
                 response.Error(c, http.StatusServiceUnavailable, response.CodeServerError, "身份验证服务暂时不可用")
