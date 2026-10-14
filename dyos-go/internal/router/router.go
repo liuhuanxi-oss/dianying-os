@@ -161,7 +161,7 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	}
 
 	admin := r.Group("/api/admin")
-	admin.Use(middleware.AdminAuth(), middleware.TenantIsolation(), middleware.Pagination(), middleware.PricingGate())
+	admin.Use(middleware.AdminAuth(), middleware.RevalidateSession(db), middleware.TenantIsolation(), middleware.Pagination(), middleware.PricingGate())
 	{
 		admin.GET("/ping", ping("admin"))
 		admin.POST("/ws-ticket", wsTickets.IssueWS)
@@ -232,7 +232,7 @@ func New(db *gorm.DB, cfg *config.Config, spaFS fs.FS) *gin.Engine {
 	}
 
 	merchant := r.Group("/api/merchant")
-	merchant.Use(middleware.MerchantAuth(), middleware.TenantIsolation(), middleware.Pagination(), middleware.PricingGate())
+	merchant.Use(middleware.MerchantAuth(), middleware.RevalidateSession(db), middleware.TenantIsolation(), middleware.Pagination(), middleware.PricingGate())
 	{
 		merchant.GET("/ping", ping("merchant"))
 		merchant.GET("/overview", func(c *gin.Context) {
