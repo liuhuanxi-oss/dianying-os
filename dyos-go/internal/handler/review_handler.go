@@ -18,7 +18,7 @@ type ReviewHandler struct {
 }
 
 func NewReviewHandler(svc *service.ReviewService) *ReviewHandler {
-	return &ReviewHandler{svc: svc, upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin}}
+	return &ReviewHandler{svc: svc, upgrader: websocket.Upgrader{CheckOrigin: allowedWebSocketOrigin, Subprotocols: []string{"dyos-ws"}}}
 }
 
 func (h *ReviewHandler) RegisterAdminRoutes(group *gin.RouterGroup) {
